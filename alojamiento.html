@@ -1,0 +1,233 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Alojamiento en Fuerteventura - Hoteles y Apartamentos</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <meta name="description" content="Encuentra el mejor alojamiento en Fuerteventura: hoteles, apartamentos, villas y casas rurales en las mejores zonas de la isla.">
+</head>
+<body>
+    <header>
+        <div class="logo-container">
+            <img src="images/logo.jpg" alt="This is Fuerteventura Logo" class="logo">
+            <h1>This is Fuerteventura</h1>
+        </div>
+        <nav>
+            <ul>
+                <li><a href="index.html">Inicio</a></li>
+                <li><a href="noticias.html">Noticias</a></li>
+                <li><a href="turismo.html">Turismo</a></li>
+                <li><a href="alojamiento.html">Alojamiento</a></li>
+                <li><a href="playas.html">Playas</a></li>
+                <li><a href="gastronomia.html">Gastronomía</a></li>
+                <li><a href="contacto.html">Contacto</a></li>
+            </ul>
+        </nav>
+        <div class="mobile-menu">
+            <i class="fas fa-bars"></i>
+        </div>
+    </header>
+
+    <section class="hero accommodation-hero">
+        <div class="hero-content">
+            <h2>Alojamiento en Fuerteventura</h2>
+            <p>Encuentra tu hogar perfecto en la isla</p>
+        </div>
+    </section>
+
+    <section class="accommodation-search">
+        <h2>Busca tu alojamiento ideal</h2>
+        <form class="search-form">
+            <div class="form-group">
+                <label for="location">Zona</label>
+                <select id="location" name="location">
+                    <option value="">Todas las zonas</option>
+                    <option value="corralejo">Corralejo</option>
+                    <option value="caleta">Caleta de Fuste</option>
+                    <option value="morro">Morro Jable</option>
+                    <option value="cotillo">El Cotillo</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="type">Tipo de alojamiento</label>
+                <select id="type" name="type">
+                    <option value="">Todos los tipos</option>
+                    <option value="hotel">Hotel</option>
+                    <option value="apartment">Apartamento</option>
+                    <option value="villa">Villa</option>
+                    <option value="rural">Casa Rural</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="budget">Presupuesto máximo</label>
+                <select id="budget" name="budget">
+                    <option value="">Sin límite</option>
+                    <option value="50">Hasta 50€/noche</option>
+                    <option value="100">Hasta 100€/noche</option>
+                    <option value="200">Hasta 200€/noche</option>
+                    <option value="300">Hasta 300€/noche</option>
+                </select>
+            </div>
+            <button type="submit" class="btn">Buscar alojamiento</button>
+        </form>
+    </section>
+
+    <section class="featured-accommodations">
+        <h2>Alojamientos destacados</h2>
+        <div class="accommodations-grid">
+            <article class="accommodation-card">
+                <img src="https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=1200&q=80" alt="Hotel en Corralejo" onerror="this.onerror=null;this.src='images/Fuerteventura.jpeg';">
+                <div class="accommodation-info">
+                    <h3>Gran Hotel Corralejo</h3>
+                    <p class="location"><i class="fas fa-map-marker-alt"></i> Corralejo</p>
+                    <p>Hotel de lujo con vistas al mar y acceso directo a la playa.</p>
+                    <div class="features">
+                        <span><i class="fas fa-wifi"></i> WiFi</span>
+                        <span><i class="fas fa-swimming-pool"></i> Piscina</span>
+                        <span><i class="fas fa-utensils"></i> Restaurante</span>
+                    </div>
+                    <a href="#" class="btn">Ver disponibilidad</a>
+                </div>
+            </article>
+
+            <article class="accommodation-card">
+                <img src="https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?auto=format&fit=crop&w=1200&q=80" alt="Apartamentos en Caleta" onerror="this.onerror=null;this.src='images/Fuerteventura.jpeg';">
+                <div class="accommodation-info">
+                    <h3>Apartamentos Vista Mar</h3>
+                    <p class="location"><i class="fas fa-map-marker-alt"></i> Caleta de Fuste</p>
+                    <p>Modernos apartamentos con terraza y todas las comodidades.</p>
+                    <div class="features">
+                        <span><i class="fas fa-parking"></i> Parking</span>
+                        <span><i class="fas fa-tv"></i> TV</span>
+                        <span><i class="fas fa-wind"></i> A/C</span>
+                    </div>
+                    <a href="#" class="btn">Ver disponibilidad</a>
+                </div>
+            </article>
+
+            <article class="accommodation-card">
+                <img src="https://images.unsplash.com/photo-1560066984-138dadb4c035?auto=format&fit=crop&w=1200&q=80" alt="Villa en El Cotillo" onerror="this.onerror=null;this.src='images/Fuerteventura.jpeg';">
+                <div class="accommodation-info">
+                    <h3>Villa El Cotillo</h3>
+                    <p class="location"><i class="fas fa-map-marker-alt"></i> El Cotillo</p>
+                    <p>Villa privada con piscina y espectaculares vistas al océano.</p>
+                    <div class="features">
+                        <span><i class="fas fa-swimming-pool"></i> Piscina privada</span>
+                        <span><i class="fas fa-car"></i> Garage</span>
+                        <span><i class="fas fa-hot-tub"></i> Jacuzzi</span>
+                    </div>
+                    <a href="#" class="btn">Ver disponibilidad</a>
+                </div>
+            </article>
+
+            <article class="accommodation-card">
+                <img src="https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?auto=format&fit=crop&w=1200&q=80" alt="Casa Rural en Betancuria" onerror="this.onerror=null;this.src='images/Fuerteventura.jpeg';">
+                <div class="accommodation-info">
+                    <h3>Casa Rural La Montaña</h3>
+                    <p class="location"><i class="fas fa-map-marker-alt"></i> Betancuria</p>
+                    <p>Tradicional casa canaria restaurada en entorno rural.</p>
+                    <div class="features">
+                        <span><i class="fas fa-mountain"></i> Vistas</span>
+                        <span><i class="fas fa-fire"></i> Barbacoa</span>
+                        <span><i class="fas fa-tree"></i> Jardín</span>
+                    </div>
+                    <a href="#" class="btn">Ver disponibilidad</a>
+                </div>
+            </article>
+        </div>
+    </section>
+
+    <section class="stay-zones">
+        <h2>Zonas recomendadas para alojarse</h2>
+        <div class="zones-grid">
+            <div class="zone">
+                <h3>Corralejo (norte)</h3>
+                <p>Ambiente animado, dunas cercanas y excursiones a Isla de Lobos. Ideal para familias y deporte.</p>
+            </div>
+            <div class="zone">
+                <h3>Caleta de Fuste (centro-este)</h3>
+                <p>Buena base para recorrer la isla, playa resguardada y servicios cercanos al aeropuerto.</p>
+            </div>
+            <div class="zone">
+                <h3>Morro Jable / Jandía (sur)</h3>
+                <p>Playas infinitas, faro y paseos marítimos. Perfecto para quienes buscan sol y relax.</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="saving-tips">
+        <h2>Consejos para ahorrar</h2>
+        <ul>
+            <li>Reserva con antelación en temporada alta (verano y Navidades).</li>
+            <li>Valora apartamentos si viajas en familia o estancias largas.</li>
+            <li>Comprueba la política de cancelación y posibles tasas locales.</li>
+        </ul>
+    </section>
+
+    <section class="accommodation-tips">
+        <h2>Consejos para elegir alojamiento</h2>
+        <div class="tips-container">
+            <div class="tip">
+                <i class="fas fa-map-marked-alt"></i>
+                <h3>Ubicación</h3>
+                <p>Elige según la zona que quieras explorar y las actividades que planees realizar.</p>
+            </div>
+            <div class="tip">
+                <i class="fas fa-calendar-alt"></i>
+                <h3>Temporada</h3>
+                <p>Los precios varían según la época del año. Reserva con antelación en temporada alta.</p>
+            </div>
+            <div class="tip">
+                <i class="fas fa-car"></i>
+                <h3>Transporte</h3>
+                <p>Considera la proximidad al transporte público o la necesidad de alquilar coche.</p>
+            </div>
+            <div class="tip">
+                <i class="fas fa-star"></i>
+                <h3>Opiniones</h3>
+                <p>Lee las reseñas de otros viajeros antes de hacer tu reserva.</p>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="footer-content">
+            <div class="footer-logo">
+                <img src="images/logo.jpg" alt="This is Fuerteventura Logo" class="logo">
+                <h3>This is Fuerteventura</h3>
+            </div>
+            <div class="footer-links">
+                <h4>Enlaces rápidos</h4>
+                <ul>
+                    <li><a href="index.html">Inicio</a></li>
+                    <li><a href="noticias.html">Noticias</a></li>
+                    <li><a href="turismo.html">Turismo</a></li>
+                    <li><a href="alojamiento.html">Alojamiento</a></li>
+                    <li><a href="playas.html">Playas</a></li>
+                </ul>
+            </div>
+            <div class="footer-social">
+                <h4>Síguenos</h4>
+                <div class="social-icons">
+                    <a href="#"><i class="fab fa-facebook"></i></a>
+                    <a href="#"><i class="fab fa-twitter"></i></a>
+                    <a href="#"><i class="fab fa-instagram"></i></a>
+                    <a href="#"><i class="fab fa-youtube"></i></a>
+                </div>
+            </div>
+            <div class="footer-contact">
+                <h4>Contacto</h4>
+                <p><i class="fas fa-envelope"></i> info@thisisfuerteventura.es</p>
+                <p><i class="fas fa-phone"></i> +34 XXX XXX XXX</p>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2025 This is Fuerteventura. Todos los derechos reservados.</p>
+        </div>
+    </footer>
+
+    <script src="js/main.js"></script>
+</body>
+</html>

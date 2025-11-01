@@ -1,0 +1,13 @@
+﻿{
+  "name": "This is Fuerteventura",
+  "short_name": "Fuerteventura",
+  "start_url": "/index.html",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#0f4c81",
+  "description": "Noticias y guía de Fuerteventura",
+  "icons": [
+    
+  ]
+}

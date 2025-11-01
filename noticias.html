@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Noticias de Fuerteventura - This is Fuerteventura</title>
+    <meta name="theme-color" content="#0f4c81">
+    <link rel="manifest" href="/manifest.webmanifest">
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <meta name="description" content="Las últimas noticias de Fuerteventura: actualidad, eventos, turismo y más.">
+    <!-- Open Graph -->
+    <meta property="og:title" content="Noticias de Fuerteventura - This is Fuerteventura">
+    <meta property="og:description" content="Las últimas noticias de Fuerteventura: actualidad, eventos, turismo y más.">
+    <meta property="og:type" content="website">
+    <meta property="og:image" content="/images/logo.jpg">
+    <!-- Twitter Cards -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Noticias de Fuerteventura - This is Fuerteventura">
+    <meta name="twitter:description" content="Las últimas noticias de Fuerteventura: actualidad, eventos, turismo y más.">
+    <meta name="twitter:image" content="/images/logo.jpg">
+        <script type="application/ld+json">
+        {
+            "@context": "https://schema.org",
+            "@type": "CollectionPage",
+            "name": "Noticias de Fuerteventura - This is Fuerteventura",
+            "url": "https://thisisfuerteventura.example/noticias.html",
+            "about": {
+                "@type": "Place",
+                "name": "Fuerteventura"
+            }
+        }
+        </script>
+</head>
+<body>
+    <a class="skip-link" href="#main">Saltar al contenido principal</a>
+    <header>
+        <div class="logo-container">
+            <img src="images/logo.jpg" alt="This is Fuerteventura Logo" class="logo" loading="lazy">
+            <h1>This is Fuerteventura</h1>
+        </div>
+        <nav aria-label="Navegación principal">
+            <ul>
+                <li><a href="index.html">Inicio</a></li>
+                <li><a href="noticias.html">Noticias</a></li>
+                <li><a href="turismo.html">Turismo</a></li>
+                <li><a href="alojamiento.html">Alojamiento</a></li>
+                <li><a href="playas.html">Playas</a></li>
+                <li><a href="gastronomia.html">Gastronomía</a></li>
+                <li><a href="contacto.html">Contacto</a></li>
+            </ul>
+        </nav>
+        <div class="mobile-menu">
+            <i class="fas fa-bars"></i>
+        </div>
+    </header>
+
+    <main id="main">
+    <section class="page-header">
+        <div class="page-header-content">
+            <h1>Noticias de Fuerteventura</h1>
+            <p>Mantente al día con las últimas novedades de la isla</p>
+        </div>
+    </section>
+
+    <section class="news-filters">
+        <div class="container">
+            <div class="filter-options">
+                <select id="category-filter">
+                    <option value="all">Todas las categorías</option>
+                    <option value="actualidad">Actualidad</option>
+                    <option value="turismo">Turismo</option>
+                    <option value="cultura">Cultura</option>
+                    <option value="deportes">Deportes</option>
+                    <option value="gastronomia">Gastronomía</option>
+                </select>
+                <select id="date-filter">
+                    <option value="newest">Más recientes</option>
+                    <option value="oldest">Más antiguas</option>
+                </select>
+                <button id="apply-filters" class="btn">Aplicar filtros</button>
+            </div>
+            <div class="search-bar">
+                <input type="text" id="news-search" placeholder="Buscar noticias...">
+                <button id="search-btn" class="btn"><i class="fas fa-search"></i></button>
+            </div>
+        </div>
+    </section>
+
+    <section class="news-content">
+        <div class="container">
+            <div class="pagination top">
+                <button id="prev-page-top" class="btn" disabled><i class="fas fa-chevron-left"></i> Anterior</button>
+                <span id="page-info-top">Página 1 de 1</span>
+                <button id="next-page-top" class="btn">Siguiente <i class="fas fa-chevron-right"></i></button>
+            </div>
+            <div class="news-grid" id="news-container">
+                <!-- El contenido se cargará dinámicamente con JavaScript -->
+                <div class="loading">Cargando noticias...</div>
+            </div>
+            <div class="pagination">
+                <button id="prev-page" class="btn" disabled><i class="fas fa-chevron-left"></i> Anterior</button>
+                <span id="page-info">Página 1 de 1</span>
+                <button id="next-page" class="btn">Siguiente <i class="fas fa-chevron-right"></i></button>
+            </div>
+        </div>
+    </section>
+
+    <section class="newsletter">
+        <h2>Suscríbete a nuestro boletín</h2>
+        <p>Recibe las últimas noticias y ofertas de Fuerteventura directamente en tu correo.</p>
+        <form id="newsletter-form">
+            <input type="email" placeholder="Tu correo electrónico" required>
+            <button type="submit" class="btn">Suscribirse</button>
+        </form>
+    </section>
+
+    <footer>
+        <div class="footer-content">
+            <div class="footer-logo">
+                <img src="images/logo.jpg" alt="This is Fuerteventura Logo" class="logo" loading="lazy">
+                <h3>This is Fuerteventura</h3>
+            </div>
+            <div class="footer-links">
+                <h4>Enlaces rápidos</h4>
+                <ul>
+                    <li><a href="index.html">Inicio</a></li>
+                    <li><a href="noticias.html">Noticias</a></li>
+                    <li><a href="turismo.html">Turismo</a></li>
+                    <li><a href="alojamiento.html">Alojamiento</a></li>
+                    <li><a href="playas.html">Playas</a></li>
+                </ul>
+            </div>
+            <div class="footer-social">
+                <h4>Síguenos</h4>
+                <div class="social-icons">
+                    <a href="#"><i class="fab fa-facebook"></i></a>
+                    <a href="#"><i class="fab fa-twitter"></i></a>
+                    <a href="#"><i class="fab fa-instagram"></i></a>
+                    <a href="#"><i class="fab fa-youtube"></i></a>
+                </div>
+            </div>
+            <div class="footer-contact">
+                <h4>Contacto</h4>
+                <p><i class="fas fa-envelope"></i> info@thisisfuerteventura.es</p>
+                <p><i class="fas fa-phone"></i> +34 XXX XXX XXX</p>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2025 This is Fuerteventura. Todos los derechos reservados.</p>
+        </div>
+    </footer>
+    </main>
+
+    <script src="js/main.js"></script>
+    <script src="js/proxy-discovery.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/dompurify@2.4.0/dist/purify.min.js"></script>
+    <script src="js/content-loader.js"></script>
+    <script src="js/news.js"></script>
+</body>
+</html>

@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>This is Fuerteventura - Tu guía completa de la isla</title>
+    <meta name="theme-color" content="#0f4c81">
+    <link rel="manifest" href="/manifest.webmanifest">
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <meta name="description" content="Descubre Fuerteventura: noticias, turismo, alojamiento, playas y mucho más sobre esta maravillosa isla canaria.">
+    <!-- Open Graph -->
+    <meta property="og:title" content="This is Fuerteventura - Tu guía completa de la isla">
+    <meta property="og:description" content="Descubre Fuerteventura: noticias, turismo, alojamiento, playas y mucho más sobre esta maravillosa isla canaria.">
+    <meta property="og:type" content="website">
+    <meta property="og:image" content="/images/logo.jpg">
+    <!-- Twitter Cards -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="This is Fuerteventura - Tu guía completa de la isla">
+    <meta name="twitter:description" content="Descubre Fuerteventura: noticias, turismo, alojamiento, playas y mucho más sobre esta maravillosa isla canaria.">
+    <meta name="twitter:image" content="/images/logo.jpg">
+</head>
+<body>
+    <a class="skip-link" href="#main">Saltar al contenido principal</a>
+    <header>
+        <div class="logo-container">
+            <img src="images/logo.jpg" alt="This is Fuerteventura Logo" class="logo" loading="lazy">
+            <h1>This is Fuerteventura</h1>
+        </div>
+        <nav aria-label="Navegación principal">
+            <ul>
+                <li><a href="index.html">Inicio</a></li>
+                <li><a href="noticias.html">Noticias</a></li>
+                <li><a href="turismo.html">Turismo</a></li>
+                <li><a href="alojamiento.html">Alojamiento</a></li>
+                <li><a href="playas.html">Playas</a></li>
+                <li><a href="gastronomia.html">Gastronomía</a></li>
+                <li><a href="contacto.html">Contacto</a></li>
+            </ul>
+        </nav>
+        <div class="mobile-menu">
+            <i class="fas fa-bars"></i>
+        </div>
+    </header>
+        <main id="main">
+    <section class="hero">
+        <div class="hero-content">
+            <h2>Bienvenido a Fuerteventura</h2>
+            <p>Descubre el paraíso de las Islas Canarias</p>
+            <a href="turismo.html" class="btn">Explorar la isla</a>
+        </div>
+    </section>
+
+    <section class="featured-content">
+        <h2>Destacados</h2>
+        <div class="content-grid" id="featured-news">
+            <!-- El contenido se cargará dinámicamente con JavaScript -->
+            <div class="loading">Cargando contenido...</div>
+        </div>
+    </section>
+
+    <section class="categories">
+        <h2>Explora Fuerteventura</h2>
+        <div class="category-grid">
+            <div class="category-card">
+                <img src="images/news.jpg" alt="Noticias de Fuerteventura" loading="lazy">
+                <h3>Noticias</h3>
+                <p>Mantente al día con las últimas noticias de la isla.</p>
+                <a href="noticias.html" class="btn">Ver noticias</a>
+            </div>
+            <div class="category-card">
+                <img src="images/tourism.jpg" alt="Turismo en Fuerteventura" loading="lazy">
+                <h3>Turismo</h3>
+                <p>Descubre los mejores lugares para visitar.</p>
+                <a href="turismo.html" class="btn">Explorar</a>
+            </div>
+            <div class="category-card">
+                <img src="images/accommodation.jpg" alt="Alojamiento en Fuerteventura" loading="lazy">
+                <h3>Alojamiento</h3>
+                <p>Encuentra el lugar perfecto para hospedarte.</p>
+                <a href="alojamiento.html" class="btn">Ver opciones</a>
+            </div>
+            <div class="category-card">
+                <img src="images/beaches.jpg" alt="Playas de Fuerteventura" loading="lazy">
+                <h3>Playas</h3>
+                <p>Las mejores playas de arena blanca y aguas cristalinas.</p>
+                <a href="playas.html" class="btn">Descubrir</a>
+            </div>
+        </div>
+    </section>
+
+    <section class="newsletter">
+        <h2>Suscríbete a nuestro boletín</h2>
+        <p>Recibe las últimas noticias y ofertas de Fuerteventura directamente en tu correo.</p>
+        <form id="newsletter-form">
+            <input type="email" placeholder="Tu correo electrónico" required>
+            <button type="submit" class="btn">Suscribirse</button>
+        </form>
+    </section>
+
+    <footer>
+        <div class="footer-content">
+            <div class="footer-logo">
+                <img src="images/logo.jpg" alt="This is Fuerteventura Logo" class="logo" loading="lazy">
+                <h3>This is Fuerteventura</h3>
+            </div>
+            <div class="footer-links">
+                <h4>Enlaces rápidos</h4>
+                <ul>
+                    <li><a href="index.html">Inicio</a></li>
+                    <li><a href="noticias.html">Noticias</a></li>
+                    <li><a href="turismo.html">Turismo</a></li>
+                    <li><a href="alojamiento.html">Alojamiento</a></li>
+                    <li><a href="playas.html">Playas</a></li>
+                </ul>
+            </div>
+            <div class="footer-social">
+                <h4>Síguenos</h4>
+                <div class="social-icons">
+                    <a href="#"><i class="fab fa-facebook"></i></a>
+                    <a href="#"><i class="fab fa-twitter"></i></a>
+                    <a href="#"><i class="fab fa-instagram"></i></a>
+                    <a href="#"><i class="fab fa-youtube"></i></a>
+                </div>
+            </div>
+            <div class="footer-contact">
+                <h4>Contacto</h4>
+                <p><i class="fas fa-envelope"></i> info@thisisfuerteventura.es</p>
+                <p><i class="fas fa-phone"></i> +34 XXX XXX XXX</p>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2025 This is Fuerteventura. Todos los derechos reservados.</p>
+        </div>
+    </footer>
+    </main>
+
+    <script src="js/main.js"></script>
+    <script src="js/proxy-discovery.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/dompurify@2.4.0/dist/purify.min.js"></script>
+    <script src="js/content-loader.js"></script>
+</body>
+</html>
