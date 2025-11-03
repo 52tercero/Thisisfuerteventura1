@@ -1,0 +1,167 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test de Imágenes - Debug</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; max-width: 1400px; margin: 0 auto; }
+        .item { border: 1px solid #ddd; margin: 10px 0; padding: 15px; }
+        .item img { max-width: 200px; display: block; margin: 10px 0; }
+        .item pre { background: #f5f5f5; padding: 10px; overflow-x: auto; font-size: 11px; }
+        .error { color: red; }
+        .success { color: green; }
+        .warning { color: orange; }
+        h3 { margin: 5px 0; }
+        .source { background: #007bff; color: white; padding: 3px 8px; border-radius: 3px; font-size: 12px; }
+        .stats { background: #f8f9fa; padding: 15px; margin-bottom: 20px; border-radius: 5px; }
+        button { padding: 10px 20px; margin: 5px; cursor: pointer; }
+    </style>
+</head>
+<body>
+    <h1>🔍 Debug de Imágenes de Feeds</h1>
+    
+    <div class="stats" id="stats">
+        <button onclick="loadFeeds()">🔄 Recargar Feeds</button>
+        <button onclick="clearCache()">🗑️ Limpiar Caché</button>
+        <button onclick="showStats()">📊 Ver Estadísticas</button>
+        <div id="stats-content"></div>
+    </div>
+    
+    <div id="results"></div>
+
+    <script src="https://cdn.jsdelivr.net/npm/dompurify@2.4.0/dist/purify.min.js"></script>
+    <script src="js/proxy-discovery.js"></script>
+    <script src="js/image-extractor.js"></script>
+
+    <script>
+        async function discoverLocalProxy() {
+            if (window.__RSS_PROXY_URL) return window.__RSS_PROXY_URL;
+            const candidates = ['http://localhost:3000', 'http://localhost:3001'];
+            for (const base of candidates) {
+                try {
+                    const r = await fetch(`${base}/health`, { method: 'GET', cache: 'no-store' });
+                    if (r.ok) return base;
+                } catch (_) { }
+            }
+            return 'http://localhost:3000';
+        }
+
+        function clearCache() {
+            localStorage.clear();
+            alert('Caché limpiado. Recarga los feeds.');
+        }
+
+        function showStats() {
+            if (window.ImageExtractor) {
+                const stats = window.ImageExtractor.getImageStats();
+                document.getElementById('stats-content').innerHTML = `
+                    <h3>Estadísticas de Extracción de Imágenes</h3>
+                    <pre>${JSON.stringify(stats, null, 2)}</pre>
+                `;
+            }
+        }
+
+        async function loadFeeds() {
+            const resultsDiv = document.getElementById('results');
+            resultsDiv.innerHTML = '<p>⏳ Cargando feeds...</p>';
+
+            const proxyBase = await discoverLocalProxy();
+            console.log('Proxy base:', proxyBase);
+
+            try {
+                // Obtener feeds agregados
+                const aggResponse = await fetch(`${proxyBase}/api/aggregate?dedupe=0&noCache=1`);
+                const aggData = await aggResponse.json();
+                const rssItems = aggData.items || [];
+
+                // Obtener newsdata.io
+                const newsdataResponse = await fetch(`${proxyBase}/api/newsdata?q=fuerteventura&country=es&language=es&noCache=1`);
+                const newsdataData = await newsdataResponse.json();
+                const newsdataItems = newsdataData.items || [];
+
+                const allItems = [...rssItems, ...newsdataItems];
+
+                console.log(`Total items: ${allItems.length}`);
+                console.log('RSS items:', rssItems.length);
+                console.log('Newsdata items:', newsdataItems.length);
+
+                resultsDiv.innerHTML = `<h2>Total: ${allItems.length} artículos</h2>`;
+
+                for (let i = 0; i < allItems.length; i++) {
+                    const item = allItems[i];
+                    const itemDiv = document.createElement('div');
+                    itemDiv.className = 'item';
+
+                    // Detectar fuente
+                    let source = 'unknown';
+                    const isNewsdata = item.raw && (item.raw.source_id || item.raw.country);
+                    if (isNewsdata) {
+                        source = `newsdata.io (${item.raw.source_id || 'N/A'})`;
+                    } else if (item.link) {
+                        try {
+                            source = new URL(item.link).hostname.replace('www.', '');
+                        } catch (e) {}
+                    }
+
+                    // Extraer imagen con el módulo
+                    let extractedImage = 'N/A';
+                    if (window.ImageExtractor) {
+                        extractedImage = await window.ImageExtractor.extractImageFromItem(item, {
+                            validate: false,
+                            sourceUrl: item.link
+                        });
+                    }
+
+                    // Análisis de disponibilidad de imágenes
+                    const imageAnalysis = {
+                        direct_image: item.image || null,
+                        raw_image_url: item.raw?.image_url || null,
+                        enclosure: item.raw?.enclosure || null,
+                        media_content: item.raw?.['media:content'] || null,
+                        media_thumbnail: item.raw?.['media:thumbnail'] || null,
+                        description_has_img: (item.description || '').includes('<img') ? 'Yes' : 'No',
+                        extracted: extractedImage
+                    };
+
+                    const hasImage = extractedImage && !extractedImage.includes('logo.jpg') && !extractedImage.includes('logos/');
+                    const imageStatus = hasImage ? 
+                        `<span class="success">✓ Imagen encontrada</span>` : 
+                        `<span class="error">✗ No image / Fallback (logo.jpg)</span>`;
+
+                    itemDiv.innerHTML = `
+                        <div>
+                            <span class="source">${source}</span>
+                            ${imageStatus}
+                        </div>
+                        <h3>${item.title || 'Sin título'}</h3>
+                        <p><strong>Link:</strong> <a href="${item.link}" target="_blank">${item.link}</a></p>
+                        <p><strong>Imagen extraída:</strong> ${extractedImage}</p>
+                        ${extractedImage && extractedImage !== 'N/A' ? `
+                            <img src="${extractedImage}" alt="Preview" onerror="this.style.border='2px solid red'; this.alt='Error cargando imagen'; this.src='images/logo.jpg';">
+                        ` : ''}
+                        <details>
+                            <summary>🔍 Ver análisis completo</summary>
+                            <pre>${JSON.stringify(imageAnalysis, null, 2)}</pre>
+                            <h4>Raw item completo:</h4>
+                            <pre>${JSON.stringify(item, null, 2)}</pre>
+                        </details>
+                    `;
+
+                    resultsDiv.appendChild(itemDiv);
+                }
+
+                // Mostrar estadísticas
+                showStats();
+
+            } catch (error) {
+                resultsDiv.innerHTML = `<p class="error">Error: ${error.message}</p>`;
+                console.error(error);
+            }
+        }
+
+        // Cargar automáticamente al abrir
+        window.addEventListener('DOMContentLoaded', loadFeeds);
+    </script>
+</body>
+</html>
