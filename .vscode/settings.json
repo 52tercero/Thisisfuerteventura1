@@ -1,0 +1,11 @@
+{
+    "livePreview.defaultPreviewPath": "/index.html",
+    // Oculta diagnósticos de node_modules en la vista de Problemas
+    "problems.exclude": {
+        "**/node_modules/**": true
+    },
+    // Reduce diagnósticos globales de TypeScript (evita errores de tsconfig de dependencias)
+    "typescript.tsserver.experimental.enableProjectDiagnostics": false,
+    // Este proyecto es JS; desactivamos validación TS para evitar ruido de dependencias
+    "typescript.validate.enable": false
+}
