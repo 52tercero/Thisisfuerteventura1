@@ -2,20 +2,41 @@
 const cors = require('cors');
 const { parseStringPromise } = require('xml2js');
 
+// Handle unhandled promise rejections
+process.on('unhandledRejection', (reason, promise) => {
+  console.error('[FATAL] Unhandled Rejection at:', promise, 'reason:', reason);
+});
+
+process.on('uncaughtException', (error) => {
+  console.error('[FATAL] Uncaught Exception:', error);
+  process.exit(1);
+});
+
+// Intentar cargar FeedParser si está disponible (opcional)
+let FeedParser = null;
+let Readable = null;
+try {
+  FeedParser = require('feedparser');
+  ({ Readable } = require('stream'));
+  console.log('[RSS PROXY] FeedParser habilitado');
+} catch (_) {
+  console.log('[RSS PROXY] FeedParser no instalado, usando xml2js');
+}
+
 const app = express();
 app.use(cors());
-// Minimal security headers (avoid extra deps)
+// Cabeceras de seguridad mínimas (sin dependencias adicionales)
 app.use((req, res, next) => {
   res.setHeader('X-Content-Type-Options', 'nosniff');
   res.setHeader('X-Frame-Options', 'SAMEORIGIN');
   res.setHeader('Referrer-Policy', 'strict-origin-when-cross-origin');
   res.setHeader('Permissions-Policy', 'geolocation=(), camera=(), microphone=()');
-  // Modern browsers ignore X-XSS-Protection; leaving it disabled to avoid false sense
+  // Los navegadores modernos ignoran X-XSS-Protection; se deshabilita para evitar falsa sensación de seguridad
   res.setHeader('X-XSS-Protection', '0');
   next();
 });
 
-// Simple in-memory rate limiting middleware for /api endpoints
+// Middleware simple de limitación de tasa en memoria para endpoints /api
 const RATE_LIMIT_WINDOW_MS = Number(process.env.RATE_LIMIT_WINDOW_MS || 60_000);
 const RATE_LIMIT_MAX = Number(process.env.RATE_LIMIT_MAX || 120);
 const rateBuckets = new Map(); // ip -> { count, resetAt }
@@ -38,36 +59,36 @@ function rateLimit(req, res, next) {
       return res.status(429).json({ error: 'rate_limited', retry_after: Math.ceil((bucket.resetAt - now) / 1000) });
     }
   } catch (_) {
-    // Fail-open on limiter errors
+    // Fallo abierto en caso de error del limitador
   }
   next();
 }
 
 app.use('/api', rateLimit);
 
-// Ensure a fetch implementation exists (Node 18+ provides global fetch).
-// If not present, fall back to node-fetch v2 (CommonJS friendly).
+// Asegurar que exista una implementación de fetch (Node 18+ provee fetch global).
+// Si no está presente, usar node-fetch v2 (compatible con CommonJS).
 let fetchImpl = globalThis.fetch;
 if (!fetchImpl) {
   try {
-    // node-fetch v2 exports a function via require
+    // node-fetch v2 exporta una función via require
     // eslint-disable-next-line global-require
     fetchImpl = require('node-fetch');
-    console.log('Using node-fetch fallback for fetch');
+    console.log('Usando fallback node-fetch para fetch');
   } catch (e) {
-    console.warn('No global fetch and node-fetch failed to load. fetch requests will fail.');
+    console.warn('No hay fetch global y node-fetch falló al cargar. Las peticiones fetch fallarán.');
   }
 }
 
-// helper wrapper to use the chosen fetch implementation
+// función auxiliar para usar la implementación de fetch elegida
 async function fetchUrl(url, opts) {
   if (!fetchImpl) throw new Error('No fetch implementation available');
   return fetchImpl(url, opts);
 }
 
-// Simple in-memory cache with TTL (configurable via CACHE_TTL_MS env)
-const CACHE_TTL_MS = Number(process.env.CACHE_TTL_MS || 15 * 60 * 1000); // default 15 minutes
-const memoryCache = new Map(); // key -> { value, expires }
+// Caché simple en memoria con TTL (configurable vía env CACHE_TTL_MS)
+const CACHE_TTL_MS = Number(process.env.CACHE_TTL_MS || 15 * 60 * 1000); // por defecto 15 minutos
+const memoryCache = new Map(); // clave -> { value, expires }
 
 function cacheGet(key) {
   try {
@@ -87,36 +108,149 @@ function cacheSet(key, value, ttl = CACHE_TTL_MS) {
   try {
     memoryCache.set(key, { value, expires: Date.now() + ttl });
   } catch (_) {
-    // ignore cache failures
+    // ignorar fallos de caché
   }
 }
 
-// Fetch and parse a feed URL, returning normalized items. Uses in-memory cache.
-async function fetchFeedItems(url, { bypassCache = false } = {}) {
-  const cacheKey = `feed:${url}`;
-  if (!bypassCache) {
-    const cached = cacheGet(cacheKey);
-    if (cached) {
-      return cached;
+// Intentar descubrir URL de feed (RSS/Atom) a partir de una página HTML
+function discoverFeedFromHtml(html, baseUrl) {
+  try {
+    if (!html) return null;
+    const linkTags = html.match(/<link[^>]+>/gi) || [];
+    for (const tag of linkTags) {
+      const hasAlternate = /rel=["']([^"']*\balternate\b[^"']*)["']/i.test(tag);
+      if (!hasAlternate) continue;
+      const typeMatch = tag.match(/type=["']([^"']+)["']/i);
+      const type = typeMatch ? typeMatch[1].toLowerCase() : '';
+      if (!(type.includes('rss+xml') || type.includes('atom+xml') || type.includes('xml'))) continue;
+      const hrefMatch = tag.match(/href=["']([^"']+)["']/i);
+      if (hrefMatch && hrefMatch[1]) {
+        const abs = new URL(hrefMatch[1], baseUrl).href;
+        return abs;
+      }
     }
+    return null;
+  } catch (_) {
+    return null;
   }
+}
 
-  console.log('[RSS PROXY] Fetching:', url);
-  const upstream = await fetchUrl(url);
-  if (!upstream.ok) {
-    console.warn(`[RSS PROXY] Upstream error for ${url}: status ${upstream.status}`);
-    throw new Error(`upstream ${upstream.status}`);
-  }
+// Parseo con FeedParser (si está disponible). Devuelve items crudos del parser.
+function parseWithFeedParser(text) {
+  return new Promise((resolve, reject) => {
+    if (!FeedParser || !Readable) return resolve(null);
+    try {
+      const feedparser = new FeedParser();
+      const items = [];
+      feedparser.on('error', (err) => reject(err));
+      feedparser.on('readable', function onReadable() {
+        let item;
+        // eslint-disable-next-line no-cond-assign
+        while (item = this.read()) {
+          items.push(item);
+        }
+      });
+      feedparser.on('end', () => resolve(items));
+      Readable.from([text]).pipe(feedparser);
+    } catch (e) {
+      resolve(null);
+    }
+  });
+}
+
+// Obtener y parsear una URL de feed, devolviendo items normalizados. Usa caché en memoria.
+async function fetchFeedItems(url, { bypassCache = false, _triedDiscovery = false } = {}) {
+  try {
+    const cacheKey = `feed:${url}`;
+    if (!bypassCache) {
+      const cached = cacheGet(cacheKey);
+      if (cached) {
+        return cached;
+      }
+    }
+
+    console.log('[RSS PROXY] Fetching:', url);
+    const upstream = await fetchUrl(url, { headers: { 'User-Agent': 'FuerteventuraRSSProxy/1.0 (+https://example.local)' } });
+    if (!upstream.ok) {
+      console.warn(`[RSS PROXY] Upstream error for ${url}: status ${upstream.status}`);
+      return [];
+    }
 
   const text = await upstream.text();
   console.log(`[RSS PROXY] Fetched ${url} (${text.length} chars)`);
+  const ctype = (upstream.headers && upstream.headers.get && (upstream.headers.get('content-type') || '')) || '';
 
   let parsed;
   try {
+    // Si parece HTML, intentar descubrir el feed real primero
+    if (ctype.includes('text/html') && !_triedDiscovery) {
+      const discovered = discoverFeedFromHtml(text, url);
+      if (discovered && discovered !== url) {
+        console.log(`[RSS PROXY] Discovered feed for ${url}: ${discovered}`);
+        const items = await fetchFeedItems(discovered, { bypassCache, _triedDiscovery: true });
+        // Alias de caché: cachear también bajo la clave original
+        cacheSet(cacheKey, items);
+        return items;
+      }
+    }
+
+    // Intentar primero con FeedParser si está disponible
+    const fpItems = await parseWithFeedParser(text);
+    if (Array.isArray(fpItems) && fpItems.length > 0) {
+      const normalizedFP = fpItems.map(it => {
+        const title = it.title || '';
+        const link = it.link || it.origlink || '';
+        const description = it.description || it.summary || it['content:encoded'] || '';
+        // FeedParser can return both 'pubdate' and 'pubDate', use explicit camelCase
+        const pubDate = it.pubDate || it.pubdate || it.date || '';
+        
+        // Extraer imagen de FeedParser (tiene mejor soporte de media)
+        let image = it.image?.url || it.enclosures?.[0]?.url || '';
+        
+        // Preservar solo campos necesarios para extracción en cliente (sin duplicar pubdate/pubDate)
+        const rawClean = {
+          title: it.title,
+          link: it.link,
+          description: it.description,
+          enclosure: it.enclosures?.[0],
+          'media:content': it['media:content'],
+          'media:thumbnail': it['media:thumbnail'],
+          'media:group': it['media:group']
+        };
+        
+        return { 
+          title, 
+          link, 
+          description, 
+          pubDate,  // Always camelCase
+          image,
+          raw: rawClean
+        };
+      });
+      cacheSet(cacheKey, normalizedFP);
+      return normalizedFP;
+    }
+
+    // Fallback a xml2js
     parsed = await parseStringPromise(text, { explicitArray: false, mergeAttrs: true });
   } catch (e) {
-    console.error(`[RSS PROXY] XML parse error for ${url}:`, e);
-    throw new Error('parse-error');
+    // Si falló el parseo de XML, intentar descubrimiento si aún no se intentó
+    if (!_triedDiscovery) {
+      const discovered = discoverFeedFromHtml(text, url) || (url.endsWith('/') ? url + 'feed' : (url + '/feed'));
+      if (discovered && discovered !== url) {
+        try {
+          console.log(`[RSS PROXY] XML parse failed; trying discovered/conventional feed for ${url}: ${discovered}`);
+          const items = await fetchFeedItems(discovered, { bypassCache, _triedDiscovery: true });
+          cacheSet(cacheKey, items);
+          return items;
+        } catch (e2) {
+          console.warn(`[RSS PROXY] Discovery fallback also failed for ${url}:`, e2 && e2.message);
+        }
+      }
+    }
+    console.error(`[RSS PROXY] XML parse error for ${url}:`, e.message || e);
+    // Return empty array instead of throwing to prevent cascade failures
+    return [];
   }
 
   let channel = parsed.rss && parsed.rss.channel ? parsed.rss.channel : parsed.feed || parsed;
@@ -130,21 +264,35 @@ async function fetchFeedItems(url, { bypassCache = false } = {}) {
     const link = it.link && (typeof it.link === 'object' ? (it.link.href || it.link._ || it.link) : it.link) || '';
     const description = it.description || it.summary || it.content || '';
     const pubDate = it.pubDate || it.published || it.updated || '';
-    return { title, link, description, pubDate, raw: it };
+    
+    // Intentar extraer imagen desde varios campos comunes
+    let image = '';
+    if (it.image && typeof it.image === 'string') image = it.image;
+    else if (it.image && it.image.url) image = it.image.url;
+    else if (it.enclosure && typeof it.enclosure === 'object' && it.enclosure.url) image = it.enclosure.url;
+    else if (it['media:content'] && it['media:content'].url) image = it['media:content'].url;
+    else if (it['media:thumbnail'] && it['media:thumbnail'].url) image = it['media:thumbnail'].url;
+    
+    return { title, link, description, pubDate, image, raw: it };
   });
 
   cacheSet(cacheKey, normalized);
   return normalized;
+  } catch (err) {
+    console.error(`[RSS PROXY] Fatal error in fetchFeedItems for ${url}:`, err.message || err);
+    return [];
+  }
 }
 
-// Allowed RSS sources (mirrors the demo sources in js/content-loader.js)
-// Can be extended via the ALLOWED_SOURCES env var (comma-separated URLs).
+// Fuentes permitidas por prefijo (base de dominio). Más seguras para descubrimiento de feeds.
+// Se puede extender mediante la variable de entorno ALLOWED_SOURCES (URLs separadas por comas).
 const DEFAULT_ALLOWED = [
-            'https://www.cabildofuer.es/cabildo/noticias/feed/',
-            'https://www.radioinsular.es/feed/',
-            'https://www.fuerteventuradigital.com/rss/',
-            'https://www.diariodefuerteventura.com/rss.xml',
-            'https://ondafuerteventura.es/feed/',
+  'https://www.canarias7.es',
+  'https://www.laprovincia.es',
+  'https://www.cabildofuer.es',
+  'https://www.radioinsular.es',
+  'https://www.fuerteventuradigital.com',
+  'https://ondafuerteventura.es',
 ];
 
 let ALLOWED_SOURCES = DEFAULT_ALLOWED.slice();
@@ -158,15 +306,15 @@ if (process.env.ALLOWED_SOURCES) {
 }
 
 const ALLOW_ALL = process.env.ALLOW_ALL === '1' || process.env.ALLOW_ALL === 'true';
-if (ALLOW_ALL) console.warn('ALERT: ALLOW_ALL is enabled - proxy will accept any URL. Do not enable in production.');
+if (ALLOW_ALL) console.warn('ALERTA: ALLOW_ALL está habilitado - el proxy aceptará cualquier URL. No habilitar en producción.');
 
 const PORT = process.env.PORT || 3000;
 
-// Simple health endpoint
+// Endpoint simple de salud
 app.get('/health', (req, res) => res.json({ status: 'ok' }));
 
-// Proxy endpoint: fetch RSS from allowed sources and return parsed JSON
-// Example: /api/rss?url=https%3A%2F%2Fwww.canarias7.es%2Frss%2F2.0%2Fportada
+// Endpoint de proxy: obtiene RSS de fuentes permitidas y devuelve JSON parseado
+// Ejemplo: /api/rss?url=https%3A%2F%2Fwww.canarias7.es%2Frss%2F2.0%2Fportada
 
 app.get('/api/rss', async (req, res) => {
   const url = req.query.url;
@@ -194,7 +342,7 @@ app.get('/api/rss', async (req, res) => {
   }
 });
 
-// Aggregate endpoint: fetch multiple feeds server-side and return a single items list
+// Endpoint agregado: obtiene múltiples feeds en el servidor y devuelve una lista única de items
 // GET /api/aggregate?sources=url1,url2&dedupe=0
 app.get('/api/aggregate', async (req, res) => {
   try {
@@ -203,7 +351,7 @@ app.get('/api/aggregate', async (req, res) => {
       ? querySources.split(',').map(s => s.trim()).filter(Boolean)
       : ALLOWED_SOURCES.slice();
 
-    // Enforce allowlist unless ALLOW_ALL
+    // Aplicar lista permitida a menos que ALLOW_ALL esté habilitado
     if (!ALLOW_ALL) {
       sources = sources.filter(src => ALLOWED_SOURCES.some(a => src.startsWith(a)));
     }
@@ -213,8 +361,12 @@ app.get('/api/aggregate', async (req, res) => {
     }
 
     const noCache = req.query.noCache === '1' || req.query.noCache === 'true';
-    const results = await Promise.all(sources.map(src => fetchFeedItems(src, { bypassCache: noCache })));
-    let items = results.flat();
+    // Use Promise.allSettled to handle individual feed failures gracefully
+    const results = await Promise.allSettled(sources.map(src => fetchFeedItems(src, { bypassCache: noCache })));
+    let items = results
+      .filter(r => r.status === 'fulfilled')
+      .map(r => r.value)
+      .flat();
 
     const dedupe = req.query.dedupe === '1' || req.query.dedupe === 'true';
     if (dedupe) {
@@ -235,18 +387,95 @@ app.get('/api/aggregate', async (req, res) => {
   }
 });
 
-// Try to listen on the configured PORT, but if it's in use try higher ports up to a limit
+// Endpoint para newsdata.io API
+// GET /api/newsdata?q=fuerteventura&country=es&language=es&category=...
+app.get('/api/newsdata', async (req, res) => {
+  try {
+    const apiKey = process.env.NEWSDATA_API_KEY || '';
+    if (!apiKey) {
+      console.warn('[NEWSDATA] API key not configured, returning empty results');
+      return res.json({ items: [], warning: 'NEWSDATA_API_KEY no configurada' });
+    }
+
+    // Parámetros de consulta
+    const query = req.query.q || 'fuerteventura';
+    const country = req.query.country || 'es';
+    const language = req.query.language || 'es';
+    const category = req.query.category || '';
+    const noCache = req.query.noCache === '1' || req.query.noCache === 'true';
+
+    const cacheKey = `newsdata:${query}:${country}:${language}:${category}`;
+    if (!noCache) {
+      const cached = cacheGet(cacheKey);
+      if (cached) {
+        return res.json({ items: cached });
+      }
+    }
+
+    // Construir URL de newsdata.io
+    const params = new URLSearchParams({
+      apikey: apiKey,
+      q: query,
+      country,
+      language,
+    });
+    if (category) params.set('category', category);
+
+    const url = `https://newsdata.io/api/1/news?${params.toString()}`;
+    console.log('[NEWSDATA] Fetching:', url.replace(apiKey, 'API_KEY_HIDDEN'));
+
+    const response = await fetchUrl(url, {
+      headers: { 'User-Agent': 'FuerteventuraRSSProxy/1.0 (+https://example.local)' }
+    });
+
+    if (!response.ok) {
+      console.warn(`[NEWSDATA] API error: status ${response.status}`);
+      return res.status(response.status).json({ error: 'newsdata.io API error', status: response.status });
+    }
+
+    const data = await response.json();
+    if (data.status !== 'success' || !Array.isArray(data.results)) {
+      console.warn('[NEWSDATA] Unexpected response format:', data);
+      return res.json({ items: [] });
+    }
+
+    // Normalizar resultados al formato común
+    const items = data.results.map(article => ({
+      title: article.title || 'Sin título',
+      link: article.link || '',
+      description: article.description || article.content || '',
+      pubDate: article.pubDate || '',
+      raw: {
+        image_url: article.image_url,
+        source_id: article.source_id,
+        category: article.category ? article.category[0] : '',
+        country: article.country ? article.country[0] : '',
+        language: article.language,
+      }
+    }));
+
+    cacheSet(cacheKey, items);
+    res.json({ items });
+  } catch (err) {
+    console.error('[NEWSDATA] Error:', err);
+    res.status(500).json({ error: 'newsdata.io fetch failed', details: err.message });
+  }
+});
+
+// Intentar escuchar en el puerto configurado, pero si está en uso probar puertos superiores hasta un límite
 function startServerOnPort(port, attemptsLeft = 10) {
   const serverInstance = app.listen(port, () => {
     console.log(`RSS proxy listening on http://localhost:${port}`);
+    console.log('[SERVER] Server is ready to accept connections');
   });
 
   serverInstance.on('error', (err) => {
+    console.error('[SERVER] Server error event:', err);
     if (err && err.code === 'EADDRINUSE') {
       if (attemptsLeft > 0) {
         const nextPort = port + 1;
         console.warn(`Port ${port} is in use, trying port ${nextPort}...`);
-        // give the OS a short moment
+        // dar un momento breve al sistema operativo
         setTimeout(() => startServerOnPort(nextPort, attemptsLeft - 1), 200);
       } else {
         console.error(`Ports ${port - 9}..${port} are all in use. Set a different PORT environment variable or stop the process using those ports.`);
@@ -257,6 +486,23 @@ function startServerOnPort(port, attemptsLeft = 10) {
       process.exit(1);
     }
   });
+
+  serverInstance.on('close', () => {
+    console.log('[SERVER] Server closed');
+  });
+
+  // Keep the process alive
+  setInterval(() => {
+    console.log('[SERVER] Heartbeat - server still running');
+  }, 10000);
 }
 
-startServerOnPort(Number(PORT), 10);
+if (require.main === module) {
+  console.log('[SERVER] Starting server as main module');
+  startServerOnPort(Number(PORT), 10);
+  console.log('[SERVER] startServerOnPort called');
+} else {
+  console.log('[SERVER] Loaded as a module, not starting server');
+}
+
+module.exports = { app };
