@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Alojamiento en Fuerteventura - Hoteles y Apartamentos</title>
+    <link rel="manifest" href="manifest.webmanifest">
     <link rel="stylesheet" href="css/styles.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <meta name="description" content="Encuentra el mejor alojamiento en Fuerteventura: hoteles, apartamentos, villas y casas rurales en las mejores zonas de la isla.">
@@ -30,6 +31,7 @@
         </div>
     </header>
 
+    <main id="main">
     <section class="hero accommodation-hero">
         <div class="hero-content">
             <h2>Alojamiento en Fuerteventura</h2>
@@ -78,7 +80,7 @@
         <h2>Alojamientos destacados</h2>
         <div class="accommodations-grid">
             <article class="accommodation-card">
-                <img src="https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=1200&q=80" alt="Hotel en Corralejo" onerror="this.onerror=null;this.src='images/Fuerteventura.jpeg';">
+                <img src="images/alojamiento/hotel-corralejo.jpg" alt="Hotel en Corralejo" loading="lazy" onerror="this.onerror=null;this.src='images/Fuerteventura.jpeg';">
                 <div class="accommodation-info">
                     <h3>Gran Hotel Corralejo</h3>
                     <p class="location"><i class="fas fa-map-marker-alt"></i> Corralejo</p>
@@ -88,12 +90,13 @@
                         <span><i class="fas fa-swimming-pool"></i> Piscina</span>
                         <span><i class="fas fa-utensils"></i> Restaurante</span>
                     </div>
+                    <a class="btn btn-small" target="_blank" rel="noopener" href="https://www.google.com/maps/search/?api=1&query=Gran+Hotel+Corralejo+Corralejo"><i class="fas fa-map-marked-alt"></i> Ver en Maps</a>
                     <a href="#" class="btn">Ver disponibilidad</a>
                 </div>
             </article>
 
             <article class="accommodation-card">
-                <img src="https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?auto=format&fit=crop&w=1200&q=80" alt="Apartamentos en Caleta" onerror="this.onerror=null;this.src='images/Fuerteventura.jpeg';">
+                <img src="images/alojamiento/apartamentos-caleta.jpg" alt="Apartamentos en Caleta" loading="lazy" onerror="this.onerror=null;this.src='images/Fuerteventura.jpeg';">
                 <div class="accommodation-info">
                     <h3>Apartamentos Vista Mar</h3>
                     <p class="location"><i class="fas fa-map-marker-alt"></i> Caleta de Fuste</p>
@@ -103,12 +106,13 @@
                         <span><i class="fas fa-tv"></i> TV</span>
                         <span><i class="fas fa-wind"></i> A/C</span>
                     </div>
+                    <a class="btn btn-small" target="_blank" rel="noopener" href="https://www.google.com/maps/search/?api=1&query=Apartamentos+Vista+Mar+Caleta+de+Fuste"><i class="fas fa-map-marked-alt"></i> Ver en Maps</a>
                     <a href="#" class="btn">Ver disponibilidad</a>
                 </div>
             </article>
 
             <article class="accommodation-card">
-                <img src="https://images.unsplash.com/photo-1560066984-138dadb4c035?auto=format&fit=crop&w=1200&q=80" alt="Villa en El Cotillo" onerror="this.onerror=null;this.src='images/Fuerteventura.jpeg';">
+                <img src="images/alojamiento/villa-el-cotillo.jpg" alt="Villa en El Cotillo" loading="lazy" onerror="this.onerror=null;this.src='images/Fuerteventura.jpeg';">
                 <div class="accommodation-info">
                     <h3>Villa El Cotillo</h3>
                     <p class="location"><i class="fas fa-map-marker-alt"></i> El Cotillo</p>
@@ -118,12 +122,13 @@
                         <span><i class="fas fa-car"></i> Garage</span>
                         <span><i class="fas fa-hot-tub"></i> Jacuzzi</span>
                     </div>
+                    <a class="btn btn-small" target="_blank" rel="noopener" href="https://www.google.com/maps/search/?api=1&query=Villa+El+Cotillo+El+Cotillo"><i class="fas fa-map-marked-alt"></i> Ver en Maps</a>
                     <a href="#" class="btn">Ver disponibilidad</a>
                 </div>
             </article>
 
             <article class="accommodation-card">
-                <img src="https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?auto=format&fit=crop&w=1200&q=80" alt="Casa Rural en Betancuria" onerror="this.onerror=null;this.src='images/Fuerteventura.jpeg';">
+                <img src="images/alojamiento/casa-rural-betancuria.jpg" alt="Casa Rural en Betancuria" loading="lazy" onerror="this.onerror=null;this.src='images/Fuerteventura.jpeg';">
                 <div class="accommodation-info">
                     <h3>Casa Rural La Montaña</h3>
                     <p class="location"><i class="fas fa-map-marker-alt"></i> Betancuria</p>
@@ -133,6 +138,7 @@
                         <span><i class="fas fa-fire"></i> Barbacoa</span>
                         <span><i class="fas fa-tree"></i> Jardín</span>
                     </div>
+                    <a class="btn btn-small" target="_blank" rel="noopener" href="https://www.google.com/maps/search/?api=1&query=Casa+Rural+La+Monta%C3%B1a+Betancuria"><i class="fas fa-map-marked-alt"></i> Ver en Maps</a>
                     <a href="#" class="btn">Ver disponibilidad</a>
                 </div>
             </article>
@@ -192,6 +198,8 @@
         </div>
     </section>
 
+    </main>
+
     <footer>
         <div class="footer-content">
             <div class="footer-logo">
@@ -228,6 +236,6 @@
         </div>
     </footer>
 
-    <script src="js/main.js"></script>
+    <script src="js/main.js" defer></script>
 </body>
 </html>

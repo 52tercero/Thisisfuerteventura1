@@ -1,0 +1,106 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Simple</title>
+    <style>
+        body { font-family: Arial; padding: 20px; }
+        .news-item { border: 1px solid #ccc; margin: 10px 0; padding: 10px; }
+        .news-item img { max-width: 200px; display: block; margin: 10px 0; }
+        .error { color: red; padding: 10px; background: #fee; }
+        .loading { color: blue; }
+    </style>
+</head>
+<body>
+    <h1>Test de Carga de Noticias</h1>
+    <div id="status" class="loading">Cargando...</div>
+    <div id="news-container"></div>
+
+    <script>
+        async function testNews() {
+            const statusDiv = document.getElementById('status');
+            const container = document.getElementById('news-container');
+
+            try {
+                // Probar diferentes puertos
+                const ports = [3000, 3001, 3002];
+                let proxyUrl = null;
+
+                statusDiv.innerHTML = 'Buscando servidor...';
+
+                for (const port of ports) {
+                    try {
+                        const healthUrl = `http://localhost:${port}/health`;
+                        const resp = await fetch(healthUrl);
+                        if (resp.ok) {
+                            proxyUrl = `http://localhost:${port}`;
+                            statusDiv.innerHTML = `✓ Servidor encontrado en puerto ${port}`;
+                            break;
+                        }
+                    } catch (e) {
+                        console.log(`Puerto ${port} no disponible`);
+                    }
+                }
+
+                if (!proxyUrl) {
+                    statusDiv.innerHTML = '<span class="error">✗ No se encontró el servidor en puertos 3000, 3001 o 3002. Ejecuta: cd server && npm start</span>';
+                    return;
+                }
+
+                // Obtener newsdata.io
+                statusDiv.innerHTML += '<br>Obteniendo noticias de newsdata.io...';
+                const newsdataUrl = `${proxyUrl}/api/newsdata?q=fuerteventura&country=es&language=es`;
+                console.log('Fetching:', newsdataUrl);
+
+                const response = await fetch(newsdataUrl);
+                console.log('Response status:', response.status);
+
+                if (!response.ok) {
+                    const errorText = await response.text();
+                    statusDiv.innerHTML += `<br><span class="error">Error ${response.status}: ${errorText}</span>`;
+                    return;
+                }
+
+                const data = await response.json();
+                console.log('Data received:', data);
+
+                if (!data.items || data.items.length === 0) {
+                    statusDiv.innerHTML += '<br><span class="error">✗ No se recibieron items. Verifica NEWSDATA_API_KEY en el servidor.</span>';
+                    container.innerHTML = '<pre>' + JSON.stringify(data, null, 2) + '</pre>';
+                    return;
+                }
+
+                statusDiv.innerHTML = `✓ ${data.items.length} noticias cargadas`;
+
+                // Mostrar las noticias
+                data.items.slice(0, 10).forEach(item => {
+                    const div = document.createElement('div');
+                    div.className = 'news-item';
+
+                    const imageUrl = item.image || item.raw?.image_url || 'images/logo.jpg';
+
+                    div.innerHTML = `
+                        <h3>${item.title || 'Sin título'}</h3>
+                        <p><strong>Image URL:</strong> ${imageUrl}</p>
+                        <img src="${imageUrl}" alt="${item.title}"
+                             onerror="console.error('Error loading:', this.src); this.src='images/logo.jpg'; this.style.border='2px solid red';">
+                        <p>${(item.description || '').substring(0, 200)}...</p>
+                        <a href="${item.link}" target="_blank">Ver artículo</a>
+                    `;
+
+                    container.appendChild(div);
+                });
+
+            } catch (error) {
+                console.error('Error:', error);
+                statusDiv.innerHTML = `<span class="error">✗ Error: ${error.message}</span>`;
+                statusDiv.innerHTML += '<br><pre>' + error.stack + '</pre>';
+            }
+        }
+
+        // Ejecutar al cargar
+        testNews();
+    </script>
+</body>
+</html>
