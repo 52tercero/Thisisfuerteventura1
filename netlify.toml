@@ -1,7 +1,7 @@
 ﻿[build]
   publish = "."
   functions = "netlify/functions"
-  node_bundler = "esbuild"
+  # Nota: node_bundler no es válido en [build]; se configura en [functions]
 
 [functions]
   node_bundler = "esbuild"
