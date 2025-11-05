@@ -155,16 +155,29 @@
 
     <script>
         // Si estamos en Netlify (o disponible el endpoint), usar Functions como proxy
-        (function(){
+        // Crear una Promise que otros scripts puedan esperar
+        window.__RSS_PROXY_READY = new Promise((resolve) => {
             try {
                 const controller = new AbortController();
-                const id = setTimeout(() => controller.abort(), 700);
+                const id = setTimeout(() => controller.abort(), 1500);
                 fetch('/.netlify/functions/api/health', { signal: controller.signal, cache: 'no-store' })
-                    .then(r => { if (r && r.ok) { window.__RSS_PROXY_URL = location.origin + '/.netlify/functions'; } })
-                    .catch(() => {})
-                    .finally(() => clearTimeout(id));
-            } catch (_) {}
-        })();
+                    .then(r => { 
+                        if (r && r.ok) { 
+                            window.__RSS_PROXY_URL = location.origin + '/.netlify/functions';
+                            console.log('✓ Netlify Functions detectadas:', window.__RSS_PROXY_URL);
+                        } 
+                    })
+                    .catch((e) => {
+                        console.log('ℹ Netlify Functions no disponibles, intentando proxy local');
+                    })
+                    .finally(() => {
+                        clearTimeout(id);
+                        resolve();
+                    });
+            } catch (_) {
+                resolve();
+            }
+        });
     </script>
     <script src="js/main.js" defer></script>
     <script src="js/proxy-discovery.js" defer></script>

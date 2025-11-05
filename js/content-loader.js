@@ -1,4 +1,13 @@
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', async function() {
+    // Esperar a que la detección de proxy termine si está disponible
+    if (window.__RSS_PROXY_READY) {
+        try {
+            await window.__RSS_PROXY_READY;
+        } catch (e) {
+            console.warn('Error esperando detección de proxy:', e);
+        }
+    }
+    
     // Función para cargar noticias destacadas
     function loadFeaturedNews() {
         const featuredNewsContainer = document.getElementById('featured-news');
