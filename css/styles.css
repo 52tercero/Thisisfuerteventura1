@@ -228,7 +228,7 @@ nav ul li a:hover {
 .hero {
     height: 70vh;
     /* Usar la imagen hero proporcionada para Fuerteventura. Colocar el archivo en images/fuerteventura.jpeg */
-    background-image: linear-gradient(rgba(0, 0, 0, 0.45), rgba(0, 0, 0, 0.45)), url('../images/fuerteventura.jpeg');
+    background-image: linear-gradient(rgba(0, 0, 0, 0.45), rgba(0, 0, 0, 0.45)), url('../images/Fuerteventura.jpeg');
     background-size: cover;
     background-position: center;
     color: white;
@@ -256,7 +256,7 @@ nav ul li a:hover {
 /* Hero de página de noticias */
 .page-header {
     height: 40vh;
-    background-image: linear-gradient(rgba(0, 0, 0, 0.45), rgba(0, 0, 0, 0.45)), url('../images/fuerteventura.jpeg');
+    background-image: linear-gradient(rgba(0, 0, 0, 0.45), rgba(0, 0, 0, 0.45)), url('../images/Fuerteventura.jpeg');
     background-size: cover;
     background-position: center;
     color: white;

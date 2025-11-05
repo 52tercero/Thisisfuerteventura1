@@ -118,11 +118,11 @@ document.addEventListener('DOMContentLoaded', async function() {
                 }
                 // Si la imagen es una URL absoluta http(s), pero falla CORS/mixed content, usar fallback local
                 if (!candidate || typeof candidate !== 'string' || !candidate.trim() || candidate.startsWith('data:')) {
-                    return 'images/Fuerteventura.jpeg?v=2025110501';
+                    return 'images/logo.jpg?v=2025110501';
                 }
-                // Si la imagen es remota pero no es https, usar fallback local
+                // Si la imagen es remota pero no es https, usar fallback local (logo en feeds)
                 if (/^http:/.test(candidate)) {
-                    return 'images/Fuerteventura.jpeg?v=2025110501';
+                    return 'images/logo.jpg?v=2025110501';
                 }
                 // Si la imagen es remota https, dejarla, pero el onerror del <img> la reemplazará si falla
                 return candidate;
@@ -346,7 +346,7 @@ document.addEventListener('DOMContentLoaded', async function() {
                 }
 
                 card.innerHTML = `
-                    <img src="${item.image}" alt="${item.title}" onerror="this.onerror=null;this.src='images/Fuerteventura.jpeg?v=2025110501';">
+                    <img src="${item.image}" alt="${item.title}" onerror="this.onerror=null;this.src='images/logo.jpg?v=2025110501';">
                     <div class="card-content">
                         <span class="date">${item.date}</span>
                         <h3>${item.title}</h3>
@@ -506,7 +506,7 @@ document.addEventListener('DOMContentLoaded', async function() {
                     
                     newsCard.innerHTML = `
                         <div class="news-image">
-                            <img src="${item.image}" alt="${item.title}" onerror="this.onerror=null;this.src='images/Fuerteventura.jpeg';">
+                            <img src="${item.image}" alt="${item.title}" onerror="this.onerror=null;this.src='images/logo.jpg?v=2025110501';">
                             ${categoryTag}
                         </div>
                         <div class="news-content">
@@ -627,6 +627,10 @@ document.addEventListener('DOMContentLoaded', async function() {
                 }
 
                 // Render the found article
+                // Si la imagen extraída es el logo (fallback de feeds) o está vacía, usar la imagen escénica local
+                if (!article.image || /images\/logo\.jpg(\?v=.*)?$/i.test(article.image)) {
+                    article.image = 'images/Fuerteventura.jpeg?v=2025110501';
+                }
                 const content = article.description || article.summary || '';
                 const categoryTag = (article.category && String(article.category).toLowerCase() !== 'general')
                     ? `<span class="category-tag">${article.category}</span>`
