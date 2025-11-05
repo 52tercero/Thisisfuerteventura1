@@ -20,14 +20,14 @@
 </head>
 <body>
     <h1>🔍 Debug de Imágenes de Feeds</h1>
-    
+
     <div class="stats" id="stats">
         <button onclick="loadFeeds()">🔄 Recargar Feeds</button>
         <button onclick="clearCache()">🗑️ Limpiar Caché</button>
         <button onclick="showStats()">📊 Ver Estadísticas</button>
         <div id="stats-content"></div>
     </div>
-    
+
     <div id="results"></div>
 
     <script src="https://cdn.jsdelivr.net/npm/dompurify@2.4.0/dist/purify.min.js"></script>
@@ -125,8 +125,8 @@
                     };
 
                     const hasImage = extractedImage && !extractedImage.includes('logo.jpg') && !extractedImage.includes('logos/');
-                    const imageStatus = hasImage ? 
-                        `<span class="success">✓ Imagen encontrada</span>` : 
+                    const imageStatus = hasImage ?
+                        `<span class="success">✓ Imagen encontrada</span>` :
                         `<span class="error">✗ No image / Fallback (logo.jpg)</span>`;
 
                     itemDiv.innerHTML = `

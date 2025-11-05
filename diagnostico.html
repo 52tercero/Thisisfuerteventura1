@@ -22,36 +22,36 @@
 </head>
 <body>
     <h1>🔍 Diagnóstico Completo - This is Fuerteventura</h1>
-    
+
     <div class="test-section">
         <h2>1. Test de Servidor</h2>
         <div id="server-status">Probando...</div>
     </div>
-    
+
     <div class="test-section">
         <h2>2. Test de API Newsdata.io</h2>
         <div id="api-status">Esperando...</div>
     </div>
-    
+
     <div class="test-section">
         <h2>3. Test de Imágenes</h2>
         <div id="image-status">Esperando...</div>
         <div>
             <h3>Imagen del logo:</h3>
-            <img src="images/logo.jpg" alt="Logo" style="max-width: 200px; border: 2px solid green;" 
+            <img src="images/logo.jpg" alt="Logo" style="max-width: 200px; border: 2px solid green;"
                  onload="document.getElementById('logo-test').innerHTML='<span class=success>✓ Logo carga correctamente</span>'"
                  onerror="document.getElementById('logo-test').innerHTML='<span class=error>✗ Error: images/logo.jpg no existe o no carga</span>'">
             <div id="logo-test"></div>
         </div>
     </div>
-    
+
     <div class="test-section">
         <h2>4. Consola de Errores</h2>
         <div id="console-errors"></div>
         <button onclick="testEverything()">🔄 Volver a probar</button>
         <button onclick="clearLocalStorage()">🗑️ Limpiar Caché</button>
     </div>
-    
+
     <div class="test-section">
         <h2>5. Noticias Cargadas</h2>
         <div id="news-count">0 noticias</div>
@@ -60,13 +60,13 @@
 
     <script>
         const errors = [];
-        
+
         // Capturar errores de consola
         window.addEventListener('error', (e) => {
             errors.push(e.message);
             updateConsoleErrors();
         });
-        
+
         function updateConsoleErrors() {
             const div = document.getElementById('console-errors');
             if (errors.length === 0) {
@@ -75,31 +75,31 @@
                 div.innerHTML = '<span class="error">✗ Errores encontrados:</span><pre>' + errors.join('\n') + '</pre>';
             }
         }
-        
+
         function clearLocalStorage() {
             localStorage.clear();
             alert('Caché limpiado. Recargando página...');
             location.reload();
         }
-        
+
         async function testEverything() {
             errors.length = 0;
             updateConsoleErrors();
-            
+
             // 1. Test de servidor
             const serverDiv = document.getElementById('server-status');
             serverDiv.innerHTML = 'Probando puertos 3000, 3001, 3002...';
-            
+
             let proxyUrl = null;
             const ports = [3000, 3001, 3002];
-            
+
             for (const port of ports) {
                 try {
-                    const resp = await fetch(`http://localhost:${port}/health`, { 
+                    const resp = await fetch(`http://localhost:${port}/health`, {
                         method: 'GET',
                         cache: 'no-store'
                     });
-                    
+
                     if (resp.ok) {
                         proxyUrl = `http://localhost:${port}`;
                         serverDiv.innerHTML = `<span class="success">✓ Servidor encontrado en puerto ${port}</span>`;
@@ -109,7 +109,7 @@
                     console.log(`Puerto ${port} no disponible:`, e.message);
                 }
             }
-            
+
             if (!proxyUrl) {
                 serverDiv.innerHTML = `
                     <span class="error">✗ Servidor NO encontrado en puertos 3000, 3001 o 3002</span><br>
@@ -118,88 +118,88 @@
                 `;
                 return;
             }
-            
+
             // 2. Test de API
             const apiDiv = document.getElementById('api-status');
             apiDiv.innerHTML = 'Consultando /api/newsdata...';
-            
+
             try {
                 const apiUrl = `${proxyUrl}/api/newsdata?q=fuerteventura&country=es&language=es`;
                 console.log('Fetching:', apiUrl);
-                
+
                 const apiResp = await fetch(apiUrl);
                 console.log('API Response status:', apiResp.status);
-                
+
                 if (!apiResp.ok) {
                     const errorText = await apiResp.text();
                     apiDiv.innerHTML = `<span class="error">✗ API error ${apiResp.status}</span><pre>${errorText}</pre>`;
-                    
+
                     if (apiResp.status === 400 && errorText.includes('NEWSDATA_API_KEY')) {
                         apiDiv.innerHTML += `<br><strong>Solución:</strong> Configura la API key:<br><pre>$env:NEWSDATA_API_KEY="tu_api_key"\ncd server\nnpm start</pre>`;
                     }
                     return;
                 }
-                
+
                 const data = await apiResp.json();
                 console.log('API Data:', data);
-                
+
                 if (!data.items || data.items.length === 0) {
                     apiDiv.innerHTML = '<span class="warning">⚠ API funciona pero no devolvió items</span><pre>' + JSON.stringify(data, null, 2) + '</pre>';
                     return;
                 }
-                
+
                 apiDiv.innerHTML = `<span class="success">✓ API funciona: ${data.items.length} items recibidos</span>`;
-                
+
                 // 3. Mostrar noticias
                 document.getElementById('news-count').innerHTML = `<strong>${data.items.length} noticias</strong>`;
                 const newsGrid = document.getElementById('news-display');
                 newsGrid.innerHTML = '';
-                
+
                 let imagesLoaded = 0;
                 let imagesFailed = 0;
-                
+
                 data.items.slice(0, 18).forEach((item, index) => {
                     const card = document.createElement('div');
                     card.className = 'news-card';
-                    
+
                     const imageUrl = item.image || item.raw?.image_url || 'images/logo.jpg';
-                    
+
                     card.innerHTML = `
-                        <img src="${imageUrl}" 
+                        <img src="${imageUrl}"
                              alt="${item.title}"
                              onload="console.log('✓ Imagen ${index} cargada:', this.src); imageLoaded();"
                              onerror="console.error('✗ Imagen ${index} falló:', this.src); this.src='images/logo.jpg'; imageFailed();">
                         <h3>${item.title || 'Sin título'}</h3>
                         <small>${imageUrl}</small>
                     `;
-                    
+
                     newsGrid.appendChild(card);
                 });
-                
+
                 window.imageLoaded = () => {
                     imagesLoaded++;
                     updateImageStatus();
                 };
-                
+
                 window.imageFailed = () => {
                     imagesFailed++;
                     updateImageStatus();
                 };
-                
+
                 function updateImageStatus() {
                     const imageDiv = document.getElementById('image-status');
                     imageDiv.innerHTML = `
-                        Cargadas: <span class="success">${imagesLoaded}</span> | 
+                        Cargadas: <span class="success">${imagesLoaded}</span> |
                         Fallidas: <span class="${imagesFailed > 0 ? 'error' : 'success'}">${imagesFailed}</span>
                     `;
                 }
-                
+
             } catch (error) {
                 console.error('Error en test:', error);
                 apiDiv.innerHTML = `<span class="error">✗ Error: ${error.message}</span><pre>${error.stack}</pre>`;
             }
         }
-        
+
         // Ejecutar al cargar
         window.addEventListener('DOMContentLoaded', testEverything);
     </script>
