@@ -1,9 +1,3 @@
-﻿[build]
-  publish = "."
-  functions = "netlify/functions"
-
-[functions]
-  node_bundler = "esbuild"
-
-[build.environment]
-  NODE_VERSION = "18"
+﻿## Netlify configuration intentionally empty.
+# Using platform defaults: publish ".", functions in "netlify/functions".
+# If needed, you can restore the previous config.
