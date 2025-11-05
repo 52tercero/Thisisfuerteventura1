@@ -93,28 +93,39 @@ document.addEventListener('DOMContentLoaded', async function() {
             // Usar el extractor robusto si está disponible (image-extractor.js)
             async function extractImageFromRaw(it, sourceUrl = '') {
                 if (window.ImageExtractor && typeof window.ImageExtractor.extractImageFromItem === 'function') {
-                    return await window.ImageExtractor.extractImageFromItem(it, { validate: false, sourceUrl });
+                    const img = await window.ImageExtractor.extractImageFromItem(it, { validate: false, sourceUrl });
+                    if (img && typeof img === 'string' && img.trim() && !img.startsWith('data:')) return img;
                 }
-                
-                // Fallback simple si el módulo no está cargado
-                if (!it) return 'images/logo.jpg';
-                if (it.image && typeof it.image === 'string') return it.image;
-                if (it.raw?.image_url) return it.raw.image_url;
-                
-                const raw = it.raw || {};
-                if (raw.enclosure) {
-                    if (typeof raw.enclosure === 'string') return raw.enclosure;
-                    if (raw.enclosure.url) return raw.enclosure.url;
+                // Fallback simple si el módulo no está cargado o no hay imagen válida
+                let candidate = null;
+                if (!it) candidate = null;
+                else if (it.image && typeof it.image === 'string') candidate = it.image;
+                else if (it.raw?.image_url) candidate = it.raw.image_url;
+                else {
+                    const raw = it.raw || {};
+                    if (raw.enclosure) {
+                        if (typeof raw.enclosure === 'string') candidate = raw.enclosure;
+                        else if (raw.enclosure.url) candidate = raw.enclosure.url;
+                    }
+                    if (!candidate) {
+                        const desc = it.description || it.summary || '';
+                        const descStr = typeof desc === 'object' ? (desc._ || '') : String(desc);
+                        if (descStr) {
+                            const match = descStr.match(/<img[^>]+src=["']([^"']+)["']/i);
+                            if (match && match[1]) candidate = match[1];
+                        }
+                    }
                 }
-                
-                const desc = it.description || it.summary || '';
-                const descStr = typeof desc === 'object' ? (desc._ || '') : String(desc);
-                if (descStr) {
-                    const match = descStr.match(/<img[^>]+src=["']([^"']+)["']/i);
-                    if (match && match[1]) return match[1];
+                // Si la imagen es una URL absoluta http(s), pero falla CORS/mixed content, usar fallback local
+                if (!candidate || typeof candidate !== 'string' || !candidate.trim() || candidate.startsWith('data:')) {
+                    return 'images/Fuerteventura.jpeg?v=2025110501';
                 }
-                
-                return 'images/logo.jpg';
+                // Si la imagen es remota pero no es https, usar fallback local
+                if (/^http:/.test(candidate)) {
+                    return 'images/Fuerteventura.jpeg?v=2025110501';
+                }
+                // Si la imagen es remota https, dejarla, pero el onerror del <img> la reemplazará si falla
+                return candidate;
             }
 
             function cacheGet(key, ttl = 1000 * 60 * 15) {
@@ -335,7 +346,7 @@ document.addEventListener('DOMContentLoaded', async function() {
                 }
 
                 card.innerHTML = `
-                    <img src="${item.image}" alt="${item.title}" onerror="this.onerror=null;this.src='images/logo.jpg';">
+                    <img src="${item.image}" alt="${item.title}" onerror="this.onerror=null;this.src='images/Fuerteventura.jpeg?v=2025110501';">
                     <div class="card-content">
                         <span class="date">${item.date}</span>
                         <h3>${item.title}</h3>
@@ -630,7 +641,7 @@ document.addEventListener('DOMContentLoaded', async function() {
                         </header>
 
                         <div class="article-featured-image">
-                            <img src="${article.image}" alt="${article.title}" onerror="this.onerror=null;this.src='images/Fuerteventura.jpeg';">
+                            <img src="${article.image}" alt="${article.title}" onerror="this.onerror=null;this.src='images/Fuerteventura.jpeg?v=2025110501';">
                             ${categoryTag}
                         </div>
 
