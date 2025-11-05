@@ -1,3 +1,28 @@
+<<<<<<< HEAD
+# Cache control for Netlify
+# https://docs.netlify.com/routing/headers/
+
+/*.html
+  Cache-Control: public, max-age=0, must-revalidate
+
+/css/*
+  Cache-Control: public, max-age=3600, must-revalidate
+
+/js/*
+  Cache-Control: public, max-age=3600, must-revalidate
+
+/images/*
+  Cache-Control: public, max-age=604800, immutable
+
+/sw.js
+  Cache-Control: public, max-age=0, must-revalidate
+
+/manifest.webmanifest
+  Cache-Control: public, max-age=86400
+
+/fonts/*
+  Cache-Control: public, max-age=2592000, immutable
+=======
 ﻿# Cache control for Netlify
 # https://docs.netlify.com/routing/headers/
 
@@ -27,3 +52,4 @@
 # Fonts (if any)
 /fonts/*
   Cache-Control: public, max-age=2592000, immutable
+>>>>>>> origin/main

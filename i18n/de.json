@@ -1,0 +1,15 @@
+﻿{
+  "nav": {
+    "home": "Startseite",
+    "news": "Nachrichten",
+    "tourism": "Tourismus",
+    "accommodation": "Unterkunft",
+    "beaches": "Strände",
+    "gastronomy": "Gastronomie",
+    "contact": "Kontakt"
+  },
+  "hero": {
+    "welcome": "Willkommen auf Fuerteventura",
+    "subtitle": "Entdecken Sie das Paradies der Kanarischen Inseln"
+  }
+}
