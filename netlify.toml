@@ -1,6 +1,16 @@
 ﻿[build]
   publish = "."
   functions = "netlify/functions"
+
+[functions]
+  node_bundler = "esbuild"
+
+[build.environment]
+  NODE_VERSION = "18"
+
+[build]
+  publish = "."
+  functions = "netlify/functions"
   # Nota: node_bundler no es válido en [build]; se configura en [functions]
 
 [functions]
