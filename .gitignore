@@ -30,3 +30,9 @@ yarn-error.log*
 
 # Misc
 coverage/
+
+# Large image files (optional - keep locally but don't track in git)
+# images/**/*.jpeg
+# images/**/*.jpg
+# images/**/*.png
+# images/**/*.webp
