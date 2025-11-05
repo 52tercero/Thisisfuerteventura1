@@ -1,0 +1,15 @@
+﻿{
+  "nav": {
+    "home": "Home",
+    "news": "News",
+    "tourism": "Tourism",
+    "accommodation": "Accommodation",
+    "beaches": "Beaches",
+    "gastronomy": "Gastronomy",
+    "contact": "Contact"
+  },
+  "hero": {
+    "welcome": "Welcome to Fuerteventura",
+    "subtitle": "Discover the paradise of the Canary Islands"
+  }
+}

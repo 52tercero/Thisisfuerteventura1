@@ -1,0 +1,15 @@
+﻿{
+  "nav": {
+    "home": "Inicio",
+    "news": "Noticias",
+    "tourism": "Turismo",
+    "accommodation": "Alojamiento",
+    "beaches": "Playas",
+    "gastronomy": "Gastronomía",
+    "contact": "Contacto"
+  },
+  "hero": {
+    "welcome": "Bienvenido a Fuerteventura",
+    "subtitle": "Descubre el paraíso de las Islas Canarias"
+  }
+}
