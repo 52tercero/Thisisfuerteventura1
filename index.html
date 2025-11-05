@@ -13,12 +13,12 @@
     <meta property="og:title" content="This is Fuerteventura - Tu guía completa de la isla">
     <meta property="og:description" content="Descubre Fuerteventura: noticias, turismo, alojamiento, playas y mucho más sobre esta maravillosa isla canaria.">
     <meta property="og:type" content="website">
-    <meta property="og:image" content="/images/logo.jpg">
+    <meta property="og:image" content="images/logo.jpg">
     <!-- Twitter Cards -->
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="This is Fuerteventura - Tu guía completa de la isla">
     <meta name="twitter:description" content="Descubre Fuerteventura: noticias, turismo, alojamiento, playas y mucho más sobre esta maravillosa isla canaria.">
-    <meta name="twitter:image" content="/images/logo.jpg">
+    <meta name="twitter:image" content="images/logo.jpg">
         <script type="application/ld+json">
         {
             "@context": "https://schema.org",
@@ -55,7 +55,7 @@
             <i class="fas fa-bars"></i>
         </div>
     </header>
-        <main id="main">
+    <main id="main">
     <section class="hero">
         <div class="hero-content">
             <h2>Bienvenido a Fuerteventura</h2>
@@ -111,6 +111,8 @@
         </form>
     </section>
 
+    </main>
+
     <footer>
         <div class="footer-content">
             <div class="footer-logo">
@@ -146,8 +148,20 @@
             <p>&copy; 2025 This is Fuerteventura. Todos los derechos reservados.</p>
         </div>
     </footer>
-    </main>
 
+    <script>
+        // Si estamos en Netlify (o disponible el endpoint), usar Functions como proxy
+        (function(){
+            try {
+                const controller = new AbortController();
+                const id = setTimeout(() => controller.abort(), 700);
+                fetch('/.netlify/functions/api/health', { signal: controller.signal, cache: 'no-store' })
+                    .then(r => { if (r && r.ok) { window.__RSS_PROXY_URL = location.origin + '/.netlify/functions'; } })
+                    .catch(() => {})
+                    .finally(() => clearTimeout(id));
+            } catch (_) {}
+        })();
+    </script>
     <script src="js/main.js" defer></script>
     <script src="js/proxy-discovery.js" defer></script>
     <script src="https://cdn.jsdelivr.net/npm/dompurify@2.4.0/dist/purify.min.js" defer></script>
