@@ -1,31 +1,25 @@
 <<<<<<< HEAD
-﻿# Cache control for Netlify
+# Cache control for Netlify
 # https://docs.netlify.com/routing/headers/
 
-# HTML pages - no cache (always get fresh)
 /*.html
   Cache-Control: public, max-age=0, must-revalidate
 
-# CSS and JS - cache but revalidate
 /css/*
   Cache-Control: public, max-age=3600, must-revalidate
 
 /js/*
   Cache-Control: public, max-age=3600, must-revalidate
 
-# Images - cache for 1 week
 /images/*
   Cache-Control: public, max-age=604800, immutable
 
-# Service worker - no cache
 /sw.js
   Cache-Control: public, max-age=0, must-revalidate
 
-# Manifest and other config
 /manifest.webmanifest
   Cache-Control: public, max-age=86400
 
-# Fonts (if any)
 /fonts/*
   Cache-Control: public, max-age=2592000, immutable
 =======
