@@ -2,6 +2,9 @@
 node_modules/
 server/node_modules/
 
+# Netlify local build files
+.netlify/
+
 # OS/Editor junk
 .DS_Store
 Thumbs.db

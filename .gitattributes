@@ -1,0 +1,12 @@
+﻿* text=auto
+
+# Force LF for web assets
+*.js text eol=lf
+*.css text eol=lf
+*.html text eol=lf
+*.json text eol=lf
+*.md text eol=lf
+
+# Keep Windows endings for shell/batch scripts
+*.bat text eol=crlf
+*.ps1 text eol=crlf
