@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 ﻿# Dependencies
 node_modules/
 server/node_modules/
@@ -36,3 +37,43 @@ coverage/
 # images/**/*.jpg
 # images/**/*.png
 # images/**/*.webp
+=======
+﻿# Dependencies
+node_modules/
+server/node_modules/
+
+# Netlify local build files
+.netlify/
+
+# OS/Editor junk
+.DS_Store
+Thumbs.db
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Builds and caches
+/dist/
+/build/
+.cache/
+.tmp/
+
+# Local env
+.env
+.env.*
+
+# VS Code settings (allow repo-specific ones if needed)
+.vscode/*
+!.vscode/settings.json
+!.vscode/launch.json
+
+# Misc
+coverage/
+
+# Large image files (optional - keep locally but don't track in git)
+# images/**/*.jpeg
+# images/**/*.jpg
+# images/**/*.png
+# images/**/*.webp
+>>>>>>> origin/main
