@@ -192,7 +192,7 @@ header {
 }
 
 header h1 {
-    font-size: 2rem;
+    font-size: clamp(1.15rem, 2vw + 0.5rem, 2rem);
     font-weight: 700;
     color: var(--primary-color);
     text-transform: uppercase;
@@ -1013,6 +1013,17 @@ button:disabled.btn {
 
 /* Diseño responsive */
 @media (max-width: 768px) {
+    header {
+        padding: 12px 4%;
+    }
+    .logo {
+        width: 52px;
+        margin-right: 10px;
+    }
+    header h1 {
+        font-size: 1.25rem;
+        letter-spacing: 0.5px;
+    }
     /* Agregar una etiqueta de texto para la hamburguesa para hacerla obvia incluso si los iconos fallan */
     .mobile-menu {
         display: block;
@@ -1071,7 +1082,7 @@ button:disabled.btn {
         width: 100%;
         position: absolute;
         left: 0;
-        top: 64px; /* debajo del header */
+        top: 56px; /* debajo del header (ajustado para móvil) */
         box-shadow: 0 5px 15px rgba(0,0,0,0.1);
         z-index: 90;
         max-height: 600px; /* suficiente para mostrar elementos del menú; ajustar si es necesario */
@@ -1088,5 +1099,14 @@ button:disabled.btn {
     nav.nav-open ul li {
         margin: 10px 0;
         margin-left: 0;
+    }
+}
+
+/* Tipografía del artículo en pantallas pequeñas */
+@media (max-width: 768px) {
+    .article-header h1,
+    .article-full .article-header h1 {
+        font-size: 1.5rem;
+        line-height: 1.25;
     }
 }
