@@ -623,7 +623,7 @@ button:disabled.btn {
 
 /* Estilos de página de playas */
 .beaches-content {
-    padding: 60px 5%;
+    padding: 60px 10%;
     background: #fafafa;
 }
 
@@ -1102,5 +1102,122 @@ button:disabled.btn {
     .article-full .article-header h1 {
         font-size: 1.5rem;
         line-height: 1.25;
+    }
+}
+
+/* Mejora de márgenes para secciones de contenido */
+.tourism-content,
+.typical-dishes,
+.food-routes,
+.itineraries,
+.image-gallery,
+.activities,
+.tips,
+.restaurants,
+.local-products,
+.beach-profiles,
+.beach-tips,
+.contact-content,
+.about-project,
+.press-support,
+.faq {
+    padding: 60px 10%;
+}
+
+@media (max-width: 992px) {
+    .tourism-content,
+    .typical-dishes,
+    .food-routes,
+    .itineraries,
+    .image-gallery,
+    .activities,
+    .tips,
+    .restaurants,
+    .local-products,
+    .beach-profiles,
+    .beach-tips,
+    .contact-content,
+    .about-project,
+    .press-support,
+    .faq {
+        padding: 40px 7%;
+    }
+}
+
+@media (max-width: 600px) {
+    .tourism-content,
+    .typical-dishes,
+    .food-routes,
+    .itineraries,
+    .image-gallery,
+    .activities,
+    .tips,
+    .restaurants,
+    .local-products,
+    .beach-profiles,
+    .beach-tips,
+    .contact-content,
+    .about-project,
+    .press-support,
+    .faq {
+        padding: 30px 5%;
+    }
+}
+/* Mejora de márgenes para secciones de contenido */
+.tourism-content,
+.typical-dishes,
+.food-routes,
+.itineraries,
+.image-gallery,
+.activities,
+.tips,
+.restaurants,
+.local-products,
+.beach-profiles,
+.beach-tips,
+.contact-content,
+.about-project,
+.press-support,
+.faq {
+    padding: 60px 10%;
+}
+
+@media (max-width: 992px) {
+    .tourism-content,
+    .typical-dishes,
+    .food-routes,
+    .itineraries,
+    .image-gallery,
+    .activities,
+    .tips,
+    .restaurants,
+    .local-products,
+    .beach-profiles,
+    .beach-tips,
+    .contact-content,
+    .about-project,
+    .press-support,
+    .faq {
+        padding: 40px 7%;
+    }
+}
+
+@media (max-width: 600px) {
+    .tourism-content,
+    .typical-dishes,
+    .food-routes,
+    .itineraries,
+    .image-gallery,
+    .activities,
+    .tips,
+    .restaurants,
+    .local-products,
+    .beach-profiles,
+    .beach-tips,
+    .contact-content,
+    .about-project,
+    .press-support,
+    .faq {
+        padding: 30px 5%;
     }
 }
