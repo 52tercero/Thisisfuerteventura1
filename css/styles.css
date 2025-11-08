@@ -623,7 +623,7 @@ button:disabled.btn {
 
 /* Estilos de página de playas */
 .beaches-content {
-    padding: 60px 10%;
+    padding: 60px 5%;
     background: #fafafa;
 }
 
@@ -1126,7 +1126,7 @@ button:disabled.btn {
 .about-project,
 .press-support,
 .faq {
-    padding: 60px 10%;
+    padding: 60px 5%;
 }
 
 @media (max-width: 992px) {
@@ -1150,7 +1150,7 @@ button:disabled.btn {
     .about-project,
     .press-support,
     .faq {
-        padding: 40px 7%;
+        padding: 40px 5%;
     }
 }
 
@@ -1199,7 +1199,7 @@ button:disabled.btn {
 .about-project,
 .press-support,
 .faq {
-    padding: 60px 10%;
+    padding: 60px 5%;
 }
 
 @media (max-width: 992px) {
@@ -1223,7 +1223,7 @@ button:disabled.btn {
     .about-project,
     .press-support,
     .faq {
-        padding: 40px 7%;
+        padding: 40px 5%;
     }
 }
 
