@@ -55,11 +55,22 @@ document.addEventListener('DOMContentLoaded', async function() {
                 try {
                     const isLocal = /^(localhost|127\.0\.0\.1)/.test(location.hostname);
                     if (!isLocal) {
+                        console.log('[CONTENT-LOADER] Detected remote host, testing Netlify Functions...');
                         // Probar el endpoint agregado como señal
-                        const test = await fetch('/.netlify/functions/aggregate?sources=https%3A%2F%2Fwww.canarias7.es%2Fcanarias%2Ffuerteventura%2F', { method: 'GET', cache: 'no-store' });
-                        if (test.ok) return '/.netlify/functions';
+                        const testUrl = '/.netlify/functions/aggregate?sources=' + encodeURIComponent('https://www.canarias7.es/canarias/fuerteventura/');
+                        console.log('[CONTENT-LOADER] Testing:', testUrl);
+                        const test = await fetch(testUrl, { method: 'GET', cache: 'no-store' });
+                        console.log('[CONTENT-LOADER] Test response status:', test.status);
+                        if (test.ok) {
+                            console.log('[CONTENT-LOADER] Using Netlify Functions');
+                            return '';  // Empty string means use relative paths
+                        }
+                    } else {
+                        console.log('[CONTENT-LOADER] Local environment detected');
                     }
-                } catch (_) {}
+                } catch (e) {
+                    console.warn('[CONTENT-LOADER] Netlify Functions test failed:', e);
+                }
                 const candidates = ['http://localhost:3000', 'http://localhost:3001', 'http://localhost:3002'];
                 for (const base of candidates) {
                     try {
@@ -158,13 +169,16 @@ document.addEventListener('DOMContentLoaded', async function() {
                 const aggKey = 'rss_cache_v2_media_AGG';
                 let items = cacheGet(aggKey);
                 if (!items) {
-                    const aggPath = proxyBase.endsWith('/.netlify/functions') ? '/aggregate' : '/api/aggregate';
+                    const aggPath = proxyBase === '' ? '/.netlify/functions/aggregate' : (proxyBase.endsWith('/.netlify/functions') ? '/aggregate' : '/api/aggregate');
                     const aggUrl = `${proxyBase}${aggPath}?sources=${encodeURIComponent(newsSources.join(','))}&dedupe=0&noCache=1`;
+                    console.log('[CONTENT-LOADER] Fetching aggregate from:', aggUrl);
                     try {
                         const r = await fetch(aggUrl, { cache: 'no-store' });
+                        console.log('[CONTENT-LOADER] Aggregate response status:', r.status);
                         if (!r.ok) throw new Error('bad response');
                         const json = await r.json();
                         items = Array.isArray(json.items) ? json.items : [];
+                        console.log('[CONTENT-LOADER] Aggregate returned', items.length, 'items');
                         cacheSet(aggKey, items);
                     } catch (e) {
                         console.warn('Falló obtención agregada, fallback por fuente:', e && e.message);
@@ -173,7 +187,7 @@ document.addEventListener('DOMContentLoaded', async function() {
                             const cached = cacheGet(cacheKey);
                             if (cached) return cached;
                             try {
-                                const rssPath = proxyBase.endsWith('/.netlify/functions') ? '/rss' : '/api/rss';
+                                const rssPath = proxyBase === '' ? '/.netlify/functions/rss' : (proxyBase.endsWith('/.netlify/functions') ? '/rss' : '/api/rss');
                                 const rr = await fetch(`${proxyBase}${rssPath}?url=${encodeURIComponent(src)}&noCache=1`, { cache: 'no-store' });
                                 if (!rr.ok) throw new Error('bad response');
                                 const jj = await rr.json();

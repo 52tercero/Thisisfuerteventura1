@@ -1,5 +1,8 @@
 ﻿const { parseStringPromise } = require('xml2js');
 
+// Ensure fetch is available (Netlify Functions run on Node 18+ but may need explicit import)
+const fetch = globalThis.fetch || require('node-fetch');
+
 const DEFAULT_ALLOWED = [
   'https://www.canarias7.es',
   'https://www.laprovincia.es',
@@ -20,6 +23,7 @@ function buildAllowed() {
 }
 
 async function fetchFeed(url) {
+  console.log('[NETLIFY FUNCTION] Fetching feed:', url);
   const res = await fetch(url, { headers: { 'User-Agent': 'NetlifyRSSFunction/1.0' } });
   if (!res.ok) throw new Error('Upstream status ' + res.status);
   const text = await res.text();
