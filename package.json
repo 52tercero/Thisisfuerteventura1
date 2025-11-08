@@ -2,7 +2,7 @@
   "name": "thisisfuerteventura-site",
   "private": true,
   "version": "1.0.0",
-  "description": "Static site for This is Fuerteventura with Netlify Functions for RSS proxy",
+  "description": "Static site for This is Fuerteventura with Netlify Functions (RSS proxy, aggregate)",
   "scripts": {
     "start": "npx http-server -p 8000 .",
     "netlify:dev": "netlify dev"
@@ -11,7 +11,7 @@
     "node": ">=18"
   },
   "dependencies": {
-    "xml2js": "^0.4.23"
+    "xml2js": "^0.6.2"
   },
   "devDependencies": {}
 }

@@ -22,6 +22,7 @@ Open http://localhost:8000 in your browser.
 Notes:
 - The client auto-discovers the proxy on ports 3000..3010 via `js/proxy-discovery.js` using `/health`.
 - If feeds are blocked by the proxy allowlist or the proxy is down, the UI shows friendly messages and still renders the controls.
+ - On Netlify deploys, the client falls back automatically to Netlify Functions (`/.netlify/functions/rss` and `/.netlify/functions/aggregate`).
 
 ## Pages
 - `index.html` – hero + featured news
@@ -29,12 +30,13 @@ Notes:
 - `noticia.html` – single article view (requires `?id=` or `?title=`)
 - `turismo.html`, `alojamiento.html`, `playas.html`, `gastronomia.html`, `contacto.html` – informational pages
 
-## RSS proxy (server)
+## RSS proxy (server / local) & Netlify Functions
 Located in `/server`. Requires Node 18+.
 
 - Default port: 3000 (auto-increments to next ports if busy)
 - Health: `GET /health`
-- Feed proxy: `GET /api/rss?url=<encoded_feed_url>`
+- Feed proxy (local): `GET /api/rss?url=<encoded_feed_url>`
+- Feed proxy (Netlify): `GET /.netlify/functions/rss?url=<encoded_feed_url>`
 - Mock tides: `GET /api/tides?lat=<lat>&lon=<lon>` (dev)
 - Allowed sources: small allowlist by default; extend with env vars:
 
@@ -51,6 +53,23 @@ npm start
 ### Tides (mock) integration
 - The beaches page (`playas.html`) calls `/api/tides?lat=<lat>&lon=<lon>` to render upcoming high/low tides as a placeholder.
 - This is a synthetic mock meant for UI; replace it later with a real provider (e.g., Puertos del Estado or WorldTides) through the server and keep client logic unchanged.
+
+## Netlify Functions setup
+If deploying on Netlify, ensure `netlify/functions/` exists (already added) and `netlify.toml` contains redirects:
+
+```
+[[redirects]]
+from = "/api/rss"
+to = "/.netlify/functions/rss"
+status = 200
+
+[[redirects]]
+from = "/api/aggregate"
+to = "/.netlify/functions/aggregate"
+status = 200
+```
+
+Client logic in `js/content-loader.js` will probe these automatically when not on localhost. Extend allowed sources using environment variable `ALLOWED_SOURCES` in Netlify site settings.
 
 ## Troubleshooting
 - Navigation disappears on desktop: fixed by applying collapse logic only on mobile widths (see `js/main.js`). Hard refresh with Ctrl+F5 if needed.

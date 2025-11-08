@@ -51,6 +51,15 @@ document.addEventListener('DOMContentLoaded', async function() {
                         if (u) return u;
                     }
                 } catch (_) {}
+                // Si estamos desplegados (no localhost), intentar Netlify Functions como base
+                try {
+                    const isLocal = /^(localhost|127\.0\.0\.1)/.test(location.hostname);
+                    if (!isLocal) {
+                        // Probar el endpoint agregado como señal
+                        const test = await fetch('/.netlify/functions/aggregate?sources=https%3A%2F%2Fwww.canarias7.es%2Fcanarias%2Ffuerteventura%2F', { method: 'GET', cache: 'no-store' });
+                        if (test.ok) return '/.netlify/functions';
+                    }
+                } catch (_) {}
                 const candidates = ['http://localhost:3000', 'http://localhost:3001', 'http://localhost:3002'];
                 for (const base of candidates) {
                     try {
@@ -149,7 +158,8 @@ document.addEventListener('DOMContentLoaded', async function() {
                 const aggKey = 'rss_cache_v2_media_AGG';
                 let items = cacheGet(aggKey);
                 if (!items) {
-                    const aggUrl = `${proxyBase}/api/aggregate?sources=${encodeURIComponent(newsSources.join(','))}&dedupe=0&noCache=1`;
+                    const aggPath = proxyBase.endsWith('/.netlify/functions') ? '/aggregate' : '/api/aggregate';
+                    const aggUrl = `${proxyBase}${aggPath}?sources=${encodeURIComponent(newsSources.join(','))}&dedupe=0&noCache=1`;
                     try {
                         const r = await fetch(aggUrl, { cache: 'no-store' });
                         if (!r.ok) throw new Error('bad response');
@@ -163,7 +173,8 @@ document.addEventListener('DOMContentLoaded', async function() {
                             const cached = cacheGet(cacheKey);
                             if (cached) return cached;
                             try {
-                                const rr = await fetch(`${proxyBase}/api/rss?url=${encodeURIComponent(src)}&noCache=1`, { cache: 'no-store' });
+                                const rssPath = proxyBase.endsWith('/.netlify/functions') ? '/rss' : '/api/rss';
+                                const rr = await fetch(`${proxyBase}${rssPath}?url=${encodeURIComponent(src)}&noCache=1`, { cache: 'no-store' });
                                 if (!rr.ok) throw new Error('bad response');
                                 const jj = await rr.json();
                                 const its = Array.isArray(jj.items) ? jj.items : [];

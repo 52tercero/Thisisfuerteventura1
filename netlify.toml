@@ -1,0 +1,13 @@
+﻿[build]
+  publish = "."
+  functions = "netlify/functions"
+
+[[redirects]]
+  from = "/api/rss"
+  to = "/.netlify/functions/rss"
+  status = 200
+
+[[redirects]]
+  from = "/api/aggregate"
+  to = "/.netlify/functions/aggregate"
+  status = 200
