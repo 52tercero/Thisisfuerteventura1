@@ -1106,6 +1106,11 @@ button:disabled.btn {
 }
 
 /* Mejora de márgenes para secciones de contenido */
+.accommodation-search,
+.featured-accommodations,
+.stay-zones,
+.saving-tips,
+.accommodation-tips,
 .tourism-content,
 .typical-dishes,
 .food-routes,
@@ -1125,6 +1130,11 @@ button:disabled.btn {
 }
 
 @media (max-width: 992px) {
+    .accommodation-search,
+    .featured-accommodations,
+    .stay-zones,
+    .saving-tips,
+    .accommodation-tips,
     .tourism-content,
     .typical-dishes,
     .food-routes,
@@ -1145,6 +1155,11 @@ button:disabled.btn {
 }
 
 @media (max-width: 600px) {
+    .accommodation-search,
+    .featured-accommodations,
+    .stay-zones,
+    .saving-tips,
+    .accommodation-tips,
     .tourism-content,
     .typical-dishes,
     .food-routes,
@@ -1164,6 +1179,11 @@ button:disabled.btn {
     }
 }
 /* Mejora de márgenes para secciones de contenido */
+.accommodation-search,
+.featured-accommodations,
+.stay-zones,
+.saving-tips,
+.accommodation-tips,
 .tourism-content,
 .typical-dishes,
 .food-routes,
@@ -1183,6 +1203,11 @@ button:disabled.btn {
 }
 
 @media (max-width: 992px) {
+    .accommodation-search,
+    .featured-accommodations,
+    .stay-zones,
+    .saving-tips,
+    .accommodation-tips,
     .tourism-content,
     .typical-dishes,
     .food-routes,
@@ -1203,6 +1228,11 @@ button:disabled.btn {
 }
 
 @media (max-width: 600px) {
+    .accommodation-search,
+    .featured-accommodations,
+    .stay-zones,
+    .saving-tips,
+    .accommodation-tips,
     .tourism-content,
     .typical-dishes,
     .food-routes,
