@@ -1029,12 +1029,6 @@ button:disabled.btn {
         display: block;
         color: var(--dark-color);
     }
-    .mobile-menu::after {
-        content: " Menú";
-        font-size: 1rem;
-        margin-left: 8px;
-        vertical-align: middle;
-    }
     /* Ocultar colapsando con una transición de altura en lugar de display:none para poder animar */
     nav {
         max-height: 0;
