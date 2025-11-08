@@ -313,6 +313,52 @@ const PORT = process.env.PORT || 3000;
 // Endpoint simple de salud
 app.get('/health', (req, res) => res.json({ status: 'ok' }));
 
+// Endpoint básico de mareas (mock)
+// GET /api/tides?lat=28.5&lon=-13.86
+// Devuelve 4 eventos (2 pleamares/2 bajamares) próximos con hora local y altura aproximada.
+app.get('/api/tides', (req, res) => {
+  try {
+    const lat = parseFloat(req.query.lat);
+    const lon = parseFloat(req.query.lon);
+    if (!isFinite(lat) || !isFinite(lon)) {
+      return res.status(400).json({ error: 'missing or invalid lat/lon' });
+    }
+    const cacheKey = `tides:${lat.toFixed(3)}:${lon.toFixed(3)}`;
+    const cached = cacheGet(cacheKey);
+    if (cached) return res.json(cached);
+
+    // Generar horarios de mareas sintéticos basados en la fecha actual.
+    // Patrón simple: cada ~6h alternando pleamar/bajamar.
+    const now = new Date();
+    const base = new Date(now);
+    base.setMinutes(0,0,0);
+    // Desfase pseudoaleatorio según coordenadas para que no coincida siempre a las en punto
+    const offsetMin = Math.floor(((lat + lon) % 1) * 60);
+    base.setMinutes(offsetMin);
+
+    const events = [];
+    for (let i = 1; i <= 4; i++) {
+      const t = new Date(base.getTime() + i * 6 * 60 * 60 * 1000); // cada 6h
+      const type = i % 2 === 0 ? 'bajamar' : 'pleamar';
+      // altura aprox (m) según tipo, con leve variación
+      const height = type === 'pleamar' ? (1.6 + (i % 3) * 0.1) : (0.4 + (i % 3) * 0.1);
+      events.push({
+        type,
+        time: t.toISOString(),
+        height: Number(height.toFixed(2))
+      });
+    }
+
+    const payload = { lat, lon, generated: now.toISOString(), events };
+    // Cache corto (30 min) para evitar cambios excesivos en mock
+    cacheSet(cacheKey, payload, 30 * 60 * 1000);
+    res.json(payload);
+  } catch (e) {
+    console.error('[TIDES] Error generating mock tides:', e && e.message);
+    res.status(500).json({ error: 'tides_failed' });
+  }
+});
+
 // Endpoint de proxy: obtiene RSS de fuentes permitidas y devuelve JSON parseado
 // Ejemplo: /api/rss?url=https%3A%2F%2Fwww.canarias7.es%2Frss%2F2.0%2Fportada
 

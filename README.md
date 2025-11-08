@@ -35,6 +35,7 @@ Located in `/server`. Requires Node 18+.
 - Default port: 3000 (auto-increments to next ports if busy)
 - Health: `GET /health`
 - Feed proxy: `GET /api/rss?url=<encoded_feed_url>`
+- Mock tides: `GET /api/tides?lat=<lat>&lon=<lon>` (dev)
 - Allowed sources: small allowlist by default; extend with env vars:
 
 ```powershell
@@ -46,6 +47,10 @@ npm start
 $env:ALLOWED_SOURCES = 'https://www.radioinsular.es/feed/,https://www.fuerteventuradigital.com/rss/'
 npm start
 ```
+
+### Tides (mock) integration
+- The beaches page (`playas.html`) calls `/api/tides?lat=<lat>&lon=<lon>` to render upcoming high/low tides as a placeholder.
+- This is a synthetic mock meant for UI; replace it later with a real provider (e.g., Puertos del Estado or WorldTides) through the server and keep client logic unchanged.
 
 ## Troubleshooting
 - Navigation disappears on desktop: fixed by applying collapse logic only on mobile widths (see `js/main.js`). Hard refresh with Ctrl+F5 if needed.
