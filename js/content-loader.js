@@ -1,4 +1,185 @@
-// SIN FILTROS: se muestran todas las noticias tal como llegan del feed
+document.addEventListener('DOMContentLoaded', async function() {
+    // Esperar a que la detección de proxy termine si está disponible
+    if (window.__RSS_PROXY_READY) {
+        try {
+            await window.__RSS_PROXY_READY;
+        } catch (e) {
+            console.warn('Error esperando detección de proxy:', e);
+        }
+    }
+    
+    // Función para cargar noticias destacadas
+    function loadFeaturedNews() {
+        const featuredNewsContainer = document.getElementById('featured-news');
+        
+        if (!featuredNewsContainer) return;
+
+        // Helper: convertir HTML a texto plano para truncar sin romper etiquetas
+        function toPlainText(html) {
+            if (!html) return '';
+            try {
+                return String(html).replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim();
+            } catch (_) {
+                return String(html);
+            }
+        }
+        
+        // Mostrar mensaje de carga
+        featuredNewsContainer.innerHTML = '<div class="loading">Cargando noticias...</div>';
+        
+        // Fuentes de noticias (RSS feeds de sitios de noticias sobre Fuerteventura/Canarias)
+        const newsSources = [
+            'https://www.canarias7.es/canarias/fuerteventura/',
+            'https://www.laprovincia.es/fuerteventura/',
+            'https://www.cabildofuer.es/cabildo/noticias/',
+            'https://www.radioinsular.es',
+            'https://www.fuerteventuradigital.com',
+            'https://ondafuerteventura.es',
+            // Añadir más fuentes según sea necesario
+            
+        ];
+        
+    // Función para obtener y parsear feeds RSS
+    // Intentar proxy local primero (configurable vía window.__RSS_PROXY_URL)
+        async function fetchRSSFeeds() {
+            // Intentar descubrimiento automático de un proxy local en ejecución (cacheado). Recurre a window.__RSS_PROXY_URL o puertos 3000/3001/3002.
+            async function discoverLocalProxy() {
+                if (window.__RSS_PROXY_URL) return window.__RSS_PROXY_URL;
+                try {
+                    if (window.discoverRSSProxy) {
+                        const u = await window.discoverRSSProxy();
+                        if (u) return u;
+                    }
+                } catch (_) {}
+                const candidates = ['http://localhost:3000', 'http://localhost:3001', 'http://localhost:3002'];
+                for (const base of candidates) {
+                    try {
+                        const r = await fetch(`${base}/health`, { method: 'GET', cache: 'no-store' });
+                        if (r.ok) return base;
+                    } catch (_) { /* siguiente candidato */ }
+                }
+                return 'http://localhost:3000';
+            }
+
+            const proxyBase = await discoverLocalProxy();
+
+            // Sin datos de fallback simulados: cuando no hay proxy o feeds disponibles retornamos un array vacío.
+            // Auxiliares: sanitizador básico, extracción de medios, caché
+            function sanitizeHTML(str) {
+                if (!str) return '';
+                // eliminar script/style
+                str = str.replace(/<script[\s\S]*?>[\s\S]*?<\/script>/gi, '');
+                str = str.replace(/<style[\s\S]*?>[\s\S]*?<\/style>/gi, '');
+                // eliminar atributos on*
+                str = str.replace(/\son\w+=\"[^\"]*\"/gi, '');
+                str = str.replace(/\son\w+='[^']*'/gi, '');
+                // neutralizar URIs javascript:
+                str = str.replace(/href=\"\s*javascript:[^\"]*\"/gi, 'href="#"');
+                return str;
+            }
+
+            // Preferir DOMPurify si está disponible para sanitización más fuerte
+            function sanitize(str) {
+                try {
+                    if (window.DOMPurify && typeof DOMPurify.sanitize === 'function') {
+                        return DOMPurify.sanitize(str);
+                    }
+                } catch (e) {
+                    // fallback
+                }
+                return sanitizeHTML(str);
+            }
+
+            // Usar el extractor robusto si está disponible (image-extractor.js)
+            async function extractImageFromRaw(it, sourceUrl = '') {
+                if (window.ImageExtractor && typeof window.ImageExtractor.extractImageFromItem === 'function') {
+                    const img = await window.ImageExtractor.extractImageFromItem(it, { validate: false, sourceUrl });
+                    if (img && typeof img === 'string' && img.trim() && !img.startsWith('data:')) return img;
+                }
+                // Fallback simple si el módulo no está cargado o no hay imagen válida
+                let candidate = null;
+                if (!it) candidate = null;
+                else if (it.image && typeof it.image === 'string') candidate = it.image;
+                else if (it.raw?.image_url) candidate = it.raw.image_url;
+                else {
+                    const raw = it.raw || {};
+                    if (raw.enclosure) {
+                        if (typeof raw.enclosure === 'string') candidate = raw.enclosure;
+                        else if (raw.enclosure.url) candidate = raw.enclosure.url;
+                    }
+                    if (!candidate) {
+                        const desc = it.description || it.summary || '';
+                        const descStr = typeof desc === 'object' ? (desc._ || '') : String(desc);
+                        if (descStr) {
+                            const match = descStr.match(/<img[^>]+src=["']([^"']+)["']/i);
+                            if (match && match[1]) candidate = match[1];
+                        }
+                    }
+                }
+                // Si la imagen es una URL absoluta http(s), pero falla CORS/mixed content, usar fallback local
+                if (!candidate || typeof candidate !== 'string' || !candidate.trim() || candidate.startsWith('data:')) {
+                    return 'images/logo.jpg?v=2025110501';
+                }
+                // Si la imagen es remota pero no es https, usar fallback local (logo en feeds)
+                if (/^http:/.test(candidate)) {
+                    return 'images/logo.jpg?v=2025110501';
+                }
+                // Si la imagen es remota https, dejarla, pero el onerror del <img> la reemplazará si falla
+                return candidate;
+            }
+
+            function cacheGet(key, ttl = 1000 * 60 * 15) {
+                try {
+                    const raw = localStorage.getItem(key);
+                    if (!raw) return null;
+                    const parsed = JSON.parse(raw);
+                    if (!parsed || !parsed.ts) return null;
+                    if (Date.now() - parsed.ts > ttl) { localStorage.removeItem(key); return null; }
+                    return parsed.items || null;
+                } catch (e) { return null; }
+            }
+
+            function cacheSet(key, items) {
+                try { localStorage.setItem(key, JSON.stringify({ ts: Date.now(), items })); } catch (e) { /* ignore */ }
+            }
+
+            try {
+                console.debug('Proxy base:', proxyBase);
+                // Intentar primero con el nuevo endpoint agregado de agregado (un solo request)
+                const aggKey = 'rss_cache_v2_media_AGG';
+                let items = cacheGet(aggKey);
+                if (!items) {
+                    const aggUrl = `${proxyBase}/api/aggregate?sources=${encodeURIComponent(newsSources.join(','))}&dedupe=0&noCache=1`;
+                    try {
+                        const r = await fetch(aggUrl, { cache: 'no-store' });
+                        if (!r.ok) throw new Error('bad response');
+                        const json = await r.json();
+                        items = Array.isArray(json.items) ? json.items : [];
+                        cacheSet(aggKey, items);
+                    } catch (e) {
+                        console.warn('Falló obtención agregada, fallback por fuente:', e && e.message);
+                        const fetches = newsSources.map(async (src) => {
+                            const cacheKey = 'rss_cache_v2_media_' + btoa(src);
+                            const cached = cacheGet(cacheKey);
+                            if (cached) return cached;
+                            try {
+                                const rr = await fetch(`${proxyBase}/api/rss?url=${encodeURIComponent(src)}&noCache=1`, { cache: 'no-store' });
+                                if (!rr.ok) throw new Error('bad response');
+                                const jj = await rr.json();
+                                const its = Array.isArray(jj.items) ? jj.items : [];
+                                cacheSet(cacheKey, its);
+                                return its;
+                            } catch (err) {
+                                console.warn('Falló obtención del proxy para', src, err && err.message);
+                                return [];
+                            }
+                        });
+                        const results = await Promise.all(fetches);
+                        items = results.flat();
+                    }
+                }
+
+                // SIN FILTROS: se muestran todas las noticias tal como llegan del feed
 
 
                 if (items.length > 0) {
