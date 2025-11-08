@@ -1,10 +1,10 @@
 document.addEventListener('DOMContentLoaded', async function() {
-    // Esperar a que la detección de proxy termine si está disponible
-    if (window.__RSS_PROXY_READY) {
+    // Detectar proxy antes de cargar noticias
+    if (typeof window.discoverRSSProxy === 'function') {
         try {
-            await window.__RSS_PROXY_READY;
+            await window.discoverRSSProxy();
         } catch (e) {
-            console.warn('Error esperando detección de proxy:', e);
+            console.warn('Error detectando proxy:', e);
         }
     }
     
@@ -194,7 +194,6 @@ document.addEventListener('DOMContentLoaded', async function() {
                         // Detectar fuente desde la URL
                         let source = '';
                         try { source = link ? (new URL(link)).hostname.replace('www.', '') : (it.source || 'fuente'); } catch (e) { source = it.source || 'fuente'; }
-                        }
 
                         const image = await extractImageFromRaw(it, link);
 
@@ -714,3 +713,4 @@ document.addEventListener('DOMContentLoaded', async function() {
         }
     });
 });
+
