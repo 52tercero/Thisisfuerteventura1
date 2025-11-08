@@ -1,205 +1,4 @@
-document.addEventListener('DOMContentLoaded', async function() {
-    // Esperar a que la detección de proxy termine si está disponible
-    if (window.__RSS_PROXY_READY) {
-        try {
-            await window.__RSS_PROXY_READY;
-        } catch (e) {
-            console.warn('Error esperando detección de proxy:', e);
-        }
-    }
-    
-    // Función para cargar noticias destacadas
-    function loadFeaturedNews() {
-        const featuredNewsContainer = document.getElementById('featured-news');
-        
-        if (!featuredNewsContainer) return;
-
-        // Helper: convertir HTML a texto plano para truncar sin romper etiquetas
-        function toPlainText(html) {
-            if (!html) return '';
-            try {
-                return String(html).replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim();
-            } catch (_) {
-                return String(html);
-            }
-        }
-        
-        // Mostrar mensaje de carga
-        featuredNewsContainer.innerHTML = '<div class="loading">Cargando noticias...</div>';
-        
-        // Fuentes de noticias (RSS feeds de sitios de noticias sobre Fuerteventura/Canarias)
-        const newsSources = [
-            'https://www.canarias7.es/canarias/fuerteventura/',
-            'https://www.laprovincia.es/fuerteventura/',
-            'https://www.cabildofuer.es/cabildo/noticias/',
-            'https://www.radioinsular.es',
-            'https://www.fuerteventuradigital.com',
-            'https://ondafuerteventura.es',
-            // Añadir más fuentes según sea necesario
-            
-        ];
-        
-    // Función para obtener y parsear feeds RSS
-    // Intentar proxy local primero (configurable vía window.__RSS_PROXY_URL)
-        async function fetchRSSFeeds() {
-            // Intentar descubrimiento automático de un proxy local en ejecución (cacheado). Recurre a window.__RSS_PROXY_URL o puertos 3000/3001/3002.
-            async function discoverLocalProxy() {
-                if (window.__RSS_PROXY_URL) return window.__RSS_PROXY_URL;
-                try {
-                    if (window.discoverRSSProxy) {
-                        const u = await window.discoverRSSProxy();
-                        if (u) return u;
-                    }
-                } catch (_) {}
-                const candidates = ['http://localhost:3000', 'http://localhost:3001', 'http://localhost:3002'];
-                for (const base of candidates) {
-                    try {
-                        const r = await fetch(`${base}/health`, { method: 'GET', cache: 'no-store' });
-                        if (r.ok) return base;
-                    } catch (_) { /* siguiente candidato */ }
-                }
-                return 'http://localhost:3000';
-            }
-
-            const proxyBase = await discoverLocalProxy();
-
-            // Sin datos de fallback simulados: cuando no hay proxy o feeds disponibles retornamos un array vacío.
-            // Auxiliares: sanitizador básico, extracción de medios, caché
-            function sanitizeHTML(str) {
-                if (!str) return '';
-                // eliminar script/style
-                str = str.replace(/<script[\s\S]*?>[\s\S]*?<\/script>/gi, '');
-                str = str.replace(/<style[\s\S]*?>[\s\S]*?<\/style>/gi, '');
-                // eliminar atributos on*
-                str = str.replace(/\son\w+=\"[^\"]*\"/gi, '');
-                str = str.replace(/\son\w+='[^']*'/gi, '');
-                // neutralizar URIs javascript:
-                str = str.replace(/href=\"\s*javascript:[^\"]*\"/gi, 'href="#"');
-                return str;
-            }
-
-            // Preferir DOMPurify si está disponible para sanitización más fuerte
-            function sanitize(str) {
-                try {
-                    if (window.DOMPurify && typeof DOMPurify.sanitize === 'function') {
-                        return DOMPurify.sanitize(str);
-                    }
-                } catch (e) {
-                    // fallback
-                }
-                return sanitizeHTML(str);
-            }
-
-            // Usar el extractor robusto si está disponible (image-extractor.js)
-            async function extractImageFromRaw(it, sourceUrl = '') {
-                if (window.ImageExtractor && typeof window.ImageExtractor.extractImageFromItem === 'function') {
-                    const img = await window.ImageExtractor.extractImageFromItem(it, { validate: false, sourceUrl });
-                    if (img && typeof img === 'string' && img.trim() && !img.startsWith('data:')) return img;
-                }
-                // Fallback simple si el módulo no está cargado o no hay imagen válida
-                let candidate = null;
-                if (!it) candidate = null;
-                else if (it.image && typeof it.image === 'string') candidate = it.image;
-                else if (it.raw?.image_url) candidate = it.raw.image_url;
-                else {
-                    const raw = it.raw || {};
-                    if (raw.enclosure) {
-                        if (typeof raw.enclosure === 'string') candidate = raw.enclosure;
-                        else if (raw.enclosure.url) candidate = raw.enclosure.url;
-                    }
-                    if (!candidate) {
-                        const desc = it.description || it.summary || '';
-                        const descStr = typeof desc === 'object' ? (desc._ || '') : String(desc);
-                        if (descStr) {
-                            const match = descStr.match(/<img[^>]+src=["']([^"']+)["']/i);
-                            if (match && match[1]) candidate = match[1];
-                        }
-                    }
-                }
-                // Si la imagen es una URL absoluta http(s), pero falla CORS/mixed content, usar fallback local
-                if (!candidate || typeof candidate !== 'string' || !candidate.trim() || candidate.startsWith('data:')) {
-                    return 'images/logo.jpg?v=2025110501';
-                }
-                // Si la imagen es remota pero no es https, usar fallback local (logo en feeds)
-                if (/^http:/.test(candidate)) {
-                    return 'images/logo.jpg?v=2025110501';
-                }
-                // Si la imagen es remota https, dejarla, pero el onerror del <img> la reemplazará si falla
-                return candidate;
-            }
-
-            function cacheGet(key, ttl = 1000 * 60 * 15) {
-                try {
-                    const raw = localStorage.getItem(key);
-                    if (!raw) return null;
-                    const parsed = JSON.parse(raw);
-                    if (!parsed || !parsed.ts) return null;
-                    if (Date.now() - parsed.ts > ttl) { localStorage.removeItem(key); return null; }
-                    return parsed.items || null;
-                } catch (e) { return null; }
-            }
-
-            function cacheSet(key, items) {
-                try { localStorage.setItem(key, JSON.stringify({ ts: Date.now(), items })); } catch (e) { /* ignore */ }
-            }
-
-            try {
-                console.debug('Proxy base:', proxyBase);
-                // Intentar primero con el nuevo endpoint agregado de agregado (un solo request)
-                const aggKey = 'rss_cache_v2_media_AGG';
-                let items = cacheGet(aggKey);
-                if (!items) {
-                    const aggUrl = `${proxyBase}/api/aggregate?sources=${encodeURIComponent(newsSources.join(','))}&dedupe=0&noCache=1`;
-                    try {
-                        const r = await fetch(aggUrl, { cache: 'no-store' });
-                        if (!r.ok) throw new Error('bad response');
-                        const json = await r.json();
-                        items = Array.isArray(json.items) ? json.items : [];
-                        cacheSet(aggKey, items);
-                    } catch (e) {
-                        console.warn('Falló obtención agregada, fallback por fuente:', e && e.message);
-                        const fetches = newsSources.map(async (src) => {
-                            const cacheKey = 'rss_cache_v2_media_' + btoa(src);
-                            const cached = cacheGet(cacheKey);
-                            if (cached) return cached;
-                            try {
-                                const rr = await fetch(`${proxyBase}/api/rss?url=${encodeURIComponent(src)}&noCache=1`, { cache: 'no-store' });
-                                if (!rr.ok) throw new Error('bad response');
-                                const jj = await rr.json();
-                                const its = Array.isArray(jj.items) ? jj.items : [];
-                                cacheSet(cacheKey, its);
-                                return its;
-                            } catch (err) {
-                                console.warn('Falló obtención del proxy para', src, err && err.message);
-                                return [];
-                            }
-                        });
-                        const results = await Promise.all(fetches);
-                        items = results.flat();
-                    }
-                }
-
-                // Mezclar con newsdata.io si está disponible
-                try {
-                    const newsdataKey = 'newsdata_cache_v1';
-                    let newsdataItems = cacheGet(newsdataKey);
-                    if (!newsdataItems) {
-                        const newsdataUrl = `${proxyBase}/api/newsdata?q=fuerteventura&country=es&language=es&noCache=1`;
-                        const nr = await fetch(newsdataUrl, { cache: 'no-store' });
-                        if (nr.ok) {
-                            const nj = await nr.json();
-                            newsdataItems = Array.isArray(nj.items) ? nj.items : [];
-                            cacheSet(newsdataKey, newsdataItems);
-                            items = items.concat(newsdataItems);
-                        }
-                    } else {
-                        items = items.concat(newsdataItems);
-                    }
-                } catch (e) {
-                    console.warn('newsdata.io no disponible:', e && e.message);
-                }
-
-                // SIN FILTROS: se muestran todas las noticias tal como llegan del feed
+// SIN FILTROS: se muestran todas las noticias tal como llegan del feed
 
 
                 if (items.length > 0) {
@@ -211,13 +10,9 @@ document.addEventListener('DOMContentLoaded', async function() {
                         const link = it.link || '';
                         const pub = it.pubDate || it.published || it.updated || '';
                         
-                        // Detectar si es de newsdata.io
+                        // Detectar fuente desde la URL
                         let source = '';
-                        const isNewsdata = it.raw && (it.raw.source_id || it.raw.country);
-                        if (isNewsdata) {
-                            source = 'newsdata.io';
-                        } else {
-                            try { source = link ? (new URL(link)).hostname.replace('www.', '') : (it.source || 'fuente'); } catch (e) { source = it.source || 'fuente'; }
+                        try { source = link ? (new URL(link)).hostname.replace('www.', '') : (it.source || 'fuente'); } catch (e) { source = it.source || 'fuente'; }
                         }
 
                         const image = await extractImageFromRaw(it, link);
@@ -280,44 +75,27 @@ document.addEventListener('DOMContentLoaded', async function() {
                 return;
             }
             
-            // Intentar mostrar artículos de newsdata.io primero
-            let newsdataItems = newsItems.filter(item => {
-                // Identificar artículos de newsdata.io por source o presencia de raw.source_id
-                return item.source === 'newsdata.io' || 
-                       (item.raw && item.raw.source_id) ||
-                       item.source === 'newsdata';
+            // Agrupar por fuente y tomar artículos de forma balanceada
+            const bySource = {};
+            newsItems.forEach(item => {
+                const src = item.source || 'desconocido';
+                if (!bySource[src]) bySource[src] = [];
+                bySource[src].push(item);
             });
             
-            console.log('[CONTENT-LOADER] Artículos de newsdata.io:', newsdataItems.length);
-            
-            // Si no hay artículos de newsdata.io, usar feeds RSS como fallback
-            let featured;
-            if (newsdataItems.length === 0) {
-                console.warn('[CONTENT-LOADER] No hay artículos de newsdata.io, usando RSS feeds como fallback');
-                // Agrupar por fuente y tomar 3 de cada una
-                const bySource = {};
-                newsItems.forEach(item => {
-                    const src = item.source || 'desconocido';
-                    if (!bySource[src]) bySource[src] = [];
-                    bySource[src].push(item);
-                });
-                
-                // Mezclar: 3 de cada fuente hasta completar 18
-                featured = [];
-                const sources = Object.keys(bySource);
-                let round = 0;
-                while (featured.length < 18 && round < 10) {
-                    for (const src of sources) {
-                        if (bySource[src].length > 0 && featured.length < 18) {
-                            featured.push(bySource[src].shift());
-                        }
+            // Mezclar: distribuir artículos de todas las fuentes hasta completar 18
+            let featured = [];
+            const sources = Object.keys(bySource);
+            let round = 0;
+            while (featured.length < 18 && round < 10) {
+                for (const src of sources) {
+                    if (bySource[src].length > 0 && featured.length < 18) {
+                        featured.push(bySource[src].shift());
                     }
-                    round++;
                 }
-            } else {
-                // Limitar a 18 items de newsdata.io
-                featured = newsdataItems.slice(0, 18);
+                round++;
             }
+            
             console.log('[CONTENT-LOADER] Mostrando', featured.length, 'artículos destacados');
             
             // Mostrar las noticias (resumen compacto en portada)
