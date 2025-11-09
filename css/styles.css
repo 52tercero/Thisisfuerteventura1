@@ -1241,7 +1241,7 @@ button:disabled.btn {
 .island-weather-card { max-width: 900px; margin: 0 auto; background:#f8f8f8; border-radius:12px; padding:22px 24px; box-shadow:0 4px 16px rgba(0,0,0,0.06); }
 .island-weather .loading, .island-weather .error { text-align:center; color:#666; padding: 14px 0; }
 .island-weather .error { color: var(--danger-color); }
-.conditions-list { list-style:none; margin: 0; padding: 0; display:flex; flex-wrap: wrap; gap: 12px 20px; }
+.conditions-list { list-style:none; margin: 0; padding: 0; display:flex; flex-wrap: wrap; gap: 12px 20px; justify-content: center; }
 .conditions-list li { display:flex; align-items:center; gap:8px; background:#fff; padding:8px 12px; border-radius:8px; box-shadow:0 1px 4px rgba(0,0,0,0.05); color:#333; }
 .island-weather .disclaimer { margin-top: 12px; text-align:center; font-size: 0.85rem; color:#777; }
 @media (max-width:600px){ .island-weather-card{padding:18px;} }
@@ -1266,20 +1266,20 @@ button:disabled.btn {
 .disclaimer { margin-top: 10px; text-align:center; font-size: 0.85rem; color:#777; }
 @media (max-width: 768px){ .conditions-grid { grid-template-columns: 1fr; } }
 /* Estética adicional para métricas y temperatura */
-.temp-row { display:flex; flex-wrap:wrap; align-items:center; gap:24px; }
+.temp-row { display:flex; flex-wrap:wrap; align-items:center; gap:24px; justify-content: center; }
 .temp-main { display:flex; align-items:center; gap:14px; }
 .icon-circle { width:62px; height:62px; border-radius:50%; background:linear-gradient(135deg,#ffdd75,#ffc543); display:flex; align-items:center; justify-content:center; box-shadow:0 4px 12px rgba(0,0,0,0.12); color:#a05d00; font-size:1.6rem; }
 .temp-value { font-size:2.4rem; font-weight:700; background:linear-gradient(90deg,#007cb8,#00a0e1); -webkit-background-clip:text; background-clip:text; color:transparent; letter-spacing:-1px; }
-.temp-meta { display:flex; flex-wrap:wrap; gap:10px; }
+.temp-meta { display:flex; flex-wrap:wrap; gap:10px; justify-content: center; }
 .metric-badge { background:#fff; border:1px solid #e0edf4; padding:6px 10px; border-radius:20px; font-size:0.75rem; display:inline-flex; align-items:center; gap:6px; color:#34515f; box-shadow:0 1px 3px rgba(0,0,0,0.08); }
 .metric-badge i { color: var(--primary-color); }
-@media (max-width:600px){ .temp-row{flex-direction:column; align-items:flex-start;} .temp-value{font-size:2.1rem;} .icon-circle{width:54px;height:54px;font-size:1.4rem;} }
+@media (max-width:600px){ .temp-row{flex-direction:column; align-items:center;} .temp-value{font-size:2.1rem;} .icon-circle{width:54px;height:54px;font-size:1.4rem;} }
 /* Toggle de horizonte de olas */
 .horizon-toggle { display:flex; gap:8px; }
 .horizon-toggle .toggle { padding:8px 12px; border-radius:20px; border:1px solid #e0edf4; background:#fff; color:#34515f; cursor:pointer; font-size:0.85rem; box-shadow:0 1px 3px rgba(0,0,0,0.06); }
 .horizon-toggle .toggle.active { background:linear-gradient(135deg,#e7f6ff,#d9f0ff); color:#0d6690; border-color:#bfe3f6; }
 /* Mini pronóstico (isla) */
-.mini-forecast { display:flex; gap:12px; margin-top:10px; flex-wrap:wrap; }
+.mini-forecast { display:flex; gap:12px; margin-top:10px; flex-wrap:wrap; justify-content: center; }
 .mini-forecast .fc-day { background:#fff; border:1px solid #e0edf4; border-radius:10px; padding:8px 10px; box-shadow:0 2px 6px rgba(0,0,0,0.05); min-width:100px; display:flex; flex-direction:column; align-items:center; gap:6px; }
 .mini-forecast .fc-wd { text-transform:uppercase; font-size:0.75rem; color:#5a6b78; letter-spacing:.5px; }
 .mini-forecast .fc-ic i { color: var(--primary-color); }
