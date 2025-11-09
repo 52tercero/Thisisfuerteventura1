@@ -1,5 +1,5 @@
 ﻿// Service Worker con estrategia segura (network-first para documentos) para evitar contenido obsoleto
-const SW_VERSION = 'v5';
+const SW_VERSION = 'v6';
 const APP_CACHE = `app-${SW_VERSION}`;
 
 const PRECACHE = [
@@ -37,58 +37,83 @@ self.addEventListener('fetch', (event) => {
 
   if (req.method !== 'GET') return;
 
-  // Nunca cachear /api
+  // Nunca cachear /api – si la red falla, responder JSON de error (evita promesas rechazadas)
   if (url.pathname.startsWith('/api/')) {
-    event.respondWith(fetch(req));
+    event.respondWith((async () => {
+      try {
+        return await fetch(req);
+      } catch (e) {
+        return new Response(JSON.stringify({ error: 'offline' }), {
+          status: 503,
+          headers: { 'Content-Type': 'application/json' }
+        });
+      }
+    })());
     return;
   }
 
-  // Documentos/navegación: network-first
+  // Documentos/navegación: network-first con fallbacks válidos
   if (req.mode === 'navigate' || req.destination === 'document') {
-    event.respondWith(
-      fetch(req).then((res) => {
+    event.respondWith((async () => {
+      try {
+        const res = await fetch(req);
         const copy = res.clone();
-        caches.open(APP_CACHE).then(c => c.put(req, copy));
+        const c = await caches.open(APP_CACHE);
+        c.put(req, copy);
         return res;
-      }).catch(() => caches.match(req))
-    );
+      } catch (e) {
+        return (await caches.match(req))
+            || (await caches.match('/'))
+            || new Response('<h1>Offline</h1>', { status: 503, headers: { 'Content-Type': 'text/html' } });
+      }
+    })());
     return;
   }
 
-  // JS/CSS: stale-while-revalidate
+  // JS/CSS: stale-while-revalidate con fallback 504 válido
   if (req.destination === 'script' || req.destination === 'style') {
-    event.respondWith(
-      caches.match(req).then((cached) => {
-        const fetchPromise = fetch(req).then((res) => {
-          const copy = res.clone();
-          caches.open(APP_CACHE).then(c => c.put(req, copy));
-          return res;
-        }).catch(() => cached);
-        return cached || fetchPromise;
-      })
-    );
+    event.respondWith((async () => {
+      const cached = await caches.match(req);
+      try {
+        const res = await fetch(req);
+        const copy = res.clone();
+        const c = await caches.open(APP_CACHE);
+        c.put(req, copy);
+        return cached || res;
+      } catch (e) {
+        return cached || new Response('', { status: 504 });
+      }
+    })());
     return;
   }
 
   // Imágenes: cache-first, fallback a logo (también para 404 del origen)
   if (req.destination === 'image') {
-    event.respondWith(
-      caches.match(req).then((cached) => {
-        if (cached) return cached;
-        return fetch(req).then((res) => {
-          // Si la respuesta es 404 u otro estado no OK, devolver logo genérico
-          if (!res.ok) return caches.match('/images/logo.jpg');
-          const copy = res.clone();
-          caches.open(APP_CACHE).then(c => c.put(req, copy));
-          return res;
-        }).catch(() => caches.match('/images/logo.jpg'));
-      })
-    );
+    event.respondWith((async () => {
+      const cached = await caches.match(req);
+      if (cached) return cached;
+      try {
+        const res = await fetch(req);
+        if (!res.ok) return (await caches.match('/images/logo.jpg')) || new Response('', { status: 404 });
+        const copy = res.clone();
+        const c = await caches.open(APP_CACHE);
+        c.put(req, copy);
+        return res;
+      } catch (e) {
+        return (await caches.match('/images/logo.jpg')) || new Response('', { status: 504 });
+      }
+    })());
     return;
   }
 
-  // Otros: cache, luego red
-  event.respondWith(
-    caches.match(req).then((cached) => cached || fetch(req).catch(() => null))
-  );
+  // Otros: cache, luego red; si todo falla, 504 vacío (siempre Response válida)
+  event.respondWith((async () => {
+    const cached = await caches.match(req);
+    if (cached) return cached;
+    try {
+      return await fetch(req);
+    } catch (e) {
+      return new Response('', { status: 504 });
+    }
+  })());
 });
