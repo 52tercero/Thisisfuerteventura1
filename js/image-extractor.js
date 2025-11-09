@@ -9,13 +9,13 @@ const IMAGE_CACHE_TTL = 1000 * 60 * 30; // 30 minutos
 
 // Fallbacks específicos por dominio
 const DOMAIN_FALLBACKS = {
-    'canarias7.es': 'images/logos/canarias7.png',
-    'laprovincia.es': 'images/logos/laprovincia.png',
-    'cabildofuer.es': 'images/logos/cabildo.png',
-    'radioinsular.es': 'images/logos/radioinsular.png',
-    'fuerteventuradigital.com': 'images/logos/fvdigital.png',
-    'ondafuerteventura.es': 'images/logos/ondafv.png',
-    'newsdata.io': 'images/logos/newsdata.png'
+    'canarias7.es': 'images/logo.jpg',
+    'laprovincia.es': 'images/logo.jpg',
+    'cabildofuer.es': 'images/logo.jpg',
+    'radioinsular.es': 'images/logo.jpg',
+    'fuerteventuradigital.com': 'images/logo.jpg',
+    'ondafuerteventura.es': 'images/logo.jpg',
+    'newsdata.io': 'images/logo.jpg'
 };
 
 // Estadísticas de errores (para análisis)
