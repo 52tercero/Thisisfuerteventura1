@@ -363,6 +363,24 @@ nav ul li a:hover {
     }
 }
 
+/* Featured news grid: exactamente 3 por línea en escritorio */
+#featured-news {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 30px;
+}
+
+@media (max-width: 992px) {
+    #featured-news {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 600px) {
+    #featured-news {
+        grid-template-columns: 1fr;
+    }
+}
+
 .content-card {
     background: white;
     border-radius: 10px;

@@ -29,13 +29,12 @@ document.addEventListener('DOMContentLoaded', function() {
     // Intentar obtener noticias vía proxy local (si está disponible)
     async function fetchNews() {
         const newsSources = [
-            'https://www.canarias7.es/canarias/fuerteventura/',
-            'https://www.laprovincia.es/fuerteventura/',
-            'https://www.cabildofuer.es/cabildo/noticias/',
-            'https://www.radioinsular.es',
-            'https://www.fuerteventuradigital.com',
-            'https://ondafuerteventura.es',
-
+            'https://www.canarias7.es/rss/2.0/?section=canarias/fuerteventura',
+            'https://www.laprovincia.es/rss/section/9280',
+            'https://www.cabildofuer.es/cabildo/noticias/feed/',
+            'https://www.radioinsular.es/feed/',
+            'https://www.fuerteventuradigital.com/rss',
+            'https://ondafuerteventura.es/feed/',
         ];
 
         // Intentar descubrimiento automático de un proxy local en ejecución (cacheado). Recurre a window.__RSS_PROXY_URL o puertos 3000/3001/3002.
