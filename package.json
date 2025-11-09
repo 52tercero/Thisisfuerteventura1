@@ -11,7 +11,8 @@
     "node": ">=18"
   },
   "dependencies": {
-    "xml2js": "^0.6.2"
+    "xml2js": "^0.6.2",
+    "node-fetch": "^2.6.7"
   },
   "devDependencies": {}
 }
