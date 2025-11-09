@@ -150,13 +150,13 @@
     </footer>
 
     <script>
-        // Si estamos en Netlify (o disponible el endpoint), usar Functions como proxy
-        // Crear una Promise que otros scripts puedan esperar
+        // Detección de Netlify Functions (probando endpoint aggregate)
         window.__RSS_PROXY_READY = new Promise((resolve) => {
             try {
                 const controller = new AbortController();
                 const id = setTimeout(() => controller.abort(), 1500);
-                fetch('/.netlify/functions/api/health', { signal: controller.signal, cache: 'no-store' })
+                // Probar con el endpoint aggregate que existe
+                fetch('/.netlify/functions/aggregate', { signal: controller.signal, cache: 'no-store' })
                     .then(r => { 
                         if (r && r.ok) { 
                             window.__RSS_PROXY_URL = location.origin + '/.netlify/functions';
@@ -175,10 +175,10 @@
             }
         });
     </script>
-    <script src="js/main.js?v=2025110501" defer></script>
-    <script src="js/proxy-discovery.js?v=2025110501" defer></script>
+    <script src="js/main.js?v=2025110806" defer></script>
+    <script src="js/proxy-discovery.js?v=2025110806" defer></script>
     <script src="https://cdn.jsdelivr.net/npm/dompurify@2.4.0/dist/purify.min.js" defer></script>
-    <script src="js/image-extractor.js?v=2025110501" defer></script>
-    <script src="js/content-loader.js?v=2025110501" defer></script>
+    <script src="js/image-extractor.js?v=2025110806" defer></script>
+    <script src="js/content-loader.js?v=2025110806" defer></script>
 </body>
 </html>
