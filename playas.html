@@ -509,34 +509,10 @@
                         `<div class="waves-block"><p><i class="${ICONS.waves}"></i> Próximas ${count}h (altura de ola)</p>`
                         + `<ul class="wave-list">${ next.map(w => (
                             `<li class="wave-chip"><i class="${ICONS.waves}"></i> <strong>${(w.h ?? 'N/D')} m</strong> <span>${new Date(w.t).toLocaleTimeString('es-ES',{hour:'2-digit',minute:'2-digit'})}</span></li>`
-                        )).join('') || '<li>Sin datos</li>'}</ul></div>`
-                        + `<div class="tide-block"><p><i class="fas fa-water"></i> Mareas (mock)</p><div class="tide-loading">Cargando mareas...</div></div>`;
+                        )).join('') || '<li>Sin datos</li>'}</ul></div>`;
 
-                    // Cargar mareas mock desde el servidor
-                    try {
-                        const base = (window.discoverRSSProxy ? await window.discoverRSSProxy() : null) || 'http://localhost:3000';
-                        const tideRes = await fetch(`${base}/api/tides?lat=${lat}&lon=${lon}`, { mode: 'cors' });
-                        if (tideRes.ok) {
-                            const tideJson = await tideRes.json();
-                            const tContainer = marineCard.querySelector('.tide-block');
-                            if (tContainer) {
-                                const evs = tideJson.events || [];
-                                tContainer.innerHTML = '<p><i class="fas fa-water"></i> Mareas (mock)</p>' +
-                                  '<ul class="tide-list">' + (evs.map(ev => {
-                                    const d = new Date(ev.time);
-                                    const hh = d.toLocaleTimeString('es-ES',{hour:'2-digit',minute:'2-digit'});
-                                    const icon = ev.type === 'pleamar' ? 'fa-arrow-up' : 'fa-arrow-down';
-                                    return `<li class=\"tide-chip\"><i class=\"fas ${icon}\"></i> <strong>${ev.type}</strong> <span>${hh}</span> <em>${ev.height} m</em></li>`;
-                                  }).join('') || '<li>Sin datos</li>') + '</ul>';
-                            }
-                        } else {
-                            const tContainer = marineCard.querySelector('.tide-block');
-                            if (tContainer) tContainer.innerHTML = '<div class="tide-error">Error mareas</div>';
-                        }
-                    } catch(_) {
-                        const tContainer = marineCard.querySelector('.tide-block');
-                        if (tContainer) tContainer.innerHTML = '<div class="tide-error">Error mareas</div>';
-                    }
+                    // Mareas deshabilitadas temporalmente (requiere API externa)
+                    // Se puede integrar con worldtides.info o puertos del Estado en el futuro
                 } catch(e) {
                     weatherCard.innerHTML = '<div class="error">Error tiempo</div>';
                     marineCard.innerHTML = '<div class="error">Error mar</div>';
