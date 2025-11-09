@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700&family=Lobster&display=swap');
 /* Galerías, itinerarios, perfiles, zonas, etc. */
 .image-gallery, .gallery-grid, .itineraries, .itinerary-grid, .beach-profiles, .profiles-grid, .stay-zones, .zones-grid, .saving-tips, .about-project, .about-grid, .press-support {
     margin: 40px 0 30px 0;
@@ -193,15 +193,14 @@ header {
 }
 
 header h1 {
-    font-size: clamp(1.2rem, 2vw + 0.6rem, 2.1rem);
-    font-weight: 700;
+    font-size: clamp(1.8rem, 3.5vw + 0.5rem, 2.8rem);
+    font-weight: 400;
     color: var(--primary-color);
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    font-family: 'Poppins', 'Segoe UI', 'Montserrat', Arial, sans-serif;
-    /* Retiro la sombra para un look más limpio y moderno; si la quieres de nuevo, vuelve a activarla */
-    /* text-shadow: 0 2px 4px rgba(0,0,0,0.1); */
+    text-transform: none;
+    letter-spacing: 0.3px;
+    font-family: 'Lobster', cursive;
 }
+ 
 
 /* Logo textual en el footer comparte la misma fuente de marca */
 .footer-logo h3 {
@@ -1087,8 +1086,8 @@ button:disabled.btn {
         margin-right: 10px;
     }
     header h1 {
-        font-size: 1.25rem;
-        letter-spacing: 0.5px;
+        font-size: 1.8rem;
+        letter-spacing: 0.3px;
     }
     /* Agregar una etiqueta de texto para la hamburguesa para hacerla obvia incluso si los iconos fallan */
     .mobile-menu {
