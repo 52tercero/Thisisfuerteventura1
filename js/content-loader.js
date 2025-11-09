@@ -207,11 +207,9 @@ document.addEventListener('DOMContentLoaded', async function() {
                         const json = await r.json();
                         items = Array.isArray(json.items) ? json.items : [];
                         console.log('[CONTENT-LOADER] Aggregate returned', items.length, 'items');
-                        // Si el agregado devolvió 0, forzar fallback individual
-                        if (items.length === 0) throw new Error('aggregate empty');
                         cacheSet(aggKey, items);
                     } catch (e) {
-                        console.warn('Falló obtención agregada o vacía, fallback por fuente:', e && e.message);
+                        console.warn('Falló obtención agregada, fallback por fuente:', e && e.message);
                         const fetches = newsSources.map(async (src) => {
                             const cacheKey = 'rss_cache_v2_media_' + btoa(src);
                             const cached = cacheGet(cacheKey);
