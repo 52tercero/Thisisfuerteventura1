@@ -1,5 +1,5 @@
 ﻿// Service Worker con estrategia segura (network-first para documentos) para evitar contenido obsoleto
-const SW_VERSION = 'v7';
+const SW_VERSION = 'v8';
 const APP_CACHE = `app-${SW_VERSION}`;
 
 const PRECACHE = [
@@ -70,12 +70,17 @@ self.addEventListener('fetch', (event) => {
     return;
   }
 
-  // JS/CSS: network-first en desarrollo, solo cachear si la red falla
-  if (req.destination === 'script' || req.destination === 'style') {
+  // JS: Nunca cachear archivos JavaScript - siempre ir a la red
+  if (req.destination === 'script') {
+    event.respondWith(fetch(req));
+    return;
+  }
+
+  // CSS: network-first para estilos
+  if (req.destination === 'style') {
     event.respondWith((async () => {
       try {
         const res = await fetch(req);
-        // Solo cachear scripts/styles si la respuesta es exitosa
         if (res.ok) {
           const copy = res.clone();
           const c = await caches.open(APP_CACHE);
@@ -83,7 +88,6 @@ self.addEventListener('fetch', (event) => {
         }
         return res;
       } catch (e) {
-        // Si falla la red, intentar caché
         const cached = await caches.match(req);
         return cached || new Response('', { status: 504 });
       }

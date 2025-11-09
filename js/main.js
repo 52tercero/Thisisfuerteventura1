@@ -192,29 +192,17 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 
-// Registrar Service Worker para PWA
-(function registerSW() {
+// Eliminar cualquier Service Worker previamente registrado y no registrar ninguno nuevo
+(function unregisterSW() {
     if ('serviceWorker' in navigator) {
         window.addEventListener('load', function() {
-            navigator.serviceWorker.register('sw.js')
-                .then(reg => {
-                    try { reg.update(); } catch (_) {}
-                    // Tomar control inmediato si hay actualización
-                    if (reg.waiting) {
-                        reg.waiting.postMessage({ type: 'SKIP_WAITING' });
-                    }
-                    reg.addEventListener('updatefound', () => {
-                        const newWorker = reg.installing;
-                        if (!newWorker) return;
-                        newWorker.addEventListener('statechange', () => {
-                            if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
-                                // Nueva versión lista; refrescar para evitar contenido obsoleto
-                                try { location.reload(); } catch (_) {}
-                            }
-                        });
+            navigator.serviceWorker.getRegistrations()
+                .then(registrations => {
+                    registrations.forEach(reg => {
+                        try { reg.unregister(); } catch (_) {}
                     });
                 })
-                .catch(err => console.warn('SW registration failed', err));
+                .catch(() => {});
         });
     }
 })();

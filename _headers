@@ -13,8 +13,6 @@
 /images/*
   Cache-Control: public, max-age=604800, immutable
 
-/sw.js
-  Cache-Control: public, max-age=0, must-revalidate
 
 /manifest.webmanifest
   Cache-Control: public, max-age=86400
