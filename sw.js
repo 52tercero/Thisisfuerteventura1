@@ -1,5 +1,5 @@
 ﻿// Service Worker con estrategia segura (network-first para documentos) para evitar contenido obsoleto
-const SW_VERSION = 'v3';
+const SW_VERSION = 'v4';
 const APP_CACHE = `app-${SW_VERSION}`;
 
 const PRECACHE = [
@@ -86,6 +86,6 @@ self.addEventListener('fetch', (event) => {
 
   // Otros: cache, luego red
   event.respondWith(
-    caches.match(req).then((cached) => cached || fetch(req))
+    caches.match(req).then((cached) => cached || fetch(req).catch(() => null))
   );
 });
