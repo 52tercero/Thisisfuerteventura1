@@ -15,10 +15,8 @@ exports.handler = async (event) => {
   }
 
   try {
-    console.log('[RSS FUNCTION] Query params:', event.queryStringParameters);
     const url = (event.queryStringParameters && event.queryStringParameters.url) || '';
     if (!url) {
-      console.log('[RSS FUNCTION] Missing url parameter');
       return { statusCode: 400, headers, body: JSON.stringify({ error: 'missing url' }) };
     }
 
@@ -27,17 +25,15 @@ exports.handler = async (event) => {
     if (!ALLOW_ALL) {
       const list = buildAllowed();
       allowed = list.some((s) => url.startsWith(s));
-      console.log('[RSS FUNCTION] Allowlist check for', url, ':', allowed);
     }
     if (!allowed) {
       return { statusCode: 403, headers, body: JSON.stringify({ error: 'source not allowed' }) };
     }
 
     const items = await fetchFeed(url);
-    console.log('[RSS FUNCTION] Fetched', items.length, 'items from', url);
     return { statusCode: 200, headers, body: JSON.stringify({ items: normalize(items) }) };
   } catch (e) {
-    console.error('[RSS FUNCTION] Error:', e);
+    console.error('[RSS] Error:', e.message);
     return { statusCode: 500, headers, body: JSON.stringify({ error: 'rss_failed', details: e && e.message }) };
   }
 };

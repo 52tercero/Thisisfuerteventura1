@@ -23,7 +23,6 @@ function buildAllowed() {
 }
 
 async function fetchFeed(url) {
-  console.log('[NETLIFY FUNCTION] Fetching feed:', url);
   const res = await fetch(url, { headers: { 'User-Agent': 'NetlifyRSSFunction/1.0' } });
   if (!res.ok) throw new Error('Upstream status ' + res.status);
   const text = await res.text();
