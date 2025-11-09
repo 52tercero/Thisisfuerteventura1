@@ -1097,15 +1097,25 @@ button:disabled.btn {
 /* Diseño responsive */
 @media (max-width: 768px) {
     header {
-        padding: 12px 4%;
+        padding: 10px 3%;
+        flex-wrap: wrap;
+    }
+    .logo-container {
+        flex: 1;
+        min-width: 0;
     }
     .logo {
-        width: 52px;
-        margin-right: 10px;
+        width: 50px;
+        margin-right: 8px;
+        flex-shrink: 0;
     }
     header h1 {
-        font-size: 1.8rem;
-        letter-spacing: 0.3px;
+        font-size: clamp(1.3rem, 5vw, 1.6rem);
+        letter-spacing: 0.2px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        line-height: 1.2;
     }
     /* Agregar una etiqueta de texto para la hamburguesa para hacerla obvia incluso si los iconos fallan */
     .mobile-menu {
@@ -1176,6 +1186,21 @@ button:disabled.btn {
     nav.nav-open ul li {
         margin: 10px 0;
         margin-left: 0;
+    }
+}
+
+/* Estilos adicionales para móviles muy pequeños */
+@media (max-width: 480px) {
+    header {
+        padding: 8px 2%;
+    }
+    .logo {
+        width: 45px;
+        margin-right: 6px;
+    }
+    header h1 {
+        font-size: clamp(1.1rem, 4.5vw, 1.4rem);
+        letter-spacing: 0.1px;
     }
 }
 
