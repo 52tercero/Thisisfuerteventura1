@@ -69,6 +69,7 @@ app.use('/api', rateLimit);
 // Asegurar que exista una implementación de fetch (Node 18+ provee fetch global).
 // Si no está presente, usar node-fetch v2 (compatible con CommonJS).
 let fetchImpl = globalThis.fetch;
+const FETCH_TIMEOUT_MS = Number(process.env.FETCH_TIMEOUT_MS || 8000);
 if (!fetchImpl) {
   try {
     // node-fetch v2 exporta una función via require
@@ -83,7 +84,18 @@ if (!fetchImpl) {
 // función auxiliar para usar la implementación de fetch elegida
 async function fetchUrl(url, opts) {
   if (!fetchImpl) throw new Error('No fetch implementation available');
-  return fetchImpl(url, opts);
+  const hasSignal = opts && opts.signal;
+  if (hasSignal) {
+    return fetchImpl(url, opts);
+  }
+  const controller = new AbortController();
+  const id = setTimeout(() => controller.abort(), FETCH_TIMEOUT_MS);
+  try {
+    const nextOpts = Object.assign({}, opts || {}, { signal: controller.signal });
+    return await fetchImpl(url, nextOpts);
+  } finally {
+    clearTimeout(id);
+  }
 }
 
 // Caché simple en memoria con TTL (configurable vía env CACHE_TTL_MS)

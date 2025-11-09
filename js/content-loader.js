@@ -42,32 +42,19 @@ document.addEventListener('DOMContentLoaded', async function() {
         async function fetchRSSFeeds() {
             // Intentar descubrimiento automático de un proxy local en ejecución (cacheado). Recurre a window.__RSS_PROXY_URL o puertos 3000/3001/3002.
             async function discoverLocalProxy() {
-                if (window.__RSS_PROXY_URL) return window.__RSS_PROXY_URL;
+                // Si ya tenemos una URL configurada (incluida cadena vacía para Netlify Functions), úsala sin más pruebas
+                if (typeof window.__RSS_PROXY_URL === 'string') return window.__RSS_PROXY_URL;
                 try {
                     if (window.discoverRSSProxy) {
                         const u = await window.discoverRSSProxy();
                         if (u) return u;
                     }
                 } catch (_) {}
-                // Si estamos desplegados (no localhost), intentar Netlify Functions como base
-                try {
-                    const isLocal = /^(localhost|127\.0\.0\.1)/.test(location.hostname);
-                    if (!isLocal) {
-                        console.log('[CONTENT-LOADER] Detected remote host, testing Netlify Functions...');
-                        // Probar el endpoint agregado como señal
-                        const testUrl = '/.netlify/functions/aggregate?sources=' + encodeURIComponent('https://www.canarias7.es/canarias/fuerteventura/');
-                        console.log('[CONTENT-LOADER] Testing:', testUrl);
-                        const test = await fetch(testUrl, { method: 'GET', cache: 'no-store' });
-                        console.log('[CONTENT-LOADER] Test response status:', test.status);
-                        if (test.ok) {
-                            console.log('[CONTENT-LOADER] Using Netlify Functions');
-                            return '';  // Empty string means use relative paths
-                        }
-                    } else {
-                        console.log('[CONTENT-LOADER] Local environment detected');
-                    }
-                } catch (e) {
-                    console.warn('[CONTENT-LOADER] Netlify Functions test failed:', e);
+                // Si estamos desplegados (no localhost), asumir Netlify Functions sin hacer request de prueba extra
+                const isLocal = /^(localhost|127\.0\.0\.1)/.test(location.hostname);
+                if (!isLocal) {
+                    console.log('[CONTENT-LOADER] Remote host detected, assuming Netlify Functions base');
+                    return '';
                 }
                 const candidates = ['http://localhost:3000', 'http://localhost:3001', 'http://localhost:3002'];
                 for (const base of candidates) {
@@ -168,7 +155,7 @@ document.addEventListener('DOMContentLoaded', async function() {
                 let items = cacheGet(aggKey);
                 if (!items) {
                     const aggPath = proxyBase === '' ? '/.netlify/functions/aggregate' : (proxyBase.endsWith('/.netlify/functions') ? '/aggregate' : '/api/aggregate');
-                    const aggUrl = `${proxyBase}${aggPath}?sources=${encodeURIComponent(newsSources.join(','))}&dedupe=0&noCache=1`;
+                    const aggUrl = `${proxyBase}${aggPath}?sources=${encodeURIComponent(newsSources.join(','))}&dedupe=0`;
                     console.log('[CONTENT-LOADER] Fetching aggregate from:', aggUrl);
                     try {
                         const r = await fetch(aggUrl, { cache: 'no-store' });
@@ -186,7 +173,7 @@ document.addEventListener('DOMContentLoaded', async function() {
                             if (cached) return cached;
                             try {
                                 const rssPath = proxyBase === '' ? '/.netlify/functions/rss' : (proxyBase.endsWith('/.netlify/functions') ? '/rss' : '/api/rss');
-                                const rr = await fetch(`${proxyBase}${rssPath}?url=${encodeURIComponent(src)}&noCache=1`, { cache: 'no-store' });
+                                const rr = await fetch(`${proxyBase}${rssPath}?url=${encodeURIComponent(src)}`, { cache: 'no-store' });
                                 if (!rr.ok) throw new Error('bad response');
                                 const jj = await rr.json();
                                 const its = Array.isArray(jj.items) ? jj.items : [];
