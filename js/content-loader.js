@@ -24,8 +24,10 @@ document.addEventListener('DOMContentLoaded', async function() {
             }
         }
         
-        // Mostrar mensaje de carga
-        featuredNewsContainer.innerHTML = '<div class="loading">Cargando noticias...</div>';
+        // Mostrar mensaje de carga solo si no hay contenido SSR/SSG previo
+        if (!featuredNewsContainer.querySelector('.content-card')) {
+            featuredNewsContainer.innerHTML = '<div class="loading">Cargando noticias...</div>';
+        }
         
         // Fuentes de noticias (RSS feeds de sitios de noticias sobre Fuerteventura/Canarias)
         const newsSources = [
