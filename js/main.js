@@ -1,3 +1,13 @@
+/**
+ * main.js
+ *
+ * Responsable de:
+ * - Alternar el menú de navegación móvil con atributos ARIA y transiciones accesibles.
+ * - Validar y gestionar el formulario de newsletter.
+ * - Desplazamiento suave para enlaces ancla internos.
+ * - Desregistrar cualquier Service Worker previo para evitar cacheos inesperados.
+ * - Forzar recarga en Inicio cuando ya estamos en Inicio para evitar contenido cacheado.
+ */
 document.addEventListener('DOMContentLoaded', function() {
     // Alternador de menú móvil
     const mobileMenuBtn = document.querySelector('.mobile-menu');

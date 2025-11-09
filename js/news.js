@@ -6,17 +6,14 @@ document.addEventListener('DOMContentLoaded', function() {
     // Variables para la paginación y filtrado
     let currentPage = 1;
     const itemsPerPage = 9;
-    let currentCategory = 'all';
-    let currentSort = 'newest';
+    // Eliminado filtrado por categoría y orden: sólo búsqueda + paginación
     let currentSearch = '';
 
     // Controles del DOM (si existen)
     const prevPageBtns = [document.getElementById('prev-page'), document.getElementById('prev-page-top')].filter(Boolean);
     const nextPageBtns = [document.getElementById('next-page'), document.getElementById('next-page-top')].filter(Boolean);
     const pageInfos = [document.getElementById('page-info'), document.getElementById('page-info-top')].filter(Boolean);
-    const categoryFilter = document.getElementById('category-filter');
-    const dateFilter = document.getElementById('date-filter');
-    const applyFiltersBtn = document.getElementById('apply-filters');
+    // Los elementos de filtro ya no existen (categoría / fecha)
     const searchInput = document.getElementById('news-search');
     const searchBtn = document.getElementById('search-btn');
 
@@ -26,219 +23,55 @@ document.addEventListener('DOMContentLoaded', function() {
         return date.toLocaleDateString('es-ES', options);
     }
 
-    // Intentar obtener noticias vía proxy local (si está disponible)
+    // Obtener noticias delegando a FeedUtils para evitar duplicación
     async function fetchNews() {
-        const newsSources = [
-            'https://www.canarias7.es/rss/2.0/?section=canarias/fuerteventura',
-            'https://www.laprovincia.es/rss/section/9280',
-            'https://www.cabildofuer.es/cabildo/noticias/feed/',
-            'https://www.radioinsular.es/feed/',
-            'https://www.fuerteventuradigital.com/rss',
-            'https://ondafuerteventura.es/feed/',
-        ];
-
-        // Intentar descubrimiento automático de un proxy local en ejecución (cacheado). Recurre a window.__RSS_PROXY_URL o puertos 3000/3001/3002.
-        async function discoverLocalProxy() {
-            if (window.__RSS_PROXY_URL) return window.__RSS_PROXY_URL;
-            try {
-                if (window.discoverRSSProxy) {
-                    const u = await window.discoverRSSProxy();
-                    if (u) return u;
-                }
-            } catch (_) {}
-            const candidates = ['http://localhost:3000', 'http://localhost:3001', 'http://localhost:3002'];
-            for (const base of candidates) {
-                try {
-                    const r = await fetch(`${base}/health`, { method: 'GET', cache: 'no-store' });
-                    if (r.ok) return base;
-                } catch (_) { /* siguiente candidato */ }
-            }
-            return 'http://localhost:3000';
-        }
-
-        const proxyBase = await discoverLocalProxy();
-
-        // Auxiliar: sanitizador básico y extracción de medios
-        function sanitizeHTML(str) {
-            if (!str) return '';
-            str = str.replace(/<script[\s\S]*?>[\s\S]*?<\/script>/gi, '');
-            str = str.replace(/<style[\s\S]*?>[\s\S]*?<\/style>/gi, '');
-            str = str.replace(/\son\w+=\"[^\"]*\"/gi, '');
-            str = str.replace(/\son\w+='[^']*'/gi, '');
-            str = str.replace(/href=\"\s*javascript:[^\"]*\"/gi, 'href="#"');
-            return str;
-        }
-
-        // Preferir DOMPurify si está disponible para sanitización más fuerte
-        function sanitize(str) {
-            try {
-                if (window.DOMPurify && typeof DOMPurify.sanitize === 'function') {
-                    return DOMPurify.sanitize(str);
-                }
-            } catch (e) {
-                // fallback
-            }
-            return sanitizeHTML(str);
-        }
-
-        // Usar el extractor robusto si está disponible (image-extractor.js)
-        async function extractImageFromRaw(it, sourceUrl = '') {
-            if (window.ImageExtractor && typeof window.ImageExtractor.extractImageFromItem === 'function') {
-                return await window.ImageExtractor.extractImageFromItem(it, { validate: false, sourceUrl });
-            }
-            
-            // Fallback simple si el módulo no está cargado
-            if (!it) return 'images/logo.jpg';
-            if (it.image && typeof it.image === 'string') return it.image;
-            if (it.raw?.image_url) return it.raw.image_url;
-            
-            const raw = it.raw || {};
-            if (raw.enclosure) {
-                if (typeof raw.enclosure === 'string') return raw.enclosure;
-                if (raw.enclosure.url) return raw.enclosure.url;
-            }
-            
-            const desc = it.description || it.summary || '';
-            const descStr = typeof desc === 'object' ? (desc._ || '') : String(desc);
-            if (descStr) {
-                const match = descStr.match(/<img[^>]+src=["']([^"']+)["']/i);
-                if (match && match[1]) return match[1];
-            }
-            
-            return 'images/logo.jpg';
-        }
-
-        function cacheGet(key, ttl = 1000 * 60 * 15) {
-            try {
-                const raw = localStorage.getItem(key);
-                if (!raw) return null;
-                const parsed = JSON.parse(raw);
-                if (!parsed || !parsed.ts) return null;
-                if (Date.now() - parsed.ts > ttl) { localStorage.removeItem(key); return null; }
-                return parsed.items || null;
-            } catch (e) { return null; }
-        }
-
-        function cacheSet(key, items) {
-            try { localStorage.setItem(key, JSON.stringify({ ts: Date.now(), items })); } catch (e) { /* ignore */ }
-        }
-
-        // Sin fallback simulado: si el proxy no devuelve elementos, retornaremos un array vacío
-
-        // Intentar obtener feeds del proxy en paralelo y normalizar resultados
         try {
-            // Preferir endpoint aggregate (una sola llamada)
-            const aggKey = 'rss_cache_v2_media_AGG';
-            let items = cacheGet(aggKey);
-            if (!items) {
-                const aggUrl = `${proxyBase}/api/aggregate?sources=${encodeURIComponent(newsSources.join(','))}&dedupe=0`;
-                try {
-                    const r = await fetch(aggUrl);
-                    if (!r.ok) throw new Error('bad response');
-                    const json = await r.json();
-                    items = Array.isArray(json.items) ? json.items : [];
-                    cacheSet(aggKey, items);
-                } catch (e) {
-                    console.warn('Falló obtención agregada, fallback por fuente:', e && e.message);
-                    const fetches = newsSources.map(async (src) => {
-                        const cacheKey = 'rss_cache_v2_media_' + btoa(src);
-                        const cached = cacheGet(cacheKey);
-                        if (cached) return cached;
-                        try {
-                            const rr = await fetch(`${proxyBase}/api/rss?url=${encodeURIComponent(src)}`);
-                            if (!rr.ok) throw new Error('bad response');
-                            const jj = await rr.json();
-                            const its = Array.isArray(jj.items) ? jj.items : [];
-                            cacheSet(cacheKey, its);
-                            return its;
-                        } catch (err) {
-                            console.warn('Falló obtención del proxy para', src, err && err.message);
-                            return [];
-                        }
-                    });
-                    const results = await Promise.all(fetches);
-                    items = results.flat();
-                }
-            }
-
-            // Mezclar con newsdata.io si está disponible
-            try {
-                const newsdataKey = 'newsdata_cache_v1';
-                let newsdataItems = cacheGet(newsdataKey);
-                if (!newsdataItems) {
-                    const newsdataUrl = `${proxyBase}/api/newsdata?q=fuerteventura&country=es&language=es`;
-                    const nr = await fetch(newsdataUrl);
-                    if (nr.ok) {
-                        const nj = await nr.json();
-                        newsdataItems = Array.isArray(nj.items) ? nj.items : [];
-                        cacheSet(newsdataKey, newsdataItems);
-                        items = items.concat(newsdataItems);
-                    }
-                } else {
-                    items = items.concat(newsdataItems);
-                }
-            } catch (e) {
-                console.warn('newsdata.io no disponible:', e && e.message);
-            }
-
-            // SIN FILTROS: se muestran todas las noticias tal como llegan del feed
-
-            if (items.length > 0) {
-                // Normalizar a la forma usada por la UI
-                const normalized = await Promise.all(items.map(async (it, idx) => {
-                    const title = (it.title && (typeof it.title === 'string' ? it.title : (it.title._ || ''))) || 'Sin título';
-                    const descriptionRaw = it.description || it.summary || '';
-                    const description = typeof descriptionRaw === 'object' ? (descriptionRaw._ || '') : descriptionRaw;
-                    const link = it.link || '';
-                    const pub = it.pubDate || it.published || it.updated || '';
-                    let source = '';
-                    try { source = link ? (new URL(link)).hostname.replace('www.', '') : (it.source || 'fuente'); } catch (e) { source = it.source || 'fuente'; }
-
-                    const image = await extractImageFromRaw(it, link);
-
-                    const cleaned = sanitize(description);
-                    return {
-                        title: title,
-                        image: image,
-                        description: cleaned,
-                        summary: cleaned,
-                        date: pub ? formatDate(new Date(pub)) : formatDate(new Date()),
-                        category: it.category || 'General',
-                        source,
-                        link,
-                        raw: it.raw
-                    };
+            const sources = [
+                'https://www.canarias7.es/rss/2.0/?section=canarias/fuerteventura',
+                'https://www.laprovincia.es/rss/section/9280',
+                'https://www.cabildofuer.es/cabildo/noticias/feed/',
+                'https://www.radioinsular.es/feed/',
+                'https://www.fuerteventuradigital.com/rss',
+                'https://ondafuerteventura.es/feed/'
+            ];
+            if (window.FeedUtils && typeof FeedUtils.fetchRSSFeeds === 'function') {
+                const items = await FeedUtils.fetchRSSFeeds(sources);
+                // Adaptar forma esperada por listado
+                return items.map((it, idx) => ({
+                    id: idx + 1,
+                    title: it.title,
+                    image: it.image,
+                    summary: it.summary || it.description || '',
+                    content: it.fullHtml || it.description || '',
+                    date: it.date,
+                    category: it.category,
+                    tags: Array.isArray(it.tags) ? it.tags : [],
+                    source: it.source,
+                    link: it.link
                 }));
-                return normalized;
             }
-        } catch (err) {
-            console.warn('Error al obtener vía proxy', err);
+        } catch (e) {
+            console.warn('[NEWS] FeedUtils.fetchRSSFeeds failed:', e);
         }
-
-        // Si el proxy no devolvió elementos o ocurrió un error, retornar un array vacío
         return [];
     }
 
     function filterNews(news) {
         return news.filter(item => {
-            if (currentCategory !== 'all' && item.category.toLowerCase() !== currentCategory.toLowerCase()) {
-                return false;
+            if (currentSearch) {
+                const s = currentSearch.toLowerCase();
+                return item.title.toLowerCase().includes(s) || item.summary.toLowerCase().includes(s);
             }
-
-            if (currentSearch && !item.title.toLowerCase().includes(currentSearch.toLowerCase()) && !item.summary.toLowerCase().includes(currentSearch.toLowerCase())) {
-                return false;
-            }
-
             return true;
         });
     }
 
     function sortNews(news) {
+        // Por defecto siempre más recientes primero
         return news.sort((a, b) => {
             const dateA = new Date(a.date.split(' de ').reverse().join(' '));
             const dateB = new Date(b.date.split(' de ').reverse().join(' '));
-            if (currentSort === 'newest') return dateB - dateA;
-            return dateA - dateB;
+            return dateB - dateA;
         });
     }
 
@@ -253,6 +86,8 @@ document.addEventListener('DOMContentLoaded', function() {
         prevPageBtns.forEach(btn => { btn.disabled = currentPage === 1; });
         nextPageBtns.forEach(btn => { btn.disabled = currentPage === totalPages; });
     }
+
+    // Función eliminada: populateCategoryFilterFrom (no se necesita)
 
     async function loadAndDisplayNews() {
         // Mostrar loading solo si no hay SSR/SSG previo
@@ -276,6 +111,12 @@ document.addEventListener('DOMContentLoaded', function() {
                             try { source = link ? (new URL(link)).hostname.replace('www.', '') : 'fuente'; } catch (_) { source = 'fuente'; }
                             const dateStr = pub ? new Date(pub) : new Date();
                             const img = (it.image && /^https:\/\//.test(it.image)) ? it.image : 'images/logo.jpg?v=2025110501';
+                            // Extraer etiquetas simples del snapshot si existen
+                            const tags = [];
+                            const push = (v) => { if (!v) return; (Array.isArray(v) ? v : String(v).split(/[,;|]/)).forEach(s => { s = String(s).trim(); if (!s) return; if (!tags.some(t => t.toLowerCase() === s.toLowerCase())) tags.push(s.charAt(0).toUpperCase() + s.slice(1)); }); };
+                            push(it.tags);
+                            push(it.categories);
+                            push(it.category);
                             return {
                                 id: idx + 1,
                                 title,
@@ -283,10 +124,10 @@ document.addEventListener('DOMContentLoaded', function() {
                                 summary: description,
                                 content: description,
                                 date: dateStr.toLocaleDateString('es-ES', { day: 'numeric', month: 'long', year: 'numeric' }),
-                                category: 'General',
+                                category: tags.find(t => t.toLowerCase() !== 'general') || tags[0] || 'General',
                                 source,
                                 link,
-                                tags: []
+                                tags
                             };
                         });
                         const filtered = filterNews(normalized);
@@ -300,6 +141,9 @@ document.addEventListener('DOMContentLoaded', function() {
                             const categoryTag = (item.category && String(item.category).toLowerCase() !== 'general')
                                 ? `<span class="category-tag">${item.category}</span>`
                                 : '';
+                            const tagChips = (Array.isArray(item.tags) && item.tags.length > 0)
+                                ? `<div class="tag-chips">${item.tags.slice(0,3).map(t => `<button class="tag-chip" data-tag="${t}">${t}</button>`).join(' ')}</div>`
+                                : '';
                             newsCard.innerHTML = `
                                 <div class="news-image">
                                     <img src="${item.image}" alt="${item.title}" onerror="this.onerror=null;this.src='images/logo.jpg?v=2025110501';">
@@ -309,6 +153,7 @@ document.addEventListener('DOMContentLoaded', function() {
                                     <span class="news-date">${item.date}</span>
                                     <h3>${item.title}</h3>
                                     <p>${item.summary}</p>
+                                    ${tagChips}
                                 </div>
                             `;
                             const readMoreBtn = document.createElement('a');
@@ -342,6 +187,9 @@ document.addEventListener('DOMContentLoaded', function() {
                 const categoryTag = (item.category && String(item.category).toLowerCase() !== 'general')
                     ? `<span class="category-tag">${item.category}</span>`
                     : '';
+                const tagChips = (Array.isArray(item.tags) && item.tags.length > 0)
+                    ? `<div class="tag-chips">${item.tags.slice(0,3).map(t => `<button class="tag-chip" data-tag="${t}">${t}</button>`).join(' ')}</div>`
+                    : '';
 
                 // Resumen compacto en texto plano (150 caracteres)
                 const fullText = (item.summary || item.description || '').replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim();
@@ -366,6 +214,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         <h3>${item.title}</h3>
                         <p>${shortSummary}</p>
                         ${categoryTag}
+                        ${tagChips}
                     </div>
                 `;
 
@@ -386,12 +235,13 @@ document.addEventListener('DOMContentLoaded', function() {
     // Listeners de eventos
     prevPageBtns.forEach(btn => btn.addEventListener('click', () => { if (currentPage > 1) { currentPage--; loadAndDisplayNews(); } }));
     nextPageBtns.forEach(btn => btn.addEventListener('click', () => { currentPage++; loadAndDisplayNews(); }));
-    if (applyFiltersBtn) applyFiltersBtn.addEventListener('click', () => { currentPage = 1; if (categoryFilter) currentCategory = categoryFilter.value; if (dateFilter) currentSort = dateFilter.value; loadAndDisplayNews(); });
     if (searchBtn) searchBtn.addEventListener('click', () => { currentPage = 1; currentSearch = searchInput ? searchInput.value.trim() : ''; loadAndDisplayNews(); });
     if (searchInput) searchInput.addEventListener('keypress', (e) => { if (e.key === 'Enter') { currentPage = 1; currentSearch = searchInput.value.trim(); loadAndDisplayNews(); } });
 
     // Carga inicial
     loadAndDisplayNews();
+
+    // Eliminada interacción con chips de etiqueta (ya no se usan para filtrar)
 
     // Re-render si volvemos desde el historial con BFCache
     window.addEventListener('pageshow', (evt) => {

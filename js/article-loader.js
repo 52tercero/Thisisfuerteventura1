@@ -1,4 +1,14 @@
 ﻿// article-loader.js - Carga un artículo individual desde localStorage o desde el servidor
+/**
+ * article-loader.js
+ *
+ * Carga un artículo individual desde localStorage utilizando el parámetro ?id= en la URL.
+ * Seguridad y UX:
+ * - Valida que el id sea alfanumérico (1-64) para evitar inyecciones.
+ * - Sanitiza HTML enriquecido con DOMPurify si está disponible.
+ * - Escapa cadenas de texto (título, categoría, fuente) antes de insertarlas en innerHTML.
+ * - Actualiza/crea meta tags OG/Twitter cuando faltan para mejorar el compartir.
+ */
 
 document.addEventListener('DOMContentLoaded', () => {
     const articleContainer = document.getElementById('article-container');
@@ -66,12 +76,26 @@ document.addEventListener('DOMContentLoaded', () => {
             return html;
         };
 
+        // Escapar texto plano para evitar inyección al usar innerHTML
+        const escapeHTML = (str) => {
+            try {
+                return String(str)
+                    .replace(/&/g, '&amp;')
+                    .replace(/</g, '&lt;')
+                    .replace(/>/g, '&gt;')
+                    .replace(/"/g, '&quot;')
+                    .replace(/'/g, '&#39;');
+            } catch (_) {
+                return '';
+            }
+        };
+
         const categoryTag = (article.category && String(article.category).toLowerCase() !== 'general')
-            ? `<span class="category-tag" style="display: inline-block; margin: 10px 0;">${article.category}</span>`
+            ? `<span class="category-tag" style="display: inline-block; margin: 10px 0;">${escapeHTML(article.category)}</span>`
             : '';
 
         const sourceInfo = article.source 
-            ? `<p class="article-source"><strong>Fuente:</strong> ${article.source}</p>` 
+            ? `<p class="article-source"><strong>Fuente:</strong> ${escapeHTML(article.source)}</p>` 
             : '';
 
         const externalLink = article.link 
@@ -108,7 +132,7 @@ document.addEventListener('DOMContentLoaded', () => {
             <article class="article-full">
                 <header class="article-header">
                     ${categoryTag}
-                    <h1>${article.title}</h1>
+                    <h1>${escapeHTML(article.title)}</h1>
                     <div class="article-meta">
                         <span class="article-date"><i class="fas fa-calendar"></i> ${article.date}</span>
                     </div>
@@ -117,7 +141,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 ${article.image ? `
                     <div class="article-image">
                         <img src="${article.image}" 
-                             alt="${article.title}" 
+                             alt="${escapeHTML(article.title)}" 
                              onerror="this.onerror=null;this.src='images/logo.jpg';">
                     </div>
                 ` : ''}
@@ -146,6 +170,8 @@ document.addEventListener('DOMContentLoaded', () => {
         updateMetaTag('og:description', article.description || article.summary || '');
         updateMetaTag('og:image', article.image || '/images/logo.jpg');
         updateMetaTag('og:type', 'article');
+        // URL canónica para OG
+        updateMetaTag('og:url', article.link || window.location.href);
 
         // Actualizar Twitter Card tags
         updateMetaTag('twitter:title', article.title);
@@ -164,9 +190,16 @@ document.addEventListener('DOMContentLoaded', () => {
         // Buscar por property (Open Graph) o name (Twitter)
         let meta = document.querySelector(`meta[property="${property}"]`) 
                 || document.querySelector(`meta[name="${property}"]`);
-        
-        if (meta) {
-            meta.setAttribute('content', content);
+
+        if (!meta) {
+            // Crear si no existe
+            const isOG = property.startsWith('og:');
+            meta = document.createElement('meta');
+            if (isOG) meta.setAttribute('property', property);
+            else meta.setAttribute('name', property);
+            document.head.appendChild(meta);
         }
+
+        meta.setAttribute('content', content);
     }
 });

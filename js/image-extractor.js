@@ -1,6 +1,7 @@
 ﻿/**
- * Extractor robusto de imágenes de feeds RSS/Atom y artículos web
- * Soporta múltiples fuentes: enclosure, media:*, Open Graph, Twitter Cards, JSON-LD, regex en HTML
+ * Extractor robusto de imágenes de feeds RSS/Atom
+ * Soporta múltiples fuentes: enclosure, media:*, Open Graph, Twitter Cards, JSON-LD
+ * @module ImageExtractor
  */
 
 // Caché de validación de URLs (evita peticiones HEAD repetidas)
@@ -14,8 +15,7 @@ const DOMAIN_FALLBACKS = {
     'cabildofuer.es': 'images/logo.jpg',
     'radioinsular.es': 'images/logo.jpg',
     'fuerteventuradigital.com': 'images/logo.jpg',
-    'ondafuerteventura.es': 'images/logo.jpg',
-    'newsdata.io': 'images/logo.jpg'
+    'ondafuerteventura.es': 'images/logo.jpg'
 };
 
 // Estadísticas de errores (para análisis)
@@ -29,6 +29,8 @@ const imageStats = {
 
 /**
  * Obtiene el fallback de imagen específico para un dominio
+ * @param {string} url - URL para identificar el dominio
+ * @returns {string} Ruta de la imagen de fallback
  */
 function getDomainFallback(url) {
     try {
@@ -45,7 +47,10 @@ function getDomainFallback(url) {
 }
 
 /**
- * Registra un error de extracción de imagen
+ * Registra un error de extracción de imagen para análisis
+ * @param {string} url - URL de origen donde ocurrió el error
+ * @param {string} type - Tipo de error
+ * @param {string|Error} error - Descripción del error
  */
 function logImageError(url, type, error) {
     imageStats.failedExtractions++;
@@ -63,7 +68,10 @@ function logImageError(url, type, error) {
 }
 
 /**
- * Extrae URLs de imágenes usando expresiones regulares robustas
+ * Extrae URLs de imágenes de HTML usando expresiones regulares robustas
+ * Busca: Open Graph, Twitter Cards, tags <img>, JSON-LD, link rel="image_src"
+ * @param {string} html - Código HTML a analizar
+ * @returns {string[]} Array de URLs de imágenes encontradas
  */
 function extractImageURLsFromHTML(html) {
     if (!html || typeof html !== 'string') return [];
@@ -112,7 +120,12 @@ function extractImageURLsFromHTML(html) {
 }
 
 /**
- * Valida una URL de imagen con petición HEAD (opcional, con caché)
+ * Valida una URL de imagen mediante petición HEAD
+ * @param {string} url - URL de la imagen a validar
+ * @param {Object} options - Opciones de validación
+ * @param {boolean} options.useCache - Si usar caché de validación
+ * @param {number} options.timeout - Timeout en milisegundos
+ * @returns {Promise<boolean>} true si la URL es una imagen válida
  */
 async function validateImageURL(url, { useCache = true, timeout = 3000 } = {}) {
     if (!url || typeof url !== 'string') return false;
@@ -152,14 +165,19 @@ async function validateImageURL(url, { useCache = true, timeout = 3000 } = {}) {
 }
 
 /**
- * Extrae imagen de un item de feed (RSS/Atom o newsdata.io)
+ * Extrae imagen de un item de feed RSS/Atom
  * Busca en múltiples fuentes con prioridad:
- * 1. Campo directo image/image_url
+ * 1. Campo directo image
  * 2. Enclosure
- * 3. Media RSS (media:content, media:thumbnail)
- * 4. Content:encoded con regex
- * 5. Description/summary con regex
+ * 3. Media RSS (media:content, media:thumbnail, media:group)
+ * 4. Content:encoded con extracción HTML
+ * 5. Description/summary con extracción HTML
  * 6. Open Graph y meta tags (si raw contiene HTML)
+ * @param {Object} item - Item del feed RSS/Atom
+ * @param {Object} options - Opciones de extracción
+ * @param {boolean} options.validate - Si validar la imagen con petición HEAD
+ * @param {string} options.sourceUrl - URL de origen para fallback
+ * @returns {Promise<string>} URL de la imagen o fallback
  */
 async function extractImageFromItem(item, { validate = false, sourceUrl = '' } = {}) {
     imageStats.totalAttempts++;
@@ -172,14 +190,15 @@ async function extractImageFromItem(item, { validate = false, sourceUrl = '' } =
     const candidates = [];
     const debugLog = { source: sourceUrl, candidates: [] };
     
-    // 1. Campo directo image o image_url
+    // 1. Campo directo image
     if (item.image && typeof item.image === 'string') {
         candidates.push(item.image);
         debugLog.candidates.push({ source: 'item.image', url: item.image });
     }
-    if (item.raw?.image_url && typeof item.raw.image_url === 'string') {
-        candidates.push(item.raw.image_url);
-        debugLog.candidates.push({ source: 'raw.image_url', url: item.raw.image_url });
+    // Soporte para imagen en objeto (algunos feeds usan { url: '...' })
+    if (item.image && typeof item.image === 'object' && item.image.url) {
+        candidates.push(item.image.url);
+        debugLog.candidates.push({ source: 'item.image.url', url: item.image.url });
     }
     
     // 2. Enclosure
@@ -254,12 +273,6 @@ async function extractImageFromItem(item, { validate = false, sourceUrl = '' } =
         candidates.push(...extracted);
     }
     
-    // 6. Si raw contiene HTML completo (de newsdata.io content por ejemplo)
-    if (raw.content && typeof raw.content === 'string' && raw.content.includes('<')) {
-        const extracted = extractImageURLsFromHTML(raw.content);
-        candidates.push(...extracted);
-    }
-    
     // Filtrar URLs vacías o inválidas
     const validCandidates = candidates
         .filter(url => url && typeof url === 'string' && url.trim().length > 0)
@@ -305,6 +318,7 @@ async function extractImageFromItem(item, { validate = false, sourceUrl = '' } =
 
 /**
  * Obtiene estadísticas de extracción de imágenes
+ * @returns {Object} Objeto con estadísticas detalladas y tasa de éxito
  */
 function getImageStats() {
     return {
@@ -316,7 +330,7 @@ function getImageStats() {
 }
 
 /**
- * Limpia las estadísticas
+ * Reinicia las estadísticas de extracción de imágenes
  */
 function resetImageStats() {
     imageStats.totalAttempts = 0;

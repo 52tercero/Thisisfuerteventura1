@@ -219,7 +219,7 @@
                 const aggPath = proxyBase === '' 
                     ? '/.netlify/functions/aggregate' 
                     : (proxyBase.endsWith('/.netlify/functions') ? '/aggregate' : '/api/aggregate');
-                const aggUrl = `${proxyBase}${aggPath}?sources=${encodeURIComponent(sources.join(','))}&dedupe=0`;
+                const aggUrl = `${proxyBase}${aggPath}?sources=${encodeURIComponent(sources.join(','))}&dedupe=1`;
                 
                 console.log('[FEED-UTILS] Fetching aggregate from:', aggUrl);
                 
@@ -266,8 +266,73 @@
             }
 
             if (items.length > 0) {
+                // Deduplicar crudos primero por enlace normalizado o título+fecha
+                const normalizeLink = (u) => {
+                    if (!u || typeof u !== 'string') return '';
+                    try {
+                        const url = new URL(u);
+                        url.hash = '';
+                        const params = url.searchParams;
+                        ['utm_source','utm_medium','utm_campaign','utm_term','utm_content','gclid','fbclid'].forEach(k => params.delete(k));
+                        url.search = params.toString();
+                        url.pathname = url.pathname.replace(/\/?amp\/?$/i, '/').replace(/\/+$/,'/');
+                        return url.toString();
+                    } catch (_) {
+                        return String(u);
+                    }
+                };
+                const seenRaw = new Set();
+                const rawDeduped = [];
+                for (const it of items) {
+                    const linkKey = normalizeLink(it.link || it.url || '');
+                    const titlePart = (it.title && (typeof it.title === 'string' ? it.title : (it.title._ || ''))) || '';
+                    const datePart = it.pubDate || it.published || it.updated || '';
+                    const key = linkKey || (titlePart.trim().toLowerCase() + '|' + String(datePart).slice(0,10));
+                    if (key && !seenRaw.has(key)) {
+                        seenRaw.add(key);
+                        rawDeduped.push(it);
+                    }
+                }
+                items = rawDeduped;
+
                 // Normalizar items
                 const normalized = await Promise.all(items.map(async (it) => {
+                    // Extraer etiquetas/categorías de múltiples campos posibles
+                    const extractTags = (item) => {
+                        const out = [];
+                        const raw = item && item.raw ? item.raw : {};
+
+                        const pushVal = (v) => {
+                            if (!v) return;
+                            if (Array.isArray(v)) {
+                                v.forEach(pushVal);
+                                return;
+                            }
+                            if (typeof v === 'object' && typeof v._ === 'string') {
+                                v = v._;
+                            }
+                            if (typeof v !== 'string') return;
+                            v.split(/[,;|]/).forEach((seg) => {
+                                const s = String(seg).trim();
+                                if (!s) return;
+                                // normalizar visualmente (Capitalizar primera letra)
+                                const display = s.charAt(0).toUpperCase() + s.slice(1);
+                                // deduplicar case-insensitive
+                                if (!out.some(t => t.toLowerCase() === display.toLowerCase())) {
+                                    out.push(display);
+                                }
+                            });
+                        };
+
+                        pushVal(item.categories);
+                        pushVal(item.category);
+                        pushVal(raw && (raw.categories || raw.category));
+                        pushVal(raw && (raw['dc:subject'] || raw['dc:subjects']));
+                        pushVal(raw && (raw.keywords || raw.tags));
+
+                        return out;
+                    };
+
                     const title = (it.title && (typeof it.title === 'string' ? it.title : (it.title._ || ''))) || 'Sin título';
                     const descriptionRaw = it.description || it.summary || '';
                     const description = typeof descriptionRaw === 'object' ? (descriptionRaw._ || '') : descriptionRaw;
@@ -284,6 +349,17 @@
                     const image = await extractImageFromRaw(it, link);
                     const cleaned = sanitize(description);
                     
+                    // Etiquetas y categoría primaria
+                    const tags = extractTags(it);
+                    let primaryCategory = 'General';
+                    if (tags.length > 0) {
+                        // evitar usar 'General' como primera si hay otras etiquetas
+                        const nonGeneral = tags.find(t => t.toLowerCase() !== 'general');
+                        primaryCategory = nonGeneral || tags[0];
+                    } else if (it.category && typeof it.category === 'string') {
+                        primaryCategory = it.category;
+                    }
+
                     // Elegir contenido más rico disponible
                     const pickRichHtml = () => {
                         try {
@@ -318,14 +394,32 @@
                         summary: cleaned,
                         fullHtml,
                         date: pub ? formatDate(new Date(pub)) : formatDate(new Date()),
-                        category: it.category || 'General',
+                        category: primaryCategory || 'General',
+                        tags,
                         source,
                         link,
                         raw: it.raw
                     };
                 }));
                 
-                return normalized;
+                // Segunda pasada de dedupe por link normalizado o título+fecha ya transformados
+                const seenNorm = new Set();
+                const final = [];
+                for (const it of normalized) {
+                    const linkKey = normalizeLink(it.link);
+                    const baseKey = linkKey || (String(it.title||'').trim().toLowerCase() + '|' + String(it.date||''));
+                    if (baseKey && !seenNorm.has(baseKey)) {
+                        seenNorm.add(baseKey);
+                        final.push(it);
+                    }
+                }
+                // Ordenar descendente por fecha real si disponible
+                final.sort((a,b) => {
+                    const pa = Date.parse(a.raw?.pubDate || a.raw?.published || a.raw?.updated || a.date || '');
+                    const pb = Date.parse(b.raw?.pubDate || b.raw?.published || b.raw?.updated || b.date || '');
+                    return (isNaN(pb)?0:pb) - (isNaN(pa)?0:pa);
+                });
+                return final;
             }
         } catch (err) {
             console.warn('[FEED-UTILS] Error fetching feeds:', err);
