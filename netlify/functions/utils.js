@@ -1,7 +1,10 @@
 ﻿const { parseStringPromise } = require('xml2js');
 
-// Ensure fetch is available (Netlify Functions run on Node 18+ but may need explicit import)
-const fetch = globalThis.fetch || require('node-fetch');
+// Netlify Functions run on Node 18+ which provides global fetch (undici)
+const fetch = globalThis.fetch;
+if (typeof fetch !== 'function') {
+  throw new Error('Fetch API not available. Please run on Node 18+ or polyfill fetch.');
+}
 
 const DEFAULT_ALLOWED = [
   'https://www.canarias7.es',
