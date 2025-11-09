@@ -24,7 +24,7 @@ document.addEventListener('DOMContentLoaded', async function() {
             }
         }
         
-        // Mostrar mensaje de carga
+    // Mostrar mensaje de carga
         featuredNewsContainer.innerHTML = '<div class="loading">Cargando noticias...</div>';
         
         // Fuentes de noticias (RSS feeds de sitios de noticias sobre Fuerteventura/Canarias)
@@ -108,6 +108,34 @@ document.addEventListener('DOMContentLoaded', async function() {
                     // fallback
                 }
                 return sanitizeHTML(str);
+            }
+
+            // Reescribe imágenes problemáticas hacia un logo genérico (evita 404 como /images/logos/ondafv.png)
+            function rewriteImageSrcs(html) {
+                if (!html || typeof html !== 'string') return html || '';
+                try {
+                    const container = document.createElement('div');
+                    container.innerHTML = html;
+                    const imgs = container.querySelectorAll('img');
+                    imgs.forEach(img => {
+                        const src = img.getAttribute('src') || '';
+                        // Cualquier logo local bajo /images/logos/* -> reemplazar por genérico
+                        if (/^\/?images\/logos\//i.test(src)) {
+                            img.setAttribute('src', 'images/logo.jpg?v=2025110501');
+                        }
+                        // Asegurar lazy loading
+                        if (!img.hasAttribute('loading')) {
+                            img.setAttribute('loading', 'lazy');
+                        }
+                    });
+                    return container.innerHTML;
+                } catch (_) {
+                    // Fallback ligero con regex si DOM falla
+                    return html.replace(/<img([^>]+)src=["']([^"']+)["']([^>]*)>/gi, (m, pre, src, post) => {
+                        const fixed = /^\/?images\/logos\//i.test(src) ? 'images/logo.jpg?v=2025110501' : src;
+                        return `<img${pre}src="${fixed}"${post}>`;
+                    });
+                }
             }
 
             // Usar el extractor robusto si está disponible (image-extractor.js)
@@ -222,7 +250,7 @@ document.addEventListener('DOMContentLoaded', async function() {
 
                         const image = await extractImageFromRaw(it, link);
 
-                        const cleaned = sanitize(description);
+                        const cleaned = rewriteImageSrcs(sanitize(description));
                         // Elegir el HTML más extenso posible: content:encoded > content > description > summary
                         const pickRichHtml = () => {
                             try {
@@ -243,7 +271,7 @@ document.addEventListener('DOMContentLoaded', async function() {
                                 return it.description || it.summary || '';
                             }
                         };
-                        const fullHtml = sanitize(pickRichHtml());
+                        const fullHtml = rewriteImageSrcs(sanitize(pickRichHtml()))
                         return {
                             title: title,
                             image: image,

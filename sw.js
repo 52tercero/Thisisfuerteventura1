@@ -1,5 +1,5 @@
 ﻿// Service Worker con estrategia segura (network-first para documentos) para evitar contenido obsoleto
-const SW_VERSION = 'v4';
+const SW_VERSION = 'v5';
 const APP_CACHE = `app-${SW_VERSION}`;
 
 const PRECACHE = [
@@ -70,16 +70,19 @@ self.addEventListener('fetch', (event) => {
     return;
   }
 
-  // Imágenes: cache-first, fallback a logo
+  // Imágenes: cache-first, fallback a logo (también para 404 del origen)
   if (req.destination === 'image') {
     event.respondWith(
-      caches.match(req).then((cached) => (
-        cached || fetch(req).then((res) => {
+      caches.match(req).then((cached) => {
+        if (cached) return cached;
+        return fetch(req).then((res) => {
+          // Si la respuesta es 404 u otro estado no OK, devolver logo genérico
+          if (!res.ok) return caches.match('/images/logo.jpg');
           const copy = res.clone();
           caches.open(APP_CACHE).then(c => c.put(req, copy));
           return res;
-        }).catch(() => caches.match('/images/logo.jpg'))
-      ))
+        }).catch(() => caches.match('/images/logo.jpg'));
+      })
     );
     return;
   }
