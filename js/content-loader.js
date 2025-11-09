@@ -251,7 +251,96 @@ document.addEventListener('DOMContentLoaded', async function() {
             return [];
         }
         
-        // Obtener noticias y mostrarlas
+        // Intentar snapshot estático para primer render rápido
+        (async () => {
+            try {
+                const snapRes = await fetch('/data/feeds.json', { cache: 'no-store' });
+                if (snapRes.ok) {
+                    const snap = await snapRes.json();
+                    const items = Array.isArray(snap.items) ? snap.items : [];
+                    if (items.length > 0) {
+                        // Normalizar y renderizar hasta 18 items de snapshot
+                        const normalized = await Promise.all(items.slice(0, 60).map(async (it) => {
+                            const title = it.title || 'Sin título';
+                            const descriptionRaw = it.description || '';
+                            const description = typeof descriptionRaw === 'object' ? (descriptionRaw._ || '') : descriptionRaw;
+                            const link = it.link || '';
+                            const pub = it.pubDate || '';
+                            let source = '';
+                            try { source = link ? (new URL(link)).hostname.replace('www.', '') : 'fuente'; } catch (e) { source = 'fuente'; }
+                            const image = await (async () => {
+                                if (!it.image) return 'images/logo.jpg?v=2025110501';
+                                if (/^http:/.test(it.image)) return 'images/logo.jpg?v=2025110501';
+                                return it.image;
+                            })();
+                            const cleaned = (window.DOMPurify && DOMPurify.sanitize) ? DOMPurify.sanitize(description) : description.replace(/<[^>]*>/g, ' ');
+                            return {
+                                title,
+                                image,
+                                description: cleaned,
+                                summary: cleaned,
+                                fullHtml: cleaned,
+                                date: pub ? formatDate(new Date(pub)) : formatDate(new Date()),
+                                category: 'General',
+                                source,
+                                link,
+                                raw: {}
+                            };
+                        }));
+
+                        // Render rápido desde snapshot (hasta 18)
+                        featuredNewsContainer.innerHTML = '';
+                        const bySource = {};
+                        normalized.forEach(item => {
+                            const src = item.source || 'desconocido';
+                            if (!bySource[src]) bySource[src] = [];
+                            bySource[src].push(item);
+                        });
+                        let featured = [];
+                        const sources = Object.keys(bySource);
+                        let round = 0;
+                        while (featured.length < 18 && round < 10) {
+                            for (const src of sources) {
+                                if (bySource[src].length > 0 && featured.length < 18) {
+                                    featured.push(bySource[src].shift());
+                                }
+                            }
+                            round++;
+                        }
+                        featured.forEach((item) => {
+                            const card = document.createElement('div');
+                            card.className = 'content-card';
+                            const categoryTag = (item.category && String(item.category).toLowerCase() !== 'general')
+                                ? `<span class="category-tag">${item.category}</span>`
+                                : '';
+                            const fullText = (item.description || item.summary || '').replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim();
+                            const shortDescription = fullText.length > 150 ? fullText.slice(0, 150) + '...' : fullText;
+                            const articleId = btoa(encodeURIComponent(item.title + item.date)).replace(/[^a-zA-Z0-9]/g, '').substring(0, 32);
+                            try { localStorage.setItem(`article_${articleId}`, JSON.stringify(item)); } catch (_) {}
+                            card.innerHTML = `
+                                <img src="${item.image}" alt="${item.title}" onerror="this.onerror=null;this.src='images/logo.jpg?v=2025110501';">
+                                <div class="card-content">
+                                    <span class="date">${item.date}</span>
+                                    <h3>${item.title}</h3>
+                                    <p>${shortDescription}</p>
+                                    ${categoryTag}
+                                </div>
+                            `;
+                            const readMoreBtn = document.createElement('a');
+                            readMoreBtn.href = `noticia.html?id=${articleId}`;
+                            readMoreBtn.className = 'btn';
+                            readMoreBtn.textContent = 'Leer más';
+                            card.querySelector('.card-content').appendChild(readMoreBtn);
+                            featuredNewsContainer.appendChild(card);
+                        });
+                    }
+                }
+            } catch (_) {
+                // snapshot no disponible; seguimos flujo normal
+            }
+        })();
+
+        // Obtener noticias y (re)mostrarlas con datos frescos
         fetchRSSFeeds().then(newsItems => {
             console.log('[CONTENT-LOADER] Noticias recibidas:', newsItems.length);
             

@@ -5,7 +5,8 @@
   "description": "Static site for This is Fuerteventura with Netlify Functions (RSS proxy, aggregate)",
   "scripts": {
     "start": "npx http-server -p 8000 .",
-    "netlify:dev": "netlify dev"
+    "netlify:dev": "netlify dev",
+    "snapshot": "node tools/generate-snapshot.js"
   },
   "engines": {
     "node": ">=18"

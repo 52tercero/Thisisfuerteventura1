@@ -25,8 +25,22 @@ function buildAllowed() {
   return list;
 }
 
+const FETCH_TIMEOUT_MS = Number(process.env.FETCH_TIMEOUT_MS || 8000);
+
+function withTimeout(ms) {
+  const controller = new AbortController();
+  const id = setTimeout(() => controller.abort(), ms);
+  return { controller, cancel: () => clearTimeout(id) };
+}
+
 async function fetchFeed(url) {
-  const res = await fetch(url, { headers: { 'User-Agent': 'NetlifyRSSFunction/1.0' } });
+  const { controller, cancel } = withTimeout(FETCH_TIMEOUT_MS);
+  const headers = {
+    'User-Agent': 'NetlifyRSSFunction/1.0',
+    'Accept': 'application/rss+xml, application/atom+xml, application/xml;q=0.9, text/xml;q=0.8, */*;q=0.1'
+  };
+  const res = await fetch(url, { headers, signal: controller.signal });
+  cancel();
   if (!res.ok) throw new Error('Upstream status ' + res.status);
   const text = await res.text();
   let parsed;
