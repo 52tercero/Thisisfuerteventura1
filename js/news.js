@@ -255,8 +255,75 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     async function loadAndDisplayNews() {
-        newsContainer.innerHTML = '<div class="loading">Cargando noticias...</div>';
+        // Mostrar loading solo si no hay SSR/SSG previo
+        if (!newsContainer.querySelector('.news-card') && !newsContainer.querySelector('.content-card')) {
+            newsContainer.innerHTML = '<div class="loading">Cargando noticias...</div>';
+        }
         try {
+            // Primer render desde snapshot si existe
+            try {
+                const snapRes = await fetch('/data/feeds.json', { cache: 'no-store' });
+                if (snapRes.ok) {
+                    const snap = await snapRes.json();
+                    const items = Array.isArray(snap.items) ? snap.items : [];
+                    if (items.length > 0 && !newsContainer.querySelector('.news-card')) {
+                        const normalized = items.map((it, idx) => {
+                            const title = it.title || 'Sin título';
+                            const description = (it.description || '').replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim();
+                            const link = it.link || '';
+                            const pub = it.pubDate || '';
+                            let source = '';
+                            try { source = link ? (new URL(link)).hostname.replace('www.', '') : 'fuente'; } catch (_) { source = 'fuente'; }
+                            const dateStr = pub ? new Date(pub) : new Date();
+                            const img = (it.image && /^https:\/\//.test(it.image)) ? it.image : 'images/logo.jpg?v=2025110501';
+                            return {
+                                id: idx + 1,
+                                title,
+                                image: img,
+                                summary: description,
+                                content: description,
+                                date: dateStr.toLocaleDateString('es-ES', { day: 'numeric', month: 'long', year: 'numeric' }),
+                                category: 'General',
+                                source,
+                                link,
+                                tags: []
+                            };
+                        });
+                        const filtered = filterNews(normalized);
+                        const sorted = sortNews(filtered);
+                        const pageItems = paginateNews(sorted);
+                        updatePaginationInfo(filtered.length);
+                        newsContainer.innerHTML = '';
+                        pageItems.forEach(item => {
+                            const newsCard = document.createElement('div');
+                            newsCard.className = 'news-card';
+                            const categoryTag = (item.category && String(item.category).toLowerCase() !== 'general')
+                                ? `<span class="category-tag">${item.category}</span>`
+                                : '';
+                            newsCard.innerHTML = `
+                                <div class="news-image">
+                                    <img src="${item.image}" alt="${item.title}" onerror="this.onerror=null;this.src='images/logo.jpg?v=2025110501';">
+                                    ${categoryTag}
+                                </div>
+                                <div class="news-content">
+                                    <span class="news-date">${item.date}</span>
+                                    <h3>${item.title}</h3>
+                                    <p>${item.summary}</p>
+                                </div>
+                            `;
+                            const readMoreBtn = document.createElement('a');
+                            readMoreBtn.href = item.link || '#';
+                            readMoreBtn.target = '_blank';
+                            readMoreBtn.rel = 'noopener noreferrer';
+                            readMoreBtn.className = 'btn';
+                            readMoreBtn.textContent = 'Leer más';
+                            newsCard.querySelector('.news-content').appendChild(readMoreBtn);
+                            newsContainer.appendChild(newsCard);
+                        });
+                    }
+                }
+            } catch (_) {}
+
             const allNews = await fetchNews();
             const filtered = filterNews(allNews);
             const sorted = sortNews(filtered);
