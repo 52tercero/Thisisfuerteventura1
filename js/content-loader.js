@@ -724,54 +724,7 @@ document.addEventListener('DOMContentLoaded', async function() {
     if (window.location.pathname.includes('noticia.html')) {
         loadSingleNews();
     }
-    
-    // Función para cargar contenido específico de cada página
-    function loadPageSpecificContent() {
-        // Determinar la página actual basada en la URL
-        const currentPage = window.location.pathname.split('/').pop() || 'index.html';
-        
-        switch(currentPage) {
-            case 'turismo.html':
-                loadTourismContent();
-                break;
-            case 'alojamiento.html':
-                loadAccommodationContent();
-                break;
-            case 'playas.html':
-                loadBeachesContent();
-                break;
-            case 'gastronomia.html':
-                loadGastronomyContent();
-                break;
-            // Añadir más casos según sea necesario
-        }
-    }
-    
-    // Estas funciones se implementarían para cargar contenido específico
-    // En un sitio real, obtendrían datos de APIs o bases de datos
-    function loadTourismContent() {
-        console.log('Cargando contenido de turismo...');
-        // Implementación real aquí
-    }
-    
-    function loadAccommodationContent() {
-        console.log('Cargando contenido de alojamiento...');
-        // Implementación real aquí
-    }
-    
-    function loadBeachesContent() {
-        console.log('Cargando contenido de playas...');
-        // Implementación real aquí
-    }
-    
-    function loadGastronomyContent() {
-        console.log('Cargando contenido de gastronomía...');
-        // Implementación real aquí
-    }
-    
-    // Cargar contenido específico de la página
-    loadPageSpecificContent();
-    
+
     // Configurar actualización automática de noticias
     function setupAutoRefresh() {
         // Actualizar noticias cada 30 minutos (en milisegundos)

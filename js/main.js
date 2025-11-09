@@ -157,8 +157,9 @@ document.addEventListener('DOMContentLoaded', function() {
             const emailInput = this.querySelector('input[type="email"]');
             const email = emailInput ? emailInput.value.trim() : '';
 
-            if (!email) {
-                // Validación mínima: asegurar que se proporcionó un email
+            // Validación de email mejorada
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!email || !emailRegex.test(email)) {
                 alert('Por favor, introduce una dirección de correo válida.');
                 return;
             }

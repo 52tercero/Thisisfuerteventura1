@@ -12,7 +12,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const urlParams = new URLSearchParams(window.location.search);
     const articleId = urlParams.get('id');
 
-    if (!articleId) {
+    // Validar que el ID sea alfanumérico y de longitud razonable
+    if (!articleId || !/^[a-zA-Z0-9]{1,64}$/.test(articleId)) {
         articleContainer.innerHTML = `
             <div class="error">
                 <h2>Artículo no encontrado</h2>
@@ -45,6 +46,18 @@ document.addEventListener('DOMContentLoaded', () => {
     `;
 
     function displayArticle(article) {
+        // Validar que el artículo tenga los campos mínimos necesarios
+        if (!article || !article.title) {
+            articleContainer.innerHTML = `
+                <div class="error">
+                    <h2>Datos del artículo incompletos</h2>
+                    <p>El artículo no contiene información válida.</p>
+                    <a href="noticias.html" class="btn">Ver todas las noticias</a>
+                </div>
+            `;
+            return;
+        }
+
         // Sanitizar contenido si DOMPurify está disponible
         const sanitize = (html) => {
             if (typeof DOMPurify !== 'undefined') {

@@ -373,10 +373,20 @@ app.get('/api/tides', (req, res) => {
 
 // Endpoint de proxy: obtiene RSS de fuentes permitidas y devuelve JSON parseado
 // Ejemplo: /api/rss?url=https%3A%2F%2Fwww.canarias7.es%2Frss%2F2.0%2Fportada
-
 app.get('/api/rss', async (req, res) => {
   const url = req.query.url;
-  if (!url) return res.status(400).json({ error: 'missing url query parameter' });
+  
+  // Validar que se proporcione una URL
+  if (!url || typeof url !== 'string') {
+    return res.status(400).json({ error: 'missing or invalid url query parameter' });
+  }
+
+  // Validar formato básico de URL
+  try {
+    new URL(url);
+  } catch (e) {
+    return res.status(400).json({ error: 'invalid url format' });
+  }
 
   try {
     let isAllowed = false;
@@ -387,7 +397,7 @@ app.get('/api/rss', async (req, res) => {
     }
 
     if (!isAllowed) {
-      console.warn('Blocked request to non-allowed source:', url);
+      console.warn('[RSS PROXY] Blocked request to non-allowed source:', url);
       return res.status(403).json({ error: 'source not allowed', allowed: ALLOWED_SOURCES });
     }
 
