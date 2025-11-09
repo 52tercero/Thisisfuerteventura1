@@ -159,8 +159,8 @@
                 fetch('/.netlify/functions/aggregate', { signal: controller.signal, cache: 'no-store' })
                     .then(r => { 
                         if (r && r.ok) { 
-                            window.__RSS_PROXY_URL = location.origin + '/.netlify/functions';
-                            console.log('✓ Netlify Functions detectadas:', window.__RSS_PROXY_URL);
+                            window.__RSS_PROXY_URL = '';  // Cadena vacía para usar rutas relativas
+                            console.log('✓ Netlify Functions detectadas, usando rutas relativas');
                         } 
                     })
                     .catch((e) => {
