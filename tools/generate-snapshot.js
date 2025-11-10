@@ -15,7 +15,10 @@ const NOTICIAS_HTML = path.resolve(__dirname, '..', 'noticias.html');
 // Same feed list used in the client
 const newsSources = [
   'https://rss.app/feeds/jbwZ2Q9QAvgvI6G0.xml',
-  'https://rss.app/feeds/8SmCQL7GDZyu2xB4.xml'
+  'https://rss.app/feeds/8SmCQL7GDZyu2xB4.xml',
+  'https://rss.app/feeds/IchTPp234IVDaH7V.xml',
+  'https://rss.app/feeds/cNktFJXkoIBwqQSS.xml',
+  'https://rss.app/feeds/pGaOMTfcwV2mzdy7.xml'
 ];
 
 function withTimeout(ms) {

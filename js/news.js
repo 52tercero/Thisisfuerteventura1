@@ -28,7 +28,10 @@ document.addEventListener('DOMContentLoaded', function() {
         try {
             const sources = [
                 'https://rss.app/feeds/jbwZ2Q9QAvgvI6G0.xml',
-                'https://rss.app/feeds/8SmCQL7GDZyu2xB4.xml'
+                'https://rss.app/feeds/8SmCQL7GDZyu2xB4.xml',
+                'https://rss.app/feeds/IchTPp234IVDaH7V.xml',
+                'https://rss.app/feeds/cNktFJXkoIBwqQSS.xml',
+                'https://rss.app/feeds/pGaOMTfcwV2mzdy7.xml'
             ];
             if (window.FeedUtils && typeof FeedUtils.fetchRSSFeeds === 'function') {
                 const items = await FeedUtils.fetchRSSFeeds(sources);
