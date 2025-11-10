@@ -44,9 +44,10 @@ document.addEventListener('DOMContentLoaded', async function() {
         }
         
         // Fuentes de noticias (RSS feeds de sitios de noticias sobre Fuerteventura/Canarias)
-        // Fuente única solicitada
+        // Fuentes RSS agregadas desde rss.app
         const newsSources = [
-            'https://rss.app/feeds/jbwZ2Q9QAvgvI6G0.xml'
+            'https://rss.app/feeds/jbwZ2Q9QAvgvI6G0.xml',
+            'https://rss.app/feeds/8SmCQL7GDZyu2xB4.xml'
         ];
         
     // Función para obtener y parsear feeds RSS (delegada a FeedUtils)

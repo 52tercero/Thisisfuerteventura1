@@ -27,7 +27,8 @@ document.addEventListener('DOMContentLoaded', function() {
     async function fetchNews() {
         try {
             const sources = [
-                'https://rss.app/feeds/jbwZ2Q9QAvgvI6G0.xml'
+                'https://rss.app/feeds/jbwZ2Q9QAvgvI6G0.xml',
+                'https://rss.app/feeds/8SmCQL7GDZyu2xB4.xml'
             ];
             if (window.FeedUtils && typeof FeedUtils.fetchRSSFeeds === 'function') {
                 const items = await FeedUtils.fetchRSSFeeds(sources);

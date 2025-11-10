@@ -6,7 +6,8 @@
 
     // Fuentes de noticias RSS predefinidas
     const DEFAULT_NEWS_SOURCES = [
-        'https://rss.app/feeds/jbwZ2Q9QAvgvI6G0.xml'
+        'https://rss.app/feeds/jbwZ2Q9QAvgvI6G0.xml',
+        'https://rss.app/feeds/8SmCQL7GDZyu2xB4.xml'
     ];
 
     // Configuración de caché
