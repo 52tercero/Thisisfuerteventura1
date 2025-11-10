@@ -405,8 +405,8 @@ app.get('/api/rss', async (req, res) => {
   }
 });
 
-// Endpoint agregado: obtiene múltiples feeds en el servidor y devuelve una lista única de items
-// GET /api/aggregate?sources=url1,url2&dedupe=0
+// Endpoint agregado: obtiene múltiples feeds en el servidor y devuelve una lista única de items (dedupe avanzado siempre activo)
+// GET /api/aggregate?sources=url1,url2
 app.get('/api/aggregate', async (req, res) => {
   try {
     const querySources = (req.query.sources || '').toString();
@@ -431,17 +431,55 @@ app.get('/api/aggregate', async (req, res) => {
       .map(r => r.value)
       .flat();
 
-    const dedupe = req.query.dedupe === '1' || req.query.dedupe === 'true';
-    if (dedupe) {
-      const seen = new Set();
-      items = items.filter(it => {
-        const key = (it.link || it.title || '').trim();
-        if (!key) return false;
-        if (seen.has(key)) return false;
-        seen.add(key);
-        return true;
-      });
+    const beforeCount = items.length;
+
+    // Normalizar enlace (quitar parámetros de tracking, hash, trailing slash, variantes AMP)
+    const normalizeLink = (u) => {
+      if (!u || typeof u !== 'string') return '';
+      try {
+        const url = new URL(u);
+        url.hash = '';
+        const params = url.searchParams;
+        ['utm_source','utm_medium','utm_campaign','utm_term','utm_content','gclid','fbclid'].forEach(k => params.delete(k));
+        url.search = params.toString();
+        url.pathname = url.pathname
+          .replace(/\/amp(\/)?$/i, '/')
+          .replace(/\/+$/, '/');
+        return url.toString();
+      } catch (_) {
+        return String(u);
+      }
+    };
+
+    // Dedupe siempre activo: por link normalizado o título sin acentos (sin fecha para ser más agresivo)
+    const seen = new Set();
+    const deduped = [];
+    for (const it of items) {
+      const linkKey = normalizeLink(it.link || it.url || '');
+      const titleRaw = (it.title || '').toString();
+      const titleCanonical = titleRaw
+        .normalize('NFD').replace(/[\u0300-\u036f]/g,'') // quitar acentos
+        .toLowerCase().replace(/["'«»]/g,'')
+        .replace(/\s+/g,' ') // colapsar espacios
+        .replace(/\s+[-–|]\s+.*$/,'') // quitar sufijos de fuente tras guión / barra
+        .trim();
+      
+      // Usar solo título canónico como clave si no hay link
+      // NO usar fecha para permitir detectar duplicados con fechas ligeramente diferentes
+      const key = linkKey || titleCanonical;
+      
+      if (!key) continue;
+      if (seen.has(key)) {
+        console.log('[RSS PROXY] Skipping duplicate:', titleRaw.substring(0, 60));
+        continue;
+      }
+      seen.add(key);
+      deduped.push(it);
     }
+
+    items = deduped;
+    const afterCount = items.length;
+    console.log(`[RSS PROXY] Aggregate dedupe: ${beforeCount} -> ${afterCount} items (fuentes: ${sources.length})`);
 
     res.json({ items });
   } catch (err) {

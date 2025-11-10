@@ -211,7 +211,7 @@
             console.debug('[FEED-UTILS] Proxy base:', proxyBase);
             
             // Intentar endpoint agregado primero
-            const aggKey = 'rss_cache_v3_media_AGG';
+            const aggKey = 'rss_cache_v5_title_only_AGG'; // Version bump para forzar recarga con nueva lógica
             let items = cacheGet(aggKey);
             
             if (!items) {
@@ -230,7 +230,7 @@
                     
                     const json = await r.json();
                     items = Array.isArray(json.items) ? json.items : [];
-                    console.log('[FEED-UTILS] Aggregate returned', items.length, 'items');
+                    console.log('[FEED-UTILS] Aggregate returned', items.length, 'items (from server)');
                     cacheSet(aggKey, items);
                 } catch (e) {
                     console.warn('[FEED-UTILS] Aggregate fetch failed, trying individual sources:', e?.message);
@@ -265,6 +265,8 @@
             }
 
             if (items.length > 0) {
+                console.log('[FEED-UTILS] Starting client-side deduplication on', items.length, 'items');
+                
                 // Deduplicar crudos primero por enlace normalizado o título+fecha
                 const normalizeLink = (u) => {
                     if (!u || typeof u !== 'string') return '';
@@ -280,18 +282,33 @@
                         return String(u);
                     }
                 };
+                const canonicalTitle = (s) => {
+                    if (!s) return '';
+                    return String(s)
+                        .normalize('NFD').replace(/[\u0300-\u036f]/g,'') // quitar acentos
+                        .toLowerCase()
+                        .replace(/["'«»]/g,'')
+                        .replace(/\s+/g,' ')
+                        .replace(/\s+[-–|]\s+.*$/,'') // quitar sufijos de fuente
+                        .trim();
+                };
                 const seenRaw = new Set();
                 const rawDeduped = [];
                 for (const it of items) {
                     const linkKey = normalizeLink(it.link || it.url || '');
-                    const titlePart = (it.title && (typeof it.title === 'string' ? it.title : (it.title._ || ''))) || '';
-                    const datePart = it.pubDate || it.published || it.updated || '';
-                    const key = linkKey || (titlePart.trim().toLowerCase() + '|' + String(datePart).slice(0,10));
+                    const titlePart = canonicalTitle((it.title && (typeof it.title === 'string' ? it.title : (it.title._ || ''))) || '');
+                    
+                    // Usar solo título canónico (sin fecha) para detectar duplicados más agresivamente
+                    const key = linkKey || titlePart;
+                    
                     if (key && !seenRaw.has(key)) {
                         seenRaw.add(key);
                         rawDeduped.push(it);
+                    } else if (key && seenRaw.has(key)) {
+                        console.log('[FEED-UTILS] Dedupe: skipping duplicate raw item:', (it.title||'').substring(0,60));
                     }
                 }
+                console.log('[FEED-UTILS] After raw dedupe:', rawDeduped.length, 'items (removed', items.length - rawDeduped.length, ')');
                 items = rawDeduped;
 
                 // Normalizar items
@@ -402,22 +419,33 @@
                 }));
                 
                 // Segunda pasada de dedupe por link normalizado o título+fecha ya transformados
+                // IMPORTANTE: Usar SOLO título canónico como clave principal para eliminar duplicados exactos
                 const seenNorm = new Set();
                 const final = [];
                 for (const it of normalized) {
                     const linkKey = normalizeLink(it.link);
-                    const baseKey = linkKey || (String(it.title||'').trim().toLowerCase() + '|' + String(it.date||''));
+                    const titleKey = canonicalTitle(it.title);
+                    
+                    // Prioridad: 1) link normalizado, 2) título canónico solo (sin fecha)
+                    // Esto elimina duplicados con mismo título aunque tengan fechas ligeramente diferentes
+                    const baseKey = linkKey || titleKey;
+                    
                     if (baseKey && !seenNorm.has(baseKey)) {
                         seenNorm.add(baseKey);
                         final.push(it);
+                    } else if (baseKey && seenNorm.has(baseKey)) {
+                        console.log('[FEED-UTILS] Dedupe: skipping duplicate normalized item:', it.title.substring(0,60));
                     }
                 }
+                console.log('[FEED-UTILS] After normalized dedupe:', final.length, 'items (removed', normalized.length - final.length, ')');
+                
                 // Ordenar descendente por fecha real si disponible
                 final.sort((a,b) => {
                     const pa = Date.parse(a.raw?.pubDate || a.raw?.published || a.raw?.updated || a.date || '');
                     const pb = Date.parse(b.raw?.pubDate || b.raw?.published || b.raw?.updated || b.date || '');
                     return (isNaN(pb)?0:pb) - (isNaN(pa)?0:pa);
                 });
+                console.log('[FEED-UTILS] Returning', final.length, 'final deduplicated items');
                 return final;
             }
         } catch (err) {
