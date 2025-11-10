@@ -274,7 +274,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 
                 ${videoHTML}
                 
-                ${article.image ? `
+                ${!videoHTML && article.image ? `
                     <div class="article-image">
                         <img src="${article.image}" 
                              alt="${escapeHTML(article.title)}" 
