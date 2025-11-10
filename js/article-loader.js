@@ -132,7 +132,7 @@ document.addEventListener('DOMContentLoaded', () => {
             <article class="article-full">
                 <header class="article-header">
                     ${categoryTag}
-                    <h1>${escapeHTML(article.title)}</h1>
+                    <h2>${escapeHTML(article.title)}</h2>
                     <div class="article-meta">
                         <span class="article-date"><i class="fas fa-calendar"></i> ${article.date}</span>
                     </div>
