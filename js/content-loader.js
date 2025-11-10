@@ -111,9 +111,6 @@ document.addEventListener('DOMContentLoaded', async function() {
                         featured.forEach((item) => {
                             const card = document.createElement('div');
                             card.className = 'content-card';
-                            const categoryTag = (item.category && String(item.category).toLowerCase() !== 'general')
-                                ? `<span class="category-tag">${item.category}</span>`
-                                : '';
                             const fullText = (item.description || item.summary || '').replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim();
                             const shortDescription = fullText.length > 150 ? fullText.slice(0, 150) + '...' : fullText;
                             const articleId = btoa(encodeURIComponent(item.title + item.date)).replace(/[^a-zA-Z0-9]/g, '').substring(0, 32);
@@ -124,7 +121,6 @@ document.addEventListener('DOMContentLoaded', async function() {
                                     <span class="date">${item.date}</span>
                                     <h3>${item.title}</h3>
                                     <p>${shortDescription}</p>
-                                    ${categoryTag}
                                 </div>
                             `;
                             const readMoreBtn = document.createElement('a');
@@ -183,9 +179,6 @@ document.addEventListener('DOMContentLoaded', async function() {
                 console.log(`[CONTENT-LOADER] Renderizando artículo ${index + 1}:`, item.title, 'Image:', item.image);
                 const card = document.createElement('div');
                 card.className = 'content-card';
-                const categoryTag = (item.category && String(item.category).toLowerCase() !== 'general')
-                    ? `<span class="category-tag">${item.category}</span>`
-                    : '';
 
                 // Descripción en texto plano truncada (150 caracteres)
                 const fullText = toPlainText(item.description || item.summary || '');
@@ -209,7 +202,6 @@ document.addEventListener('DOMContentLoaded', async function() {
                         <span class="date">${item.date}</span>
                         <h3>${item.title}</h3>
                         <p>${shortDescription}</p>
-                        ${categoryTag}
                     </div>
                 `;
                 
@@ -358,14 +350,10 @@ document.addEventListener('DOMContentLoaded', async function() {
                 paginatedNews.forEach(item => {
                     const newsCard = document.createElement('div');
                     newsCard.className = 'news-card';
-                    const categoryTag = (item.category && String(item.category).toLowerCase() !== 'general')
-                        ? `<span class="category-tag">${item.category}</span>`
-                        : '';
                     
                     newsCard.innerHTML = `
                         <div class="news-image">
                             <img src="${item.image}" alt="${item.title}" onerror="this.onerror=null;this.src='images/logo.jpg?v=2025110501';">
-                            ${categoryTag}
                         </div>
                         <div class="news-content">
                             <span class="news-date">${item.date}</span>
@@ -490,9 +478,6 @@ document.addEventListener('DOMContentLoaded', async function() {
                     article.image = 'images/Fuerteventura.jpeg?v=2025110501';
                 }
                 const content = article.description || article.summary || '';
-                const categoryTag = (article.category && String(article.category).toLowerCase() !== 'general')
-                    ? `<span class="category-tag">${article.category}</span>`
-                    : '';
                 articleContainer.innerHTML = `
                     <article class="news-article">
                         <header class="article-header">
@@ -504,13 +489,11 @@ document.addEventListener('DOMContentLoaded', async function() {
 
                         <div class="article-featured-image">
                             <img src="${article.image}" alt="${article.title}" onerror="this.onerror=null;this.src='images/Fuerteventura.jpeg?v=2025110501';">
-                            ${categoryTag}
                         </div>
 
                         <div class="article-content">
                             ${content}
                         </div>
-                    </article>
                 `;
             } catch (e) {
                 console.error('Error loading article:', e);
