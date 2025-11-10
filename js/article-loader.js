@@ -39,6 +39,12 @@ document.addEventListener('DOMContentLoaded', () => {
         const storedArticle = localStorage.getItem(`article_${articleId}`);
         if (storedArticle) {
             const article = JSON.parse(storedArticle);
+            console.log('[ARTICLE] Loaded article from localStorage:', article);
+            console.log('[ARTICLE] Article title:', article.title);
+            console.log('[ARTICLE] Article raw:', article.raw);
+            console.log('[ARTICLE] Article link:', article.link);
+            console.log('[ARTICLE] Article description length:', (article.description || '').length);
+            console.log('[ARTICLE] Article fullHtml length:', (article.fullHtml || '').length);
             displayArticle(article);
             return;
         }
