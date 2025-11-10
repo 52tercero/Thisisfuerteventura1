@@ -274,14 +274,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 
                 ${videoHTML}
                 
-                ${!videoHTML && article.image ? `
-                    <div class="article-image">
-                        <img src="${article.image}" 
-                             alt="${escapeHTML(article.title)}" 
-                             onerror="this.onerror=null;this.src='images/logo.jpg';">
-                    </div>
-                ` : ''}
-                
                 <div class="article-content">
                     ${sanitize(richHtml)}
                 </div>
