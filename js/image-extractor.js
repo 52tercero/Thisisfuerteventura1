@@ -69,7 +69,7 @@ function logImageError(url, type, error) {
 
 /**
  * Extrae URLs de imágenes de HTML usando expresiones regulares robustas
- * Busca: Open Graph, Twitter Cards, tags <img>, JSON-LD, link rel="image_src"
+ * Busca SOLO tags <img> (src y data-src)
  * @param {string} html - Código HTML a analizar
  * @returns {string[]} Array de URLs de imágenes encontradas
  */
@@ -78,79 +78,18 @@ function extractImageURLsFromHTML(html) {
     
     const urls = [];
     
-    // 1. Open Graph image (múltiples variantes)
-    const ogMatch = html.match(/<meta[^>]+property=["']og:image["'][^>]+content=["']([^"']+)["']/i) ||
-                    html.match(/<meta[^>]+content=["']([^"']+)["'][^>]+property=["']og:image["']/i);
-    if (ogMatch && ogMatch[1]) urls.push(ogMatch[1]);
-    
-    // 1b. Open Graph secure image
-    const ogSecureMatch = html.match(/<meta[^>]+property=["']og:image:secure_url["'][^>]+content=["']([^"']+)["']/i) ||
-                          html.match(/<meta[^>]+content=["']([^"']+)["'][^>]+property=["']og:image:secure_url["']/i);
-    if (ogSecureMatch && ogSecureMatch[1]) urls.push(ogSecureMatch[1]);
-    
-    // 2. Twitter Card image (múltiples variantes)
-    const twitterMatch = html.match(/<meta[^>]+name=["']twitter:image["'][^>]+content=["']([^"']+)["']/i) ||
-                         html.match(/<meta[^>]+content=["']([^"']+)["'][^>]+name=["']twitter:image["']/i);
-    if (twitterMatch && twitterMatch[1]) urls.push(twitterMatch[1]);
-    
-    // 2b. Twitter Card image:src
-    const twitterSrcMatch = html.match(/<meta[^>]+name=["']twitter:image:src["'][^>]+content=["']([^"']+)["']/i) ||
-                            html.match(/<meta[^>]+content=["']([^"']+)["'][^>]+name=["']twitter:image:src["']/i);
-    if (twitterSrcMatch && twitterSrcMatch[1]) urls.push(twitterSrcMatch[1]);
-    
-    // 3. Tags <img> con src (más flexible - acepta cualquier imagen)
+    // 1. Tags <img> con src
     const imgTagsRegex = /<img[^>]+src=["']([^"']+)["'][^>]*>/gi;
     let imgMatch;
     while ((imgMatch = imgTagsRegex.exec(html)) !== null) {
         if (imgMatch[1]) urls.push(imgMatch[1]);
     }
     
-    // 3b. Tags <img> con data-src (lazy loading)
+    // 2. Tags <img> con data-src (lazy loading)
     const dataSrcRegex = /<img[^>]+data-src=["']([^"']+)["'][^>]*>/gi;
     let dataSrcMatch;
     while ((dataSrcMatch = dataSrcRegex.exec(html)) !== null) {
         if (dataSrcMatch[1]) urls.push(dataSrcMatch[1]);
-    }
-    
-    // 3c. Background images en style
-    const bgImageRegex = /background-image:\s*url\(['"]*([^'"()]+)['"]*\)/gi;
-    let bgMatch;
-    while ((bgMatch = bgImageRegex.exec(html)) !== null) {
-        if (bgMatch[1]) urls.push(bgMatch[1]);
-    }
-    
-    // 4. JSON-LD (Schema.org)
-    const jsonLdRegex = /<script[^>]+type=["']application\/ld\+json["'][^>]*>([\s\S]*?)<\/script>/gi;
-    let jsonLdMatch;
-    while ((jsonLdMatch = jsonLdRegex.exec(html)) !== null) {
-        try {
-            const data = JSON.parse(jsonLdMatch[1]);
-            if (data.image) {
-                if (typeof data.image === 'string') urls.push(data.image);
-                else if (Array.isArray(data.image)) urls.push(...data.image.filter(i => typeof i === 'string'));
-                else if (data.image.url) urls.push(data.image.url);
-            }
-            // Buscar en objetos anidados (NewsArticle, BlogPosting, etc.)
-            if (data.mainEntityOfPage && data.mainEntityOfPage.image) {
-                const img = data.mainEntityOfPage.image;
-                if (typeof img === 'string') urls.push(img);
-                else if (img.url) urls.push(img.url);
-            }
-        } catch (e) {
-            // JSON inválido, continuar
-        }
-    }
-    
-    // 5. Link rel="image_src"
-    const linkImageMatch = html.match(/<link[^>]+rel=["']image_src["'][^>]+href=["']([^"']+)["']/i) ||
-                           html.match(/<link[^>]+href=["']([^"']+)["'][^>]+rel=["']image_src["']/i);
-    if (linkImageMatch && linkImageMatch[1]) urls.push(linkImageMatch[1]);
-    
-    // 6. Itemprop image (schema.org inline)
-    const itempropRegex = /itemprop=["']image["'][^>]+content=["']([^"']+)["']/gi;
-    let itempropMatch;
-    while ((itempropMatch = itempropRegex.exec(html)) !== null) {
-        if (itempropMatch[1]) urls.push(itempropMatch[1]);
     }
     
     return urls;
