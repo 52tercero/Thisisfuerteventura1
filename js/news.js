@@ -27,12 +27,7 @@ document.addEventListener('DOMContentLoaded', function() {
     async function fetchNews() {
         try {
             const sources = [
-                'https://www.canarias7.es/rss/2.0/?section=canarias/fuerteventura',
-                'https://www.laprovincia.es/rss/section/9280',
-                'https://www.cabildofuer.es/cabildo/noticias/feed/',
-                'https://www.radioinsular.es/feed/',
-                'https://www.fuerteventuradigital.com/rss',
-                'https://ondafuerteventura.es/feed/'
+                'https://rss.app/feeds/jbwZ2Q9QAvgvI6G0.xml'
             ];
             if (window.FeedUtils && typeof FeedUtils.fetchRSSFeeds === 'function') {
                 const items = await FeedUtils.fetchRSSFeeds(sources);
