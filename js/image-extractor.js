@@ -78,21 +78,45 @@ function extractImageURLsFromHTML(html) {
     
     const urls = [];
     
-    // 1. Open Graph image
+    // 1. Open Graph image (múltiples variantes)
     const ogMatch = html.match(/<meta[^>]+property=["']og:image["'][^>]+content=["']([^"']+)["']/i) ||
                     html.match(/<meta[^>]+content=["']([^"']+)["'][^>]+property=["']og:image["']/i);
     if (ogMatch && ogMatch[1]) urls.push(ogMatch[1]);
     
-    // 2. Twitter Card image
+    // 1b. Open Graph secure image
+    const ogSecureMatch = html.match(/<meta[^>]+property=["']og:image:secure_url["'][^>]+content=["']([^"']+)["']/i) ||
+                          html.match(/<meta[^>]+content=["']([^"']+)["'][^>]+property=["']og:image:secure_url["']/i);
+    if (ogSecureMatch && ogSecureMatch[1]) urls.push(ogSecureMatch[1]);
+    
+    // 2. Twitter Card image (múltiples variantes)
     const twitterMatch = html.match(/<meta[^>]+name=["']twitter:image["'][^>]+content=["']([^"']+)["']/i) ||
                          html.match(/<meta[^>]+content=["']([^"']+)["'][^>]+name=["']twitter:image["']/i);
     if (twitterMatch && twitterMatch[1]) urls.push(twitterMatch[1]);
     
-    // 3. Tags <img> con src
+    // 2b. Twitter Card image:src
+    const twitterSrcMatch = html.match(/<meta[^>]+name=["']twitter:image:src["'][^>]+content=["']([^"']+)["']/i) ||
+                            html.match(/<meta[^>]+content=["']([^"']+)["'][^>]+name=["']twitter:image:src["']/i);
+    if (twitterSrcMatch && twitterSrcMatch[1]) urls.push(twitterSrcMatch[1]);
+    
+    // 3. Tags <img> con src (más flexible - acepta cualquier imagen)
     const imgTagsRegex = /<img[^>]+src=["']([^"']+)["'][^>]*>/gi;
     let imgMatch;
     while ((imgMatch = imgTagsRegex.exec(html)) !== null) {
         if (imgMatch[1]) urls.push(imgMatch[1]);
+    }
+    
+    // 3b. Tags <img> con data-src (lazy loading)
+    const dataSrcRegex = /<img[^>]+data-src=["']([^"']+)["'][^>]*>/gi;
+    let dataSrcMatch;
+    while ((dataSrcMatch = dataSrcRegex.exec(html)) !== null) {
+        if (dataSrcMatch[1]) urls.push(dataSrcMatch[1]);
+    }
+    
+    // 3c. Background images en style
+    const bgImageRegex = /background-image:\s*url\(['"]*([^'"()]+)['"]*\)/gi;
+    let bgMatch;
+    while ((bgMatch = bgImageRegex.exec(html)) !== null) {
+        if (bgMatch[1]) urls.push(bgMatch[1]);
     }
     
     // 4. JSON-LD (Schema.org)
@@ -106,6 +130,12 @@ function extractImageURLsFromHTML(html) {
                 else if (Array.isArray(data.image)) urls.push(...data.image.filter(i => typeof i === 'string'));
                 else if (data.image.url) urls.push(data.image.url);
             }
+            // Buscar en objetos anidados (NewsArticle, BlogPosting, etc.)
+            if (data.mainEntityOfPage && data.mainEntityOfPage.image) {
+                const img = data.mainEntityOfPage.image;
+                if (typeof img === 'string') urls.push(img);
+                else if (img.url) urls.push(img.url);
+            }
         } catch (e) {
             // JSON inválido, continuar
         }
@@ -115,6 +145,13 @@ function extractImageURLsFromHTML(html) {
     const linkImageMatch = html.match(/<link[^>]+rel=["']image_src["'][^>]+href=["']([^"']+)["']/i) ||
                            html.match(/<link[^>]+href=["']([^"']+)["'][^>]+rel=["']image_src["']/i);
     if (linkImageMatch && linkImageMatch[1]) urls.push(linkImageMatch[1]);
+    
+    // 6. Itemprop image (schema.org inline)
+    const itempropRegex = /itemprop=["']image["'][^>]+content=["']([^"']+)["']/gi;
+    let itempropMatch;
+    while ((itempropMatch = itempropRegex.exec(html)) !== null) {
+        if (itempropMatch[1]) urls.push(itempropMatch[1]);
+    }
     
     return urls;
 }
@@ -219,8 +256,18 @@ async function extractImageFromItem(item, { validate = false, sourceUrl = '' } =
         }
     }
     
-    // 3. Media RSS
-    const mediaKeys = ['media:content', 'media:thumbnail', 'media', 'media:group'];
+    // 3. Media RSS (más exhaustivo con nuevos selectores)
+    const mediaKeys = [
+        'media:content', 
+        'media:thumbnail', 
+        'media', 
+        'media:group',
+        'mediaContent',      // Variante camelCase
+        'mediaThumbnail',    // Variante camelCase
+        'thumbnail',         // Campo thumbnail directo
+        'image',             // Campo image en raw
+        'enclosures'         // Plural de enclosure
+    ];
     for (const key of mediaKeys) {
         if (raw[key]) {
             const v = raw[key];
@@ -238,6 +285,9 @@ async function extractImageFromItem(item, { validate = false, sourceUrl = '' } =
                     } else if (mediaItem.$ && mediaItem.$.url) {
                         candidates.push(mediaItem.$.url);
                         debugLog.candidates.push({ source: `raw.${key}[].$.url`, url: mediaItem.$.url });
+                    } else if (mediaItem.href) {
+                        candidates.push(mediaItem.href);
+                        debugLog.candidates.push({ source: `raw.${key}[].href`, url: mediaItem.href });
                     }
                 }
             } else if (v.url) {
@@ -249,6 +299,9 @@ async function extractImageFromItem(item, { validate = false, sourceUrl = '' } =
             } else if (v.$ && v.$.url) {
                 candidates.push(v.$.url);
                 debugLog.candidates.push({ source: `raw.${key}.$.url`, url: v.$.url });
+            } else if (v.href) {
+                candidates.push(v.href);
+                debugLog.candidates.push({ source: `raw.${key}.href`, url: v.href });
             }
         }
     }
@@ -266,26 +319,46 @@ async function extractImageFromItem(item, { validate = false, sourceUrl = '' } =
     }
     
     // 5. Description/summary con extracción de HTML
-    const desc = item.description || item.summary || '';
+    const desc = item.description || item.summary || item.content || '';
     const descStr = typeof desc === 'object' ? (desc._ || '') : String(desc);
     if (descStr) {
         const extracted = extractImageURLsFromHTML(descStr);
         candidates.push(...extracted);
     }
     
-    // Filtrar URLs vacías o inválidas
+    // 6. Campos adicionales directos que podrían contener imágenes
+    const directImageFields = ['imageUrl', 'thumbnailUrl', 'thumbnail', 'featured_image', 'featuredImage', 'hero'];
+    for (const field of directImageFields) {
+        if (item[field] && typeof item[field] === 'string') {
+            candidates.push(item[field]);
+            debugLog.candidates.push({ source: `item.${field}`, url: item[field] });
+        }
+        if (raw[field] && typeof raw[field] === 'string') {
+            candidates.push(raw[field]);
+            debugLog.candidates.push({ source: `raw.${field}`, url: raw[field] });
+        }
+    }
+    
+    // Filtrar URLs vacías o inválidas (criterios más flexibles)
     const validCandidates = candidates
         .filter(url => url && typeof url === 'string' && url.trim().length > 0)
         .map(url => url.trim())
-        // Filtrar URLs obvias de placeholder o tracking
+        // Filtrar SOLO URLs obvias de placeholder o tracking (más permisivo)
         .filter(url => {
             const lower = url.toLowerCase();
-            return !lower.includes('placeholder') &&
+            // Lista reducida de exclusiones - solo placeholders obvios
+            return !lower.includes('placeholder.') &&
                    !lower.includes('spacer.gif') &&
-                   !lower.includes('1x1') &&
-                   !lower.endsWith('.svg') && // Evitar iconos SVG pequeños
-                   (url.startsWith('http://') || url.startsWith('https://'));
-        });
+                   !lower.includes('/1x1.') &&
+                   !lower.includes('tracking-pixel') &&
+                   !lower.includes('clearpixel') &&
+                   !lower.endsWith('blank.gif') &&
+                   // Permitir SVG (muchos sitios usan SVG para logos/imágenes)
+                   // !lower.endsWith('.svg') && // REMOVIDO - ahora permitimos SVG
+                   (url.startsWith('http://') || url.startsWith('https://') || url.startsWith('//'));
+        })
+        // Normalizar URLs que empiezan con // (protocol-relative)
+        .map(url => url.startsWith('//') ? 'https:' + url : url);
     
     // Eliminar duplicados manteniendo el orden
     const uniqueCandidates = [...new Set(validCandidates)];
