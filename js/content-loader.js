@@ -26,7 +26,21 @@ document.addEventListener('DOMContentLoaded', async function() {
         
         // Mostrar mensaje de carga solo si no hay contenido SSR/SSG previo
         if (!featuredNewsContainer.querySelector('.content-card')) {
-            featuredNewsContainer.innerHTML = '<div class="loading">Cargando noticias...</div>';
+            featuredNewsContainer.innerHTML = `
+                <div class="loading-skeleton">
+                    ${Array(6).fill(0).map(() => `
+                        <div class="skeleton-card">
+                            <div class="skeleton-image"></div>
+                            <div class="skeleton-content">
+                                <div class="skeleton-date"></div>
+                                <div class="skeleton-title"></div>
+                                <div class="skeleton-text"></div>
+                                <div class="skeleton-text short"></div>
+                            </div>
+                        </div>
+                    `).join('')}
+                </div>
+            `;
         }
         
         // Fuentes de noticias (RSS feeds de sitios de noticias sobre Fuerteventura/Canarias)
@@ -60,8 +74,8 @@ document.addEventListener('DOMContentLoaded', async function() {
                     const snap = await snapRes.json();
                     const items = Array.isArray(snap.items) ? snap.items : [];
                     if (items.length > 0) {
-                        // Normalizar y renderizar hasta 18 items de snapshot
-                        const normalized = await Promise.all(items.slice(0, 60).map(async (it) => {
+                        // Normalizar y renderizar hasta 12 items de snapshot (optimizado)
+                        const normalized = await Promise.all(items.slice(0, 12).map(async (it) => {
                             const title = it.title || 'Sin título';
                             const descriptionRaw = it.description || '';
                             const description = typeof descriptionRaw === 'object' ? (descriptionRaw._ || '') : descriptionRaw;
@@ -89,7 +103,7 @@ document.addEventListener('DOMContentLoaded', async function() {
                             };
                         }));
 
-                        // Render rápido desde snapshot (hasta 18)
+                        // Render rápido desde snapshot (hasta 12)
                         featuredNewsContainer.innerHTML = '';
                         const bySource = {};
                         normalized.forEach(item => {
@@ -100,9 +114,9 @@ document.addEventListener('DOMContentLoaded', async function() {
                         let featured = [];
                         const sources = Object.keys(bySource);
                         let round = 0;
-                        while (featured.length < 18 && round < 10) {
+                        while (featured.length < 12 && round < 10) {
                             for (const src of sources) {
-                                if (bySource[src].length > 0 && featured.length < 18) {
+                                if (bySource[src].length > 0 && featured.length < 12) {
                                     featured.push(bySource[src].shift());
                                 }
                             }
@@ -116,7 +130,7 @@ document.addEventListener('DOMContentLoaded', async function() {
                             const articleId = btoa(encodeURIComponent(item.title + item.date)).replace(/[^a-zA-Z0-9]/g, '').substring(0, 32);
                             try { localStorage.setItem(`article_${articleId}`, JSON.stringify(item)); } catch (_) {}
                             card.innerHTML = `
-                                <img src="${item.image}" alt="${item.title}" onerror="this.onerror=null;this.src='images/logo.jpg?v=2025110501';">
+                                <img src="${item.image}" alt="${item.title}" loading="lazy" onerror="this.onerror=null;this.src='images/logo.jpg?v=2025110501';">
                                 <div class="card-content">
                                     <span class="date">${item.date}</span>
                                     <h3>${item.title}</h3>
@@ -159,13 +173,13 @@ document.addEventListener('DOMContentLoaded', async function() {
                 bySource[src].push(item);
             });
             
-            // Mezclar: distribuir artículos de todas las fuentes hasta completar 18
+            // Mezclar: distribuir artículos de todas las fuentes hasta completar 12 (reducido de 18)
             let featured = [];
             const sources = Object.keys(bySource);
             let round = 0;
-            while (featured.length < 18 && round < 10) {
+            while (featured.length < 12 && round < 10) {
                 for (const src of sources) {
-                    if (bySource[src].length > 0 && featured.length < 18) {
+                    if (bySource[src].length > 0 && featured.length < 12) {
                         featured.push(bySource[src].shift());
                     }
                 }
@@ -197,7 +211,7 @@ document.addEventListener('DOMContentLoaded', async function() {
                 }
 
                 card.innerHTML = `
-                    <img src="${item.image}" alt="${item.title}" onerror="this.onerror=null;this.src='images/logo.jpg?v=2025110501';">
+                    <img src="${item.image}" alt="${item.title}" loading="lazy" onerror="this.onerror=null;this.src='images/logo.jpg?v=2025110501';">
                     <div class="card-content">
                         <span class="date">${item.date}</span>
                         <h3>${item.title}</h3>
@@ -318,8 +332,22 @@ document.addEventListener('DOMContentLoaded', async function() {
         
         // Función para cargar y mostrar noticias
         async function loadAndDisplayNews() {
-            // Mostrar indicador de carga
-            newsContainer.innerHTML = '<div class="loading">Cargando noticias...</div>';
+            // Mostrar skeleton loader en lugar de mensaje simple
+            newsContainer.innerHTML = `
+                <div class="loading-skeleton">
+                    ${Array(9).fill(0).map(() => `
+                        <div class="skeleton-card">
+                            <div class="skeleton-image"></div>
+                            <div class="skeleton-content">
+                                <div class="skeleton-date"></div>
+                                <div class="skeleton-title"></div>
+                                <div class="skeleton-text"></div>
+                                <div class="skeleton-text short"></div>
+                            </div>
+                        </div>
+                    `).join('')}
+                </div>
+            `;
             
             try {
                 // Obtener todas las noticias
@@ -353,7 +381,7 @@ document.addEventListener('DOMContentLoaded', async function() {
                     
                     newsCard.innerHTML = `
                         <div class="news-image">
-                            <img src="${item.image}" alt="${item.title}" onerror="this.onerror=null;this.src='images/logo.jpg?v=2025110501';">
+                            <img src="${item.image}" alt="${item.title}" loading="lazy" onerror="this.onerror=null;this.src='images/logo.jpg?v=2025110501';">
                         </div>
                         <div class="news-content">
                             <span class="news-date">${item.date}</span>
