@@ -892,5 +892,81 @@
     </footer>
 
     <script src="js/main.js?v=2025110501" defer></script>
+    <script src="js/cookies.js?v=2025111001" defer></script>
+
+    <!-- Cookie Consent Banner -->
+    <div id="cookie-consent" class="cookie-consent">
+        <div class="cookie-consent-content">
+            <div class="cookie-consent-text">
+                <h3>🍪 Usamos cookies</h3>
+                <p>Utilizamos cookies propias y de terceros para mejorar tu experiencia de navegación y analizar el uso del sitio. 
+                <a href="politica-cookies.html">Más información</a></p>
+            </div>
+            <div class="cookie-consent-buttons">
+                <button id="cookie-accept" class="cookie-btn cookie-btn-accept">Aceptar todas</button>
+                <button id="cookie-reject" class="cookie-btn cookie-btn-reject">Solo necesarias</button>
+                <button id="cookie-settings" class="cookie-btn cookie-btn-settings">Configurar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Cookie Settings Modal -->
+    <div id="cookie-modal" class="cookie-modal">
+        <div class="cookie-modal-content">
+            <div class="cookie-modal-header">
+                <h2>Configuración de Cookies</h2>
+                <button id="cookie-modal-close" class="cookie-modal-close">&times;</button>
+            </div>
+            <div class="cookie-modal-body">
+                <p style="margin-bottom: 20px; color: #666;">
+                    Utilizamos diferentes tipos de cookies para mejorar tu experiencia en nuestro sitio web. 
+                    Puedes elegir qué categorías deseas permitir.
+                </p>
+                <div class="cookie-category">
+                    <div class="cookie-category-header">
+                        <h3>Cookies Necesarias</h3>
+                        <label class="cookie-toggle">
+                            <input type="checkbox" checked disabled>
+                            <span class="cookie-toggle-slider"></span>
+                        </label>
+                    </div>
+                    <p class="cookie-category-description">Estas cookies son esenciales para el funcionamiento del sitio web.</p>
+                </div>
+                <div class="cookie-category">
+                    <div class="cookie-category-header">
+                        <h3>Cookies Analíticas</h3>
+                        <label class="cookie-toggle">
+                            <input type="checkbox" id="analytics-toggle">
+                            <span class="cookie-toggle-slider"></span>
+                        </label>
+                    </div>
+                    <p class="cookie-category-description">Estas cookies nos permiten contar las visitas y fuentes de tráfico.</p>
+                </div>
+                <div class="cookie-category">
+                    <div class="cookie-category-header">
+                        <h3>Cookies de Marketing</h3>
+                        <label class="cookie-toggle">
+                            <input type="checkbox" id="marketing-toggle">
+                            <span class="cookie-toggle-slider"></span>
+                        </label>
+                    </div>
+                    <p class="cookie-category-description">Estas cookies pueden ser establecidas por nuestros socios publicitarios.</p>
+                </div>
+                <div class="cookie-category">
+                    <div class="cookie-category-header">
+                        <h3>Cookies Funcionales</h3>
+                        <label class="cookie-toggle">
+                            <input type="checkbox" id="functional-toggle">
+                            <span class="cookie-toggle-slider"></span>
+                        </label>
+                    </div>
+                    <p class="cookie-category-description">Estas cookies permiten funcionalidad mejorada y personalización.</p>
+                </div>
+            </div>
+            <div class="cookie-modal-footer">
+                <button id="save-cookie-preferences" class="cookie-btn cookie-btn-accept">Guardar preferencias</button>
+            </div>
+        </div>
+    </div>
 </body>
 </html>
