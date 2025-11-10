@@ -207,7 +207,7 @@
             console.debug('[FEED-UTILS] Proxy base:', proxyBase);
             
             // Intentar endpoint agregado primero
-            const aggKey = 'rss_cache_v2_media_AGG';
+            const aggKey = 'rss_cache_v3_media_AGG';
             let items = cacheGet(aggKey);
             
             if (!items) {
@@ -233,7 +233,7 @@
                     
                     // Fallback: obtener feeds individualmente
                     const fetches = sources.map(async (src) => {
-                        const cacheKey = 'rss_cache_v2_media_' + btoa(src);
+                        const cacheKey = 'rss_cache_v3_media_' + btoa(src);
                         const cached = cacheGet(cacheKey);
                         if (cached) return cached;
                         
