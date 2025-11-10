@@ -1,13 +1,22 @@
 ﻿{
-  "name": "This is Fuerteventura",
+  "name": "This is Fuerteventura - Guía Turística Completa",
   "short_name": "Fuerteventura",
-  "start_url": "/index.html",
+  "start_url": "/",
   "scope": "/",
   "display": "standalone",
   "background_color": "#ffffff",
   "theme_color": "#0f4c81",
-  "description": "Noticias y guía de Fuerteventura",
+  "description": "Guía turística completa de Fuerteventura: playas, hoteles, restaurantes, noticias y lugares de interés en las Islas Canarias",
+  "orientation": "portrait-primary",
+  "dir": "ltr",
+  "lang": "es",
+  "categories": ["travel", "tourism", "news"],
   "icons": [
-    
+    {
+      "src": "images/logo.jpg",
+      "sizes": "1024x756",
+      "type": "image/jpeg",
+      "purpose": "any maskable"
+    }
   ]
 }

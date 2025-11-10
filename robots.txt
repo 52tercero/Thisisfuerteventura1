@@ -1,4 +1,12 @@
 ﻿User-agent: *
 Allow: /
+Disallow: /server/
+Disallow: /tools/
+Disallow: /test-*.html
+Disallow: /*.backup$
 
-Sitemap: /sitemap.xml
+# Crawl delay
+Crawl-delay: 1
+
+# Sitemap
+Sitemap: https://thisisfuerteventura.netlify.app/sitemap.xml
