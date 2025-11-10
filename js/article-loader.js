@@ -90,6 +90,112 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         };
 
+        // Extraer videos del feed (YouTube, Vimeo, enclosures de video)
+        const extractVideos = () => {
+            const videos = [];
+            const raw = article.raw || {};
+            
+            // 1. Buscar en enclosures de tipo video
+            if (raw.enclosure) {
+                const enc = Array.isArray(raw.enclosure) ? raw.enclosure : [raw.enclosure];
+                enc.forEach(e => {
+                    if (e && e.url && e.type && e.type.startsWith('video/')) {
+                        videos.push({ type: 'direct', url: e.url, mime: e.type });
+                    }
+                });
+            }
+            
+            // 2. Buscar en media:content de tipo video
+            if (raw['media:content']) {
+                const mc = Array.isArray(raw['media:content']) ? raw['media:content'] : [raw['media:content']];
+                mc.forEach(m => {
+                    if (m && m.url && m.type && m.type.startsWith('video/')) {
+                        videos.push({ type: 'direct', url: m.url, mime: m.type });
+                    } else if (m && m.url && m.medium === 'video') {
+                        videos.push({ type: 'direct', url: m.url, mime: 'video/mp4' });
+                    }
+                });
+            }
+            
+            // 3. Buscar URLs de YouTube en el contenido
+            const content = (article.fullHtml || article.description || article.summary || '').toString();
+            const youtubePatterns = [
+                /(?:https?:\/\/)?(?:www\.)?youtube\.com\/watch\?v=([a-zA-Z0-9_-]{11})/g,
+                /(?:https?:\/\/)?(?:www\.)?youtu\.be\/([a-zA-Z0-9_-]{11})/g,
+                /(?:https?:\/\/)?(?:www\.)?youtube\.com\/embed\/([a-zA-Z0-9_-]{11})/g
+            ];
+            
+            youtubePatterns.forEach(pattern => {
+                let match;
+                while ((match = pattern.exec(content)) !== null) {
+                    const videoId = match[1];
+                    if (!videos.some(v => v.videoId === videoId)) {
+                        videos.push({ type: 'youtube', videoId });
+                    }
+                }
+            });
+            
+            // 4. Buscar URLs de Vimeo
+            const vimeoPattern = /(?:https?:\/\/)?(?:www\.)?vimeo\.com\/(\d+)/g;
+            let vimeoMatch;
+            while ((vimeoMatch = vimeoPattern.exec(content)) !== null) {
+                const videoId = vimeoMatch[1];
+                if (!videos.some(v => v.videoId === videoId)) {
+                    videos.push({ type: 'vimeo', videoId });
+                }
+            }
+            
+            return videos;
+        };
+
+        // Generar HTML para embeds de video
+        const renderVideoEmbeds = (videos) => {
+            if (!videos || videos.length === 0) return '';
+            
+            return videos.map(video => {
+                if (video.type === 'youtube') {
+                    return `
+                        <div class="article-video" style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; max-width: 100%; margin: 20px 0;">
+                            <iframe 
+                                style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;"
+                                src="https://www.youtube.com/embed/${video.videoId}" 
+                                frameborder="0" 
+                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                                allowfullscreen
+                                loading="lazy">
+                            </iframe>
+                        </div>
+                    `;
+                } else if (video.type === 'vimeo') {
+                    return `
+                        <div class="article-video" style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; max-width: 100%; margin: 20px 0;">
+                            <iframe 
+                                style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;"
+                                src="https://player.vimeo.com/video/${video.videoId}" 
+                                frameborder="0" 
+                                allow="autoplay; fullscreen; picture-in-picture" 
+                                allowfullscreen
+                                loading="lazy">
+                            </iframe>
+                        </div>
+                    `;
+                } else if (video.type === 'direct') {
+                    return `
+                        <div class="article-video" style="max-width: 100%; margin: 20px 0;">
+                            <video controls style="width: 100%; max-height: 500px;">
+                                <source src="${video.url}" type="${video.mime || 'video/mp4'}">
+                                Tu navegador no soporta la reproducción de video.
+                            </video>
+                        </div>
+                    `;
+                }
+                return '';
+            }).join('');
+        };
+
+        const videos = extractVideos();
+        const videoHTML = renderVideoEmbeds(videos);
+
         const categoryTag = (article.category && String(article.category).toLowerCase() !== 'general')
             ? `<span class="category-tag" style="display: inline-block; margin: 10px 0;">${escapeHTML(article.category)}</span>`
             : '';
@@ -137,6 +243,8 @@ document.addEventListener('DOMContentLoaded', () => {
                         <span class="article-date"><i class="fas fa-calendar"></i> ${article.date}</span>
                     </div>
                 </header>
+                
+                ${videoHTML}
                 
                 ${article.image ? `
                     <div class="article-image">
