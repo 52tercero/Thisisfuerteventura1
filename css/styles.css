@@ -1248,7 +1248,7 @@ button:disabled.btn {
     }
     
     header h1 {
-        font-size: clamp(2.2rem, 5vw, 2.5rem);
+        font-size: clamp(2.0rem, 5vw, 2.3rem);
         letter-spacing: 0.1px;
     }
     
