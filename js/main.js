@@ -82,8 +82,8 @@ document.addEventListener('DOMContentLoaded', function() {
                     return;
                 }
                 // alternar usando una clase para que los estilos puedan manejarse en CSS
-                const willOpen = !nav.classList.contains('nav-open');
-                nav.classList.toggle('nav-open');
+                const willOpen = !nav.classList.contains('active');
+                nav.classList.toggle('active');
 
                 // Usar altura medida para transición suave
                 try {
@@ -100,7 +100,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     }
                 } catch (err) {
                     // fallback: alternar display si la medición falla
-                    if (nav.style && (!nav.classList.contains('nav-open'))) {
+                    if (nav.style && (!nav.classList.contains('active'))) {
                         nav.style.display = 'none';
                     } else if (nav.style) {
                         nav.style.display = 'block';
@@ -109,7 +109,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
                 // actualizar aria-expanded y aria-hidden para accesibilidad
                 try {
-                    const expanded = nav.classList.contains('nav-open') ? 'true' : 'false';
+                    const expanded = nav.classList.contains('active') ? 'true' : 'false';
                     mobileMenuBtn.setAttribute('aria-expanded', expanded);
                     // aria-hidden debe ser opuesto a expanded (expanded=true -> aria-hidden=false)
                     nav.setAttribute('aria-hidden', expanded === 'true' ? 'false' : 'true');
@@ -121,7 +121,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 try {
                     nav.addEventListener('transitionend', function onEnd(evt) {
                         if (evt.propertyName !== 'max-height') return;
-                        if (nav.classList.contains('nav-open')) {
+                        if (nav.classList.contains('active')) {
                             // permitir altura natural
                             nav.style.maxHeight = '';
                         }
@@ -147,11 +147,11 @@ document.addEventListener('DOMContentLoaded', function() {
             window.addEventListener('resize', function () {
                 try {
                     applyResponsiveNavState();
-                    if (isMobile() && nav.classList.contains('nav-open')) {
+                    if (isMobile() && nav.classList.contains('active')) {
                         // si maxHeight fue limpiado después de transitionend, establecerlo temporalmente para permitir redimensionamiento suave
                         nav.style.maxHeight = nav.scrollHeight + 'px';
                         // luego limpiarlo para que el flujo natural se reanude
-                        setTimeout(() => { if (isMobile() && nav.classList.contains('nav-open')) nav.style.maxHeight = ''; }, 300);
+                        setTimeout(() => { if (isMobile() && nav.classList.contains('active')) nav.style.maxHeight = ''; }, 300);
                     }
                 } catch (e) { /* ignorar */ }
             });
