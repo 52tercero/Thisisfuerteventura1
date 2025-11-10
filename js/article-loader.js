@@ -95,11 +95,15 @@ document.addEventListener('DOMContentLoaded', () => {
             const videos = [];
             const raw = article.raw || {};
             
+            console.log('[VIDEO] Extracting videos from article:', article.title);
+            console.log('[VIDEO] Raw data:', raw);
+            
             // 1. Buscar en enclosures de tipo video
             if (raw.enclosure) {
                 const enc = Array.isArray(raw.enclosure) ? raw.enclosure : [raw.enclosure];
                 enc.forEach(e => {
                     if (e && e.url && e.type && e.type.startsWith('video/')) {
+                        console.log('[VIDEO] Found video in enclosure:', e.url);
                         videos.push({ type: 'direct', url: e.url, mime: e.type });
                     }
                 });
@@ -110,41 +114,59 @@ document.addEventListener('DOMContentLoaded', () => {
                 const mc = Array.isArray(raw['media:content']) ? raw['media:content'] : [raw['media:content']];
                 mc.forEach(m => {
                     if (m && m.url && m.type && m.type.startsWith('video/')) {
+                        console.log('[VIDEO] Found video in media:content:', m.url);
                         videos.push({ type: 'direct', url: m.url, mime: m.type });
                     } else if (m && m.url && m.medium === 'video') {
+                        console.log('[VIDEO] Found video in media:content (medium):', m.url);
                         videos.push({ type: 'direct', url: m.url, mime: 'video/mp4' });
                     }
                 });
             }
             
-            // 3. Buscar URLs de YouTube en el contenido
-            const content = (article.fullHtml || article.description || article.summary || '').toString();
+            // 3. Buscar URLs de YouTube en el contenido, link y description
+            const searchContent = [
+                article.fullHtml || '',
+                article.description || '',
+                article.summary || '',
+                article.content || '',
+                article.link || '',
+                raw.description || '',
+                raw.content || '',
+                raw['content:encoded'] || ''
+            ].join(' ');
+            
+            console.log('[VIDEO] Searching for YouTube/Vimeo in content (length:', searchContent.length, ')');
+            
             const youtubePatterns = [
-                /(?:https?:\/\/)?(?:www\.)?youtube\.com\/watch\?v=([a-zA-Z0-9_-]{11})/g,
-                /(?:https?:\/\/)?(?:www\.)?youtu\.be\/([a-zA-Z0-9_-]{11})/g,
-                /(?:https?:\/\/)?(?:www\.)?youtube\.com\/embed\/([a-zA-Z0-9_-]{11})/g
+                /(?:https?:\/\/)?(?:www\.)?youtube\.com\/watch\?v=([a-zA-Z0-9_-]{11})/gi,
+                /(?:https?:\/\/)?(?:www\.)?youtu\.be\/([a-zA-Z0-9_-]{11})/gi,
+                /(?:https?:\/\/)?(?:www\.)?youtube\.com\/embed\/([a-zA-Z0-9_-]{11})/gi
             ];
             
             youtubePatterns.forEach(pattern => {
                 let match;
-                while ((match = pattern.exec(content)) !== null) {
+                const regex = new RegExp(pattern);
+                while ((match = regex.exec(searchContent)) !== null) {
                     const videoId = match[1];
                     if (!videos.some(v => v.videoId === videoId)) {
+                        console.log('[VIDEO] Found YouTube video:', videoId);
                         videos.push({ type: 'youtube', videoId });
                     }
                 }
             });
             
             // 4. Buscar URLs de Vimeo
-            const vimeoPattern = /(?:https?:\/\/)?(?:www\.)?vimeo\.com\/(\d+)/g;
+            const vimeoPattern = /(?:https?:\/\/)?(?:www\.)?vimeo\.com\/(\d+)/gi;
             let vimeoMatch;
-            while ((vimeoMatch = vimeoPattern.exec(content)) !== null) {
+            while ((vimeoMatch = vimeoPattern.exec(searchContent)) !== null) {
                 const videoId = vimeoMatch[1];
-                if (!videos.some(v => v.videoId === videoId)) {
+                if (!videos.some(v => v.videoId === videoId && v.type === 'vimeo')) {
+                    console.log('[VIDEO] Found Vimeo video:', videoId);
                     videos.push({ type: 'vimeo', videoId });
                 }
             }
             
+            console.log('[VIDEO] Total videos found:', videos.length);
             return videos;
         };
 
