@@ -7,12 +7,7 @@ if (typeof fetch !== 'function') {
 }
 
 const DEFAULT_ALLOWED = [
-  'https://www.canarias7.es',
-  'https://www.laprovincia.es',
-  'https://www.cabildofuer.es',
-  'https://www.radioinsular.es',
-  'https://www.fuerteventuradigital.com',
-  'https://ondafuerteventura.es'
+  'https://rss.app'
 ];
 
 function buildAllowed() {

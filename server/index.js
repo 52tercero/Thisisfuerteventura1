@@ -299,12 +299,7 @@ async function fetchFeedItems(url, { bypassCache = false, _triedDiscovery = fals
 // Fuentes permitidas por prefijo (base de dominio). Más seguras para descubrimiento de feeds.
 // Se puede extender mediante la variable de entorno ALLOWED_SOURCES (URLs separadas por comas).
 const DEFAULT_ALLOWED = [
-  'https://www.canarias7.es',
-  'https://www.laprovincia.es',
-  'https://www.cabildofuer.es',
-  'https://www.radioinsular.es',
-  'https://www.fuerteventuradigital.com',
-  'https://ondafuerteventura.es',
+  'https://rss.app',
 ];
 
 let ALLOWED_SOURCES = DEFAULT_ALLOWED.slice();
