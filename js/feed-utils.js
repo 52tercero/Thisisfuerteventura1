@@ -137,7 +137,7 @@
         const candidates = ['http://localhost:3000', 'http://localhost:3001', 'http://localhost:3002'];
         for (const base of candidates) {
             try {
-                const r = await fetch(`${base}/health`, { method: 'GET', cache: 'no-store' });
+                const r = await fetch(`${base}/health`, { method: 'GET', cache: 'no-store', targetAddressSpace: 'local' });
                 if (r.ok) return base;
             } catch (_) { /* siguiente candidato */ }
         }
@@ -223,7 +223,8 @@
                 console.log('[FEED-UTILS] Fetching aggregate from:', aggUrl);
                 
                 try {
-                    const r = await fetch(aggUrl, { cache: 'no-store' });
+                    const isLocal = /^http:\/\/(localhost|127\.0\.0\.1)(:\d+)?/i.test(proxyBase);
+                    const r = await fetch(aggUrl, { cache: 'no-store', ...(isLocal ? { targetAddressSpace: 'local' } : {}) });
                     console.log('[FEED-UTILS] Aggregate response status:', r.status);
                     
                     if (!r.ok) throw new Error('bad response');
@@ -245,7 +246,8 @@
                             const rssPath = proxyBase === '' 
                                 ? '/.netlify/functions/rss' 
                                 : (proxyBase.endsWith('/.netlify/functions') ? '/rss' : '/api/rss');
-                            const rr = await fetch(`${proxyBase}${rssPath}?url=${encodeURIComponent(src)}`, { cache: 'no-store' });
+                            const isLocal = /^http:\/\/(localhost|127\.0\.0\.1)(:\d+)?/i.test(proxyBase);
+                            const rr = await fetch(`${proxyBase}${rssPath}?url=${encodeURIComponent(src)}`, { cache: 'no-store', ...(isLocal ? { targetAddressSpace: 'local' } : {}) });
                             
                             if (!rr.ok) throw new Error('bad response');
                             

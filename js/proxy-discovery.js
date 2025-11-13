@@ -6,7 +6,7 @@
     try {
       const controller = new AbortController();
       const id = setTimeout(() => controller.abort(), timeout);
-      const res = await fetch(url, { signal: controller.signal, mode: 'cors', cache: 'no-store' });
+      const res = await fetch(url, { signal: controller.signal, mode: 'cors', cache: 'no-store', targetAddressSpace: 'local' });
       clearTimeout(id);
       if (res && res.ok) return `http://localhost:${port}`;
     } catch (e) {
