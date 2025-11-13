@@ -1,4 +1,21 @@
 document.addEventListener('DOMContentLoaded', function() {
+    // Helper para proxificar imágenes externas mediante Netlify Functions o proxy local
+    function toImageSrc(url) {
+        try {
+            if (!url || typeof url !== 'string') return url;
+            const u = new URL(url, location.href);
+            if (u.origin === location.origin) return u.toString();
+            if (window.__RSS_PROXY_URL === '') {
+                return `/.netlify/functions/image?url=${encodeURIComponent(u.toString())}`;
+            }
+            if (typeof window.__RSS_PROXY_URL === 'string' && window.__RSS_PROXY_URL) {
+                return `${window.__RSS_PROXY_URL}/api/image?url=${encodeURIComponent(u.toString())}`;
+            }
+            return u.toString();
+        } catch (_) {
+            return url;
+        }
+    }
     // Listado simple de noticias, paginación y filtrado para noticias.html
     const newsContainer = document.getElementById('news-container');
     if (!newsContainer) return;
@@ -145,7 +162,7 @@ document.addEventListener('DOMContentLoaded', function() {
                                 : '';
                             newsCard.innerHTML = `
                                 <div class="news-image">
-                                    <img src="${item.image}" alt="${item.title}" onerror="this.onerror=null;this.src='images/logo.jpg?v=2025110501';">
+                                    <img src="${toImageSrc(item.image)}" alt="${item.title}" loading="lazy" referrerpolicy="no-referrer" onerror="this.onerror=null;this.src='images/logo.jpg?v=2025110501';">
                                     ${categoryTag}
                                 </div>
                                 <div class="news-content">
@@ -207,7 +224,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
 
                 card.innerHTML = `
-                    <img src="${item.image}" alt="${item.title}" onerror="this.onerror=null;this.src='images/logo.jpg';">
+                    <img src="${toImageSrc(item.image)}" alt="${item.title}" loading="lazy" referrerpolicy="no-referrer" onerror="this.onerror=null;this.src='images/logo.jpg';">
                     <div class="card-content">
                         <span class="date">${item.date}</span>
                         <h3>${item.title}</h3>

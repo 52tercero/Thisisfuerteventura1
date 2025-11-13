@@ -208,11 +208,18 @@
                 const id = setTimeout(() => controller.abort(), 1500);
                 // Probar con el endpoint aggregate que existe
                 fetch('/.netlify/functions/aggregate', { signal: controller.signal, cache: 'no-store' })
-                    .then(r => { 
-                        if (r && r.ok) { 
-                            window.__RSS_PROXY_URL = '';  // Cadena vacía para usar rutas relativas
-                            console.log('✓ Netlify Functions detectadas, usando rutas relativas');
-                        } 
+                    .then(async r => { 
+                        try {
+                            const ctype = r.headers.get('content-type') || '';
+                            // Considerar válido solo si devuelve JSON y estructura esperada
+                            if (r.ok && ctype.includes('application/json')) {
+                                const data = await r.clone().json().catch(() => null);
+                                if (data && (Array.isArray(data.items) || data.items === undefined)) {
+                                    window.__RSS_PROXY_URL = '';  // Cadena vacía para usar rutas relativas
+                                    console.log('✓ Netlify Functions detectadas, usando rutas relativas');
+                                }
+                            }
+                        } catch (_) { /* ignorar */ }
                     })
                     .catch((e) => {
                         console.log('ℹ Netlify Functions no disponibles, intentando proxy local');

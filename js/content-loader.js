@@ -1,4 +1,27 @@
 document.addEventListener('DOMContentLoaded', async function() {
+    // Helper para enrutar imágenes externas a través del proxy cuando esté disponible
+    function toImageSrc(url) {
+        try {
+            if (!url || typeof url !== 'string') return url;
+            // Evitar proxificar imágenes locales
+            const u = new URL(url, location.href);
+            const isExternal = u.origin !== location.origin;
+            if (!isExternal) return u.toString();
+
+            // Detectar si estamos usando Netlify Functions (cadena vacía)
+            if (window.__RSS_PROXY_URL === '') {
+                return `/.netlify/functions/image?url=${encodeURIComponent(u.toString())}`;
+            }
+            // Si hay un proxy local descubierto
+            if (typeof window.__RSS_PROXY_URL === 'string' && window.__RSS_PROXY_URL) {
+                return `${window.__RSS_PROXY_URL}/api/image?url=${encodeURIComponent(u.toString())}`;
+            }
+            // Fallback: dejar URL directa
+            return u.toString();
+        } catch (_) {
+            return url;
+        }
+    }
     // Detectar proxy antes de cargar noticias
     if (typeof window.discoverRSSProxy === 'function') {
         try {
@@ -130,7 +153,7 @@ document.addEventListener('DOMContentLoaded', async function() {
                             const articleId = btoa(encodeURIComponent(item.title + item.date)).replace(/[^a-zA-Z0-9]/g, '').substring(0, 32);
                             try { localStorage.setItem(`article_${articleId}`, JSON.stringify(item)); } catch (_) {}
                             card.innerHTML = `
-                                <img src="${item.image}" alt="${item.title}" loading="lazy" onerror="this.onerror=null;this.src='images/logo.jpg?v=2025110501';">
+                                <img src="${toImageSrc(item.image)}" alt="${item.title}" loading="lazy" referrerpolicy="no-referrer" onerror="this.onerror=null;this.src='images/logo.jpg?v=2025110501';">
                                 <div class="card-content">
                                     <span class="date">${item.date}</span>
                                     <h3>${item.title}</h3>
@@ -211,7 +234,7 @@ document.addEventListener('DOMContentLoaded', async function() {
                 }
 
                 card.innerHTML = `
-                    <img src="${item.image}" alt="${item.title}" loading="lazy" onerror="this.onerror=null;this.src='images/logo.jpg?v=2025110501';">
+                    <img src="${toImageSrc(item.image)}" alt="${item.title}" loading="lazy" referrerpolicy="no-referrer" onerror="this.onerror=null;this.src='images/logo.jpg?v=2025110501';">
                     <div class="card-content">
                         <span class="date">${item.date}</span>
                         <h3>${item.title}</h3>
@@ -381,7 +404,7 @@ document.addEventListener('DOMContentLoaded', async function() {
                     
                     newsCard.innerHTML = `
                         <div class="news-image">
-                            <img src="${item.image}" alt="${item.title}" loading="lazy" onerror="this.onerror=null;this.src='images/logo.jpg?v=2025110501';">
+                            <img src="${toImageSrc(item.image)}" alt="${item.title}" loading="lazy" referrerpolicy="no-referrer" onerror="this.onerror=null;this.src='images/logo.jpg?v=2025110501';">
                         </div>
                         <div class="news-content">
                             <span class="news-date">${item.date}</span>
@@ -516,7 +539,7 @@ document.addEventListener('DOMContentLoaded', async function() {
                         </header>
 
                         <div class="article-featured-image">
-                            <img src="${article.image}" alt="${article.title}" onerror="this.onerror=null;this.src='images/Fuerteventura.jpeg?v=2025110501';">
+                            <img src="${toImageSrc(article.image)}" alt="${article.title}" referrerpolicy="no-referrer" onerror="this.onerror=null;this.src='images/Fuerteventura.jpeg?v=2025110501';">
                         </div>
 
                         <div class="article-content">

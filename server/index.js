@@ -488,6 +488,50 @@ app.get('/api/aggregate', async (req, res) => {
   }
 });
 
+// Proxy de imágenes para evitar bloqueos de hotlinking/CORB
+// GET /api/image?url=https%3A%2F%2Fexample.com%2Fpath.jpg
+app.get('/api/image', async (req, res) => {
+  try {
+    const url = (req.query.url || '').toString();
+    if (!url) return res.status(400).json({ error: 'missing url' });
+    let target;
+    try {
+      target = new URL(url);
+    } catch (_) {
+      return res.status(400).json({ error: 'invalid url' });
+    }
+    if (target.protocol !== 'https:') {
+      return res.status(400).json({ error: 'only https allowed' });
+    }
+
+    const upstream = await fetchUrl(target.toString(), {
+      headers: {
+        'Accept': 'image/avif,image/webp,image/apng,image/*,*/*;q=0.8',
+        'Referer': target.origin + '/',
+        'User-Agent': 'Mozilla/5.0 (compatible; ThisIsFuerteventuraProxy/1.0)'
+      }
+    });
+
+    if (!upstream.ok) {
+      return res.status(upstream.status).json({ error: 'upstream_error', status: upstream.status });
+    }
+
+    const ctype = upstream.headers.get('content-type') || 'application/octet-stream';
+    if (!ctype.startsWith('image/')) {
+      return res.status(415).json({ error: 'unsupported content-type', contentType: ctype });
+    }
+
+    // Enviar como stream para eficiencia
+    res.setHeader('Content-Type', ctype);
+    res.setHeader('Cache-Control', 'public, max-age=86400, stale-while-revalidate=604800');
+    // Pipe the response body directly
+    upstream.body.pipe(res);
+  } catch (e) {
+    console.error('[IMAGE PROXY] Error:', e && e.message);
+    res.status(500).json({ error: 'proxy_failed' });
+  }
+});
+
 // Intentar escuchar en el puerto configurado, pero si está en uso probar puertos superiores hasta un límite
 function startServerOnPort(port, attemptsLeft = 10) {
   const serverInstance = app.listen(port, () => {
