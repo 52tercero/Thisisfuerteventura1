@@ -6,6 +6,8 @@
     <title>Playas de Fuerteventura 2025 - Guía Completa de las Mejores Playas | This is Fuerteventura</title>
     <link rel="canonical" href="https://thisisfuerteventura.netlify.app/playas.html">
     <link rel="manifest" href="manifest.webmanifest">
+    <!-- Google Fonts: Inter y Playfair Display -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/styles.css?v=2025111501">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@9/swiper-bundle.min.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
@@ -64,10 +66,14 @@
     </header>
 
     <main id="main">
-    <section class="hero beaches-hero parallax reveal particle-scene">
-        <div class="hero-content">
-            <h2>Playas de Fuerteventura</h2>
-            <p>Descubre el paraíso de arena y mar</p>
+    <section class="hero beaches-hero parallax reveal particle-scene" style="position:relative;">
+        <video autoplay muted loop playsinline class="hero-bg" poster="images/hero-poster.jpg" style="position:absolute;inset:0;width:100vw;height:100vh;object-fit:cover;z-index:0;filter:brightness(0.7);">
+            <source src="images/olas.mp4" type="video/mp4">
+            Tu navegador no soporta vídeo.
+        </video>
+        <div class="hero-content" style="position:relative;z-index:1;padding:4rem 2rem;text-align:center;">
+            <h1 class="reveal">Playas de Fuerteventura</h1>
+            <p class="reveal">Descubre el paraíso de arena y mar</p>
         </div>
     </section>
 

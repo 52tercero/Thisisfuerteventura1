@@ -99,6 +99,10 @@
 .press-support li { margin-bottom: 8px; }
 /* Estilos generales */
 :root {
+  --color-mar: #2ec4b6;
+  --color-arena: #ffe066;
+  --color-volcan: #22223b;
+  --gradient-hero: linear-gradient(120deg, var(--color-mar), var(--color-arena), var(--color-volcan));
     --primary-color: #0088cc;
     --secondary-color: #f8c100;
     --dark-color: #333;
@@ -120,10 +124,9 @@
 }
 
 body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    line-height: 1.6;
-    color: var(--text-color);
-    background-color: var(--bg-color);
+  font-family: 'Inter', Arial, sans-serif;
+  background: #fff;
+  color: var(--color-volcan);
 }
 
 a {
