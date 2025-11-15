@@ -19,7 +19,9 @@
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <!-- Swiper for galleries/timeline -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@9/swiper-bundle.min.css" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <!-- Font Awesome con carga optimizada -->
+    <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"></noscript>
     <meta name="description" content="Descubre Fuerteventura con nuestra guía completa 2025: mejores playas, hoteles, restaurantes, actividades turísticas y noticias actualizadas de las Islas Canarias.">
     <meta name="keywords" content="Fuerteventura, turismo Fuerteventura, playas Fuerteventura, hoteles Fuerteventura, Islas Canarias, qué hacer en Fuerteventura, alojamiento Canarias, vacaciones Fuerteventura">
     <meta name="author" content="This is Fuerteventura">
@@ -390,25 +392,26 @@
         </div>
     </div>
     
-    <script src="https://cdn.jsdelivr.net/npm/dompurify@2.4.0/dist/purify.min.js" defer></script>
+    <!-- Librerías externas primero -->
+    <script src="https://cdn.jsdelivr.net/npm/dompurify@2.4.0/dist/purify.min.js"></script>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/swiper@9/swiper-bundle.min.js"></script>
+    
+    <!-- Scripts de utilidades -->
     <script src="js/feed-utils.js?v=2025111005" defer></script>
     <script src="js/image-extractor.js?v=2025110901" defer></script>
-    <script src="js/content-loader.js?v=2025111003" defer></script>
-    <script src="js/main.js?v=2025111502" defer></script>
     <script src="js/proxy-discovery.js?v=2025110901" defer></script>
+    
+    <!-- Scripts principales -->
+    <script src="js/main.js?v=2025111502" defer></script>
+    <script src="js/content-loader.js?v=2025111003" defer></script>
     <script src="js/cookies.js?v=2025111001" defer></script>
     
-    <!-- Nuevos scripts para UX mejorada -->
+    <!-- Scripts de UX y funcionalidades -->
     <script src="js/scroll-animations.js?v=2025111502" defer></script>
     <script src="js/dark-mode.js?v=2025111502" defer></script>
+    <script src="js/interactive-map.js?v=2025111502" defer></script>
     <script src="js/gamification.js?v=2025111502" defer></script>
     <script src="js/real-time-data.js?v=2025111502" defer></script>
-    
-    <!-- Leaflet JS para mapa interactivo -->
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" defer></script>
-    <script src="js/interactive-map.js?v=2025111502" defer></script>
-    
-    <!-- Swiper JS para galerías dinámicas -->
-    <script src="https://cdn.jsdelivr.net/npm/swiper@9/swiper-bundle.min.js" defer></script>
 </body>
 </html>
