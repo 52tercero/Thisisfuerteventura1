@@ -12,7 +12,9 @@
     
     <link rel="canonical" href="https://thisisfuerteventura.netlify.app/">
     <link rel="manifest" href="manifest.webmanifest">
-    <link rel="stylesheet" href="css/styles.css?v=2025111501">
+    <link rel="stylesheet" href="css/styles.css?v=2025111502">
+    <!-- Google Fonts: Inter para texto, Playfair Display para títulos -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Playfair+Display:wght@700;900&display=swap" rel="stylesheet">
     <!-- Swiper for galleries/timeline -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@9/swiper-bundle.min.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
@@ -109,12 +111,17 @@
         </div>
     </header>
     <main id="main">
-    <section class="hero parallax reveal">
-        <div class="hero-content">
-            <h2>Bienvenido a Fuerteventura</h2>
-            <p>Descubre el paraíso de las Islas Canarias</p>
-            <a href="turismo.html" class="btn">Explorar la isla</a>
-        </div>
+    <section class="hero parallax reveal" style="position:relative;min-height:100vh;display:flex;align-items:center;justify-content:center;overflow:hidden;">
+      <video autoplay muted loop playsinline class="hero-bg" poster="images/Fuerteventura.jpeg" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:0;filter:brightness(0.6);">
+        <source src="https://cdn.coverr.co/videos/coverr-waves-crashing-on-shore/1080p.mp4" type="video/mp4">
+        Tu navegador no soporta vídeo.
+      </video>
+      <div class="hero-overlay" style="position:absolute;inset:0;background:linear-gradient(135deg, rgba(15,76,129,0.3) 0%, rgba(46,196,182,0.2) 100%);z-index:1;"></div>
+      <div class="hero-content" style="position:relative;z-index:2;padding:4rem 2rem;text-align:center;max-width:900px;">
+        <h2 style="font-family:'Playfair Display',serif;font-size:clamp(2.5rem,6vw,5rem);font-weight:900;color:#fff;margin-bottom:1.5rem;text-shadow:2px 4px 12px rgba(0,0,0,0.4);">Bienvenido a Fuerteventura</h2>
+        <p style="font-family:'Inter',sans-serif;font-size:clamp(1.1rem,2.5vw,1.5rem);color:#f0f0f0;font-weight:400;text-shadow:1px 2px 8px rgba(0,0,0,0.3);">Descubre el paraíso de las Islas Canarias</p>
+        <a href="turismo.html" class="btn" style="margin-top:2rem;display:inline-block;">Explorar la isla</a>
+      </div>
     </section>
 
     <section class="featured-content reveal">
@@ -155,11 +162,38 @@
         </div>
     </section>
 
+    <!-- Widgets de datos en tiempo real -->
+    <section class="reveal" style="padding:3rem 5%;">
+        <h2 style="text-align:center;font-family:var(--font-display);color:var(--color-cielo);margin-bottom:2rem;">Condiciones Actuales</h2>
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:2rem;max-width:1200px;margin:0 auto;">
+            <div id="weather-widget">
+                <div class="loading" style="text-align:center;padding:2rem;">Cargando clima...</div>
+            </div>
+            <div id="wave-widget">
+                <div class="loading" style="text-align:center;padding:2rem;">Cargando condiciones del mar...</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Mapa interactivo de Fuerteventura -->
+    <section class="reveal" style="padding:3rem 5%;">
+        <h2 style="text-align:center;font-family:var(--font-display);color:var(--color-cielo);margin-bottom:2rem;">Explora Fuerteventura</h2>
+        <p style="text-align:center;max-width:700px;margin:0 auto 2rem;color:#666;">Descubre los lugares más emblemáticos de la isla con nuestro mapa interactivo</p>
+        <div id="interactive-map"></div>
+    </section>
+
+    <!-- Quiz de gamificación -->
+    <section class="reveal" style="padding:3rem 5%;background:linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);">
+        <h2 style="text-align:center;font-family:var(--font-display);color:var(--color-cielo);margin-bottom:1rem;">¿Cuánto sabes de Fuerteventura?</h2>
+        <p style="text-align:center;max-width:700px;margin:0 auto 2rem;color:#666;">Pon a prueba tus conocimientos sobre la isla</p>
+        <div id="quiz-container"></div>
+    </section>
+
     <section class="newsletter reveal">
         <h2>Suscríbete a nuestro boletín</h2>
         <p>Recibe las últimas noticias y ofertas de Fuerteventura directamente en tu correo.</p>
         <form id="newsletter-form">
-            <input type="email" id="newsletter-email" name="email" placeholder="Tu correo electrónico" autocomplete="email" required>
+            <input type="email" id="newsletter-email" placeholder="Tu correo electrónico" required>
             <button type="submit" class="btn">Suscribirse</button>
         </form>
     </section>
@@ -338,10 +372,30 @@
             </div>
         </div>
     </div>
+    
+    <!-- Leaflet CSS para mapa interactivo -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    
     <script src="https://cdn.jsdelivr.net/npm/dompurify@2.4.0/dist/purify.min.js" defer></script>
     <script src="js/feed-utils.js?v=2025111005" defer></script>
     <script src="js/image-extractor.js?v=2025110901" defer></script>
     <script src="js/content-loader.js?v=2025111003" defer></script>
+    <script src="js/main.js?v=2025111502" defer></script>
+    <script src="js/proxy-discovery.js?v=2025110901" defer></script>
+    <script src="js/cookies.js?v=2025111001" defer></script>
+    
+    <!-- Nuevos scripts para UX mejorada -->
+    <script src="js/scroll-animations.js?v=2025111502" defer></script>
+    <script src="js/dark-mode.js?v=2025111502" defer></script>
+    <script src="js/gamification.js?v=2025111502" defer></script>
+    <script src="js/real-time-data.js?v=2025111502" defer></script>
+    
+    <!-- Leaflet JS para mapa interactivo -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" defer></script>
+    <script src="js/interactive-map.js?v=2025111502" defer></script>
+    
+    <!-- Swiper JS para galerías dinámicas -->
+    <script src="https://cdn.jsdelivr.net/npm/swiper@9/swiper-bundle.min.js" defer></script>
 
     <!-- Noticias en timeline (auto de featured) -->
     <section class="news-timeline reveal" aria-label="Timeline de noticias">

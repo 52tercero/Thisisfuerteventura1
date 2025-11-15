@@ -1,5 +1,5 @@
 ﻿// Service Worker con estrategia segura (network-first para documentos) para evitar contenido obsoleto
-const SW_VERSION = 'v8';
+const SW_VERSION = 'v9-modern';
 const APP_CACHE = `app-${SW_VERSION}`;
 
 const PRECACHE = [
@@ -7,7 +7,13 @@ const PRECACHE = [
   '/index.html',
   '/noticias.html',
   '/css/styles.css',
-  '/images/logo.jpg'
+  '/images/logo.jpg',
+  '/js/main.js',
+  '/js/scroll-animations.js',
+  '/js/dark-mode.js',
+  '/js/interactive-map.js',
+  '/js/gamification.js',
+  '/js/real-time-data.js'
 ];
 
 self.addEventListener('install', (event) => {

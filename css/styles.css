@@ -1,4 +1,22 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700&family=Lobster&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Playfair+Display:wght@700;900&display=swap');
+
+/* Variables de color inspiradas en Fuerteventura */
+:root {
+    --color-mar: #2ec4b6;
+    --color-arena: #ffd97d;
+    --color-volcan: #22223b;
+    --color-cielo: #0f4c81;
+    --primary-color: #0f4c81;
+    --secondary-color: #2ec4b6;
+    --text-color: #333333;
+    --bg-light: #f8f9fa;
+    --gradient-ocean: linear-gradient(135deg, #0f4c81 0%, #2ec4b6 100%);
+    --gradient-sunset: linear-gradient(135deg, #ffd97d 0%, #ff6b6b 100%);
+    --font-display: 'Playfair Display', serif;
+    --font-body: 'Inter', sans-serif;
+}
+
 /* Galerías, itinerarios, perfiles, zonas, etc. */
 .image-gallery, .gallery-grid, .itineraries, .itinerary-grid, .beach-profiles, .profiles-grid, .stay-zones, .zones-grid, .saving-tips, .about-project, .about-grid, .press-support {
     margin: 40px 0 30px 0;
@@ -97,33 +115,34 @@
     color: #555;
 }
 .press-support li { margin-bottom: 8px; }
-/* Estilos generales */
-:root {
-    --primary-color: #0088cc;
-    --secondary-color: #f8c100;
-    --dark-color: #333;
-    --light-color: #f4f4f4;
-    --danger-color: #dc3545;
-    --success-color: #28a745;
-    --bg-color: #f9f9f9;
-    --text-color: #333;
-    --header-bg: #ffffff;
-    --header-text: #333;
-    --card-bg: #fff;
-    --shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-}
 
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
-
+/* Estilos generales con tipografía moderna */
 body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-family: var(--font-body, 'Inter', 'Segoe UI', sans-serif);
     line-height: 1.6;
     color: var(--text-color);
     background-color: var(--bg-color);
+}
+
+h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-display, 'Playfair Display', serif);
+    font-weight: 700;
+}
+
+/* Microinteracciones para botones */
+.btn, button {
+    transition: transform 0.3s cubic-bezier(0.68, -0.55, 0.27, 1.55), 
+                box-shadow 0.3s ease,
+                background 0.3s ease;
+}
+
+.btn:hover, button:hover {
+    transform: translateY(-2px) scale(1.05);
+    box-shadow: 0 8px 20px rgba(46, 196, 182, 0.3);
+}
+
+.btn:active, button:active {
+    transform: translateY(0) scale(0.98);
 }
 
 a {
@@ -1921,5 +1940,180 @@ html[data-theme="dark"] .theme-toggle { border-color: rgba(255,255,255,0.25); }
     .loading-skeleton {
         grid-template-columns: 1fr;
         gap: 20px;
+    }
+}
+
+/* Animaciones de scroll reveal */
+.reveal {
+    opacity: 0;
+    transform: translateY(40px);
+    transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+}
+
+.reveal.show {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.stagger-item {
+    opacity: 0;
+    transform: translateX(-20px);
+    transition: opacity 0.5s ease-out, transform 0.5s ease-out;
+}
+
+.stagger-item.show {
+    opacity: 1;
+    transform: translateX(0);
+}
+
+/* Dark Mode */
+[data-theme="dark"] {
+    --text-color: #e0e0e0;
+    --bg-color: #1a1a1a;
+    --card-bg: #2a2a2a;
+    --header-bg: #222;
+    --header-text: #e0e0e0;
+}
+
+[data-theme="dark"] body {
+    background-color: var(--bg-color);
+    color: var(--text-color);
+}
+
+[data-theme="dark"] .content-card,
+[data-theme="dark"] .beach-card,
+[data-theme="dark"] .tourism-card,
+[data-theme="dark"] .dish-card {
+    background: var(--card-bg);
+    color: var(--text-color);
+}
+
+[data-theme="dark"] header {
+    background: var(--header-bg);
+    color: var(--header-text);
+}
+
+.theme-toggle {
+    background: transparent;
+    border: 2px solid var(--color-mar);
+    color: var(--color-mar);
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 1rem;
+}
+
+.theme-toggle:hover {
+    background: var(--color-mar);
+    color: white;
+    transform: scale(1.05);
+}
+
+.theme-toggle i {
+    font-size: 1.2rem;
+}
+
+/* Estilos para mapa interactivo */
+#interactive-map {
+    height: 500px;
+    width: 100%;
+    border-radius: 16px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+    margin: 2rem 0;
+}
+
+.custom-popup .leaflet-popup-content-wrapper {
+    border-radius: 12px;
+    padding: 0;
+}
+
+.custom-popup .leaflet-popup-content {
+    margin: 0;
+}
+
+/* Estilos para galerías Swiper */
+.swiper-container {
+    width: 100%;
+    padding: 2rem 0;
+}
+
+.swiper-slide {
+    text-align: center;
+    font-size: 18px;
+    background: transparent;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.swiper-slide img {
+    display: block;
+    width: 100%;
+    height: 300px;
+    object-fit: cover;
+    border-radius: 12px;
+}
+
+/* Mejoras de accesibilidad */
+.skip-link {
+    position: absolute;
+    top: -40px;
+    left: 0;
+    background: var(--color-cielo);
+    color: white;
+    padding: 8px;
+    text-decoration: none;
+    z-index: 100;
+}
+
+.skip-link:focus {
+    top: 0;
+}
+
+/* Focus visible mejorado */
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+select:focus-visible {
+    outline: 3px solid var(--color-mar);
+    outline-offset: 2px;
+}
+
+/* Contraste mejorado para texto */
+.hero-content h2,
+.hero-content p {
+    text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.7);
+}
+
+/* Indicadores de estado */
+[aria-current="page"] {
+    font-weight: bold;
+    border-bottom: 2px solid var(--color-mar);
+}
+
+/* Reducir movimiento para usuarios que lo prefieran */
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+    }
+}
+
+/* Alto contraste para usuarios que lo prefieran */
+@media (prefers-contrast: high) {
+    .btn {
+        border: 2px solid currentColor;
+    }
+    
+    a {
+        text-decoration: underline;
     }
 }

@@ -218,6 +218,45 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 
+// Lazy loading de imágenes mejorado
+const lazyLoadOptions = {
+    root: null,
+    rootMargin: '50px',
+    threshold: 0.01
+};
+
+const lazyLoadObserver = new IntersectionObserver((entries, observer) => {
+    entries.forEach(entry => {
+        if (entry.isIntersecting) {
+            const img = entry.target;
+            if (img.dataset.src) {
+                img.src = img.dataset.src;
+                img.removeAttribute('data-src');
+            }
+            img.classList.add('loaded');
+            observer.unobserve(img);
+        }
+    });
+}, lazyLoadOptions);
+
+document.addEventListener('DOMContentLoaded', () => {
+    const lazyImages = document.querySelectorAll('img[data-src], img[loading="lazy"]');
+    lazyImages.forEach(img => lazyLoadObserver.observe(img));
+});
+
+// Registrar Service Worker para PWA
+if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/sw.js')
+            .then(registration => {
+                console.log('SW registered:', registration);
+            })
+            .catch(error => {
+                console.log('SW registration failed:', error);
+            });
+    });
+}
+
 // Eliminar cualquier Service Worker previamente registrado y no registrar ninguno nuevo
 (function unregisterSW() {
     if ('serviceWorker' in navigator) {
