@@ -19,6 +19,7 @@
     <link rel="manifest" href="manifest.webmanifest">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Playfair+Display:wght@700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/styles.css?v=2025111507">
+    <link rel="preload" href="images/Fuerteventura.jpeg" as="image" fetchpriority="high">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@9/swiper-bundle.min.css" />
     <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
     <noscript><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"></noscript>
@@ -36,6 +37,7 @@
     <meta name="twitter:title" content="Noticias de Fuerteventura 2025">
     <meta name="twitter:description" content="Últimas noticias de Fuerteventura: actualidad local, eventos y turismo.">
     <meta name="twitter:image" content="https://thisisfuerteventura.netlify.app/images/logo.jpg">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://unpkg.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://unpkg.com; font-src 'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com; img-src 'self' data: https://thisisfuerteventura.netlify.app; media-src 'self'; connect-src 'self' https://thisisfuerteventura.netlify.app http://localhost:3000 http://localhost:3001;">
     
     <!-- Structured Data -->
     <script type="application/ld+json">
@@ -100,8 +102,8 @@
 
     <main id="main">
     <section class="hero parallax reveal hero-video">
-        <video autoplay muted loop playsinline class="hero-bg" poster="images/Fuerteventura.jpeg">
-            <source src="images/VideoHeader.mp4" type="video/mp4">
+        <video autoplay muted loop playsinline preload="metadata" class="hero-bg" poster="images/Fuerteventura.jpeg">
+            <source src="images/VideoHeader.mp4" type="video/mp4" fetchpriority="high">
             Tu navegador no soporta vídeo.
         </video>
         <div class="hero-overlay"></div>
