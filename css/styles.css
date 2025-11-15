@@ -266,11 +266,11 @@ header {
 
 header h1 {
     font-size: clamp(1.5rem, 3vw, 2.5rem);
-    font-weight: 400;
+    font-weight: 700;
     color: var(--primary-color);
     text-transform: none;
     letter-spacing: 0.3px;
-    font-family: 'Lobster', cursive;
+    font-family: var(--font-display, 'Playfair Display', serif);
     margin: 0;
     line-height: 1.2;
 }
@@ -283,8 +283,9 @@ header.scrolled h1 { font-size: clamp(1.3rem, 2.4vw, 2rem); }
 
 /* Logo textual en el footer comparte la misma fuente de marca */
 .footer-logo h3 {
-    font-family: 'Poppins', 'Segoe UI', 'Montserrat', Arial, sans-serif;
+    font-family: var(--font-display, 'Playfair Display', serif);
     letter-spacing: 0.5px;
+    font-weight: 700;
 }
 
 nav ul {
@@ -1318,33 +1319,6 @@ button:disabled.btn {
     #newsletter-form button {
         border-radius: 5px;
     }
-
-    /* Cuando nav tiene .nav-open (alternado por JS), mostrarlo y apilar enlaces */
-    nav.nav-open {
-        /* asegurar que sea visible y permitir que la transición se expanda */
-        display: block;
-        background: white;
-        width: 100%;
-        position: absolute;
-        left: 0;
-        top: 56px; /* debajo del header (ajustado para móvil) */
-        box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-        z-index: 90;
-        max-height: 600px; /* suficiente para mostrar elementos del menú; ajustar si es necesario */
-        opacity: 1;
-    }
-
-    nav.nav-open ul {
-        display: flex;
-        flex-direction: column;
-        padding: 10px 20px;
-        transform-origin: top center;
-    }
-
-    nav.nav-open ul li {
-        margin: 10px 0;
-        margin-left: 0;
-    }
 }
 
 /* Estilos adicionales para móviles muy pequeños */
@@ -2028,7 +2002,9 @@ html[data-theme="dark"] .theme-toggle { border-color: rgba(255,255,255,0.25); }
 /* Duplicados eliminados - estilos ya definidos arriba */
 
 /* Hero con video */
-.hero-video {
+.hero-video,
+.hero.beaches-hero,
+.hero.parallax {
     position: relative;
     min-height: 100vh;
     display: flex;
@@ -2037,7 +2013,9 @@ html[data-theme="dark"] .theme-toggle { border-color: rgba(255,255,255,0.25); }
     overflow: hidden;
 }
 
-.hero-video .hero-bg {
+.hero-video .hero-bg,
+.hero.beaches-hero .hero-bg,
+.hero.parallax .hero-bg {
     position: absolute;
     inset: 0;
     width: 100%;
@@ -2047,14 +2025,18 @@ html[data-theme="dark"] .theme-toggle { border-color: rgba(255,255,255,0.25); }
     filter: brightness(0.6);
 }
 
-.hero-video .hero-overlay {
+.hero-video .hero-overlay,
+.hero.beaches-hero .hero-overlay,
+.hero.parallax .hero-overlay {
     position: absolute;
     inset: 0;
     background: linear-gradient(135deg, rgba(15,76,129,0.3) 0%, rgba(46,196,182,0.2) 100%);
     z-index: 1;
 }
 
-.hero-video .hero-content {
+.hero-video .hero-content,
+.hero.beaches-hero .hero-content,
+.hero.parallax .hero-content {
     position: relative;
     z-index: 2;
     padding: 4rem 2rem;
@@ -2062,7 +2044,12 @@ html[data-theme="dark"] .theme-toggle { border-color: rgba(255,255,255,0.25); }
     max-width: 900px;
 }
 
-.hero-video .hero-content h2 {
+.hero-video .hero-content h2,
+.hero-video .hero-content h1,
+.hero.beaches-hero .hero-content h1,
+.hero.beaches-hero .hero-content h2,
+.hero.parallax .hero-content h1,
+.hero.parallax .hero-content h2 {
     font-family: var(--font-display);
     font-size: clamp(2.5rem, 6vw, 5rem);
     font-weight: 900;
@@ -2071,7 +2058,9 @@ html[data-theme="dark"] .theme-toggle { border-color: rgba(255,255,255,0.25); }
     text-shadow: 2px 4px 12px rgba(0,0,0,0.4);
 }
 
-.hero-video .hero-content p {
+.hero-video .hero-content p,
+.hero.beaches-hero .hero-content p,
+.hero.parallax .hero-content p {
     font-family: var(--font-body);
     font-size: clamp(1.1rem, 2.5vw, 1.5rem);
     color: #f0f0f0;
@@ -2079,35 +2068,52 @@ html[data-theme="dark"] .theme-toggle { border-color: rgba(255,255,255,0.25); }
     text-shadow: 1px 2px 8px rgba(0,0,0,0.3);
 }
 
-.hero-video .hero-content .btn {
+.hero-video .hero-content .btn,
+.hero.beaches-hero .hero-content .btn,
+.hero.parallax .hero-content .btn {
     margin-top: 2rem;
     display: inline-block;
 }
 
 @media (max-width: 768px) {
-    .hero-video {
+    .hero-video,
+    .hero.beaches-hero,
+    .hero.parallax {
         min-height: 70vh;
     }
     
-    .hero-video .hero-content {
+    .hero-video .hero-content,
+    .hero.beaches-hero .hero-content,
+    .hero.parallax .hero-content {
         padding: 2rem 1.5rem;
     }
     
-    .hero-video .hero-content h2 {
+    .hero-video .hero-content h2,
+    .hero-video .hero-content h1,
+    .hero.beaches-hero .hero-content h1,
+    .hero.beaches-hero .hero-content h2,
+    .hero.parallax .hero-content h1,
+    .hero.parallax .hero-content h2 {
         font-size: clamp(2rem, 5vw, 3rem);
     }
     
-    .hero-video .hero-content p {
+    .hero-video .hero-content p,
+    .hero.beaches-hero .hero-content p,
+    .hero.parallax .hero-content p {
         font-size: clamp(1rem, 2vw, 1.2rem);
     }
 }
 
 @media (max-width: 480px) {
-    .hero-video {
+    .hero-video,
+    .hero.beaches-hero,
+    .hero.parallax {
         min-height: 60vh;
     }
     
-    .hero-video .hero-content {
+    .hero-video .hero-content,
+    .hero.beaches-hero .hero-content,
+    .hero.parallax .hero-content {
         padding: 1.5rem 1rem;
     }
 }
