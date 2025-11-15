@@ -194,15 +194,25 @@ const CookieConsent = {
      * Activar Google Analytics
      */
     enableAnalytics() {
-        // Aquí se activaría Google Analytics si lo usas
-        // Ejemplo:
-        /*
-        window.dataLayer = window.dataLayer || [];
-        function gtag(){dataLayer.push(arguments);}
-        gtag('js', new Date());
-        gtag('config', 'G-XXXXXXXXXX');
-        */
-        console.log('Analytics enabled');
+        if (window.__analyticsLoaded) return;
+        const GA_ID = window.__GA_ID || 'G-XXXXXXXXXX'; // Reemplazar con ID real en producción
+        // Inyectar script de GA4 solo si hay ID configurado diferente al placeholder
+        if (GA_ID && GA_ID !== 'G-XXXXXXXXXX') {
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){ dataLayer.push(arguments); }
+            const gaScript = document.createElement('script');
+            gaScript.async = true;
+            gaScript.src = 'https://www.googletagmanager.com/gtag/js?id=' + encodeURIComponent(GA_ID);
+            gaScript.onload = () => {
+                gtag('js', new Date());
+                gtag('config', GA_ID, { anonymize_ip: true });
+            };
+            document.head.appendChild(gaScript);
+            window.__analyticsLoaded = true;
+            console.log('GA4 script injected');
+        } else {
+            console.log('Analytics enabled (no GA ID configured)');
+        }
     },
 
     /**
