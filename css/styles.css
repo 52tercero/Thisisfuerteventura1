@@ -395,6 +395,16 @@ header {
     will-change: padding, box-shadow;
 }
 
+/* Header oscuro para páginas con hero video/parallax */
+.dark-header header {
+    background-color: rgba(10, 14, 18, 0.95);
+    backdrop-filter: blur(10px);
+}
+
+html[data-theme="dark"].dark-header header {
+    background-color: rgba(10, 14, 18, 0.95);
+}
+
 .logo-container {
     display: flex;
     align-items: center;
