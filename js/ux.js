@@ -30,6 +30,8 @@
       applyTheme(cur);
       localStorage.setItem(THEME_KEY, cur);
       btn.innerHTML = cur === 'dark' ? '<i class="fas fa-sun"></i> Modo' : '<i class="fas fa-moon"></i> Modo';
+      // Emit custom event for particles.js and other modules
+      window.dispatchEvent(new CustomEvent('data-theme-change', { detail: { theme: cur } }));
     });
     nav.parentNode && nav.parentNode.insertBefore(btn, nav.nextSibling);
   }

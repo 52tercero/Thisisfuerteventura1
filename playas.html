@@ -69,10 +69,14 @@
     </header>
 
     <main id="main">
-    <section class="hero beaches-hero parallax reveal">
-        <div class="hero-content">
-            <h2>Playas de Fuerteventura</h2>
-            <p>Descubre el paraíso de arena y mar</p>
+    <section class="hero beaches-hero parallax reveal particle-scene" style="position:relative;">
+        <video autoplay muted loop playsinline class="hero-bg" poster="images/hero-poster.jpg" style="position:absolute;inset:0;width:100vw;height:100vh;object-fit:cover;z-index:0;filter:brightness(0.7);">
+            <source src="images/olas.mp4" type="video/mp4">
+            Tu navegador no soporta vídeo.
+        </video>
+        <div class="hero-content" style="position:relative;z-index:1;padding:4rem 2rem;text-align:center;">
+            <h1 class="reveal">Playas de Fuerteventura</h1>
+            <p class="reveal">Descubre el paraíso de arena y mar</p>
         </div>
     </section>
 
@@ -92,7 +96,9 @@
             <h2>Las Mejores Playas de Fuerteventura</h2>
             <p class="intro-text">Descubre más de 150 playas con aguas cristalinas y arena dorada. Aquí te presentamos las imprescindibles.</p>
 
-            <div class="beaches-grid">
+            <div class="beaches-grid card-stagger">
+                <article class="beach-card">
+                    <div class="beaches-grid card-stagger">
                 <article class="beach-card">
                     <img src="images/playas/corralejo.jpeg" alt="Grandes Playas de Corralejo" loading="lazy" onerror="this.onerror=null;this.src='images/Fuerteventura.jpeg';">
                     <div class="beach-info">
@@ -594,6 +600,13 @@
     <script src="js/dark-mode.js?v=2025111501" defer></script>
     <script src="js/ux.js?v=2025111501" defer></script>
     <script src="js/ambient.js?v=2025111501" defer></script>
+    <!-- Three.js for particle system -->
+    <script src="https://cdn.jsdelivr.net/npm/three@0.152.0/build/three.min.js"></script>
+    <!-- GSAP + ScrollTrigger for narrative animations -->
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
+    <script src="js/particles.js?v=2025111501" defer></script>
+    <script src="js/narrative-scroll.js?v=2025111501" defer></script>
 
     <!-- Cookie Consent Banner -->
     <div id="cookie-consent" class="cookie-consent">

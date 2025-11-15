@@ -71,7 +71,7 @@
     </header>
 
     <main id="main">
-    <section class="hero tourism-hero parallax reveal">
+    <section class="hero tourism-hero parallax reveal particle-scene">
         <div class="hero-content">
             <h2>Descubre Fuerteventura</h2>
             <p>Una isla llena de historia, cultura y belleza natural</p>
@@ -80,7 +80,7 @@
 
     <section class="tourism-content reveal">
         <h2>Lugares de interés</h2>
-        <div class="tourism-grid">
+        <div class="tourism-grid card-stagger">
             <article class="tourism-card">
                 <img src="images/turismo/corralejo-dunas.jpg?v=2" alt="Parque Natural de Corralejo" loading="lazy" onerror="this.onerror=null;this.src='images/Fuerteventura.jpeg';">
                 <div class="tourism-info">
@@ -457,11 +457,18 @@
     <script src="js/image-extractor.js?v=2025110901" defer></script>
     <script src="js/content-loader.js?v=2025111003" defer></script>
     <script src="js/cookies.js?v=2025111001" defer></script>
+    <!-- Three.js for particle system -->
+    <script src="https://cdn.jsdelivr.net/npm/three@0.152.0/build/three.min.js"></script>
+    <!-- GSAP + ScrollTrigger for narrative animations -->
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/swiper@9/swiper-bundle.min.js" defer></script>
     <script src="js/scroll-animations.js?v=2025111501" defer></script>
     <script src="js/dark-mode.js?v=2025111501" defer></script>
     <script src="js/ux.js?v=2025111501" defer></script>
     <script src="js/ambient.js?v=2025111501" defer></script>
+    <script src="js/particles.js?v=2025111501" defer></script>
+    <script src="js/narrative-scroll.js?v=2025111501" defer></script>
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin="" defer></script>
     <script src="js/map.js?v=2025111501" defer></script>
 
