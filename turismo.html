@@ -6,7 +6,9 @@
     <title>Turismo en Fuerteventura 2025 - Guía de Lugares y Atracciones | This is Fuerteventura</title>
     <link rel="canonical" href="https://thisisfuerteventura.netlify.app/turismo.html">
     <link rel="manifest" href="manifest.webmanifest">
-    <link rel="stylesheet" href="css/styles.css?v=2025111002">
+    <link rel="stylesheet" href="css/styles.css?v=2025111501">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@9/swiper-bundle.min.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <meta name="description" content="Guía turística de Fuerteventura 2025: descubre parques naturales, pueblos con encanto, museos, miradores y los mejores lugares que visitar en la isla.">
     <meta name="keywords" content="turismo Fuerteventura, qué ver en Fuerteventura, lugares turísticos Fuerteventura, excursiones Fuerteventura, parques naturales, pueblos Fuerteventura, atracciones Canarias">
@@ -64,14 +66,14 @@
     </header>
 
     <main id="main">
-    <section class="hero tourism-hero">
+    <section class="hero tourism-hero parallax reveal">
         <div class="hero-content">
             <h2>Descubre Fuerteventura</h2>
             <p>Una isla llena de historia, cultura y belleza natural</p>
         </div>
     </section>
 
-    <section class="tourism-content">
+    <section class="tourism-content reveal">
         <h2>Lugares de interés</h2>
         <div class="tourism-grid">
             <article class="tourism-card">
@@ -303,7 +305,7 @@
         </div>
     </section>
 
-    <section class="itineraries">
+    <section class="itineraries reveal">
         <h2>Itinerarios sugeridos</h2>
         <div class="itinerary-grid">
             <div class="itinerary">
@@ -325,7 +327,7 @@
         </div>
     </section>
 
-    <section class="image-gallery">
+    <section class="image-gallery reveal">
         <h2>Galería de inspiración</h2>
         <div class="gallery-grid">
             <figure>
@@ -343,7 +345,7 @@
         </div>
     </section>
 
-    <section class="activities">
+    <section class="activities reveal">
         <h2>Actividades recomendadas</h2>
         <div class="activities-grid">
             <div class="activity-card">
@@ -369,7 +371,7 @@
         </div>
     </section>
 
-    <section class="tips">
+    <section class="tips reveal">
         <h2>Consejos para tu visita</h2>
         <div class="tips-container">
             <div class="tip">
@@ -388,6 +390,12 @@
                 <p>Visita entre abril y octubre para el mejor clima.</p>
             </div>
         </div>
+    </section>
+
+    <!-- Mapa interactivo -->
+    <section class="reveal" aria-label="Mapa interactivo de Fuerteventura">
+        <h2 style="padding: 0 5%">Mapa interactivo</h2>
+        <div id="map" style="height: 380px; margin: 16px 5%; border-radius: 10px; overflow: hidden; box-shadow: 0 6px 18px rgba(0,0,0,0.08);"></div>
     </section>
 
     </main>
@@ -428,8 +436,13 @@
         </div>
     </footer>
 
-    <script src="js/main.js?v=2025110501" defer></script>
+    <script src="js/main.js?v=2025111501" defer></script>
     <script src="js/cookies.js?v=2025111001" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/swiper@9/swiper-bundle.min.js" defer></script>
+    <script src="js/ux.js?v=2025111501" defer></script>
+    <script src="js/ambient.js?v=2025111501" defer></script>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin="" defer></script>
+    <script src="js/map.js?v=2025111501" defer></script>
 
     <!-- Cookie Consent Banner -->
     <div id="cookie-consent" class="cookie-consent">

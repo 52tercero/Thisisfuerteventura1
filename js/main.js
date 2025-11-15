@@ -174,10 +174,25 @@ document.addEventListener('DOMContentLoaded', function() {
                 return;
             }
 
-            // Aquí típicamente enviarías esto a tu backend
-            alert(`¡Gracias por suscribirte con ${email}! Pronto recibirás nuestras actualizaciones.`);
+            // Micro-animación de confirmación (en lugar de alert)
+            let check = this.querySelector('.submit-check');
+            if(!check){ check = document.createElement('span'); check.className='submit-check'; check.textContent='✓'; this.appendChild(check); }
+            requestAnimationFrame(()=>{ check.classList.add('show'); });
+            setTimeout(()=>{ if(check) check.classList.remove('show'); }, 1600);
             this.reset();
+            if(emailInput){ emailInput.classList.remove('valid','invalid'); }
         });
+        // Validación en tiempo real
+        const emailInput2 = newsletterForm.querySelector('input[type="email"]');
+        const emailRegex2 = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (emailInput2) {
+            emailInput2.addEventListener('input', function(){
+                const v = this.value.trim();
+                if(!v){ this.classList.remove('valid','invalid'); return; }
+                this.classList.toggle('valid', emailRegex2.test(v));
+                this.classList.toggle('invalid', !emailRegex2.test(v));
+            });
+        }
     }
 
     // Desplazamiento suave para enlaces ancla

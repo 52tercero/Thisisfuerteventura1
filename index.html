@@ -12,7 +12,9 @@
     
     <link rel="canonical" href="https://thisisfuerteventura.netlify.app/">
     <link rel="manifest" href="manifest.webmanifest">
-    <link rel="stylesheet" href="css/styles.css?v=2025111002">
+    <link rel="stylesheet" href="css/styles.css?v=2025111501">
+    <!-- Swiper for galleries/timeline -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@9/swiper-bundle.min.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <meta name="description" content="Descubre Fuerteventura con nuestra guía completa 2025: mejores playas, hoteles, restaurantes, actividades turísticas y noticias actualizadas de las Islas Canarias.">
     <meta name="keywords" content="Fuerteventura, turismo Fuerteventura, playas Fuerteventura, hoteles Fuerteventura, Islas Canarias, qué hacer en Fuerteventura, alojamiento Canarias, vacaciones Fuerteventura">
@@ -107,7 +109,7 @@
         </div>
     </header>
     <main id="main">
-    <section class="hero">
+    <section class="hero parallax reveal">
         <div class="hero-content">
             <h2>Bienvenido a Fuerteventura</h2>
             <p>Descubre el paraíso de las Islas Canarias</p>
@@ -115,7 +117,7 @@
         </div>
     </section>
 
-    <section class="featured-content">
+    <section class="featured-content reveal">
         <h2>Destacados</h2>
         <div class="content-grid" id="featured-news">
             <!-- El contenido se cargará dinámicamente con JavaScript -->
@@ -123,7 +125,7 @@
         </div>
     </section>
 
-    <section class="categories">
+    <section class="categories reveal">
         <h2>Explora Fuerteventura</h2>
         <div class="category-grid">
             <div class="category-card">
@@ -153,7 +155,7 @@
         </div>
     </section>
 
-    <section class="newsletter">
+    <section class="newsletter reveal">
         <h2>Suscríbete a nuestro boletín</h2>
         <p>Recibe las últimas noticias y ofertas de Fuerteventura directamente en tu correo.</p>
         <form id="newsletter-form">
@@ -233,9 +235,13 @@
             }
         });
     </script>
-    <script src="js/main.js?v=2025110901" defer></script>
+    <script src="js/main.js?v=2025111501" defer></script>
     <script src="js/proxy-discovery.js?v=2025110901" defer></script>
     <script src="js/cookies.js?v=2025111001" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/swiper@9/swiper-bundle.min.js" defer></script>
+    <script src="js/ux.js?v=2025111501" defer></script>
+    <script src="js/ambient.js?v=2025111501" defer></script>
+    <script src="js/quiz.js?v=2025111501" defer></script>
 
     <!-- Cookie Consent Banner -->
     <div id="cookie-consent" class="cookie-consent">
@@ -336,5 +342,12 @@
     <script src="js/feed-utils.js?v=2025111005" defer></script>
     <script src="js/image-extractor.js?v=2025110901" defer></script>
     <script src="js/content-loader.js?v=2025111003" defer></script>
+
+    <!-- Noticias en timeline (auto de featured) -->
+    <section class="news-timeline reveal" aria-label="Timeline de noticias">
+        <div class="timeline-container">
+            <div id="news-timeline" class="timeline-swiper"></div>
+        </div>
+    </section>
 </body>
 </html>
