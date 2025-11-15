@@ -16,6 +16,15 @@
     <link rel="canonical" href="https://thisisfuerteventura.netlify.app/">
     <link rel="manifest" href="manifest.webmanifest">
     <link rel="stylesheet" href="css/styles.css?v=2025111502">
+    <style>
+        /* Override header transparency only for index page */
+        header {
+            background-color: rgb(10, 14, 18) !important;
+        }
+        html[data-theme="dark"] header {
+            background-color: rgb(10, 14, 18) !important;
+        }
+    </style>
     <!-- Google Fonts: Inter para texto, Playfair Display para títulos -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Playfair+Display:wght@700;900&display=swap" rel="stylesheet">
     <!-- Leaflet CSS para mapa interactivo -->
