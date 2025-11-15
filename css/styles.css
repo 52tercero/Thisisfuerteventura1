@@ -1,5 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700&family=Lobster&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Playfair+Display:wght@700;900&display=swap');
+/* No importar fuentes desde CSS, se cargan desde el HTML para mejor rendimiento */
 
 /* Variables de color inspiradas en Fuerteventura */
 :root {
@@ -1943,68 +1942,103 @@ html[data-theme="dark"] .theme-toggle { border-color: rgba(255,255,255,0.25); }
     }
 }
 
-/* Animaciones de scroll reveal */
-.reveal {
-    opacity: 0;
-    transform: translateY(40px);
-    transition: opacity 0.6s ease-out, transform 0.6s ease-out;
-}
+/* Duplicados eliminados - estilos ya definidos arriba */
 
-.reveal.show {
-    opacity: 1;
-    transform: translateY(0);
-}
-
-.stagger-item {
-    opacity: 0;
-    transform: translateX(-20px);
-    transition: opacity 0.5s ease-out, transform 0.5s ease-out;
-}
-
-.stagger-item.show {
-    opacity: 1;
-    transform: translateX(0);
-}
-
-/* Dark Mode */
-[data-theme="dark"] {
-    --text-color: #e0e0e0;
-    --bg-color: #1a1a1a;
-    --card-bg: #2a2a2a;
-    --header-bg: #222;
-    --header-text: #e0e0e0;
-}
-
-[data-theme="dark"] body {
-    background-color: var(--bg-color);
-    color: var(--text-color);
-}
-
-[data-theme="dark"] .content-card,
-[data-theme="dark"] .beach-card,
-[data-theme="dark"] .tourism-card,
-[data-theme="dark"] .dish-card {
-    background: var(--card-bg);
-    color: var(--text-color);
-}
-
-[data-theme="dark"] header {
-    background: var(--header-bg);
-    color: var(--header-text);
-}
-
-.theme-toggle {
-    background: transparent;
-    border: 2px solid var(--color-mar);
-    color: var(--color-mar);
-    padding: 0.5rem 1rem;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: all 0.3s ease;
+/* Hero con video */
+.hero-video {
+    position: relative;
+    min-height: 100vh;
     display: flex;
     align-items: center;
-    gap: 0.5rem;
-    font-size: 1rem;
+    justify-content: center;
+    overflow: hidden;
+}
+
+.hero-video .hero-bg {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    z-index: 0;
+    filter: brightness(0.6);
+}
+
+.hero-video .hero-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(15,76,129,0.3) 0%, rgba(46,196,182,0.2) 100%);
+    z-index: 1;
+}
+
+.hero-video .hero-content {
+    position: relative;
+    z-index: 2;
+    padding: 4rem 2rem;
+    text-align: center;
+    max-width: 900px;
+}
+
+.hero-video .hero-content h2 {
+    font-family: var(--font-display);
+    font-size: clamp(2.5rem, 6vw, 5rem);
+    font-weight: 900;
+    color: #fff;
+    margin-bottom: 1.5rem;
+    text-shadow: 2px 4px 12px rgba(0,0,0,0.4);
+}
+
+.hero-video .hero-content p {
+    font-family: var(--font-body);
+    font-size: clamp(1.1rem, 2.5vw, 1.5rem);
+    color: #f0f0f0;
+    font-weight: 400;
+    text-shadow: 1px 2px 8px rgba(0,0,0,0.3);
+}
+
+.hero-video .hero-content .btn {
+    margin-top: 2rem;
+    display: inline-block;
+}
+
+/* Secciones modernas */
+.widgets-section,
+.map-section,
+.quiz-section {
+    padding: 3rem 5%;
+}
+
+.widgets-section h2,
+.map-section h2,
+.quiz-section h2 {
+    text-align: center;
+    font-family: var(--font-display);
+    color: var(--color-cielo);
+    margin-bottom: 2rem;
+}
+
+.section-intro {
+    text-align: center;
+    max-width: 700px;
+    margin: 0 auto 2rem;
+    color: #666;
+}
+
+.widgets-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.widgets-grid .loading {
+    text-align: center;
+    padding: 2rem;
+}
+
+.quiz-section {
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
 }
 
 .theme-toggle:hover {
