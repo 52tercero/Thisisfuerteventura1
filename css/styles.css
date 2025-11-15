@@ -2,18 +2,64 @@
 
 /* Variables de color inspiradas en Fuerteventura */
 :root {
+    /* Colores principales */
     --color-mar: #2ec4b6;
     --color-arena: #ffd97d;
     --color-volcan: #22223b;
     --color-cielo: #0f4c81;
     --primary-color: #0f4c81;
     --secondary-color: #2ec4b6;
+    
+    /* Colores de texto */
     --text-color: #333333;
+    --text-light: #666666;
+    --text-white: #ffffff;
+    
+    /* Backgrounds */
     --bg-light: #f8f9fa;
+    --bg-white: #ffffff;
+    --bg-dark: #0e1318;
+    
+    /* Gradientes */
     --gradient-ocean: linear-gradient(135deg, #0f4c81 0%, #2ec4b6 100%);
     --gradient-sunset: linear-gradient(135deg, #ffd97d 0%, #ff6b6b 100%);
+    
+    /* Tipografía */
     --font-display: 'Playfair Display', serif;
     --font-body: 'Inter', sans-serif;
+    
+    /* Espaciado */
+    --spacing-xs: 0.25rem;
+    --spacing-sm: 0.5rem;
+    --spacing-md: 1rem;
+    --spacing-lg: 1.5rem;
+    --spacing-xl: 2rem;
+    --spacing-2xl: 3rem;
+    
+    /* Bordes */
+    --border-radius-sm: 4px;
+    --border-radius-md: 8px;
+    --border-radius-lg: 12px;
+    --border-radius-full: 50%;
+    
+    /* Sombras */
+    --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+    --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
+    --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.15);
+    --shadow-xl: 0 20px 25px rgba(0, 0, 0, 0.2);
+    
+    /* Transiciones */
+    --transition-fast: 0.15s ease;
+    --transition-base: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-slow: 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    
+    /* Z-index */
+    --z-dropdown: 1000;
+    --z-sticky: 1020;
+    --z-fixed: 1030;
+    --z-modal-backdrop: 1040;
+    --z-modal: 1050;
+    --z-tooltip: 1070;
 }
 
 /* Scroll suave */
@@ -318,37 +364,41 @@ img {
     position: absolute;
     top: -40px;
     left: 0;
-    background: #0f4c81;
-    color: #fff;
-    padding: 8px 16px;
+    background: var(--color-cielo);
+    color: var(--text-white);
+    padding: var(--spacing-sm) var(--spacing-md);
     text-decoration: none;
-    z-index: 1000;
+    z-index: var(--z-dropdown);
+    border-radius: var(--border-radius-sm);
+    transition: var(--transition-fast);
 }
 .skip-link:focus {
     top: 0;
+    outline: 2px solid var(--color-arena);
+    outline-offset: 2px;
 }
 
 /* Header */
 header {
     background-color: var(--header-bg);
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    box-shadow: var(--shadow-sm);
     position: sticky;
     top: 0;
-    z-index: 100;
+    z-index: var(--z-sticky);
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 15px 5%;
-    transition: padding 0.3s cubic-bezier(0.4, 0, 0.2, 1), 
-                box-shadow 0.3s cubic-bezier(0.4, 0, 0.2, 1),
-                background-color 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    padding: var(--spacing-md) 5%;
+    transition: padding var(--transition-base), 
+                box-shadow var(--transition-base),
+                background-color var(--transition-base);
     will-change: padding, box-shadow;
 }
 
 .logo-container {
     display: flex;
     align-items: center;
-    gap: 12px;
+    gap: var(--spacing-md);
     flex-shrink: 0;
 }
 
@@ -356,7 +406,7 @@ header {
     width: 70px;
     height: auto;
     flex-shrink: 0;
-    transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: width var(--transition-base);
 }
 
 header h1 {
@@ -368,13 +418,13 @@ header h1 {
     font-family: var(--font-display, 'Playfair Display', serif);
     margin: 0;
     line-height: 1.2;
-    transition: font-size 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: font-size var(--transition-base);
 }
 
 /* Header reducido al hacer scroll */
 header.scrolled { 
-    padding: 8px 5%; 
-    box-shadow: 0 4px 14px rgba(0,0,0,0.12); 
+    padding: var(--spacing-sm) 5%; 
+    box-shadow: var(--shadow-md); 
 }
 header.scrolled .logo { 
     width: 56px; 
@@ -402,7 +452,7 @@ nav ul li {
 nav ul li a {
     color: var(--header-text);
     font-weight: 500;
-    transition: color 0.3s ease;
+    transition: color var(--transition-base);
 }
 
 nav ul li a:hover {
@@ -414,8 +464,8 @@ nav ul li a:hover {
     font-size: 1.8rem;
     cursor: pointer;
     color: var(--dark-color);
-    padding: 8px;
-    transition: color 0.3s ease;
+    padding: var(--spacing-sm);
+    transition: color var(--transition-base);
 }
 
 .mobile-menu:hover {
@@ -658,11 +708,11 @@ nav ul li a:hover {
 
 .category-card {
     background: var(--card-bg);
-    border-radius: 10px;
+    border-radius: var(--border-radius-lg);
     overflow: hidden;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    box-shadow: var(--shadow-md);
     text-align: center;
-    transition: transform 0.3s ease;
+    transition: transform var(--transition-base);
 }
 
 .category-card:hover {
@@ -717,14 +767,14 @@ nav ul li a:hover {
 
 #newsletter-form input {
     flex: 1;
-    padding: 10px 15px;
+    padding: var(--spacing-sm) var(--spacing-md);
     border: none;
-    border-radius: 5px 0 0 5px;
+    border-radius: var(--border-radius-sm) 0 0 var(--border-radius-sm);
     font-size: 1rem;
 }
 
 #newsletter-form button {
-    border-radius: 0 5px 5px 0;
+    border-radius: 0 var(--border-radius-sm) var(--border-radius-sm) 0;
     background-color: var(--secondary-color);
     color: var(--dark-color);
 }
@@ -769,7 +819,7 @@ footer {
 
 .footer-links ul li a {
     color: #ccc;
-    transition: color 0.3s ease;
+    transition: color var(--transition-base);
 }
 
 .footer-links ul li a:hover {
@@ -784,7 +834,7 @@ footer {
 .social-icons a {
     color: white;
     font-size: 1.5rem;
-    transition: color 0.3s ease;
+    transition: color var(--transition-base);
 }
 
 .social-icons a:hover {
@@ -925,15 +975,15 @@ button:disabled.btn {
 
 .beach-card {
     background: var(--card-bg);
-    border-radius: 12px;
+    border-radius: var(--border-radius-lg);
     overflow: hidden;
-    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    box-shadow: var(--shadow-md);
+    transition: transform var(--transition-base), box-shadow var(--transition-base);
 }
 
 .beach-card:hover {
     transform: translateY(-8px);
-    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+    box-shadow: var(--shadow-xl);
 }
 
 .beach-card img {
@@ -982,7 +1032,7 @@ button:disabled.btn {
     background: #f0f8ff;
     color: var(--primary-color);
     padding: 6px 12px;
-    border-radius: 20px;
+    border-radius: var(--border-radius-full);
     font-size: 0.85rem;
     display: flex;
     align-items: center;
@@ -1047,15 +1097,15 @@ button:disabled.btn {
 
 .dish-card, .accommodation-card, .tourism-card {
     background: var(--card-bg);
-    border-radius: 12px;
+    border-radius: var(--border-radius-lg);
     overflow: hidden;
-    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    box-shadow: var(--shadow-md);
+    transition: transform var(--transition-base), box-shadow var(--transition-base);
 }
 
 .dish-card:hover, .accommodation-card:hover, .tourism-card:hover {
     transform: translateY(-8px);
-    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+    box-shadow: var(--shadow-xl);
 }
 
 .dish-card img, .accommodation-card img, .tourism-card img {
@@ -1095,7 +1145,7 @@ button:disabled.btn {
     background: #f0f8ff;
     color: var(--primary-color);
     padding: 6px 12px;
-    border-radius: 20px;
+    border-radius: var(--border-radius-full);
     font-size: 0.85rem;
     display: inline-flex;
     align-items: center;
@@ -1121,15 +1171,15 @@ button:disabled.btn {
 
 .restaurant-card {
     background: var(--card-bg);
-    border-radius: 12px;
-    box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+    border-radius: var(--border-radius-lg);
+    box-shadow: var(--shadow-md);
     overflow: hidden;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    transition: transform var(--transition-base), box-shadow var(--transition-base);
 }
 
 .restaurant-card:hover {
     transform: translateY(-8px);
-    box-shadow: 0 8px 30px rgba(0,0,0,0.15);
+    box-shadow: var(--shadow-xl);
 }
 
 .restaurant-card img {
@@ -1171,8 +1221,8 @@ button:disabled.btn {
 
 .news-article {
     background: var(--card-bg);
-    border-radius: 10px;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+    border-radius: var(--border-radius-lg);
+    box-shadow: var(--shadow-md);
     overflow: hidden;
 }
 
@@ -1212,7 +1262,7 @@ button:disabled.btn {
     background: var(--secondary-color);
     color: #222;
     padding: 6px 10px;
-    border-radius: 6px;
+    border-radius: var(--border-radius-sm);
     font-weight: 600;
 }
 
@@ -1234,8 +1284,8 @@ button:disabled.btn {
 /* Estilos para artículo completo */
 .article-full {
     background: var(--card-bg);
-    border-radius: 10px;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+    border-radius: var(--border-radius-lg);
+    box-shadow: var(--shadow-md);
     overflow: hidden;
     margin-bottom: 40px;
 }
@@ -1354,11 +1404,11 @@ button:disabled.btn {
         left: 0;
         right: 0;
         background-color: white;
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        box-shadow: var(--shadow-sm);
         max-height: 0;
         overflow: hidden;
-        transition: max-height 0.35s cubic-bezier(0.4, 0, 0.2, 1), 
-                    opacity 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+        transition: max-height var(--transition-slow), 
+                    opacity var(--transition-slow);
         opacity: 0;
         will-change: max-height, opacity;
     }
@@ -1386,7 +1436,7 @@ button:disabled.btn {
         display: block;
         padding: 15px 20px;
         color: var(--dark-color);
-        transition: background-color 0.3s ease, color 0.3s ease;
+        transition: background-color var(--transition-base), color var(--transition-base);
     }
     
     nav ul li a:hover {
@@ -1417,19 +1467,19 @@ button:disabled.btn {
     }
 
     #newsletter-form input {
-        border-radius: 5px;
+        border-radius: var(--border-radius-sm);
         margin-bottom: 10px;
     }
 
     #newsletter-form button {
-        border-radius: 5px;
+        border-radius: var(--border-radius-sm);
     }
 }
 
 /* Estilos adicionales para móviles muy pequeños */
 @media (max-width: 480px) {
     header {
-        padding: 10px 3%;
+        padding: var(--spacing-sm) 3%;
     }
     
     .logo-container {
@@ -1447,7 +1497,7 @@ button:disabled.btn {
     
     .mobile-menu {
         font-size: 1.6rem;
-        padding: 6px;
+        padding: var(--spacing-xs);
     }
     
     nav ul li a {
