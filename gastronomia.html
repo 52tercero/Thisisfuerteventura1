@@ -6,7 +6,8 @@
     <title>Gastronomía de Fuerteventura 2025 - Restaurantes y Cocina Canaria | This is Fuerteventura</title>
     <link rel="canonical" href="https://thisisfuerteventura.netlify.app/gastronomia.html">
     <link rel="manifest" href="manifest.webmanifest">
-    <link rel="stylesheet" href="css/styles.css?v=2025111002">
+    <link rel="stylesheet" href="css/styles.css?v=2025111501">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@9/swiper-bundle.min.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <meta name="description" content="Gastronomía de Fuerteventura 2025: descubre los mejores restaurantes, platos típicos canarios, queso majorero DOP, papas arrugadas y la cocina tradicional de la isla.">
     <meta name="keywords" content="restaurantes Fuerteventura, gastronomía canaria, queso majorero, papas arrugadas, gofio, donde comer Fuerteventura, cocina tradicional Canarias, restaurantes Corralejo">
@@ -64,14 +65,14 @@
     </header>
 
     <main id="main">
-    <section class="hero gastronomy-hero">
+    <section class="hero gastronomy-hero parallax reveal">
         <div class="hero-content">
             <h2>Gastronomía de Fuerteventura</h2>
             <p>Sabores auténticos de la isla</p>
         </div>
     </section>
 
-    <section class="typical-dishes">
+    <section class="typical-dishes reveal">
         <h2>Platos típicos</h2>
         <div class="dishes-grid">
             <article class="dish-card">
@@ -128,7 +129,7 @@
         </div>
     </section>
 
-    <section class="food-routes">
+    <section class="food-routes reveal">
         <h2>Rutas gastronómicas</h2>
         <p>Recorre mercados tradicionales, queserías y restaurantes de kilómetro 0. En el interior, Betancuria y Antigua ofrecen productos artesanos; en la costa, Corralejo y Morro Jable destacan por su pescado fresco.</p>
         <ul>
@@ -138,7 +139,7 @@
         </ul>
     </section>
 
-    <section class="image-gallery">
+    <section class="image-gallery reveal">
         <h2>Galería de sabores</h2>
         <div class="gallery-grid">
             <img src="images/gastronomia/galeria-quesos.jpg" alt="Tabla de quesos" loading="lazy" onerror="this.onerror=null;this.src='images/Fuerteventura.jpeg';">
@@ -147,13 +148,13 @@
         </div>
     </section>
 
-    <section class="restaurants">
+    <section class="restaurants reveal">
         <h2>Restaurantes recomendados por zonas</h2>
         <p class="intro-text">Descubre los mejores restaurantes de Fuerteventura organizados por zonas geográficas.</p>
     </section>
 
     <!-- CORRALEJO (Norte) -->
-    <section class="tourism-content">
+    <section class="tourism-content reveal">
         <div class="container">
             <h2><i class="fas fa-map-marker-alt"></i> Corralejo - Norte</h2>
             <p class="zone-intro">Amplia oferta gastronómica con restaurantes de pescado fresco, cocina internacional y terrazas con vistas.</p>
@@ -252,7 +253,7 @@
     </section>
 
     <!-- CALETA DE FUSTE (Centro-Este) -->
-    <section class="tourism-content">
+    <section class="tourism-content reveal">
         <div class="container">
             <h2><i class="fas fa-map-marker-alt"></i> Caleta de Fuste - Centro-Este</h2>
             <p class="zone-intro">Zona turística con restaurantes junto al puerto deportivo y paseo marítimo.</p>
@@ -351,7 +352,7 @@
     </section>
 
     <!-- COSTA CALMA / SOTAVENTO (Sur) -->
-    <section class="tourism-content">
+    <section class="tourism-content reveal">
         <div class="container">
             <h2><i class="fas fa-map-marker-alt"></i> Costa Calma / Sotavento - Sur</h2>
             <p class="zone-intro">Restaurantes en zona tranquila con ambiente relajado y cocina internacional.</p>
@@ -450,7 +451,7 @@
     </section>
 
     <!-- MORRO JABLE / JANDÍA (Sur) -->
-    <section class="tourism-content">
+    <section class="tourism-content reveal">
         <div class="container">
             <h2><i class="fas fa-map-marker-alt"></i> Morro Jable / Jandía - Sur</h2>
             <p class="zone-intro">Paseo marítimo con gran variedad de restaurantes desde cocina tradicional hasta internacional.</p>
@@ -549,7 +550,7 @@
     </section>
 
     <!-- EL COTILLO (Noroeste) -->
-    <section class="tourism-content">
+    <section class="tourism-content reveal">
         <div class="container">
             <h2><i class="fas fa-map-marker-alt"></i> El Cotillo - Noroeste</h2>
             <p class="zone-intro">Pueblo pesquero auténtico con restaurantes de pescado fresco y ambiente local relajado.</p>
@@ -648,7 +649,7 @@
     </section>
 
     <!-- PUERTO DEL ROSARIO (Capital) -->
-    <section class="tourism-content">
+    <section class="tourism-content reveal">
         <div class="container">
             <h2><i class="fas fa-map-marker-alt"></i> Puerto del Rosario - Capital</h2>
             <p class="zone-intro">Variedad gastronómica en la capital con opciones desde tradicionales hasta internacionales.</p>
@@ -746,7 +747,7 @@
         </div>
     </section>
 
-    <section class="local-products">
+    <section class="local-products reveal">
         <h2>Productos locales</h2>
         <div class="products-container">
             <div class="product">
@@ -810,8 +811,11 @@
         </div>
     </footer>
 
-    <script src="js/main.js?v=2025110501" defer></script>
+    <script src="js/main.js?v=2025111501" defer></script>
     <script src="js/cookies.js?v=2025111001" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/swiper@9/swiper-bundle.min.js" defer></script>
+    <script src="js/ux.js?v=2025111501" defer></script>
+    <script src="js/ambient.js?v=2025111501" defer></script>
 
     <!-- Cookie Consent Banner -->
     <div id="cookie-consent" class="cookie-consent">
