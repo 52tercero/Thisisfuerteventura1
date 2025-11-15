@@ -21,6 +21,85 @@
     margin: 40px 0 30px 0;
 }
 
+/* Estilos para la página de política de cookies */
+.cookies-page {
+    padding: 40px 5%;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.cookies-section {
+    margin: 30px 0;
+}
+
+.cookies-section h3 {
+    margin-top: 20px;
+    color: var(--primary-color);
+}
+
+.cookies-section ul {
+    margin-left: 20px;
+    line-height: 1.8;
+}
+
+.cookies-section ul li {
+    margin-bottom: 10px;
+}
+
+.cookies-callout {
+    margin-top: 40px;
+    padding: 20px;
+    background: var(--bg-light);
+    border-radius: 8px;
+    text-align: center;
+}
+
+.cookies-callout p {
+    margin: 0;
+}
+
+/* Estilos para mapa interactivo */
+.interactive-map-section {
+    padding: 0 5%;
+}
+
+.interactive-map-section h2 {
+    padding: 0;
+    margin-bottom: 16px;
+}
+
+#map {
+    height: 380px;
+    margin: 0;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.08);
+}
+
+@media (max-width: 768px) {
+    #map {
+        height: 320px;
+    }
+}
+
+@media (max-width: 480px) {
+    #map {
+        height: 280px;
+    }
+}
+
+/* Botón de volver */
+.btn-back {
+    margin: 20px 0;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.btn-back i {
+    font-size: 0.9rem;
+}
+
 .gallery-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
