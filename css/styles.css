@@ -62,6 +62,19 @@
     --z-tooltip: 1070;
 }
 
+/* Font Awesome iconos - font-weight necesario para versión Free */
+.fas, .fa-solid {
+    font-weight: 900 !important;
+}
+
+.fab, .fa-brands {
+    font-weight: 400 !important;
+}
+
+.far, .fa-regular {
+    font-weight: 400 !important;
+}
+
 /* Scroll suave */
 html {
     scroll-behavior: smooth;
