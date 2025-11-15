@@ -16,6 +16,18 @@
     --font-body: 'Inter', sans-serif;
 }
 
+/* Scroll suave */
+html {
+    scroll-behavior: smooth;
+}
+
+/* Deshabilitar scroll suave para usuarios que prefieren motion reducido */
+@media (prefers-reduced-motion: reduce) {
+    html {
+        scroll-behavior: auto;
+    }
+}
+
 /* Galerías, itinerarios, perfiles, zonas, etc. */
 .image-gallery, .gallery-grid, .itineraries, .itinerary-grid, .beach-profiles, .profiles-grid, .stay-zones, .zones-grid, .saving-tips, .about-project, .about-grid, .press-support {
     margin: 40px 0 30px 0;
@@ -327,7 +339,10 @@ header {
     justify-content: space-between;
     align-items: center;
     padding: 15px 5%;
-    transition: padding 0.25s ease, background-color 0.25s ease, box-shadow 0.25s ease;
+    transition: padding 0.3s cubic-bezier(0.4, 0, 0.2, 1), 
+                box-shadow 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+                background-color 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    will-change: padding, box-shadow;
 }
 
 .logo-container {
@@ -341,6 +356,7 @@ header {
     width: 70px;
     height: auto;
     flex-shrink: 0;
+    transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 header h1 {
@@ -352,12 +368,20 @@ header h1 {
     font-family: var(--font-display, 'Playfair Display', serif);
     margin: 0;
     line-height: 1.2;
+    transition: font-size 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 /* Header reducido al hacer scroll */
-header.scrolled { padding: 8px 5%; box-shadow: 0 4px 14px rgba(0,0,0,0.12); }
-header.scrolled .logo { width: 56px; }
-header.scrolled h1 { font-size: clamp(1.3rem, 2.4vw, 2rem); }
+header.scrolled { 
+    padding: 8px 5%; 
+    box-shadow: 0 4px 14px rgba(0,0,0,0.12); 
+}
+header.scrolled .logo { 
+    width: 56px; 
+}
+header.scrolled h1 { 
+    font-size: clamp(1.3rem, 2.4vw, 2rem); 
+}
  
 
 /* Logo textual en el footer comparte la misma fuente de marca */
@@ -1333,8 +1357,10 @@ button:disabled.btn {
         box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         max-height: 0;
         overflow: hidden;
-        transition: max-height 0.3s ease, opacity 0.3s ease;
+        transition: max-height 0.35s cubic-bezier(0.4, 0, 0.2, 1), 
+                    opacity 0.35s cubic-bezier(0.4, 0, 0.2, 1);
         opacity: 0;
+        will-change: max-height, opacity;
     }
     
     nav.active {

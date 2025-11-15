@@ -216,6 +216,33 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
     });
+
+    // Header sticky con clase scrolled
+    const header = document.querySelector('header');
+    if (header) {
+        let lastScroll = 0;
+        let ticking = false;
+
+        function updateHeader() {
+            const currentScroll = window.pageYOffset || document.documentElement.scrollTop;
+            
+            if (currentScroll > 100) {
+                header.classList.add('scrolled');
+            } else {
+                header.classList.remove('scrolled');
+            }
+            
+            lastScroll = currentScroll;
+            ticking = false;
+        }
+
+        window.addEventListener('scroll', function() {
+            if (!ticking) {
+                window.requestAnimationFrame(updateHeader);
+                ticking = true;
+            }
+        });
+    }
 });
 
 // Lazy loading de imágenes mejorado
