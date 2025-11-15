@@ -62,18 +62,10 @@
     --z-tooltip: 1070;
 }
 
-/* Font Awesome iconos - font-weight necesario para versión Free */
-.fas, .fa-solid {
-    font-weight: 900 !important;
-}
-
-.fab, .fa-brands {
-    font-weight: 400 !important;
-}
-
-.far, .fa-regular {
-    font-weight: 400 !important;
-}
+/* Font Awesome iconos - compatibilidad y pesos (FA6) */
+.fa-solid, .fas { font-weight: 900 !important; font-family: "Font Awesome 6 Free"; }
+.fa-brands, .fab { font-weight: 400 !important; font-family: "Font Awesome 6 Brands"; }
+.fa-regular, .far { font-weight: 400 !important; font-family: "Font Awesome 6 Free"; }
 
 /* Scroll suave */
 html {
