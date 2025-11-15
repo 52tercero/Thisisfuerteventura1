@@ -26,7 +26,7 @@ document.addEventListener('DOMContentLoaded', function() {
             // Hacer el alternador accesible: aria-controls y aria-expanded
             try {
                 mobileMenuBtn.setAttribute('aria-controls', nav.id);
-                const isOpen = nav.classList.contains('nav-open');
+                const isOpen = nav.classList.contains('active');
                 mobileMenuBtn.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
 
                 // reflejar visibilidad inicial para tecnología asistiva
@@ -49,7 +49,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     if (isMobile()) {
                         // Preparar para colapso/expansión animado en móvil
                         nav.style.overflow = 'hidden';
-                        if (nav.classList.contains('nav-open')) {
+                        if (nav.classList.contains('active')) {
                             nav.style.maxHeight = nav.scrollHeight + 'px';
                             nav.style.opacity = '1';
                             nav.setAttribute('aria-hidden', 'false');
@@ -62,7 +62,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         }
                     } else {
                         // Escritorio: asegurar que nav sea completamente visible y limpiar overrides inline
-                        nav.classList.remove('nav-open');
+                        nav.classList.remove('active');
                         nav.style.maxHeight = '';
                         nav.style.opacity = '';
                         nav.style.overflow = '';
@@ -271,18 +271,8 @@ document.addEventListener('DOMContentLoaded', () => {
     lazyImages.forEach(img => lazyLoadObserver.observe(img));
 });
 
-// Registrar Service Worker para PWA
-if ('serviceWorker' in navigator) {
-    window.addEventListener('load', () => {
-        navigator.serviceWorker.register('/sw.js')
-            .then(registration => {
-                console.log('SW registered:', registration);
-            })
-            .catch(error => {
-                console.log('SW registration failed:', error);
-            });
-    });
-}
+// Nota: Se evita registrar el Service Worker por defecto para prevenir cacheos inesperados.
+// Si deseas habilitar PWA, elimina el bloque de anulación más abajo y registra aquí el SW.
 
 // Eliminar cualquier Service Worker previamente registrado y no registrar ninguno nuevo
 (function unregisterSW() {
