@@ -365,6 +365,15 @@
         </div>
     </section>
 
+    <!-- Noticias en timeline (auto de featured) -->
+    <section class="news-timeline reveal" aria-label="Timeline de noticias">
+        <div class="timeline-container">
+            <div id="news-timeline" class="timeline-swiper"></div>
+        </div>
+    </section>
+    <!-- Contenedor oculto de noticias para alimentar el timeline -->
+    <div id="featured-news" style="display:none" aria-hidden="true"></div>
+
     </main>
 
     <footer>
@@ -403,8 +412,12 @@
         </div>
     </footer>
 
-                <script src="js/proxy-discovery.js?v=2025110801" defer></script>
+                <script src="js/proxy-discovery.js?v=2025110901" defer></script>
                 <script src="js/main.js?v=2025111501" defer></script>
+                <script src="https://cdn.jsdelivr.net/npm/dompurify@2.4.0/dist/purify.min.js" defer></script>
+                <script src="js/feed-utils.js?v=2025111005" defer></script>
+                <script src="js/image-extractor.js?v=2025110901" defer></script>
+                <script src="js/content-loader.js?v=2025111003" defer></script>
                 <script>
                 // Widget de tiempo general (Fuerteventura) - versión visual mejorada
                 (function(){
