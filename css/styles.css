@@ -407,6 +407,7 @@ header {
                 box-shadow var(--transition-base),
                 background-color var(--transition-base);
     will-change: padding, box-shadow;
+    flex-wrap: nowrap;
 }
 
 /* Header oscuro para páginas con hero video/parallax */
@@ -462,6 +463,11 @@ header.scrolled .logo {
 header.scrolled h1 { 
     font-size: clamp(1.3rem, 2.4vw, 2rem); 
 }
+@media (max-width: 640px) {
+    header { flex-wrap: wrap; }
+    .logo-container { width: 100%; margin-bottom: 4px; }
+    nav { order: 3; width: 100%; }
+}
  
 
 /* Logo textual en el footer comparte la misma fuente de marca */
@@ -503,11 +509,20 @@ nav ul li a:hover {
     cursor: pointer;
     color: var(--dark-color);
     padding: var(--spacing-sm);
-    transition: color var(--transition-base);
+    transition: color var(--transition-base), background-color var(--transition-base);
+    background: none;
+    border: none;
+    line-height: 1;
 }
 
 .mobile-menu:hover {
     color: var(--primary-color);
+}
+
+.mobile-menu:focus-visible {
+    outline: 2px solid var(--primary-color);
+    outline-offset: 2px;
+    border-radius: 6px;
 }
 
 /* Sección Hero */
@@ -1438,7 +1453,9 @@ button:disabled.btn {
     }
     
     .mobile-menu {
-        display: block;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
     }
     
     /* Navegación móvil colapsable */

@@ -59,7 +59,7 @@
             <img src="images/logo.jpg" alt="This is Fuerteventura Logo" class="logo" loading="lazy">
             <h1>This is Fuerteventura</h1>
         </div>
-        <nav aria-label="Navegación principal">
+        <nav id="site-nav" aria-label="Navegación principal">
             <ul>
                 <li><a href="index.html">Inicio</a></li>
                 <li><a href="noticias.html">Noticias</a></li>
@@ -70,9 +70,9 @@
                 <li><a href="contacto.html">Contacto</a></li>
             </ul>
         </nav>
-        <div class="mobile-menu">
-            <i class="fas fa-bars"></i>
-        </div>
+        <button type="button" class="mobile-menu" aria-label="Abrir menú" aria-controls="site-nav" aria-expanded="false">
+            <i class="fas fa-bars" aria-hidden="true"></i>
+        </button>
     </header>
 
     <main id="main">
