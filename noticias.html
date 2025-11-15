@@ -8,6 +8,7 @@
     <link rel="canonical" href="https://thisisfuerteventura.netlify.app/noticias.html">
     <link rel="manifest" href="manifest.webmanifest">
     <link rel="stylesheet" href="css/styles.css?v=2025111501">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@9/swiper-bundle.min.css" />
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 	<meta name="description" content="Últimas noticias de Fuerteventura 2025: actualidad local, eventos, turismo, cultura y deportes. Mantente informado sobre las Islas Canarias.">
     <meta name="keywords" content="noticias Fuerteventura, actualidad Fuerteventura, eventos Fuerteventura, noticias Canarias, prensa Fuerteventura, información local">
@@ -133,6 +134,16 @@
         </form>
     </section>
 
+    <!-- Timeline de noticias (se alimenta de #featured-news oculto) -->
+    <section class="news-timeline reveal" aria-label="Timeline de noticias">
+        <div class="timeline-container">
+            <div id="news-timeline" class="timeline-swiper"></div>
+        </div>
+    </section>
+
+    <!-- Contenedor oculto para noticias destacadas (fuente para el timeline) -->
+    <div id="featured-news" style="display:none" aria-hidden="true"></div>
+
     </main>
 
     <footer>
@@ -211,6 +222,7 @@
     <script src="js/content-loader.js?v=2025111003" defer></script>
     <script src="js/news.js?v=2025111003" defer></script>
     <script src="js/cookies.js?v=2025111001" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/swiper@9/swiper-bundle.min.js" defer></script>
     <script src="js/ux.js?v=2025111501" defer></script>
     <script src="js/ambient.js?v=2025111501" defer></script>
 
