@@ -243,32 +243,38 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
     }
-});
-
-// Lazy loading de imágenes mejorado
-const lazyLoadOptions = {
-    root: null,
-    rootMargin: '50px',
-    threshold: 0.01
-};
-
-const lazyLoadObserver = new IntersectionObserver((entries, observer) => {
-    entries.forEach(entry => {
-        if (entry.isIntersecting) {
+    // Lazy loading imágenes (unificada para evitar doble listener)
+    const lazyLoadOptions = { root: null, rootMargin: '70px', threshold: 0.02 };
+    const lazyLoadObserver = ('IntersectionObserver' in window) ? new IntersectionObserver((entries, observer) => {
+        for (const entry of entries) {
+            if (!entry.isIntersecting) continue;
             const img = entry.target;
             if (img.dataset.src) {
                 img.src = img.dataset.src;
                 img.removeAttribute('data-src');
             }
+            img.loading = 'lazy';
+            img.decoding = 'async';
             img.classList.add('loaded');
             observer.unobserve(img);
         }
-    });
-}, lazyLoadOptions);
+    }, lazyLoadOptions) : null;
+    if (lazyLoadObserver) {
+        document.querySelectorAll('img[data-src], img[loading="lazy"]').forEach(img => lazyLoadObserver.observe(img));
+    }
 
-document.addEventListener('DOMContentLoaded', () => {
-    const lazyImages = document.querySelectorAll('img[data-src], img[loading="lazy"]');
-    lazyImages.forEach(img => lazyLoadObserver.observe(img));
+    // Marcar enlace activo con aria-current="page"
+    const currentPath = location.pathname.replace(/\\+/g,'/').replace(/\/index\.html$/, '/');
+    document.querySelectorAll('nav a[href]').forEach(a => {
+        const href = a.getAttribute('href');
+        if (!href) return;
+        let normalized = href.replace(/^\.\//,'');
+        if (normalized === 'index.html' && (currentPath === '/' || /\/index\.html$/.test(currentPath))) {
+            a.setAttribute('aria-current','page');
+        } else if (currentPath.endsWith('/' + normalized)) {
+            a.setAttribute('aria-current','page');
+        }
+    });
 });
 
 // Nota: Se evita registrar el Service Worker por defecto para prevenir cacheos inesperados.
