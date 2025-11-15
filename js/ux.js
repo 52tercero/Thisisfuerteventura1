@@ -80,7 +80,7 @@
     });
     wrapper.appendChild(inner); container.appendChild(wrapper);
     new Swiper(wrapper, { slidesPerView: 'auto', spaceBetween: 10, freeMode: true, loop: true,
-      speed: 6000, autoplay: { delay: 0, disableOnInteraction: false }, freeModeMomentum: false,
+      speed: 800, autoplay: { delay: 3000, disableOnInteraction: false }, freeModeMomentum: false,
     });
     container.dataset.built = '1';
   }
