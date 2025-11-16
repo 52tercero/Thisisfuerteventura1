@@ -98,12 +98,10 @@ if (mapContainer) {
         }).addTo(map);
         
         const popupContent = `
-            <div style="text-align:center;min-width:200px;">
-                <img src="${spot.image}" alt="${spot.title}" 
-                     style="width:100%;height:120px;object-fit:cover;border-radius:8px;margin-bottom:8px;"
-                     onerror="this.src='images/Fuerteventura.jpeg'">
-                <h3 style="margin:8px 0;font-size:1.1rem;color:var(--color-cielo);">${spot.title}</h3>
-                <p style="margin:0;font-size:0.9rem;color:#555;">${spot.description}</p>
+            <div class="popup-inner">
+                <img src="${spot.image}" alt="${spot.title}" class="popup-img">
+                <h3 class="popup-title">${spot.title}</h3>
+                <p class="popup-desc">${spot.description}</p>
             </div>
         `;
         

@@ -1,6 +1,30 @@
 ﻿// Utilidad ligera de descubrimiento de proxy
 // Expone window.discoverRSSProxy(options) -> Promise<string|null>
 (function () {
+  try {
+    // Detect Netlify Functions availability without inline scripts (CSP-friendly)
+    window.__RSS_PROXY_READY = new Promise((resolve) => {
+      try {
+        const controller = new AbortController();
+        const id = setTimeout(() => controller.abort(), 1500);
+        fetch('/.netlify/functions/aggregate', { signal: controller.signal, cache: 'no-store' })
+          .then(async (r) => {
+            try {
+              const ctype = r.headers.get('content-type') || '';
+              if (r.ok && ctype.includes('application/json')) {
+                const data = await r.clone().json().catch(() => null);
+                if (data && (Array.isArray(data.items) || data.items === undefined)) {
+                  window.__RSS_PROXY_URL = '';
+                  console.log('✓ Netlify Functions detectadas, usando rutas relativas');
+                }
+              }
+            } catch (_) { /* ignore */ }
+          })
+          .catch(() => {})
+          .finally(() => { clearTimeout(id); resolve(); });
+      } catch (_) { resolve(); }
+    });
+  } catch (e) { /* ignore */ }
   async function probePort(port, timeout) {
     const url = `http://localhost:${port}/health`;
     try {

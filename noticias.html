@@ -21,8 +21,7 @@
     <link rel="stylesheet" href="css/styles.css?v=2025111507">
     <link rel="preload" href="images/Fuerteventura.jpeg" as="image" fetchpriority="high">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@9/swiper-bundle.min.css" />
-    <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
-    <noscript><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"></noscript>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     
     <!-- Open Graph -->
     <meta property="og:title" content="Noticias de Fuerteventura 2025 - Actualidad y Eventos">
@@ -37,7 +36,7 @@
     <meta name="twitter:title" content="Noticias de Fuerteventura 2025">
     <meta name="twitter:description" content="Últimas noticias de Fuerteventura: actualidad local, eventos y turismo.">
     <meta name="twitter:image" content="https://thisisfuerteventura.netlify.app/images/logo.jpg">
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://unpkg.com https://www.googletagmanager.com https://analytics.google.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://unpkg.com; font-src 'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com; img-src 'self' data: https://thisisfuerteventura.netlify.app; media-src 'self'; connect-src 'self' https://thisisfuerteventura.netlify.app https://www.googletagmanager.com https://analytics.google.com http://localhost:3000 http://localhost:3001;">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://unpkg.com https://www.googletagmanager.com https://analytics.google.com 'sha256-TBBA/eo1zb4I+x0jeW4pu9ZCZPzbdI3B+ecMkmICZ6M='; style-src 'self' https://fonts.googleapis.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://unpkg.com; font-src 'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com; img-src 'self' data: https://thisisfuerteventura.netlify.app; media-src 'self'; connect-src 'self' https://thisisfuerteventura.netlify.app https://www.googletagmanager.com https://analytics.google.com http://localhost:3000 http://localhost:3001;">
     
     <!-- Structured Data -->
     <script type="application/ld+json">
@@ -161,7 +160,7 @@
     </section>
 
     <!-- Contenedor oculto para noticias destacadas (fuente para el timeline) -->
-    <div id="featured-news" style="display:none" aria-hidden="true"></div>
+    <div id="featured-news" class="hidden" aria-hidden="true"></div>
 
     </main>
 
@@ -201,38 +200,7 @@
         </div>
     </footer>
 
-    <script>
-        // Detección de Netlify Functions (probando endpoint aggregate)
-        window.__RSS_PROXY_READY = new Promise((resolve) => {
-            try {
-                const controller = new AbortController();
-                const id = setTimeout(() => controller.abort(), 1500);
-                // Probar con el endpoint aggregate que existe
-                fetch('/.netlify/functions/aggregate', { signal: controller.signal, cache: 'no-store' })
-                    .then(async r => { 
-                        try {
-                            const ctype = r.headers.get('content-type') || '';
-                            if (r.ok && ctype.includes('application/json')) {
-                                const data = await r.clone().json().catch(() => null);
-                                if (data && (Array.isArray(data.items) || data.items === undefined)) {
-                                    window.__RSS_PROXY_URL = '';  // Cadena vacía para usar rutas relativas
-                                    console.log('✓ Netlify Functions detectadas, usando rutas relativas');
-                                }
-                            }
-                        } catch (_) { /* ignorar */ }
-                    })
-                    .catch((e) => {
-                        console.log('ℹ Netlify Functions no disponibles, intentando proxy local');
-                    })
-                    .finally(() => {
-                        clearTimeout(id);
-                        resolve();
-                    });
-            } catch (_) {
-                resolve();
-            }
-        });
-    </script>
+    
     <script src="js/main.js?v=2025111503" defer></script>
     <script src="js/proxy-discovery.js?v=2025110901" defer></script>
     <script src="https://cdn.jsdelivr.net/npm/dompurify@2.4.0/dist/purify.min.js" defer></script>
@@ -271,7 +239,7 @@
                 <button id="cookie-modal-close" class="cookie-modal-close">&times;</button>
             </div>
             <div class="cookie-modal-body">
-                <p style="margin-bottom: 20px; color: #666;">
+                <p class="cookie-intro">
                     Utilizamos diferentes tipos de cookies para mejorar tu experiencia en nuestro sitio web. 
                     Puedes elegir qué categorías deseas permitir.
                 </p>

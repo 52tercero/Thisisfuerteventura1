@@ -275,6 +275,41 @@ document.addEventListener('DOMContentLoaded', function() {
             a.setAttribute('aria-current','page');
         }
     });
+
+    // Fallback genérico de imágenes sin inline onerror (CSP-friendly)
+    (function attachImageFallbacks(){
+        const FALLBACK_SRC = 'images/Fuerteventura.jpeg?v=2025110501';
+        const mark = '__fallback_attached__';
+        function guardAndAttach(img){
+            try {
+                if (!img || img[mark]) return;
+                img[mark] = true;
+                img.addEventListener('error', function onErr(){
+                    try {
+                        if (img.dataset && img.dataset.fallbackUsed === '1') return;
+                        if (!img.src || img.src.endsWith('Fuerteventura.jpeg') || img.src.includes('Fuerteventura.jpeg?v=')) return;
+                        img.dataset.fallbackUsed = '1';
+                        img.src = FALLBACK_SRC;
+                    } catch(_) { /* ignore */ }
+                }, { once: false });
+            } catch(_) { /* ignore */ }
+        }
+        document.querySelectorAll('img').forEach(guardAndAttach);
+        // Observar nuevas imágenes añadidas dinámicamente
+        try {
+            const mo = new MutationObserver((muts)=>{
+                muts.forEach(m=>{
+                    m.addedNodes && m.addedNodes.forEach(node => {
+                        if (node && node.nodeType === 1) {
+                            if (node.tagName === 'IMG') guardAndAttach(node);
+                            node.querySelectorAll && node.querySelectorAll('img').forEach(guardAndAttach);
+                        }
+                    });
+                });
+            });
+            mo.observe(document.documentElement, { childList: true, subtree: true });
+        } catch(_) { /* ignore */ }
+    })();
 });
 
 // Nota: Se evita registrar el Service Worker por defecto para prevenir cacheos inesperados.

@@ -183,9 +183,8 @@ document.addEventListener('DOMContentLoaded', () => {
             return videos.map(video => {
                 if (video.type === 'youtube') {
                     return `
-                        <div class="article-video" style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; max-width: 100%; margin: 20px 0;">
+                        <div class="article-video embed">
                             <iframe 
-                                style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;"
                                 src="https://www.youtube.com/embed/${video.videoId}" 
                                 frameborder="0" 
                                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
@@ -196,9 +195,8 @@ document.addEventListener('DOMContentLoaded', () => {
                     `;
                 } else if (video.type === 'vimeo') {
                     return `
-                        <div class="article-video" style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; max-width: 100%; margin: 20px 0;">
+                        <div class="article-video embed">
                             <iframe 
-                                style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;"
                                 src="https://player.vimeo.com/video/${video.videoId}" 
                                 frameborder="0" 
                                 allow="autoplay; fullscreen; picture-in-picture" 
@@ -209,8 +207,8 @@ document.addEventListener('DOMContentLoaded', () => {
                     `;
                 } else if (video.type === 'direct') {
                     return `
-                        <div class="article-video" style="max-width: 100%; margin: 20px 0;">
-                            <video controls style="width: 100%; max-height: 500px;">
+                        <div class="article-video">
+                            <video controls>
                                 <source src="${video.url}" type="${video.mime || 'video/mp4'}">
                                 Tu navegador no soporta la reproducción de video.
                             </video>
@@ -225,17 +223,25 @@ document.addEventListener('DOMContentLoaded', () => {
         const videoHTML = renderVideoEmbeds(videos);
 
         const categoryTag = (article.category && String(article.category).toLowerCase() !== 'general')
-            ? `<span class="category-tag" style="display: inline-block; margin: 10px 0;">${escapeHTML(article.category)}</span>`
+            ? `<span class="category-tag">${escapeHTML(article.category)}</span>`
             : '';
 
         const sourceInfo = article.source 
             ? `<p class="article-source"><strong>Fuente:</strong> ${escapeHTML(article.source)}</p>` 
             : '';
 
-        const externalLink = article.link 
-            ? `<a href="${article.link}" target="_blank" rel="noopener noreferrer" class="btn" style="margin-top: 20px;">
+        // Validar enlace externo: solo http(s)
+        const safeLink = (() => {
+            try {
+                const u = new URL(article.link || '');
+                if (u.protocol === 'http:' || u.protocol === 'https:') return u.toString();
+            } catch (_) {}
+            return '';
+        })();
+        const externalLink = safeLink
+            ? `<a href="${safeLink}" target="_blank" rel="noopener noreferrer" class="btn">
                 Ver artículo original <i class="fas fa-external-link-alt"></i>
-               </a>` 
+               </a>`
             : '';
 
         // Elegir el contenido más extenso disponible: content:encoded > content > description > summary
@@ -268,7 +274,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     ${categoryTag}
                     <h2>${escapeHTML(article.title)}</h2>
                     <div class="article-meta">
-                        <span class="article-date"><i class="fas fa-calendar"></i> ${article.date}</span>
+                        <span class="article-date"><i class="fas fa-calendar"></i> ${escapeHTML(article.date)}</span>
                     </div>
                 </header>
                 
@@ -284,6 +290,14 @@ document.addEventListener('DOMContentLoaded', () => {
                 </footer>
             </article>
         `;
+
+        // Asegurar fallback de imagen destacada sin usar onerror en HTML
+        try {
+            const img = document.querySelector('.article-featured-image img');
+            if (img) {
+                img.addEventListener('error', () => { img.src = 'images/Fuerteventura.jpeg?v=2025110501'; });
+            }
+        } catch (_) {}
 
         // Actualizar meta tags para compartir en redes sociales
         updateMetaTags(article);

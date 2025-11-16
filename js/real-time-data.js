@@ -58,26 +58,26 @@ function renderWeatherWidget(data) {
     const icon = weatherIcons[current.weathercode] || '🌤️';
 
     container.innerHTML = `
-        <div class="weather-card" style="background:var(--gradient-ocean);color:white;padding:2rem;border-radius:16px;box-shadow:0 8px 24px rgba(0,0,0,0.15);">
-            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1.5rem;">
+        <div class="widget-card ocean weather-card">
+            <div class="widget-header">
                 <div>
-                    <h3 style="margin:0 0 0.5rem;font-family:var(--font-display);font-size:1.5rem;">Fuerteventura Ahora</h3>
-                    <p style="margin:0;opacity:0.9;font-size:0.9rem;">Actualizado hace instantes</p>
+                    <h3 class="widget-title">Fuerteventura Ahora</h3>
+                    <p class="widget-sub">Actualizado hace instantes</p>
                 </div>
-                <div style="font-size:4rem;">${icon}</div>
+                <div class="widget-icon">${icon}</div>
             </div>
-            <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:1rem;">
-                <div>
-                    <div style="font-size:2.5rem;font-weight:bold;">${Math.round(current.temperature)}°C</div>
-                    <div style="opacity:0.9;font-size:0.9rem;">Temperatura</div>
+            <div class="widget-grid">
+                <div class="widget-metric">
+                    <div class="metric-value xxl">${Math.round(current.temperature)}°C</div>
+                    <div class="metric-label">Temperatura</div>
                 </div>
-                <div>
-                    <div style="font-size:1.5rem;font-weight:bold;">${Math.round(current.windspeed)} km/h</div>
-                    <div style="opacity:0.9;font-size:0.9rem;">Viento</div>
+                <div class="widget-metric">
+                    <div class="metric-value lg">${Math.round(current.windspeed)} km/h</div>
+                    <div class="metric-label">Viento</div>
                 </div>
-                <div>
-                    <div style="font-size:1.5rem;font-weight:bold;">${daily.temperature_2m_max[0]}° / ${daily.temperature_2m_min[0]}°</div>
-                    <div style="opacity:0.9;font-size:0.9rem;">Máx / Mín</div>
+                <div class="widget-metric">
+                    <div class="metric-value lg">${daily.temperature_2m_max[0]}° / ${daily.temperature_2m_min[0]}°</div>
+                    <div class="metric-label">Máx / Mín</div>
                 </div>
             </div>
         </div>
@@ -92,23 +92,23 @@ function renderWaveWidget(data) {
     const current = data.current;
 
     container.innerHTML = `
-        <div class="wave-card" style="background:linear-gradient(135deg, #2ec4b6 0%, #0f4c81 100%);color:white;padding:2rem;border-radius:16px;box-shadow:0 8px 24px rgba(0,0,0,0.15);">
-            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1.5rem;">
-                <h3 style="margin:0;font-family:var(--font-display);font-size:1.5rem;">Condiciones del Mar</h3>
-                <div style="font-size:3rem;">🌊</div>
+        <div class="widget-card sea wave-card">
+            <div class="widget-header">
+                <h3 class="widget-title">Condiciones del Mar</h3>
+                <div class="widget-icon">🌊</div>
             </div>
-            <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(100px,1fr));gap:1rem;">
-                <div>
-                    <div style="font-size:2rem;font-weight:bold;">${current.wave_height?.toFixed(1) || 'N/A'} m</div>
-                    <div style="opacity:0.9;font-size:0.9rem;">Altura olas</div>
+            <div class="widget-grid tight">
+                <div class="widget-metric">
+                    <div class="metric-value xl">${current.wave_height?.toFixed(1) || 'N/A'} m</div>
+                    <div class="metric-label">Altura olas</div>
                 </div>
-                <div>
-                    <div style="font-size:1.5rem;font-weight:bold;">${current.wave_period?.toFixed(0) || 'N/A'} s</div>
-                    <div style="opacity:0.9;font-size:0.9rem;">Periodo</div>
+                <div class="widget-metric">
+                    <div class="metric-value lg">${current.wave_period?.toFixed(0) || 'N/A'} s</div>
+                    <div class="metric-label">Periodo</div>
                 </div>
-                <div>
-                    <div style="font-size:1.5rem;font-weight:bold;">${current.wave_direction || 'N/A'}°</div>
-                    <div style="opacity:0.9;font-size:0.9rem;">Dirección</div>
+                <div class="widget-metric">
+                    <div class="metric-value lg">${current.wave_direction || 'N/A'}°</div>
+                    <div class="metric-label">Dirección</div>
                 </div>
             </div>
         </div>

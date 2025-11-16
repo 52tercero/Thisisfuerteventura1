@@ -109,7 +109,7 @@ async function main() {
           const short = plain.length > 150 ? plain.slice(0, 150) + '...' : plain;
           const img = (it.image && /^https:\/\//.test(it.image)) ? it.image : 'images/logo.jpg?v=2025110501';
           const articleId = Buffer.from(encodeURIComponent((it.title||'') + formatted)).toString('base64').replace(/[^a-zA-Z0-9]/g,'').substring(0,32);
-          return `\n            <div class="content-card">\n              <img src="${img}" alt="${it.title}" onerror="this.onerror=null;this.src='images/logo.jpg?v=2025110501';">\n              <div class="card-content">\n                <span class="date">${formatted}</span>\n                <h3>${it.title}</h3>\n                <p>${short}</p>\n                <a href="noticia.html?id=${articleId}" class="btn">Leer más</a>\n              </div>\n            </div>`;
+          return `\n            <div class="content-card">\n              <img src="${img}" alt="${it.title}">\n              <div class="card-content">\n                <span class="date">${formatted}</span>\n                <h3>${it.title}</h3>\n                <p>${short}</p>\n                <a href="noticia.html?id=${articleId}" class="btn">Leer más</a>\n              </div>\n            </div>`;
         }).join('');
         const newHtml = html.slice(0, afterStart) + cards + '\n' + html.slice(closeIdx);
         fs.writeFileSync(INDEX_HTML, newHtml, 'utf-8');
@@ -137,7 +137,7 @@ async function main() {
           const plain = (it.description || '').replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim();
           const short = plain.length > 150 ? plain.slice(0, 150) + '...' : plain;
           const img = (it.image && /^https:\/\//.test(it.image)) ? it.image : 'images/logo.jpg?v=2025110501';
-          return `\n            <div class="news-card">\n              <div class="news-image">\n                <img src="${img}" alt="${it.title}" onerror="this.onerror=null;this.src='images/logo.jpg?v=2025110501';">\n              </div>\n              <div class="news-content">\n                <span class="news-date">${formatted}</span>\n                <h3>${it.title}</h3>\n                <p>${short}</p>\n                <a href="${it.link || '#'}" target="_blank" rel="noopener noreferrer" class="btn">Leer más</a>\n              </div>\n            </div>`;
+          return `\n            <div class="news-card">\n              <div class="news-image">\n                <img src="${img}" alt="${it.title}">\n              </div>\n              <div class="news-content">\n                <span class="news-date">${formatted}</span>\n                <h3>${it.title}</h3>\n                <p>${short}</p>\n                <a href="${it.link || '#'}" target="_blank" rel="noopener noreferrer" class="btn">Leer más</a>\n              </div>\n            </div>`;
         }).join('');
         const newHtml = nhtml.slice(0, afterStart) + cards + '\n' + nhtml.slice(closeIdx);
         fs.writeFileSync(NOTICIAS_HTML, newHtml, 'utf-8');

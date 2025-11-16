@@ -1432,6 +1432,22 @@ button:disabled.btn {
     color: #666;
 }
 
+/* Etiqueta de categoría genérica (para encabezados de artículo) */
+.category-tag {
+    display: inline-block;
+    margin: 10px 0;
+    background: var(--secondary-color);
+    color: #222;
+    padding: 6px 10px;
+    border-radius: var(--border-radius-sm);
+    font-weight: 600;
+}
+
+/* Espaciado para botón del pie del artículo */
+.article-footer .btn {
+    margin-top: 20px;
+}
+
 
 /* Diseño responsive */
 @media (max-width: 768px) {
@@ -1946,6 +1962,12 @@ button:disabled.btn {
     padding: 25px;
 }
 
+/* Intro del modal de cookies (sin inline styles) */
+.cookie-modal-body .cookie-intro {
+    margin-bottom: 20px;
+    color: #666;
+}
+
 .cookie-category {
     margin-bottom: 20px;
     padding-bottom: 20px;
@@ -2374,6 +2396,29 @@ html[data-theme="dark"] .theme-toggle { border-color: rgba(255,255,255,0.25); }
     padding: 2rem;
 }
 
+/* Widget cards (weather/waves) - replaces inline styles */
+.widget-card {
+    color: #fff;
+    padding: 2rem;
+    border-radius: 16px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+}
+.widget-card.ocean { background: var(--gradient-ocean); }
+.widget-card.sea { background: linear-gradient(135deg, #2ec4b6 0%, #0f4c81 100%); }
+.widget-header { display:flex; align-items:center; justify-content:space-between; margin-bottom: 1.5rem; }
+.widget-title { margin: 0; font-family: var(--font-display); font-size: 1.5rem; }
+.widget-sub { margin: 0; opacity: 0.9; font-size: 0.9rem; }
+.widget-icon { font-size: 3rem; }
+.weather-card .widget-icon { font-size: 4rem; }
+.widget-grid { display:grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 1rem; }
+.widget-grid.tight { grid-template-columns: repeat(auto-fit, minmax(100px, 1fr)); }
+.widget-metric { display:block; }
+.metric-value { font-weight: 700; font-size: 1.5rem; }
+.metric-value.lg { font-size: 1.5rem; }
+.metric-value.xl { font-size: 2rem; }
+.metric-value.xxl { font-size: 2.5rem; }
+.metric-label { opacity: 0.9; font-size: 0.9rem; }
+
 @media (max-width: 768px) {
     .widgets-section,
     .map-section,
@@ -2447,6 +2492,12 @@ html[data-theme="dark"] .theme-toggle { border-color: rgba(255,255,255,0.25); }
 .custom-popup .leaflet-popup-content {
     margin: 0;
 }
+
+/* Interactive map popup content (no inline styles for CSP) */
+.custom-popup .popup-inner { text-align: center; min-width: 200px; padding: 10px 10px 14px; }
+.custom-popup .popup-img { width: 100%; height: 120px; object-fit: cover; border-radius: 8px; margin-bottom: 8px; display: block; }
+.custom-popup .popup-title { margin: 8px 0; font-size: 1.1rem; color: var(--color-cielo); }
+.custom-popup .popup-desc { margin: 0; font-size: 0.9rem; color: #555; }
 
 /* Estilos para galerías Swiper */
 .swiper-container {
@@ -2536,6 +2587,32 @@ select:focus-visible {
         scroll-behavior: auto !important;
     }
 }
+
+/* Article video embeds (moved from inline styles) */
+.article-video {
+    max-width: 100%;
+    margin: 20px 0;
+}
+.article-video.embed {
+    position: relative;
+    padding-bottom: 56.25%; /* 16:9 */
+    height: 0;
+    overflow: hidden;
+}
+.article-video.embed iframe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+.article-video video {
+    width: 100%;
+    max-height: 500px;
+}
+
+/* Utilidad: oculto (reemplaza style="display:none") */
+.hidden { display: none !important; }
 
 /* Alto contraste para usuarios que lo prefieran */
 @media (prefers-contrast: high) {

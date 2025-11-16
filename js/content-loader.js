@@ -1,4 +1,17 @@
 document.addEventListener('DOMContentLoaded', async function() {
+    // Escapar texto plano para insertarlo en innerHTML/atributos
+    function escapeHTML(str) {
+        try {
+            return String(str)
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#39;');
+        } catch (_) {
+            return '';
+        }
+    }
     // Helper para enrutar imágenes externas a través del proxy cuando esté disponible
     function toImageSrc(url) {
         try {
@@ -153,13 +166,17 @@ document.addEventListener('DOMContentLoaded', async function() {
                             const articleId = btoa(encodeURIComponent(item.title + item.date)).replace(/[^a-zA-Z0-9]/g, '').substring(0, 32);
                             try { localStorage.setItem(`article_${articleId}`, JSON.stringify(item)); } catch (_) {}
                             card.innerHTML = `
-                                <img src="${toImageSrc(item.image)}" alt="${item.title}" loading="lazy" referrerpolicy="no-referrer" onerror="this.onerror=null;this.src='images/logo.jpg?v=2025110501';">
+                                <img src="${toImageSrc(item.image)}" alt="${escapeHTML(item.title)}" loading="lazy" referrerpolicy="no-referrer">
                                 <div class="card-content">
-                                    <span class="date">${item.date}</span>
-                                    <h3>${item.title}</h3>
+                                    <span class="date">${escapeHTML(item.date)}</span>
+                                    <h3>${escapeHTML(item.title)}</h3>
                                     <p>${shortDescription}</p>
                                 </div>
                             `;
+                            const imgEl = card.querySelector('img');
+                            if (imgEl) {
+                                imgEl.addEventListener('error', () => { imgEl.src = 'images/logo.jpg?v=2025110501'; });
+                            }
                             const readMoreBtn = document.createElement('a');
                             readMoreBtn.href = `noticia.html?id=${articleId}`;
                             readMoreBtn.className = 'btn';
@@ -234,13 +251,17 @@ document.addEventListener('DOMContentLoaded', async function() {
                 }
 
                 card.innerHTML = `
-                    <img src="${toImageSrc(item.image)}" alt="${item.title}" loading="lazy" referrerpolicy="no-referrer" onerror="this.onerror=null;this.src='images/logo.jpg?v=2025110501';">
+                    <img src="${toImageSrc(item.image)}" alt="${escapeHTML(item.title)}" loading="lazy" referrerpolicy="no-referrer">
                     <div class="card-content">
-                        <span class="date">${item.date}</span>
-                        <h3>${item.title}</h3>
+                        <span class="date">${escapeHTML(item.date)}</span>
+                        <h3>${escapeHTML(item.title)}</h3>
                         <p>${shortDescription}</p>
                     </div>
                 `;
+                const imgEl = card.querySelector('img');
+                if (imgEl) {
+                    imgEl.addEventListener('error', () => { imgEl.src = 'images/logo.jpg?v=2025110501'; });
+                }
                 
                 const readMoreBtn = document.createElement('a');
                 readMoreBtn.href = `noticia.html?id=${articleId}`;
@@ -404,14 +425,18 @@ document.addEventListener('DOMContentLoaded', async function() {
                     
                     newsCard.innerHTML = `
                         <div class="news-image">
-                            <img src="${toImageSrc(item.image)}" alt="${item.title}" loading="lazy" referrerpolicy="no-referrer" onerror="this.onerror=null;this.src='images/logo.jpg?v=2025110501';">
+                            <img src="${toImageSrc(item.image)}" alt="${escapeHTML(item.title)}" loading="lazy" referrerpolicy="no-referrer">
                         </div>
                         <div class="news-content">
-                            <span class="news-date">${item.date}</span>
-                            <h3>${item.title}</h3>
+                            <span class="news-date">${escapeHTML(item.date)}</span>
+                            <h3>${escapeHTML(item.title)}</h3>
                             <p>${item.summary}</p>
                         </div>
                     `;
+                    const imgNews = newsCard.querySelector('img');
+                    if (imgNews) {
+                        imgNews.addEventListener('error', () => { imgNews.src = 'images/logo.jpg?v=2025110501'; });
+                    }
                     
                     const readMoreBtn = document.createElement('a');
                     readMoreBtn.href = item.link || '#';
@@ -532,20 +557,24 @@ document.addEventListener('DOMContentLoaded', async function() {
                 articleContainer.innerHTML = `
                     <article class="news-article">
                         <header class="article-header">
-                            <h1>${article.title}</h1>
+                            <h1>${escapeHTML(article.title)}</h1>
                             <div class="article-meta">
-                                <span class="article-date">${article.date}</span>
+                                <span class="article-date">${escapeHTML(article.date)}</span>
                             </div>
                         </header>
 
                         <div class="article-featured-image">
-                            <img src="${toImageSrc(article.image)}" alt="${article.title}" referrerpolicy="no-referrer" onerror="this.onerror=null;this.src='images/Fuerteventura.jpeg?v=2025110501';">
+                            <img src="${toImageSrc(article.image)}" alt="${escapeHTML(article.title)}" referrerpolicy="no-referrer">
                         </div>
 
                         <div class="article-content">
                             ${content}
                         </div>
                 `;
+                const artImg = articleContainer.querySelector('.article-featured-image img');
+                if (artImg) {
+                    artImg.addEventListener('error', () => { artImg.src = 'images/Fuerteventura.jpeg?v=2025110501'; });
+                }
             } catch (e) {
                 console.error('Error loading article:', e);
                 articleContainer.innerHTML = '<div class="error">Error al cargar la noticia.</div>';
