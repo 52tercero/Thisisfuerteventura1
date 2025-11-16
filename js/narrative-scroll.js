@@ -105,4 +105,27 @@
       ease: 'none'
     });
   });
+
+  // UI de capítulos: etiqueta la sección visible (por h2) mientras haces scroll
+  let chapterBox = d.getElementById('chapter-indicator');
+  if(!chapterBox){
+    chapterBox = d.createElement('div');
+    chapterBox.id = 'chapter-indicator';
+    chapterBox.setAttribute('aria-live','polite');
+    // Evitar estilos inline: depender de estilos globales por defecto
+    d.body.appendChild(chapterBox);
+  }
+  const sections = Array.from(d.querySelectorAll('main section.reveal, main section.hero'));
+  sections.forEach(sec => {
+    const h = sec.querySelector('h2, h1');
+    if(!h) return;
+    const title = h.textContent.trim();
+    ScrollTrigger.create({
+      trigger: sec,
+      start: 'top 40%',
+      end: 'bottom 40%',
+      onEnter: ()=> chapterBox.textContent = `Capítulo: ${title}`,
+      onEnterBack: ()=> chapterBox.textContent = `Capítulo: ${title}`
+    });
+  });
 })();
