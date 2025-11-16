@@ -11,7 +11,7 @@
   function create(el, cls){ const n = document.createElement(el); if(cls) n.className = cls; return n; }
 
   function buildQuiz(container){
-    const card = create('div','conditions-card quiz-card');
+    const card = create('div','conditions-card quiz-card sea');
     const inner = create('div','quiz-inner');
     const heading = create('h3');
     heading.innerHTML = '<i class="fas fa-question-circle" aria-hidden="true"></i> Quiz';
