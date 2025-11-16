@@ -651,8 +651,10 @@ nav ul li a[aria-current="page"]::after {
 }
 
 .hero-content h1, .hero-content h2 {
-    word-break: break-word;
-    overflow-wrap: anywhere;
+    /* No partir palabras por defecto */
+    word-break: normal;
+    overflow-wrap: break-word; /* solo si es necesario para evitar desbordes */
+    white-space: normal;
 }
 
 .hero:not(.hero-video) h2 {
@@ -686,6 +688,10 @@ nav ul li a[aria-current="page"]::after {
 .page-header h1 {
     font-size: 2.4rem;
     margin-bottom: 12px;
+    /* Evitar cortes agresivos también en h1 */
+    word-break: normal;
+    overflow-wrap: break-word;
+    white-space: normal;
 }
 
 .page-header p {
@@ -2407,8 +2413,10 @@ html[data-theme="dark"] .theme-toggle { border-color: rgba(255,255,255,0.25); }
     color: #fff;
     margin-bottom: 1.5rem;
     text-shadow: 2px 4px 12px rgba(0,0,0,0.4);
-    word-break: break-word;
-    overflow-wrap: anywhere;
+    /* Evitar cortes agresivos en títulos de hero */
+    word-break: normal;
+    overflow-wrap: break-word;
+    white-space: normal;
 }
 
 .hero-video .hero-content p,
