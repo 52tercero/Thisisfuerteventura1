@@ -122,7 +122,21 @@
         try {
             if (global.discoverRSSProxy) {
                 const u = await global.discoverRSSProxy();
-                if (u) return u;
+                if (u) {
+                    try { global.__RSS_PROXY_URL = u; } catch(_){}
+                    return u;
+                }
+                // Si discovery no encontró nada ahora, intentar leer caché previo
+                try {
+                    const raw = localStorage.getItem('rss_proxy_discovery');
+                    if (raw) {
+                        const parsed = JSON.parse(raw);
+                        if (parsed && parsed.url) {
+                            try { global.__RSS_PROXY_URL = parsed.url; } catch(_){}
+                            return parsed.url;
+                        }
+                    }
+                } catch(_){}
             }
         } catch (_) {}
         
@@ -133,8 +147,8 @@
             return '';
         }
         
-        // Probar puertos locales comunes
-        const candidates = ['http://localhost:3000', 'http://localhost:3001', 'http://localhost:3002'];
+        // Probar puertos locales comunes (3000-3010)
+        const candidates = Array.from({length: 11}, (_,i)=>`http://localhost:${3000+i}`);
         for (const base of candidates) {
             try {
                 const r = await fetch(`${base}/health`, { method: 'GET', cache: 'no-store', targetAddressSpace: 'local' });
@@ -205,7 +219,7 @@
      * @returns {Promise<Array>} Items normalizados
      */
     async function fetchRSSFeeds(sources = DEFAULT_NEWS_SOURCES) {
-        const proxyBase = await discoverLocalProxy();
+        let proxyBase = await discoverLocalProxy();
 
         try {
             console.debug('[FEED-UTILS] Proxy base:', proxyBase);
@@ -264,6 +278,29 @@
                     const results = await Promise.all(fetches);
                     items = results.flat();
                 }
+            }
+
+            // Si seguimos sin items y estamos en local, reintentar una vez tras redescubrir (server puede haber cambiado de puerto)
+            if ((!items || items.length === 0) && /^(localhost|127\.0\.0\.1)/.test(location.hostname)) {
+                console.log('[FEED-UTILS] No items on first pass, retrying after short delay...');
+                await new Promise(res => setTimeout(res, 1200));
+                proxyBase = await discoverLocalProxy();
+                try {
+                    const aggPath2 = proxyBase === '' 
+                        ? '/.netlify/functions/aggregate' 
+                        : (proxyBase.endsWith('/.netlify/functions') ? '/aggregate' : '/api/aggregate');
+                    const aggUrl2 = `${proxyBase}${aggPath2}?sources=${encodeURIComponent(sources.join(','))}&dedupe=1`;
+                    const isLocal2 = /^http:\/\/(localhost|127\.0\.0\.1)(:\\d+)?/i.test(proxyBase);
+                    const r2 = await fetch(aggUrl2, { cache: 'no-store', ...(isLocal2 ? { targetAddressSpace: 'local' } : {}) });
+                    if (r2.ok) {
+                        const json2 = await r2.json();
+                        const items2 = Array.isArray(json2.items) ? json2.items : [];
+                        if (items2.length) {
+                            cacheSet(aggKey, items2);
+                            items = items2;
+                        }
+                    }
+                } catch (_) { /* ignore */ }
             }
 
             if (items.length > 0) {
