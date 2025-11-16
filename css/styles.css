@@ -2207,6 +2207,8 @@ button:disabled.btn {
    Scroll reveal animations
    ============================================ */
 .reveal { opacity: 0; transform: translateY(24px); transition: opacity .6s ease, transform .6s ease; }
+/* Excepción: el hero debe ser visible desde el primer render aunque falle JS */
+.hero.reveal { opacity: 1; transform: none; }
 .reveal.show { opacity: 1; transform: translateY(0); }
 
 /* Parallax utility */
