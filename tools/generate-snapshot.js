@@ -9,8 +9,6 @@ const fetch = globalThis.fetch || require('node-fetch');
 const FETCH_TIMEOUT_MS = Number(process.env.FETCH_TIMEOUT_MS || 8000);
 const OUTPUT_DIR = path.resolve(__dirname, '..', 'data');
 const OUTPUT_FILE = path.join(OUTPUT_DIR, 'feeds.json');
-const INDEX_HTML = path.resolve(__dirname, '..', 'index.html');
-const NOTICIAS_HTML = path.resolve(__dirname, '..', 'noticias.html');
 
 // Same feed list used in the client
 const newsSources = [
@@ -90,63 +88,7 @@ async function main() {
   if (!fs.existsSync(OUTPUT_DIR)) fs.mkdirSync(OUTPUT_DIR, { recursive: true });
   fs.writeFileSync(OUTPUT_FILE, JSON.stringify(payload, null, 2), 'utf-8');
   console.log(`[SNAPSHOT] Wrote ${limited.length} items to ${OUTPUT_FILE}`);
-
-  // Pre-render first 18 featured cards into index.html
-  try {
-    const html = fs.readFileSync(INDEX_HTML, 'utf-8');
-    const startMarker = '<div class="content-grid" id="featured-news">';
-    const endMarker = '</div>'; // close of content-grid
-    const idx = html.indexOf(startMarker);
-    if (idx !== -1) {
-      const afterStart = idx + startMarker.length;
-      const closeIdx = html.indexOf(endMarker, afterStart);
-      if (closeIdx !== -1) {
-        const top18 = payload.items.slice(0, 18);
-        const cards = top18.map(it => {
-          const dateStr = it.pubDate ? new Date(it.pubDate) : new Date();
-          const formatted = dateStr.toLocaleDateString('es-ES', { day: 'numeric', month: 'long', year: 'numeric' });
-          const plain = (it.description || '').replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim();
-          const short = plain.length > 150 ? plain.slice(0, 150) + '...' : plain;
-          const img = (it.image && /^https:\/\//.test(it.image)) ? it.image : 'images/logo.jpg?v=2025110501';
-          const articleId = Buffer.from(encodeURIComponent((it.title||'') + formatted)).toString('base64').replace(/[^a-zA-Z0-9]/g,'').substring(0,32);
-          return `\n            <div class="content-card">\n              <img src="${img}" alt="${it.title}">\n              <div class="card-content">\n                <span class="date">${formatted}</span>\n                <h3>${it.title}</h3>\n                <p>${short}</p>\n                <a href="noticia.html?id=${articleId}" class="btn">Leer más</a>\n              </div>\n            </div>`;
-        }).join('');
-        const newHtml = html.slice(0, afterStart) + cards + '\n' + html.slice(closeIdx);
-        fs.writeFileSync(INDEX_HTML, newHtml, 'utf-8');
-        console.log(`[SNAPSHOT] Injected ${top18.length} featured cards into index.html`);
-      }
-    }
-  } catch (e) {
-    console.warn('[SNAPSHOT] Failed to inject featured into index.html:', e.message);
-  }
-
-  // Pre-render initial news list (first 9) into noticias.html
-  try {
-    const nhtml = fs.readFileSync(NOTICIAS_HTML, 'utf-8');
-    const containerMarker = '<div class="news-grid" id="news-container">';
-    const endMarker2 = '</div>'; // close news-grid
-    const nIdx = nhtml.indexOf(containerMarker);
-    if (nIdx !== -1) {
-      const afterStart = nIdx + containerMarker.length;
-      const closeIdx = nhtml.indexOf(endMarker2, afterStart);
-      if (closeIdx !== -1) {
-        const first9 = payload.items.slice(0, 9);
-        const cards = first9.map(it => {
-          const dateStr = it.pubDate ? new Date(it.pubDate) : new Date();
-          const formatted = dateStr.toLocaleDateString('es-ES', { day: 'numeric', month: 'long', year: 'numeric' });
-          const plain = (it.description || '').replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim();
-          const short = plain.length > 150 ? plain.slice(0, 150) + '...' : plain;
-          const img = (it.image && /^https:\/\//.test(it.image)) ? it.image : 'images/logo.jpg?v=2025110501';
-          return `\n            <div class="news-card">\n              <div class="news-image">\n                <img src="${img}" alt="${it.title}">\n              </div>\n              <div class="news-content">\n                <span class="news-date">${formatted}</span>\n                <h3>${it.title}</h3>\n                <p>${short}</p>\n                <a href="${it.link || '#'}" target="_blank" rel="noopener noreferrer" class="btn">Leer más</a>\n              </div>\n            </div>`;
-        }).join('');
-        const newHtml = nhtml.slice(0, afterStart) + cards + '\n' + nhtml.slice(closeIdx);
-        fs.writeFileSync(NOTICIAS_HTML, newHtml, 'utf-8');
-        console.log(`[SNAPSHOT] Injected ${first9.length} news cards into noticias.html`);
-      }
-    }
-  } catch (e) {
-    console.warn('[SNAPSHOT] Failed to inject list into noticias.html:', e.message);
-  }
+  // HTML injection into index.html or noticias.html removed by request.
 }
 
 main().catch(err => {
