@@ -18,7 +18,8 @@
       opacity: 0,
       y: 80,
       scale: 0.95,
-      ease: 'power2.out'
+      ease: 'power2.out',
+      immediateRender: false
     });
   });
 
@@ -35,14 +36,17 @@
       y: 60,
       stagger: 0.1,
       duration: 0.8,
-      ease: 'power3.out'
+      ease: 'power3.out',
+      immediateRender: false
     });
   });
 
   // Hero title reveal con efecto "curtain"
   d.querySelectorAll('.hero-content h2').forEach(title => {
+    if (title.dataset.split === '1') return;
     const chars = title.textContent.split('');
     title.innerHTML = chars.map(c => `<span style="display:inline-block">${c === ' ' ? '&nbsp;' : c}</span>`).join('');
+    title.dataset.split = '1';
     gsap.from(title.children, {
       scrollTrigger: {
         trigger: title,
@@ -53,7 +57,8 @@
       rotationX: -90,
       stagger: 0.03,
       duration: 1,
-      ease: 'back.out(1.4)'
+      ease: 'back.out(1.4)',
+      immediateRender: false
     });
   });
 

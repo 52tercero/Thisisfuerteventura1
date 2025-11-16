@@ -212,15 +212,19 @@ document.addEventListener('DOMContentLoaded', async function() {
         fetchRSSFeeds().then(newsItems => {
             console.log('[CONTENT-LOADER] Noticias recibidas:', newsItems.length);
             
-            // Eliminar mensaje de carga
-            featuredNewsContainer.innerHTML = '';
-            
-            // Si no hay noticias
+            // Si no hay noticias frescas: conservar snapshot/SSR si existe
             if (newsItems.length === 0) {
                 console.error('[CONTENT-LOADER] No hay noticias para mostrar');
+                if (featuredNewsContainer.querySelector('.content-card')) {
+                    // Ya hay tarjetas (snapshot o SSR). No borrar contenido.
+                    return;
+                }
                 featuredNewsContainer.innerHTML = '<div class="no-news">No se pudieron cargar las noticias. Inténtalo más tarde.</div>';
                 return;
             }
+
+            // Limpiar contenedor solo cuando hay datos para renderizar
+            featuredNewsContainer.innerHTML = '';
             
             // Agrupar por fuente y tomar artículos de forma balanceada
             const bySource = {};
