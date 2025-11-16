@@ -2,7 +2,7 @@
   const S = {
     ocean: 'sonidos/olas.mp3',
     wind: 'sonidos/viento.mp3',
-    music: 'sonidos/musica-local.mp3'
+    music: 'sonidos/musica_local.mp3'
   };
   let current = null;
   let audio = null;
