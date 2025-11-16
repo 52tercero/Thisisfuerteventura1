@@ -6,9 +6,8 @@
 
   const initTimeline = () => {
     const el = document.querySelector('.timeline-swiper');
-    if (!el) return null;
-    // eslint-disable-next-line no-new
-    return new window.Swiper(el, {
+    if (!(el instanceof HTMLElement)) return null;
+    const config = {
       slidesPerView: 'auto',
       spaceBetween: 12,
       freeMode: true,
@@ -20,22 +19,26 @@
         768: { spaceBetween: 16 },
         1024: { spaceBetween: 20 },
       },
-    });
+    };
+    // eslint-disable-next-line no-new
+    return new window.Swiper(el, config);
   };
 
   const initGalleries = () => {
     const galleries = document.querySelectorAll('.gallery-swiper');
     galleries.forEach((node) => {
-      // eslint-disable-next-line no-new
-      new window.Swiper(node, {
+      if (!(node instanceof HTMLElement)) return;
+      const paginationEl = node.querySelector('.swiper-pagination');
+      const nextEl = node.querySelector('.swiper-button-next');
+      const prevEl = node.querySelector('.swiper-button-prev');
+      const config = {
         loop: true,
         parallax: true,
-        pagination: { el: node.querySelector('.swiper-pagination'), clickable: true },
-        navigation: {
-          nextEl: node.querySelector('.swiper-button-next'),
-          prevEl: node.querySelector('.swiper-button-prev'),
-        },
-      });
+        pagination: paginationEl instanceof HTMLElement ? { el: paginationEl, clickable: true } : undefined,
+        navigation: nextEl instanceof HTMLElement && prevEl instanceof HTMLElement ? { nextEl, prevEl } : undefined,
+      };
+      // eslint-disable-next-line no-new
+      new window.Swiper(node, config);
     });
   };
 
