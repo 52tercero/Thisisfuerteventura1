@@ -78,7 +78,7 @@
 
 /* Scroll suave */
 html {
-    scroll-behavior: smooth;
+    scroll-behavior: auto;
 }
 
 /* Deshabilitar scroll suave para usuarios que prefieren motion reducido */
@@ -2212,15 +2212,15 @@ button:disabled.btn {
 /* ============================================
    Scroll reveal animations
    ============================================ */
-.reveal { opacity: 0; transform: translateY(24px); transition: opacity .6s ease, transform .6s ease; }
+.reveal { opacity: 1; transform: none; transition: none; }
 /* Excepción: el hero debe ser visible desde el primer render aunque falle JS */
 .hero.reveal { opacity: 1; transform: none; }
 /* Excepción: los destacados deben ser visibles sin scroll */
 .featured-content.reveal { opacity: 1; transform: none; }
-.reveal.show { opacity: 1; transform: translateY(0); }
+.reveal.show { opacity: 1; transform: none; }
 
 /* Parallax utility */
-.parallax { background-attachment: fixed; }
+.parallax { background-attachment: scroll; }
 
 /* Hover overlays for gallery */
 .gallery-grid figure { position: relative; overflow: hidden; }
