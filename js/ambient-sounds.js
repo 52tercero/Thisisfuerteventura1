@@ -38,7 +38,19 @@
   }
 
   document.addEventListener('DOMContentLoaded', ()=>{
-    const hook = document.querySelector('.quiz-section') || document.querySelector('.newsletter');
+    if(document.querySelector('.ambient-sounds')) return;
+    const selectors = [
+      '.quiz-section',
+      '.widgets-section',
+      '.newsletter',
+      '.beaches-content',
+      '.tourism-content',
+      '.contact-content',
+      '.news-content',
+      'main'
+    ];
+    let hook = null;
+    for(const sel of selectors){ hook = document.querySelector(sel); if(hook) break; }
     if(hook){ ui(hook); }
   });
 })();
