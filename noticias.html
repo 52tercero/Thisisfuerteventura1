@@ -83,10 +83,10 @@
             <img src="images/logo.jpg" alt="This is Fuerteventura Logo" class="logo" loading="lazy" decoding="async" width="70" height="70">
             <h1>This is Fuerteventura</h1>
         </div>
-        <nav id="site-nav" aria-label="Navegación principal">
+        <nav id="site-nav" aria-label="Navegación principal" role="navigation">
             <ul>
                 <li><a href="index.html">Inicio</a></li>
-                <li><a href="noticias.html">Noticias</a></li>
+                <li><a href="noticias.html" aria-current="page">Noticias</a></li>
                 <li><a href="turismo.html">Turismo</a></li>
                 <li><a href="alojamiento.html">Alojamiento</a></li>
                 <li><a href="playas.html">Playas</a></li>
@@ -114,13 +114,13 @@
 
     <section class="news-filters reveal">
         <div class="container">
-            <div class="search-bar">
+            <form class="search-bar" role="search" aria-label="Buscar noticias">
                 <input type="text" 
                        id="news-search" 
                        placeholder="Buscar noticias..."
                        aria-label="Buscar noticias por título o contenido">
-                <button id="search-btn" class="btn"><i class="fas fa-search"></i></button>
-            </div>
+                <button id="search-btn" class="btn" type="button"><i class="fas fa-search"></i></button>
+            </form>
         </div>
     </section>
 
