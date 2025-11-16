@@ -24,7 +24,43 @@ try {
 }
 
 const app = express();
+// CORS básico + soporte para Private Network Access (Chrome) en localhost
 app.use(cors());
+app.use((req, res, next) => {
+  const origin = req.headers.origin;
+  if (origin) {
+    res.setHeader('Access-Control-Allow-Origin', origin);
+    // Asegurar variación por Origin para caches
+    const prevVary = res.getHeader('Vary');
+    res.setHeader('Vary', prevVary ? (prevVary + ', Origin') : 'Origin');
+  } else {
+    res.setHeader('Access-Control-Allow-Origin', '*');
+  }
+  // Si el navegador solicita acceso a red privada (loopback), habilitarlo
+  if (req.headers['access-control-request-private-network'] === 'true') {
+    res.setHeader('Access-Control-Allow-Private-Network', 'true');
+  }
+  next();
+});
+
+// Responder preflight de forma explícita, incluyendo Private Network Access
+app.options('*', (req, res) => {
+  const origin = req.headers.origin;
+  if (origin) {
+    res.setHeader('Access-Control-Allow-Origin', origin);
+    const prevVary = res.getHeader('Vary');
+    res.setHeader('Vary', prevVary ? (prevVary + ', Origin') : 'Origin');
+  } else {
+    res.setHeader('Access-Control-Allow-Origin', '*');
+  }
+  res.setHeader('Access-Control-Allow-Methods', 'GET,POST,OPTIONS');
+  const reqHeaders = req.headers['access-control-request-headers'];
+  if (reqHeaders) res.setHeader('Access-Control-Allow-Headers', reqHeaders);
+  if (req.headers['access-control-request-private-network'] === 'true') {
+    res.setHeader('Access-Control-Allow-Private-Network', 'true');
+  }
+  res.status(204).end();
+});
 // Cabeceras de seguridad mínimas (sin dependencias adicionales)
 app.use((req, res, next) => {
   res.setHeader('X-Content-Type-Options', 'nosniff');
