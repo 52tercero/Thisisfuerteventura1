@@ -41,8 +41,8 @@
     });
   });
 
-  // Hero title reveal con efecto "curtain"
-  d.querySelectorAll('.hero-content h2').forEach(title => {
+  // Hero title reveal con efecto "curtain" (opt-in via data-animate="curtain")
+  d.querySelectorAll('.hero-content h2[data-animate="curtain"]').forEach(title => {
     if (title.dataset.split === '1') return;
     const chars = title.textContent.split('');
     title.innerHTML = chars.map(c => `<span style="display:inline-block">${c === ' ' ? '&nbsp;' : c}</span>`).join('');
