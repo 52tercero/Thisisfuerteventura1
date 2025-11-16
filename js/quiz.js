@@ -11,6 +11,12 @@
   function create(el, cls){ const n = document.createElement(el); if(cls) n.className = cls; return n; }
 
   function buildQuiz(container){
+    const card = create('div','conditions-card quiz-card');
+    const inner = create('div','quiz-inner');
+    const heading = create('h3');
+    heading.innerHTML = '<i class="fas fa-question-circle" aria-hidden="true"></i> Quiz';
+    card.appendChild(heading);
+
     const form = create('form','quiz-form');
     QUESTIONS.forEach((it, idx)=>{
       const field = create('fieldset');
@@ -28,8 +34,10 @@
     form.appendChild(submit);
 
     const result = create('div','quiz-result'); result.setAttribute('aria-live','polite');
-    container.appendChild(form);
-    container.appendChild(result);
+    inner.appendChild(form);
+    inner.appendChild(result);
+    card.appendChild(inner);
+    container.appendChild(card);
 
     form.addEventListener('submit', e=>{
       e.preventDefault();
