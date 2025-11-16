@@ -1,226 +1,99 @@
-﻿// Interactive hotspot map without external tile servers (CSP-friendly)
+﻿// Interactive map with Leaflet (preferred). Falls back to hotspot overlay if Leaflet is unavailable.
 (() => {
   if (typeof window === 'undefined') return;
   const container = document.getElementById('interactive-map');
   if (!container) return;
 
-  container.style.position = 'relative';
-  container.style.backgroundImage = "url('images/Fuerteventura.jpeg')";
-  container.style.backgroundSize = 'cover';
-  container.style.backgroundPosition = 'center';
-
-  const hotspots = [
-    {
-      id: 'corralejo',
-      name: 'Corralejo',
-      desc: 'Dunas y Grandes Playas, norte de la isla.',
-      img: 'images/turismo/dunas-mar.jpg',
-      top: 18, left: 72,
-    },
-    {
-      id: 'el-cotillo',
-      name: 'El Cotillo',
-      desc: 'Pueblo pesquero y lagunas cristalinas.',
-      img: 'images/turismo/el-cotillo.avif',
-      top: 22, left: 58,
-    },
-    {
-      id: 'betancuria',
-      name: 'Betancuria',
-      desc: 'Antigua capital, patrimonio e historia.',
-      img: 'images/turismo/betancuria.jpg?v=2',
-      top: 40, left: 44,
-    },
-    {
-      id: 'morro-jable',
-      name: 'Morro Jable / Jandía',
-      desc: 'Playas infinitas y Faro de Jandía.',
-      img: 'images/turismo/faro-morro-jable.jpg?v=2',
-      top: 78, left: 62,
-    },
+  // Marker dataset unified from playas, alojamiento, gastronomía y turismo
+  const points = [
+    // Playas
+    { slug: 'corralejo', lat: 28.7319, lon: -13.8697, title: 'Corralejo', desc: 'Dunas y Grandes Playas (norte).', img: 'images/vistalobos.jpg', url: 'playas.html' },
+    { slug: 'cofete', lat: 28.0515, lon: -14.5120, title: 'Cofete', desc: 'Playa virgen en Jandía, paisaje salvaje.', img: 'images/Fuerteventura.jpeg', url: 'playas.html' },
+    { slug: 'el-cotillo', lat: 28.6937, lon: -14.0120, title: 'El Cotillo', desc: 'Lagos y calas de aguas cristalinas.', img: 'images/playa-del-cotillo.jpg', url: 'playas.html' },
+    { slug: 'sotavento', lat: 28.1631, lon: -14.2272, title: 'Sotavento', desc: 'Laguna y vientos para wind/kite.', img: 'images/Fuerteventura.jpeg', url: 'playas.html' },
+    { slug: 'ajuy', lat: 28.4020, lon: -14.1605, title: 'Ajuy', desc: 'Playa de arena negra y cuevas.', img: 'images/Fuerteventura.jpeg', url: 'playas.html' },
+    { slug: 'morro-jable', lat: 28.0526, lon: -14.3501, title: 'Morro Jable', desc: 'Playa urbana y faro.', img: 'images/Fuerteventura.jpeg', url: 'playas.html' },
+    { slug: 'costa-calma', lat: 28.1600, lon: -14.2260, title: 'Costa Calma', desc: 'Playas extensas y ambiente relajado.', img: 'images/Fuerteventura.jpeg', url: 'playas.html' },
+    { slug: 'la-pared', lat: 28.2420, lon: -14.2590, title: 'La Pared', desc: 'Costa salvaje ideal para atardeceres.', img: 'images/Fuerteventura.jpeg', url: 'playas.html' },
+    { slug: 'esquinzo', lat: 28.0640, lon: -14.3540, title: 'Esquinzo', desc: 'Calas tranquilas al sur de Jandía.', img: 'images/Fuerteventura.jpeg', url: 'playas.html' },
+    // Turismo
+    { slug: 'betancuria', lat: 28.4213, lon: -14.0507, title: 'Betancuria', desc: 'Antigua capital, patrimonio e historia.', img: 'images/betancuria.webp', url: 'turismo.html' },
+    { slug: 'puerto-rosario', lat: 28.5000, lon: -13.8620, title: 'Puerto del Rosario', desc: 'Capital y servicios principales.', img: 'images/Fuerteventura.jpeg', url: 'turismo.html' },
+    { slug: 'gran-tarajal', lat: 28.2120, lon: -14.0200, title: 'Gran Tarajal', desc: 'Pueblo costero con paseo marítimo.', img: 'images/Fuerteventura.jpeg', url: 'turismo.html' },
+    { slug: 'jandia', lat: 28.0460, lon: -14.3630, title: 'Jandía', desc: 'Parque Natural y playas infinitas.', img: 'images/Fuerteventura.jpeg', url: 'turismo.html' },
+    { slug: 'lobos', lat: 28.7420, lon: -13.8220, title: 'Isla de Lobos', desc: 'Reserva natural frente a Corralejo.', img: 'images/vistalobos.jpg', url: 'turismo.html' },
+    { slug: 'pozo-negro', lat: 28.2760, lon: -13.8770, title: 'Pozo Negro', desc: 'Pequeña cala de piedra volcánica.', img: 'images/Fuerteventura.jpeg', url: 'turismo.html' },
+    { slug: 'tindaya', lat: 28.5750, lon: -14.0190, title: 'Tindaya', desc: 'Montaña sagrada y paisaje volcánico.', img: 'images/Fuerteventura.jpeg', url: 'turismo.html' },
+    { slug: 'pajara', lat: 28.3500, lon: -14.1080, title: 'Pájara', desc: 'Municipio con iglesia emblemática.', img: 'images/Fuerteventura.jpeg', url: 'turismo.html' },
+    { slug: 'antigua', lat: 28.4220, lon: -13.9270, title: 'Antigua', desc: 'Molinos y tradición majorera.', img: 'images/Fuerteventura.jpeg', url: 'turismo.html' },
+    // Alojamiento (zonas)
+    { slug: 'caleta', lat: 28.3920, lon: -13.8600, title: 'Caleta de Fuste', desc: 'Zona céntrica con resorts y golf.', img: 'images/playa_del_castillo_caleta_de_fuste.webp', url: 'alojamiento.html' },
+    // Gastronomía
+    { slug: 'la-oliva', lat: 28.6100, lon: -13.9260, title: 'La Oliva', desc: 'Cocina local y productos de km 0.', img: 'images/turismo/la-oliva.avif', url: 'gastronomia.html' },
   ];
 
-  // Accessible popup
-  const popup = document.createElement('div');
-  popup.className = 'custom-popup';
-  Object.assign(popup.style, {
-    position: 'absolute',
-    zIndex: '10',
-    left: '0',
-    top: '0',
-    transform: 'translate(-50%, -110%)',
-    background: '#fff',
-    borderRadius: '12px',
-    boxShadow: '0 8px 24px rgba(0,0,0,0.15)',
-    padding: '10px',
-    width: 'min(260px, 80vw)'
-  });
-  popup.setAttribute('role', 'dialog');
-  popup.setAttribute('aria-modal', 'false');
-  popup.hidden = true;
-  container.appendChild(popup);
-
-  const renderPopup = (spot, x, y) => {
-    popup.innerHTML = '';
-    const inner = document.createElement('div');
-    inner.className = 'popup-inner';
-    inner.innerHTML = `
-      <img class="popup-img" src="${spot.img}" alt="${spot.name}">
-      <h4 class="popup-title">${spot.name}</h4>
-      <p class="popup-desc">${spot.desc}</p>
-    `;
-    popup.appendChild(inner);
-    popup.style.left = `${x}%`;
-    popup.style.top = `${y}%`;
-    popup.hidden = false;
-  };
-
-  const closePopup = () => { popup.hidden = true; };
-  container.addEventListener('click', (e) => {
-    if (e.target && e.target.closest('.hotspot')) return;
-    closePopup();
-  });
-
-  hotspots.forEach((h) => {
-    const btn = document.createElement('button');
-    btn.className = 'hotspot';
-    btn.type = 'button';
-    btn.setAttribute('aria-label', h.name);
-    Object.assign(btn.style, {
-      position: 'absolute',
-      top: `${h.top}%`,
-      left: `${h.left}%`,
-      transform: 'translate(-50%, -50%)',
-      width: '16px',
-      height: '16px',
-      borderRadius: '50%',
-      background: '#0f4c81',
-      boxShadow: '0 0 0 4px rgba(15,76,129,0.25), 0 6px 12px rgba(0,0,0,0.2)',
-      border: '2px solid #fff',
-      cursor: 'pointer'
-    });
-
-    // Pulse animation (CSS via inline keyframes avoided for CSP)
-    btn.addEventListener('mouseenter', () => { btn.style.transform = 'translate(-50%, -50%) scale(1.15)'; });
-    btn.addEventListener('mouseleave', () => { btn.style.transform = 'translate(-50%, -50%) scale(1)'; });
-
-    btn.addEventListener('click', (ev) => {
-      ev.stopPropagation();
-      renderPopup(h, h.left, h.top);
-    });
-    container.appendChild(btn);
-  });
-})();
-/* interactive-map.js - Mapa interactivo con Leaflet */
-
-// Inicializar mapa solo si existe el contenedor
-const mapContainer = document.getElementById('interactive-map');
-
-if (mapContainer) {
-    // Coordenadas centro de Fuerteventura
-    const fuerteventuraCenter = [28.3587, -14.0537];
-    
-    // Crear mapa
-    const map = L.map('interactive-map').setView(fuerteventuraCenter, 10);
-    
-    // Añadir capa de tiles
+  function buildLeaflet() {
+    const center = [28.3587, -14.0537];
+    const map = L.map('interactive-map', { zoomControl: true }).setView(center, 10);
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
-        maxZoom: 18
+      attribution: '&copy; OpenStreetMap contributors',
+      maxZoom: 18
     }).addTo(map);
-    
-    // Hotspots de interés
-    const hotspots = [
-        {
-            coords: [28.7319, -13.8697],
-            title: 'Corralejo',
-            description: 'Dunas espectaculares y playas de arena blanca',
-            image: 'images/playas/corralejo.jpeg',
-            category: 'playa'
-        },
-        {
-            coords: [28.0515, -14.5120],
-            title: 'Playa de Cofete',
-            description: 'Playa virgen y salvaje con vistas impresionantes',
-            image: 'images/playas/cofete.jpeg',
-            category: 'playa'
-        },
-        {
-            coords: [28.6937, -14.0120],
-            title: 'El Cotillo',
-            description: 'Pueblo pesquero con lagunas de aguas cristalinas',
-            image: 'images/Fuerteventura.jpeg',
-            category: 'pueblo'
-        },
-        {
-            coords: [28.4213, -14.0507],
-            title: 'Betancuria',
-            description: 'Antigua capital con patrimonio histórico',
-            image: 'images/turismo/betancuria.jpeg',
-            category: 'cultura'
-        },
-        {
-            coords: [28.1631, -14.2272],
-            title: 'Sotavento',
-            description: 'Paraíso del windsurf y kitesurf',
-            image: 'images/playas/sotavento.jpeg',
-            category: 'deporte'
-        }
-    ];
-    
-    // Iconos personalizados por categoría
-    const icons = {
-        playa: L.icon({
-            iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-blue.png',
-            shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png',
-            iconSize: [25, 41],
-            iconAnchor: [12, 41],
-            popupAnchor: [1, -34],
-            shadowSize: [41, 41]
-        }),
-        pueblo: L.icon({
-            iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-green.png',
-            shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png',
-            iconSize: [25, 41],
-            iconAnchor: [12, 41],
-            popupAnchor: [1, -34],
-            shadowSize: [41, 41]
-        }),
-        cultura: L.icon({
-            iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-gold.png',
-            shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png',
-            iconSize: [25, 41],
-            iconAnchor: [12, 41],
-            popupAnchor: [1, -34],
-            shadowSize: [41, 41]
-        }),
-        deporte: L.icon({
-            iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-red.png',
-            shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png',
-            iconSize: [25, 41],
-            iconAnchor: [12, 41],
-            popupAnchor: [1, -34],
-            shadowSize: [41, 41]
-        })
-    };
-    
-    // Añadir markers con popups
-    hotspots.forEach(spot => {
-        const marker = L.marker(spot.coords, {
-            icon: icons[spot.category] || icons.playa
-        }).addTo(map);
-        
-        const popupContent = `
-            <div class="popup-inner">
-                <img src="${spot.image}" alt="${spot.title}" class="popup-img">
-                <h3 class="popup-title">${spot.title}</h3>
-                <p class="popup-desc">${spot.description}</p>
-            </div>
-        `;
-        
-        marker.bindPopup(popupContent, {
-            maxWidth: 250,
-            className: 'custom-popup'
-        });
+
+    points.forEach(p => {
+      const m = L.marker([p.lat, p.lon]);
+      const link = p.url ? `<p style="margin:10px 0 0;"><a class="btn btn-small" href="${p.url}">Ver más</a></p>` : '';
+      const html = `
+        <div class="popup-inner">
+          <img src="${p.img}" alt="${p.title}" class="popup-img">
+          <h3 class="popup-title">${p.title}</h3>
+          <p class="popup-desc">${p.desc}</p>
+          ${link}
+        </div>`;
+      m.addTo(map).bindPopup(html, { maxWidth: 260, className: 'custom-popup' });
     });
-}
+  }
+
+  function buildOverlay() {
+    // Fallback overlay when Leaflet is not available
+    const popup = document.createElement('div');
+    popup.className = 'custom-popup';
+    popup.setAttribute('role', 'dialog');
+    popup.setAttribute('aria-modal', 'false');
+    popup.hidden = true;
+    container.appendChild(popup);
+
+    const renderPopup = (spotId, p) => {
+      const link = p.url ? `<p style="margin:10px 0 0;"><a class=\"btn btn-small\" href=\"${p.url}\">Ver más</a></p>` : '';
+      popup.innerHTML = `
+        <div class="popup-inner">
+          <img class="popup-img" src="${p.img}" alt="${p.title}">
+          <h4 class="popup-title">${p.title}</h4>
+          <p class="popup-desc">${p.desc}</p>
+          ${link}
+        </div>`;
+      popup.className = `custom-popup popup--${spotId}`;
+      popup.hidden = false;
+    };
+
+    container.addEventListener('click', (e) => {
+      if (e.target && e.target.closest('.hotspot')) return; popup.hidden = true;
+    });
+
+    points.forEach((p) => {
+      const id = p.slug;
+      const btn = document.createElement('button');
+      btn.className = `hotspot hotspot--${id}`;
+      btn.type = 'button';
+      btn.setAttribute('aria-label', p.title);
+      btn.addEventListener('click', (ev) => { ev.stopPropagation(); renderPopup(id, p); });
+      container.appendChild(btn);
+    });
+  }
+
+  if (window.L && typeof L.map === 'function') {
+    buildLeaflet();
+  } else {
+    buildOverlay();
+  }
+})();

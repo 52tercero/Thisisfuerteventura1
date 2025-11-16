@@ -72,6 +72,7 @@
                 <li><a href="alojamiento.html" aria-current="page">Alojamiento</a></li>
                 <li><a href="playas.html">Playas</a></li>
                 <li><a href="gastronomia.html">Gastronomía</a></li>
+                <li><a href="blog.html">Blog</a></li>
                 <li><a href="contacto.html">Contacto</a></li>
             </ul>
         </nav>
@@ -95,7 +96,7 @@
 
     <section class="accommodation-search reveal">
         <h2>Busca tu alojamiento ideal</h2>
-        <form class="search-form" role="search" aria-label="Buscar alojamiento">
+        <form class="search-form" role="search" aria-label="Buscar alojamiento" id="booking-search">
             <div class="form-group">
                 <label for="location">Zona</label>
                 <select id="location" name="location">
@@ -126,8 +127,22 @@
                     <option value="300">Hasta 300€/noche</option>
                 </select>
             </div>
+            <div class="form-group">
+                <label for="checkin">Entrada</label>
+                <input type="date" id="checkin" name="checkin" required>
+            </div>
+            <div class="form-group">
+                <label for="checkout">Salida</label>
+                <input type="date" id="checkout" name="checkout" required>
+            </div>
+            <div class="form-group">
+                <label for="guests">Huéspedes</label>
+                <input type="number" id="guests" name="guests" min="1" max="12" value="2" required>
+            </div>
             <button type="submit" class="btn">Buscar alojamiento</button>
+            <button type="button" class="btn" id="booking-direct">Reserva directa</button>
         </form>
+        <p id="booking-summary" class="meta" aria-live="polite"></p>
     </section>
 
     <!-- CORRALEJO (Norte) -->
@@ -942,6 +957,7 @@
     <script src="js/particles.js?v=2025111508" defer></script>
     <script src="js/narrative-scroll.js?v=2025111508" defer></script>
     <script src="js/ambient-sounds.js?v=2025111508" defer></script>
+    <script src="js/booking.js?v=2025111508" defer></script>
 
     <!-- Cookie Consent Banner -->
     <div id="cookie-consent" class="cookie-consent">

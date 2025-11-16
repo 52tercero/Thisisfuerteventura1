@@ -1,4 +1,89 @@
 ﻿{
-  "generated": "",
-  "items": []
+  "generated": "2025-11-16T00:00:00.000Z",
+  "items": [
+    {
+      "title": "Fuerteventura: agenda de la semana",
+      "link": "https://thisisfuerteventura.netlify.app/noticias.html",
+      "description": "Eventos culturales, deportes y actividades familiares en Fuerteventura para esta semana.",
+      "pubDate": "2025-11-16T09:00:00Z",
+      "image": "images/Fuerteventura.jpeg"
+    },
+    {
+      "title": "Playas: recomendaciones y estado del mar",
+      "link": "https://thisisfuerteventura.netlify.app/playas.html",
+      "description": "Condiciones del oleaje y consejos de seguridad para disfrutar de las playas.",
+      "pubDate": "2025-11-16T08:30:00Z",
+      "image": "images/playa-del-cotillo.jpg"
+    },
+    {
+      "title": "Turismo: rutas por el interior de la isla",
+      "link": "https://thisisfuerteventura.netlify.app/turismo.html",
+      "description": "Descubre Betancuria, miradores y pueblos con encanto en el corazón de Fuerteventura.",
+      "pubDate": "2025-11-15T18:00:00Z",
+      "image": "images/betancuria.webp"
+    },
+    {
+      "title": "Gastronomía: productos locales y restaurantes",
+      "link": "https://thisisfuerteventura.netlify.app/gastronomia.html",
+      "description": "Quesos majoreros, pescado fresco y cocina de kilómetro cero en la isla.",
+      "pubDate": "2025-11-15T12:00:00Z",
+      "image": "images/vistalobos.jpg"
+    },
+    {
+      "title": "Alojamiento: zonas recomendadas para hospedarse",
+      "link": "https://thisisfuerteventura.netlify.app/alojamiento.html",
+      "description": "Caleta de Fuste, Corralejo y Morro Jable: qué ofrece cada zona.",
+      "pubDate": "2025-11-14T19:45:00Z",
+      "image": "images/playa_del_castillo_caleta_de_fuste.webp"
+    },
+    {
+      "title": "Isla de Lobos: visita y consejos prácticos",
+      "link": "https://thisisfuerteventura.netlify.app/turismo.html",
+      "description": "Cómo reservar, qué ver y recomendaciones para un día inolvidable.",
+      "pubDate": "2025-11-14T11:20:00Z",
+      "image": "images/vistalobos.jpg"
+    },
+    {
+      "title": "Rutas de senderismo en Jandía",
+      "link": "https://thisisfuerteventura.netlify.app/turismo.html",
+      "description": "Senderos y miradores con vistas al Atlántico.",
+      "pubDate": "2025-11-13T17:10:00Z",
+      "image": "images/Fuerteventura.jpeg"
+    },
+    {
+      "title": "Surf y windsurf: spots destacados",
+      "link": "https://thisisfuerteventura.netlify.app/playas.html",
+      "description": "Sotavento, El Cotillo y Corralejo: condiciones y nivel recomendado.",
+      "pubDate": "2025-11-13T10:00:00Z",
+      "image": "images/Fuerteventura.jpeg"
+    },
+    {
+      "title": "Noticias locales: mejoras en servicios",
+      "link": "https://thisisfuerteventura.netlify.app/noticias.html",
+      "description": "Resumen de actuaciones y mejoras de servicios en distintos municipios.",
+      "pubDate": "2025-11-12T19:30:00Z",
+      "image": "images/Fuerteventura.jpeg"
+    },
+    {
+      "title": "Calendario de festividades y mercados",
+      "link": "https://thisisfuerteventura.netlify.app/noticias.html",
+      "description": "Fechas y ubicaciones de ferias artesanales y mercados locales.",
+      "pubDate": "2025-11-12T08:15:00Z",
+      "image": "images/Fuerteventura.jpeg"
+    },
+    {
+      "title": "Consejos de seguridad en playas abiertas",
+      "link": "https://thisisfuerteventura.netlify.app/playas.html",
+      "description": "Precauciones ante corrientes y recomendaciones de vigilancia.",
+      "pubDate": "2025-11-11T16:05:00Z",
+      "image": "images/Fuerteventura.jpeg"
+    },
+    {
+      "title": "Itinerarios de dos y tres días",
+      "link": "https://thisisfuerteventura.netlify.app/turismo.html",
+      "description": "Ideas para recorridos express por los puntos imprescindibles.",
+      "pubDate": "2025-11-11T09:50:00Z",
+      "image": "images/Fuerteventura.jpeg"
+    }
+  ]
 }

@@ -2577,6 +2577,10 @@ html[data-theme="dark"] .theme-toggle { border-color: rgba(255,255,255,0.25); }
     border-radius: 16px;
     box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
     margin: 2rem 0;
+    position: relative;
+    background-image: url('images/Fuerteventura.jpeg');
+    background-size: cover;
+    background-position: center;
 }
 
 @media (max-width: 768px) {
@@ -2608,6 +2612,72 @@ html[data-theme="dark"] .theme-toggle { border-color: rgba(255,255,255,0.25); }
 .custom-popup .popup-img { width: 100%; height: 120px; object-fit: cover; border-radius: 8px; margin-bottom: 8px; display: block; }
 .custom-popup .popup-title { margin: 8px 0; font-size: 1.1rem; color: var(--color-cielo); }
 .custom-popup .popup-desc { margin: 0; font-size: 0.9rem; color: #555; }
+
+/* Hotspot base styles (CSP-friendly, no inline) */
+.hotspot {
+    position: absolute;
+    transform: translate(-50%, -50%);
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: #0f4c81;
+    box-shadow: 0 0 0 4px rgba(15,76,129,0.25), 0 6px 12px rgba(0,0,0,0.2);
+    border: 2px solid #fff;
+    cursor: pointer;
+    transition: transform .15s ease;
+}
+.hotspot:hover { transform: translate(-50%, -50%) scale(1.15); }
+
+/* Popup base (overlay version only: direct child of #interactive-map) */
+#interactive-map > .custom-popup { position: absolute; z-index: 10; transform: translate(-50%, -110%); background: #fff; border-radius: 12px; box-shadow: 0 8px 24px rgba(0,0,0,0.15); padding: 10px; width: min(260px, 80vw); }
+#interactive-map > .custom-popup[hidden] { display: none; }
+
+/* Per-spot positions (match JS ids) */
+/* Hotspots */
+.hotspot--corralejo { top: 18%; left: 72%; }
+.hotspot--cofete { top: 86%; left: 51%; }
+.hotspot--el-cotillo { top: 22%; left: 58%; }
+.hotspot--sotavento { top: 72%; left: 66%; }
+.hotspot--ajuy { top: 50%; left: 40%; }
+.hotspot--morro-jable { top: 80%; left: 62%; }
+.hotspot--betancuria { top: 40%; left: 44%; }
+.hotspot--puerto-rosario { top: 40%; left: 60%; }
+.hotspot--caleta { top: 48%; left: 64%; }
+.hotspot--la-oliva { top: 28%; left: 53%; }
+/* Nuevos puntos */
+.hotspot--costa-calma { top: 70%; left: 64%; }
+.hotspot--la-pared { top: 66%; left: 44%; }
+.hotspot--esquinzo { top: 78%; left: 60%; }
+.hotspot--gran-tarajal { top: 60%; left: 64%; }
+.hotspot--jandia { top: 82%; left: 58%; }
+.hotspot--lobos { top: 16%; left: 74%; }
+.hotspot--pozo-negro { top: 52%; left: 66%; }
+.hotspot--tindaya { top: 32%; left: 50%; }
+.hotspot--pajara { top: 60%; left: 48%; }
+.hotspot--antigua { top: 46%; left: 58%; }
+
+/* Popups (mirrored positions so they appear near the hotspot) */
+.popup--corralejo { top: 18%; left: 72%; }
+.popup--cofete { top: 86%; left: 51%; }
+.popup--el-cotillo { top: 22%; left: 58%; }
+.popup--sotavento { top: 72%; left: 66%; }
+.popup--ajuy { top: 50%; left: 40%; }
+.popup--morro-jable { top: 80%; left: 62%; }
+.popup--betancuria { top: 40%; left: 44%; }
+.popup--puerto-rosario { top: 40%; left: 60%; }
+.popup--caleta { top: 48%; left: 64%; }
+.popup--la-oliva { top: 28%; left: 53%; }
+/* Nuevos puntos */
+.popup--costa-calma { top: 70%; left: 64%; }
+.popup--la-pared { top: 66%; left: 44%; }
+.popup--esquinzo { top: 78%; left: 60%; }
+.popup--gran-tarajal { top: 60%; left: 64%; }
+.popup--jandia { top: 82%; left: 58%; }
+.popup--lobos { top: 16%; left: 74%; }
+.popup--pozo-negro { top: 52%; left: 66%; }
+.popup--tindaya { top: 32%; left: 50%; }
+.popup--pajara { top: 60%; left: 48%; }
+.popup--antigua { top: 46%; left: 58%; }
 
 /* Estilos para galerías Swiper */
 .swiper-container {

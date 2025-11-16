@@ -12,6 +12,23 @@ document.addEventListener('DOMContentLoaded', async function() {
             return '';
         }
     }
+    // Sanitizar HTML enriquecido cuando venga de feeds externos
+    function sanitizeHTML(html) {
+        try {
+            if (typeof DOMPurify !== 'undefined' && DOMPurify.sanitize) {
+                return DOMPurify.sanitize(html);
+            }
+        } catch (_) {}
+        try {
+            return String(html)
+                .replace(/<script[\s\S]*?>[\s\S]*?<\/script>/gi, '')
+                .replace(/on[a-z]+\s*=\s*"[^"]*"/gi, '')
+                .replace(/on[a-z]+\s*=\s*'[^']*'/gi, '')
+                .replace(/javascript:\s*/gi, '');
+        } catch (_) {
+            return '';
+        }
+    }
     // Helper para enrutar imágenes externas a través del proxy cuando esté disponible
     function toImageSrc(url) {
         try {
@@ -89,7 +106,7 @@ document.addEventListener('DOMContentLoaded', async function() {
             'https://rss.app/feeds/pGaOMTfcwV2mzdy7.xml'
         ];
         
-    // Función para obtener y parsear feeds RSS (delegada a FeedUtils)
+        // Función para obtener y parsear feeds RSS (delegada a FeedUtils)
         async function fetchRSSFeeds() {
             try {
                 if (window.FeedUtils && typeof FeedUtils.fetchRSSFeeds === 'function') {
@@ -422,7 +439,14 @@ document.addEventListener('DOMContentLoaded', async function() {
                 paginatedNews.forEach(item => {
                     const newsCard = document.createElement('div');
                     newsCard.className = 'news-card';
-                    
+
+                    // Resumen compacto seguro en texto plano (150 caracteres)
+                    const fullText = String(item.summary || item.description || '')
+                        .replace(/<[^>]*>/g, ' ')
+                        .replace(/\s+/g, ' ')
+                        .trim();
+                    const shortSummary = fullText.length > 150 ? fullText.slice(0, 150) + '...' : fullText;
+
                     newsCard.innerHTML = `
                         <div class="news-image">
                             <img src="${toImageSrc(item.image)}" alt="${escapeHTML(item.title)}" loading="lazy" referrerpolicy="no-referrer">
@@ -430,7 +454,7 @@ document.addEventListener('DOMContentLoaded', async function() {
                         <div class="news-content">
                             <span class="news-date">${escapeHTML(item.date)}</span>
                             <h3>${escapeHTML(item.title)}</h3>
-                            <p>${item.summary}</p>
+                            <p>${escapeHTML(shortSummary)}</p>
                         </div>
                     `;
                     const imgNews = newsCard.querySelector('img');
@@ -554,6 +578,7 @@ document.addEventListener('DOMContentLoaded', async function() {
                     article.image = 'images/Fuerteventura.jpeg?v=2025110501';
                 }
                 const content = article.description || article.summary || '';
+                const safeContent = sanitizeHTML(content);
                 articleContainer.innerHTML = `
                     <article class="news-article">
                         <header class="article-header">
@@ -568,7 +593,7 @@ document.addEventListener('DOMContentLoaded', async function() {
                         </div>
 
                         <div class="article-content">
-                            ${content}
+                            ${safeContent}
                         </div>
                 `;
                 const artImg = articleContainer.querySelector('.article-featured-image img');
