@@ -1,0 +1,13 @@
+﻿{
+  "@context": "https://schema.org",
+  "@type": "ItemList",
+  "name": "Playas de Fuerteventura",
+  "description": "Guía completa de las mejores playas de Fuerteventura",
+  "url": "https://thisisfuerteventura.netlify.app/playas.html",
+  "itemListElement": [
+    {
+      "@type": "Beach",
+      "name": "Playas de Fuerteventura"
+    }
+  ]
+}

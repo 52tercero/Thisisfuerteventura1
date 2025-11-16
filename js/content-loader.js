@@ -1,6 +1,9 @@
 document.addEventListener('DOMContentLoaded', async function() {
-    // Escapar texto plano para insertarlo en innerHTML/atributos
+    // Escapar texto y sanitizar HTML (delegar en FeedUtils si está disponible)
     function escapeHTML(str) {
+        if (window.FeedUtils && typeof FeedUtils.escapeHTML === 'function') {
+            return FeedUtils.escapeHTML(str);
+        }
         try {
             return String(str)
                 .replace(/&/g, '&amp;')
@@ -12,8 +15,10 @@ document.addEventListener('DOMContentLoaded', async function() {
             return '';
         }
     }
-    // Sanitizar HTML enriquecido cuando venga de feeds externos
     function sanitizeHTML(html) {
+        if (window.FeedUtils && typeof FeedUtils.sanitize === 'function') {
+            return FeedUtils.sanitize(html);
+        }
         try {
             if (typeof DOMPurify !== 'undefined' && DOMPurify.sanitize) {
                 return DOMPurify.sanitize(html);

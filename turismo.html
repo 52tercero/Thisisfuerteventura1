@@ -15,10 +15,10 @@
     
     <link rel="canonical" href="https://thisisfuerteventura.netlify.app/turismo.html">
     <link rel="manifest" href="manifest.webmanifest">
-    <link rel="stylesheet" href="css/styles.css?v=2025111603">
+    <link rel="stylesheet" href="css/styles.css?v=2025111612">
     <link rel="preload" href="images/Fuerteventura.jpeg" as="image" fetchpriority="high">
     <!-- Google Fonts: Inter para texto, Playfair Display para títulos -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Playfair+Display:wght@700;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@400;600;700&family=Yeseva+One&display=swap" rel="stylesheet">
     <!-- Leaflet CSS para mapas interactivos -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
     <!-- Swiper for galleries/timeline -->
@@ -41,23 +41,10 @@
     <meta name="twitter:title" content="Turismo en Fuerteventura - Guía Completa">
     <meta name="twitter:description" content="Los mejores lugares turísticos de Fuerteventura: parques, pueblos y atracciones.">
     <meta name="twitter:image" content="https://thisisfuerteventura.netlify.app/images/logo.jpg">
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://unpkg.com https://www.googletagmanager.com https://analytics.google.com 'sha256-wVPS8tcqa4ult0sE3z6eDRlRNyA9EvYpH09AF8XL0tU='; style-src 'self' https://fonts.googleapis.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://unpkg.com; font-src 'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com; img-src 'self' data: https://thisisfuerteventura.netlify.app; media-src 'self'; connect-src 'self' https://thisisfuerteventura.netlify.app https://www.googletagmanager.com https://analytics.google.com http://localhost:3000 http://localhost:3001; base-uri 'self'; object-src none; frame-ancestors 'self';">
+        <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://unpkg.com https://www.googletagmanager.com https://analytics.google.com https://www.google-analytics.com; style-src 'self' https://fonts.googleapis.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://unpkg.com; font-src 'self' data: https://fonts.gstatic.com https://cdnjs.cloudflare.com; img-src 'self' data: https: https://unpkg.com https://*.tile.openstreetmap.org; media-src 'self'; connect-src 'self' https://thisisfuerteventura.netlify.app https://www.googletagmanager.com https://www.google-analytics.com https://cdn.jsdelivr.net https://unpkg.com http://localhost:3000 http://localhost:3001 http://localhost:* http://127.0.0.1:* https://api.open-meteo.com https://marine-api.open-meteo.com; base-uri 'self'; object-src 'none'; frame-ancestors 'self';">
     
-    <!-- Structured Data -->
-    <script type="application/ld+json">
-    {
-        "@context": "https://schema.org",
-        "@type": "TouristDestination",
-        "name": "Fuerteventura",
-        "description": "Guía turística completa de Fuerteventura con los mejores lugares que visitar",
-        "url": "https://thisisfuerteventura.netlify.app/turismo.html",
-        "touristType": ["Familias", "Parejas", "Aventureros", "Amantes de la naturaleza"],
-        "includedInDataCatalog": {
-            "@type": "DataCatalog",
-            "name": "This is Fuerteventura"
-        }
-    }
-    </script>
+    <!-- Structured Data (external to satisfy CSP) -->
+    <script type="application/ld+json" src="data/structured/turismo-destination.jsonld"></script>
 </head>
 <body class="dark-header">
     <a class="skip-link" href="#main">Saltar al contenido principal</a>
@@ -91,13 +78,13 @@
         </video>
         <div class="hero-overlay"></div>
         <div class="hero-content">
-            <h2>Descubre Fuerteventura</h2>
+            <h2 class="sand-write" data-sand-write data-sand-step="0.08" data-sand-duration="0.95" data-sand-delay="0.12" data-sand-distribution="ease">Descubre Fuerteventura</h2>
             <p>Una isla llena de historia, cultura y belleza natural</p>
         </div>
     </section>
 
     <section class="tourism-content reveal">
-        <h2>Lugares de interés</h2>
+        <h2 class="sand-write" data-sand-write data-sand-step="0.045" data-sand-duration="0.8" data-sand-distribution="accelerate">Lugares de interés</h2>
         <div class="tourism-grid card-stagger">
             <article class="tourism-card">
                 <img src="images/turismo/corralejo-dunas.jpg?v=2" alt="Parque Natural de Corralejo" loading="lazy">
@@ -487,6 +474,7 @@
     <script src="js/ambient.js?v=2025111508" defer></script>
     <script src="js/particles.js?v=2025111508" defer></script>
     <script src="js/narrative-scroll.js?v=2025111508" defer></script>
+    <script src="js/sand-write.js?v=2025111611" defer></script>
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin="" defer></script>
     <script src="js/map.js?v=2025111508" defer></script>
     <script src="js/ambient-sounds.js?v=2025111508" defer></script>

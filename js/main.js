@@ -47,32 +47,17 @@ document.addEventListener('DOMContentLoaded', function() {
             function applyResponsiveNavState() {
                 try {
                     if (isMobile()) {
-                        // Preparar para colapso/expansión animado en móvil
-                        nav.style.overflow = 'hidden';
-                        if (nav.classList.contains('active')) {
-                            nav.style.maxHeight = nav.scrollHeight + 'px';
-                            nav.style.opacity = '1';
-                            nav.setAttribute('aria-hidden', 'false');
-                            mobileMenuBtn.setAttribute('aria-expanded', 'true');
-                        } else {
-                            nav.style.maxHeight = '0';
-                            nav.style.opacity = '0';
-                            nav.setAttribute('aria-hidden', 'true');
-                            mobileMenuBtn.setAttribute('aria-expanded', 'false');
-                        }
+                        nav.classList.add('collapsible');
+                        const isOpen = nav.classList.contains('active');
+                        nav.setAttribute('aria-hidden', isOpen ? 'false' : 'true');
+                        mobileMenuBtn.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
                     } else {
-                        // Escritorio: asegurar que nav sea completamente visible y limpiar overrides inline
+                        nav.classList.remove('collapsible');
                         nav.classList.remove('active');
-                        nav.style.maxHeight = '';
-                        nav.style.opacity = '';
-                        nav.style.overflow = '';
-                        nav.style.display = '';
                         nav.setAttribute('aria-hidden', 'false');
                         mobileMenuBtn.setAttribute('aria-expanded', 'false');
                     }
-                } catch (err) {
-                    // ignorar
-                }
+                } catch (err) { /* ignore */ }
             }
             applyResponsiveNavState();
 
@@ -85,27 +70,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 const willOpen = !nav.classList.contains('active');
                 nav.classList.toggle('active');
 
-                // Usar altura medida para transición suave
-                try {
-                    if (willOpen) {
-                        // establecer maxHeight al scrollHeight para expandir
-                        const h = nav.scrollHeight;
-                        nav.style.maxHeight = h + 'px';
-                        // asegurar visibilidad durante animación
-                        nav.style.opacity = '1';
-                    } else {
-                        // colapsar
-                        nav.style.maxHeight = '0';
-                        nav.style.opacity = '0';
-                    }
-                } catch (err) {
-                    // fallback: alternar display si la medición falla
-                    if (nav.style && (!nav.classList.contains('active'))) {
-                        nav.style.display = 'none';
-                    } else if (nav.style) {
-                        nav.style.display = 'block';
-                    }
-                }
+                // CSS controla las transiciones mediante clases; sin estilos inline
 
                 // actualizar aria-expanded y aria-hidden para accesibilidad
                 try {
@@ -117,20 +82,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     /* ignorar */
                 }
 
-                // Después de que la transición se complete, si nav está abierto remover maxHeight inline para que el contenido pueda crecer naturalmente
-                try {
-                    nav.addEventListener('transitionend', function onEnd(evt) {
-                        if (evt.propertyName !== 'max-height') return;
-                        if (nav.classList.contains('active')) {
-                            // permitir altura natural
-                            nav.style.maxHeight = '';
-                        }
-                        // remover este handler
-                        nav.removeEventListener('transitionend', onEnd);
-                    });
-                } catch (e) {
-                    // ignorar
-                }
+                // Transición gestionada en CSS
             }
 
             mobileMenuBtn.addEventListener('click', toggleNav);
@@ -144,17 +96,7 @@ document.addEventListener('DOMContentLoaded', function() {
             });
 
             // Recalcular maxHeight al redimensionar si nav está abierto para que el tamaño expandido coincida con el contenido
-            window.addEventListener('resize', function () {
-                try {
-                    applyResponsiveNavState();
-                    if (isMobile() && nav.classList.contains('active')) {
-                        // si maxHeight fue limpiado después de transitionend, establecerlo temporalmente para permitir redimensionamiento suave
-                        nav.style.maxHeight = nav.scrollHeight + 'px';
-                        // luego limpiarlo para que el flujo natural se reanude
-                        setTimeout(() => { if (isMobile() && nav.classList.contains('active')) nav.style.maxHeight = ''; }, 300);
-                    }
-                } catch (e) { /* ignorar */ }
-            });
+            window.addEventListener('resize', function () { try { applyResponsiveNavState(); } catch(_){} });
         }
     }
 

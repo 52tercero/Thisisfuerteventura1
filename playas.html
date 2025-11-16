@@ -18,8 +18,8 @@
     
     <link rel="canonical" href="https://thisisfuerteventura.netlify.app/playas.html">
     <link rel="manifest" href="manifest.webmanifest">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Playfair+Display:wght@700;900&display=swap" rel="stylesheet">
-        <link rel="stylesheet" href="css/styles.css?v=2025111603">
+    <link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@400;600;700&family=Yeseva+One&display=swap" rel="stylesheet">
+        <link rel="stylesheet" href="css/styles.css?v=2025111612">
         <link rel="preload" href="images/Fuerteventura.jpeg" as="image" fetchpriority="high">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@9/swiper-bundle.min.css" / crossorigin="anonymous" integrity="sha384-tOPXDsn4moKzmRcYpDt8mOcJWxzy89N8dK0oEkxTx90DZYjDdznDQ4IEiH1pcZH5">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" crossorigin="anonymous" integrity="sha384-t1nt8BQoYMLFN5p42tRAtuAAFQaCQODekUVeKKZrEnEyp4H2R0RHFz0KWpmj7i8g">
@@ -36,22 +36,10 @@
     <meta name="twitter:title" content="Playas de Fuerteventura - Guía Completa">
     <meta name="twitter:description" content="Las mejores playas de Fuerteventura: Corralejo, Cofete, El Cotillo y más.">
     <meta name="twitter:image" content="https://thisisfuerteventura.netlify.app/images/logo.jpg">
-        <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://unpkg.com https://www.googletagmanager.com https://analytics.google.com 'sha256-iLU9PHbk7fvhG3uWFGyY2zRMSpll3BTV4Cp/KlD9BV0='; style-src 'self' https://fonts.googleapis.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://unpkg.com; font-src 'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com; img-src 'self' data: https://thisisfuerteventura.netlify.app; media-src 'self'; connect-src 'self' https://thisisfuerteventura.netlify.app https://www.googletagmanager.com https://analytics.google.com http://localhost:3000 http://localhost:3001 https://api.open-meteo.com https://marine-api.open-meteo.com; base-uri 'self'; object-src none; frame-ancestors 'self';">
+        <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://unpkg.com https://www.googletagmanager.com https://analytics.google.com https://www.google-analytics.com; style-src 'self' https://fonts.googleapis.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://unpkg.com; font-src 'self' data: https://fonts.gstatic.com https://cdnjs.cloudflare.com; img-src 'self' data: https: https://unpkg.com https://*.tile.openstreetmap.org; media-src 'self'; connect-src 'self' https://thisisfuerteventura.netlify.app https://www.googletagmanager.com https://www.google-analytics.com https://cdn.jsdelivr.net https://unpkg.com http://localhost:3000 http://localhost:3001 http://localhost:* http://127.0.0.1:* https://api.open-meteo.com https://marine-api.open-meteo.com; base-uri 'self'; object-src 'none'; frame-ancestors 'self';">
     
-    <!-- Structured Data -->
-    <script type="application/ld+json">
-    {
-        "@context": "https://schema.org",
-        "@type": "ItemList",
-        "name": "Playas de Fuerteventura",
-        "description": "Guía completa de las mejores playas de Fuerteventura",
-        "url": "https://thisisfuerteventura.netlify.app/playas.html",
-        "itemListElement": [{
-            "@type": "Beach",
-            "name": "Playas de Fuerteventura"
-        }]
-    }
-    </script>
+    <!-- Structured Data (external to satisfy CSP) -->
+    <script type="application/ld+json" src="data/structured/playas-itemlist.jsonld"></script>
 </head>
 <body class="dark-header">
     <a class="skip-link" href="#main">Saltar al contenido principal</a>
@@ -85,7 +73,7 @@
         </video>
         <div class="hero-overlay"></div>
         <div class="hero-content">
-            <h1 class="reveal">Playas de Fuerteventura</h1>
+            <h1 class="reveal sand-write" data-sand-write data-sand-step="0.085" data-sand-duration="1.0" data-sand-delay="0.12" data-sand-distribution="ease">Playas de Fuerteventura</h1>
             <p class="reveal">Descubre el paraíso de arena y mar</p>
         </div>
     </section>
@@ -93,7 +81,7 @@
     <!-- Tiempo general de Fuerteventura -->
     <section class="island-weather reveal" id="island-weather">
         <div class="container">
-            <h2>Tiempo ahora en Fuerteventura</h2>
+            <h2 class="sand-write" data-sand-write data-sand-step="0.045" data-sand-duration="0.8" data-sand-distribution="accelerate">Tiempo ahora en Fuerteventura</h2>
             <div class="island-weather-card" id="island-weather-card">
                 <div class="loading">Cargando tiempo...</div>
             </div>
@@ -103,7 +91,7 @@
 
     <section class="beaches-content reveal">
         <div class="container">
-            <h2>Las Mejores Playas de Fuerteventura</h2>
+            <h2 class="sand-write" data-sand-write data-sand-step="0.05" data-sand-duration="0.85" data-sand-distribution="ease">Las Mejores Playas de Fuerteventura</h2>
             <p class="intro-text">Descubre más de 150 playas con aguas cristalinas y arena dorada. Aquí te presentamos las imprescindibles.</p>
 
             <div class="beaches-grid card-stagger">
@@ -452,6 +440,7 @@
     <script src="js/particles.js?v=2025111508" defer></script>
     <script src="js/narrative-scroll.js?v=2025111508" defer></script>
     <script src="js/ambient-sounds.js?v=2025111508" defer></script>
+    <script src="js/sand-write.js?v=2025111611" defer></script>
 
     <!-- Cookie Consent Banner -->
     <div id="cookie-consent" class="cookie-consent">

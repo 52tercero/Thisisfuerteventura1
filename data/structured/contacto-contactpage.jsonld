@@ -1,0 +1,11 @@
+﻿{
+  "@context": "https://schema.org",
+  "@type": "ContactPage",
+  "name": "Contacto - This is Fuerteventura",
+  "url": "https://thisisfuerteventura.netlify.app/contacto.html",
+  "mainEntity": {
+    "@type": "Organization",
+    "name": "This is Fuerteventura",
+    "url": "https://thisisfuerteventura.netlify.app/"
+  }
+}

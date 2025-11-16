@@ -45,7 +45,7 @@
   d.querySelectorAll('.hero-content h2[data-animate="curtain"]').forEach(title => {
     if (title.dataset.split === '1') return;
     const chars = title.textContent.split('');
-    title.innerHTML = chars.map(c => `<span style="display:inline-block">${c === ' ' ? '&nbsp;' : c}</span>`).join('');
+    title.innerHTML = chars.map(c => `<span class="ns-inline">${c === ' ' ? '&nbsp;' : c}</span>`).join('');
     title.dataset.split = '1';
     gsap.from(title.children, {
       scrollTrigger: {

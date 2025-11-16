@@ -15,10 +15,10 @@
     
     <link rel="canonical" href="https://thisisfuerteventura.netlify.app/">
     <link rel="manifest" href="manifest.webmanifest">
-    <link rel="stylesheet" href="css/styles.css?v=2025111603">
+    <link rel="stylesheet" href="css/styles.css?v=2025111612">
     <link rel="preload" href="images/Fuerteventura.jpeg" as="image" fetchpriority="high">
     <!-- Google Fonts: Inter para texto, Playfair Display para títulos -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Playfair+Display:wght@700;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@400;600;700&family=Yeseva+One&display=swap" rel="stylesheet">
     <!-- Leaflet CSS para mapa interactivo -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" / crossorigin="anonymous" integrity="sha384-sHL9NAb7lN7rfvG5lfHpm643Xkcjzp4jFvuavGOndn6pjVqS6ny56CAt3nsEVT4H">
     <!-- Swiper for galleries/timeline -->
@@ -46,55 +46,12 @@
     <meta name="twitter:title" content="This is Fuerteventura - Guía Turística Completa 2025">
     <meta name="twitter:description" content="Descubre Fuerteventura: playas, hoteles, restaurantes y actividades imprescindibles.">
     <meta name="twitter:image" content="https://thisisfuerteventura.netlify.app/images/logo.jpg">
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://unpkg.com https://www.googletagmanager.com https://analytics.google.com 'sha256-q/E19laQ8YkNXt/2DHRkmiWwwkEBSOU9ynZbH746Tn0=' 'sha256-wu+NVa8OHFEV3NFqw5k+OVKNgRVx9fkUfbY9FVk1cxo='; style-src 'self' https://fonts.googleapis.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://unpkg.com; font-src 'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com; img-src 'self' data: https://thisisfuerteventura.netlify.app https://unpkg.com https://*.tile.openstreetmap.org; media-src 'self'; connect-src 'self' https://thisisfuerteventura.netlify.app https://www.googletagmanager.com https://analytics.google.com http://localhost:3000 http://localhost:3001 http://localhost:* http://127.0.0.1:* https://api.open-meteo.com https://marine-api.open-meteo.com; base-uri 'self'; object-src none; frame-ancestors 'self';">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://unpkg.com https://www.googletagmanager.com https://analytics.google.com https://www.google-analytics.com; style-src 'self' https://fonts.googleapis.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://unpkg.com; font-src 'self' data: https://fonts.gstatic.com https://cdnjs.cloudflare.com; img-src 'self' data: https: https://unpkg.com https://*.tile.openstreetmap.org; media-src 'self'; connect-src 'self' https://thisisfuerteventura.netlify.app https://www.googletagmanager.com https://www.google-analytics.com https://cdn.jsdelivr.net https://unpkg.com http://localhost:3000 http://localhost:3001 http://localhost:* http://127.0.0.1:* https://api.open-meteo.com https://marine-api.open-meteo.com; base-uri 'self'; object-src 'none'; frame-ancestors 'self';">
     <meta name="twitter:site" content="@thisisfuerteventura">
     
-    <!-- Structured Data: Website -->
-    <script type="application/ld+json">
-    {
-        "@context": "https://schema.org",
-        "@type": "WebSite",
-        "name": "This is Fuerteventura",
-        "alternateName": "Fuerteventura Guía Turística",
-        "url": "https://thisisfuerteventura.netlify.app/",
-        "description": "Guía turística completa de Fuerteventura: playas, alojamiento, gastronomía y noticias",
-        "publisher": {
-            "@type": "Organization",
-            "name": "This is Fuerteventura",
-            "logo": {
-                "@type": "ImageObject",
-                "url": "https://thisisfuerteventura.netlify.app/images/logo.jpg"
-            }
-        },
-        "potentialAction": {
-            "@type": "SearchAction",
-            "target": "https://thisisfuerteventura.netlify.app/noticias.html?q={search_term_string}",
-            "query-input": "required name=search_term_string"
-        }
-    }
-    </script>
-    
-    <!-- Structured Data: Organization -->
-    <script type="application/ld+json">
-    {
-        "@context": "https://schema.org",
-        "@type": "TouristInformationCenter",
-        "name": "This is Fuerteventura",
-        "description": "Portal de información turística sobre Fuerteventura, Islas Canarias",
-        "url": "https://thisisfuerteventura.netlify.app/",
-        "logo": "https://thisisfuerteventura.netlify.app/images/logo.jpg",
-        "image": "https://thisisfuerteventura.netlify.app/images/logo.jpg",
-        "address": {
-            "@type": "PostalAddress",
-            "addressRegion": "Islas Canarias",
-            "addressCountry": "ES"
-        },
-        "areaServed": {
-            "@type": "Place",
-            "name": "Fuerteventura"
-        }
-    }
-    </script>
+    <!-- Structured Data via external JSON-LD to satisfy strict CSP -->
+    <script type="application/ld+json" src="data/structured/index-website.jsonld"></script>
+    <script type="application/ld+json" src="data/structured/index-organization.jsonld"></script>
 </head>
 <body class="dark-header">
     <a class="skip-link" href="#main">Saltar al contenido principal</a>
@@ -127,7 +84,7 @@
       </video>
       <div class="hero-overlay"></div>
       <div class="hero-content">
-        <h2>Bienvenido a Fuerteventura</h2>
+        <h2 class="sand-write" data-sand-write data-sand-step="0.08" data-sand-duration="0.95" data-sand-delay="0.15" data-sand-distribution="ease">Bienvenido a Fuerteventura</h2>
         <p>Descubre el paraíso de las Islas Canarias</p>
         <a href="turismo.html" class="btn">Explorar la isla</a>
       </div>
@@ -142,7 +99,7 @@
     </section>
 
     <section class="categories reveal">
-        <h2>Explora Fuerteventura</h2>
+        <h2 class="sand-write" data-sand-write data-sand-step="0.04" data-sand-duration="0.75" data-sand-distribution="accelerate">Explora Fuerteventura</h2>
         <div class="category-grid">
             <article class="category-card">
                 <img src="images/playa_del_castillo_caleta_de_fuste.webp" alt="Noticias de Fuerteventura" loading="lazy">
@@ -173,7 +130,7 @@
 
     <!-- Widgets de datos en tiempo real -->
     <section class="reveal widgets-section">
-        <h2>Condiciones Actuales</h2>
+        <h2 class="sand-write" data-sand-write data-sand-step="0.045" data-sand-duration="0.8" data-sand-distribution="accelerate">Condiciones Actuales</h2>
         <div class="widgets-grid">
             <div id="weather-widget" class="conditions-card">
                 <h3><i class="fas fa-sun"></i> Tiempo</h3>
@@ -199,20 +156,20 @@
 
     <!-- Mapa interactivo de Fuerteventura -->
     <section class="reveal map-section">
-        <h2>Explora Fuerteventura</h2>
+        <h2 class="sand-write" data-sand-write data-sand-step="0.04" data-sand-duration="0.75" data-sand-distribution="accelerate">Explora Fuerteventura</h2>
         <p class="section-intro">Descubre los lugares más emblemáticos de la isla con nuestro mapa interactivo</p>
         <div id="interactive-map"></div>
     </section>
 
     <!-- Quiz de gamificación -->
     <section class="reveal quiz-section">
-        <h2>¿Cuánto sabes de Fuerteventura?</h2>
+        <h2 class="sand-write" data-sand-write data-sand-step="0.05" data-sand-duration="0.85" data-sand-distribution="ease">¿Cuánto sabes de Fuerteventura?</h2>
         <p class="section-intro">Pon a prueba tus conocimientos sobre la isla</p>
         <div id="quiz-container"></div>
     </section>
 
     <section class="newsletter reveal">
-        <h2>Suscríbete a nuestro boletín</h2>
+        <h2 class="sand-write" data-sand-write data-sand-step="0.035" data-sand-duration="0.7" data-sand-distribution="linear" data-sand-shimmer="off">Suscríbete a nuestro boletín</h2>
         <p>Recibe las últimas noticias y ofertas de Fuerteventura directamente en tu correo.</p>
         <form id="newsletter-form">
             <input type="email" 
@@ -396,6 +353,7 @@
     <script src="js/form-validation.js?v=2025111508" defer></script>
     <script src="js/blog.js?v=2025111508" defer></script>
     <script src="js/quiz.js?v=2025111602" defer></script>
+    <script src="js/sand-write.js?v=2025111611" defer></script>
     <script src="js/ambient-sounds.js?v=2025111508" defer></script>
     <script src="js/narrative-scroll.js?v=2025111508" defer></script>
     <script src="js/realtime.js?v=2025111508" defer></script>

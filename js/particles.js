@@ -10,8 +10,6 @@
   heroes.forEach(hero => {
     const canvas = d.createElement('canvas');
     canvas.className = 'particle-canvas';
-    canvas.style.cssText = 'position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:1;';
-    hero.style.position = 'relative';
     hero.appendChild(canvas);
 
     const scene = new THREE.Scene();

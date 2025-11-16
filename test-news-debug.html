@@ -4,21 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Debug Noticias - Responsive</title>
-    <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: Arial, sans-serif; padding: 20px; background: #f5f5f5; }
-        h1 { margin-bottom: 20px; color: #333; }
-        .info-box { background: white; padding: 15px; margin: 10px 0; border-radius: 5px; border-left: 4px solid #0088cc; }
-        .success { border-left-color: #28a745; }
-        .error { border-left-color: #dc3545; }
-        .warning { border-left-color: #ffc107; }
-        pre { background: #f0f0f0; padding: 10px; overflow-x: auto; font-size: 12px; margin-top: 10px; }
-        button { padding: 10px 20px; margin: 5px; background: #0088cc; color: white; border: none; border-radius: 4px; cursor: pointer; }
-        button:hover { background: #006699; }
-        .viewport-info { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px; }
-        .metric { background: #e9ecef; padding: 10px; border-radius: 4px; text-align: center; }
-        .metric strong { display: block; font-size: 24px; color: #0088cc; }
-    </style>
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://cdn.jsdelivr.net; style-src 'self'; img-src 'self' data: https:; font-src 'self' data:; connect-src 'self' http://localhost:* https://thisisfuerteventura.netlify.app; base-uri 'self'; object-src 'none'; frame-ancestors 'self';">
+    <link rel="stylesheet" href="css/test.css?v=2025111612">
 </head>
 <body>
     <h1>🔍 Debug de Noticias en Responsive</h1>
@@ -47,161 +34,27 @@
 
     <div class="info-box">
         <h2>🌐 Detección de Proxy</h2>
-        <button onclick="testProxyDetection()">Probar Detección de Proxy</button>
+        <button id="btn-proxy" class="btn">Probar Detección de Proxy</button>
         <pre id="proxy-result">Click en el botón para probar...</pre>
     </div>
 
     <div class="info-box">
         <h2>📰 Carga de Noticias</h2>
-        <button onclick="testNewsLoad()">Cargar Noticias</button>
+        <button id="btn-news" class="btn">Cargar Noticias</button>
         <pre id="news-result">Click en el botón para cargar...</pre>
     </div>
 
     <div class="info-box">
         <h2>🔧 Test de content-loader.js</h2>
-        <button onclick="testContentLoader()">Verificar Script</button>
+        <button id="btn-loader" class="btn">Verificar Script</button>
         <pre id="loader-result">Click en el botón para verificar...</pre>
-    </div>
-
-    <div class="info-box">
-        <h2>📊 Logs de Consola</h2>
-        <button onclick="clearLogs()">Limpiar Logs</button>
-        <pre id="console-logs" style="max-height: 300px; overflow-y: auto;">Los logs aparecerán aquí...</pre>
-    </div>
-
-    <script>
-        // Capturar logs de consola
-        const logsDiv = document.getElementById('console-logs');
-        const originalLog = console.log;
-        const originalError = console.error;
-        const originalWarn = console.warn;
-        
-        function addLog(type, ...args) {
-            const timestamp = new Date().toLocaleTimeString();
-            const msg = args.map(a => typeof a === 'object' ? JSON.stringify(a, null, 2) : String(a)).join(' ');
-            logsDiv.textContent += `[${timestamp}] [${type}] ${msg}\n`;
-            logsDiv.scrollTop = logsDiv.scrollHeight;
-        }
-        
-        console.log = (...args) => { originalLog(...args); addLog('LOG', ...args); };
-        console.error = (...args) => { originalError(...args); addLog('ERROR', ...args); };
-        console.warn = (...args) => { originalWarn(...args); addLog('WARN', ...args); };
-        
-        function clearLogs() {
-            logsDiv.textContent = 'Logs limpiados...\n';
-        }
-
-        // Actualizar info del viewport
-        function updateViewportInfo() {
-            document.getElementById('vw-width').textContent = window.innerWidth;
-            document.getElementById('vw-height').textContent = window.innerHeight;
-            document.getElementById('vw-ratio').textContent = window.devicePixelRatio.toFixed(2);
-            
-            const width = window.innerWidth;
-            let type = 'Desktop';
-            if (width <= 600) type = 'Mobile (≤600px)';
-            else if (width <= 768) type = 'Tablet pequeña (≤768px)';
-            else if (width <= 992) type = 'Tablet (≤992px)';
-            
-            document.getElementById('vw-type').textContent = type;
-        }
-        
-        updateViewportInfo();
-        window.addEventListener('resize', updateViewportInfo);
-
-        // Test proxy detection
-        async function testProxyDetection() {
-            const result = document.getElementById('proxy-result');
-            result.textContent = 'Probando detección de proxy...\n';
-            
-            try {
-                // Simular la lógica del content-loader
-                const isLocal = /^(localhost|127\.0\.0\.1)/.test(location.hostname);
-                result.textContent += `Hostname: ${location.hostname}\n`;
-                result.textContent += `Es local: ${isLocal}\n\n`;
-                
-                if (!isLocal) {
-                    result.textContent += 'Probando Netlify Functions...\n';
-                    const testUrl = '/.netlify/functions/aggregate?sources=' + encodeURIComponent('https://www.canarias7.es/canarias/fuerteventura/');
-                    try {
-                        const test = await fetch(testUrl, { cache: 'no-store' });
-                        result.textContent += `Status: ${test.status}\n`;
-                        if (test.ok) {
-                            result.textContent += '✓ Netlify Functions detectadas\n';
-                            const data = await test.json();
-                            result.textContent += `Items: ${data.items?.length || 0}\n`;
-                        }
-                    } catch (e) {
-                        result.textContent += `✗ Error: ${e.message}\n`;
-                    }
-                } else {
-                    result.textContent += 'Probando puertos locales...\n';
-                    const ports = [3000, 3001, 3002];
-                    for (const port of ports) {
-                        try {
-                            const r = await fetch(`http://localhost:${port}/health`, { cache: 'no-store' });
-                            if (r.ok) {
-                                result.textContent += `✓ Servidor encontrado en puerto ${port}\n`;
-                                break;
-                            }
-                        } catch (e) {
-                            result.textContent += `✗ Puerto ${port}: ${e.message}\n`;
-                        }
-                    }
-                }
-            } catch (e) {
-                result.textContent += `\nError general: ${e.message}\n${e.stack}`;
-            }
-        }
-
-        // Test news loading
-        async function testNewsLoad() {
-            const result = document.getElementById('news-result');
-            result.textContent = 'Intentando cargar noticias...\n';
-            
-            try {
-                // Cargar el script si no está cargado
-                if (!window.fetchRSSFeeds) {
-                    result.textContent += 'Cargando content-loader.js...\n';
-                    await new Promise((resolve, reject) => {
-                        const script = document.createElement('script');
-                        script.src = 'js/content-loader.js?v=2025110806';
-                        script.onload = resolve;
-                        script.onerror = reject;
-                        document.head.appendChild(script);
-                    });
-                }
-                
-                result.textContent += 'Esperando carga de proxy...\n';
-                // Esperar un poco para que el proxy se detecte
-                await new Promise(r => setTimeout(r, 2000));
-                
-                if (typeof window.fetchRSSFeeds === 'function') {
-                    result.textContent += 'Función fetchRSSFeeds disponible, llamando...\n';
-                    const items = await window.fetchRSSFeeds();
-                    result.textContent += `\n✓ Noticias cargadas: ${items.length}\n\n`;
-                    if (items.length > 0) {
-                        result.textContent += `Primera noticia:\n${JSON.stringify(items[0], null, 2)}`;
-                    }
-                } else {
-                    result.textContent += '✗ fetchRSSFeeds no está definida\n';
-                }
-            } catch (e) {
-                result.textContent += `\n✗ Error: ${e.message}\n${e.stack}`;
-            }
-        }
-
-        // Test content-loader script
-        function testContentLoader() {
-            const result = document.getElementById('loader-result');
-            result.textContent = 'Verificando content-loader.js...\n\n';
-            
-            result.textContent += `fetchRSSFeeds: ${typeof window.fetchRSSFeeds}\n`;
-            result.textContent += `loadFeaturedNews: ${typeof window.loadFeaturedNews}\n`;
-            result.textContent += `__RSS_PROXY_URL: ${window.__RSS_PROXY_URL || 'undefined'}\n`;
-            result.textContent += `DOMContentLoaded fired: ${document.readyState}\n\n`;
-            
-            // Scripts cargados
+        <button id="btn-clear-logs" class="btn">Limpiar Logs</button>
+        <pre id="console-logs" class="console-logs">Los logs aparecerán aquí...</pre>
+    <script src="js/test-news-debug.js?v=2025111612" defer></script>
+    <script src="js/proxy-discovery.js?v=2025111508" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/dompurify@2.4.0/dist/purify.min.js" defer crossorigin="anonymous" integrity="sha384-Tsl3d5pUAO7a13enIvSsL3O0/95nsthPJiPto5NtLuY8w3+LbZOpr3Fl2MNmrh1E"></script>
+    <script src="js/feed-utils.js?v=2025111508" defer></script>
+    <script src="js/content-loader.js?v=2025111508" defer></script>
             const scripts = Array.from(document.scripts).map(s => s.src).filter(Boolean);
             result.textContent += `Scripts cargados:\n${scripts.join('\n')}`;
         }

@@ -48,48 +48,31 @@ function showQuestion() {
     const quizContainer = document.getElementById('quiz-container');
     const data = quizData[currentQuestion];
     
+    const progClass = 'prog-' + currentQuestion;
     quizContainer.innerHTML = `
-        <div class="quiz-card" style="background:white;padding:2rem;border-radius:16px;box-shadow:0 4px 20px rgba(0,0,0,0.1);max-width:600px;margin:0 auto;">
-            <div class="quiz-progress" style="margin-bottom:1.5rem;">
-                <div style="display:flex;justify-content:space-between;margin-bottom:0.5rem;">
-                    <span style="font-size:0.9rem;color:#666;">Pregunta ${currentQuestion + 1} de ${quizData.length}</span>
-                    <span style="font-size:0.9rem;color:var(--color-mar);">Puntos: ${score}</span>
+        <div class="quiz-card">
+            <div class="quiz-progress">
+                <div class="quiz-progress-head">
+                    <span class="quiz-progress-meta">Pregunta ${currentQuestion + 1} de ${quizData.length}</span>
+                    <span class="quiz-progress-score">Puntos: ${score}</span>
                 </div>
-                <div style="height:8px;background:#e0e0e0;border-radius:4px;overflow:hidden;">
-                    <div style="height:100%;background:var(--gradient-ocean);width:${((currentQuestion) / quizData.length) * 100}%;transition:width 0.3s;"></div>
+                <div class="quiz-progress-track">
+                    <div class="quiz-progress-bar ${progClass}"></div>
                 </div>
             </div>
-            
-            <h3 style="font-family:var(--font-display);color:var(--color-volcan);margin-bottom:1.5rem;font-size:1.3rem;">${data.question}</h3>
-            
-            <div class="quiz-options" style="display:grid;gap:1rem;">
+            <h3 class="quiz-title">${data.question}</h3>
+            <div class="quiz-options">
                 ${data.options.map((option, index) => `
-                    <button class="quiz-option" data-index="${index}" 
-                            style="padding:1rem;border:2px solid #e0e0e0;border-radius:12px;background:white;text-align:left;cursor:pointer;transition:all 0.3s;font-size:1rem;">
-                        ${option}
-                    </button>
+                    <button class="quiz-option" data-index="${index}">${option}</button>
                 `).join('')}
             </div>
-            
-            <div class="quiz-rewards" style="margin-top:1.5rem;text-align:center;font-size:2rem;">
-                ${rewards.join(' ')}
-            </div>
-        </div>
-    `;
+            <div class="quiz-rewards">${rewards.join(' ')}</div>
+        </div>`;
     
     // Añadir event listeners a las opciones
     document.querySelectorAll('.quiz-option').forEach(btn => {
         btn.addEventListener('click', handleAnswer);
-        btn.addEventListener('mouseenter', function() {
-            this.style.borderColor = 'var(--color-mar)';
-            this.style.transform = 'translateX(8px)';
-        });
-        btn.addEventListener('mouseleave', function() {
-            if (!this.classList.contains('selected')) {
-                this.style.borderColor = '#e0e0e0';
-                this.style.transform = 'translateX(0)';
-            }
-        });
+        // hover handled by CSS; no inline styles needed
     });
 }
 
@@ -101,22 +84,20 @@ function handleAnswer(e) {
     // Deshabilitar todos los botones
     document.querySelectorAll('.quiz-option').forEach(btn => {
         btn.disabled = true;
-        btn.style.cursor = 'not-allowed';
+        btn.classList.add('is-disabled');
     });
     
     // Marcar respuesta
     e.target.classList.add('selected');
     if (isCorrect) {
-        e.target.style.borderColor = '#28a745';
-        e.target.style.background = '#d4edda';
+        e.target.classList.add('is-correct');
         score += 10;
         rewards.push(data.reward);
     } else {
-        e.target.style.borderColor = '#dc3545';
-        e.target.style.background = '#f8d7da';
+        e.target.classList.add('is-wrong');
         // Mostrar la correcta
-        document.querySelectorAll('.quiz-option')[data.correct].style.borderColor = '#28a745';
-        document.querySelectorAll('.quiz-option')[data.correct].style.background = '#d4edda';
+        const correctBtn = document.querySelectorAll('.quiz-option')[data.correct];
+        if (correctBtn) correctBtn.classList.add('is-correct-answer');
     }
     
     // Siguiente pregunta o finalizar
@@ -146,16 +127,15 @@ function showResults() {
     }
     
     quizContainer.innerHTML = `
-        <div class="quiz-results" style="background:white;padding:3rem 2rem;border-radius:16px;box-shadow:0 4px 20px rgba(0,0,0,0.1);max-width:600px;margin:0 auto;text-align:center;">
-            <div style="font-size:4rem;margin-bottom:1rem;">${rewards.join(' ')}</div>
-            <h2 style="font-family:var(--font-display);color:var(--color-cielo);margin-bottom:1rem;">¡Quiz Completado!</h2>
-            <div style="font-size:3rem;font-weight:bold;color:var(--color-mar);margin:1rem 0;">${score} / ${quizData.length * 10}</div>
-            <p style="font-size:1.2rem;color:#666;margin-bottom:2rem;">${message}</p>
-            <button onclick="resetQuiz()" class="btn" style="padding:1rem 2rem;background:var(--gradient-ocean);color:white;border:none;border-radius:12px;cursor:pointer;font-size:1rem;">
-                Volver a intentar
-            </button>
-        </div>
-    `;
+        <div class="quiz-results">
+            <div class="quiz-rewards-big">${rewards.join(' ')}</div>
+            <h2 class="quiz-done-title">¡Quiz Completado!</h2>
+            <div class="quiz-score">${score} / ${quizData.length * 10}</div>
+            <p class="quiz-message">${message}</p>
+            <button id="reset-quiz-btn" class="btn">Volver a intentar</button>
+        </div>`;
+    const resetBtn = document.getElementById('reset-quiz-btn');
+    if (resetBtn) resetBtn.addEventListener('click', resetQuiz);
 }
 
 function resetQuiz() {

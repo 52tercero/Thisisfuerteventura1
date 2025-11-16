@@ -80,3 +80,29 @@ Client logic in `js/content-loader.js` will probe these automatically when not o
 - External feed content is sanitized (DOMPurify is used when available; fallback sanitizer is in JS).
 - Do not deploy the proxy with `ALLOW_ALL` in production.
 
+### Sanitization Guide (client templates)
+- Use `FeedUtils.escapeHTML(str)` for any text you interpolate into `innerHTML` or HTML attributes.
+- Use `FeedUtils.sanitize(html)` only for rich HTML coming from trusted feeds before inserting as `innerHTML`.
+- Prefer `textContent` when you don't need markup; it avoids sanitization entirely.
+- Never interpolate raw strings into `innerHTML` without escaping/sanitizing first.
+
+Examples
+
+```js
+// Text values → escape
+titleEl.innerHTML = FeedUtils.escapeHTML(item.title);
+
+// Rich HTML from feed → sanitize
+contentEl.innerHTML = FeedUtils.sanitize(item.fullHtml);
+
+// Attributes → escape
+imgEl.alt = FeedUtils.escapeHTML(item.title);
+
+// Safer alternative: textContent when no markup is needed
+descEl.textContent = item.summaryPlain;
+```
+
+Where the helpers live
+- `js/feed-utils.js` exports `FeedUtils.escapeHTML`, `FeedUtils.sanitize`, and `FeedUtils.toPlainText`.
+- Pages load DOMPurify from a CDN; when present, `FeedUtils.sanitize` delegates to it.
+

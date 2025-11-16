@@ -1,0 +1,27 @@
+﻿{
+  "@context": "https://schema.org",
+  "@type": "CollectionPage",
+  "name": "Noticias de Fuerteventura",
+  "description": "Últimas noticias y actualidad de Fuerteventura, Islas Canarias",
+  "url": "https://thisisfuerteventura.netlify.app/noticias.html",
+  "isPartOf": {
+    "@type": "WebSite",
+    "name": "This is Fuerteventura",
+    "url": "https://thisisfuerteventura.netlify.app/"
+  },
+  "about": {
+    "@type": "Place",
+    "name": "Fuerteventura",
+    "containedInPlace": {
+      "@type": "Place",
+      "name": "Islas Canarias"
+    }
+  },
+  "breadcrumb": {
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      { "@type": "ListItem", "position": 1, "name": "Inicio", "item": "https://thisisfuerteventura.netlify.app/" },
+      { "@type": "ListItem", "position": 2, "name": "Noticias", "item": "https://thisisfuerteventura.netlify.app/noticias.html" }
+    ]
+  }
+}

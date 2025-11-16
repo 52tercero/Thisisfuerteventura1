@@ -1,6 +1,9 @@
 document.addEventListener('DOMContentLoaded', function() {
-    // Escapar texto plano para uso en innerHTML/atributos
+    // Escapar texto usando FeedUtils si está disponible
     function escapeHTML(str) {
+        if (window.FeedUtils && typeof FeedUtils.escapeHTML === 'function') {
+            return FeedUtils.escapeHTML(str);
+        }
         try {
             return String(str)
                 .replace(/&/g, '&amp;')
@@ -168,10 +171,13 @@ document.addEventListener('DOMContentLoaded', function() {
                             const newsCard = document.createElement('div');
                             newsCard.className = 'news-card';
                             const categoryTag = (item.category && String(item.category).toLowerCase() !== 'general')
-                                ? `<span class="category-tag">${item.category}</span>`
+                                ? `<span class="category-tag">${escapeHTML(item.category)}</span>`
                                 : '';
                             const tagChips = (Array.isArray(item.tags) && item.tags.length > 0)
-                                ? `<div class="tag-chips">${item.tags.slice(0,3).map(t => `<button class="tag-chip" data-tag="${t}">${t}</button>`).join(' ')}</div>`
+                                ? `<div class="tag-chips">${item.tags.slice(0,3).map(t => {
+                                        const safe = escapeHTML(t);
+                                        return `<button class="tag-chip" data-tag="${safe}">${safe}</button>`;
+                                    }).join(' ')}</div>`
                                 : '';
                             newsCard.innerHTML = `
                                 <div class="news-image">
@@ -181,7 +187,7 @@ document.addEventListener('DOMContentLoaded', function() {
                                 <div class="news-content">
                                     <span class="news-date">${escapeHTML(item.date)}</span>
                                     <h3>${escapeHTML(item.title)}</h3>
-                                    <p>${item.summary}</p>
+                                    <p>${escapeHTML(item.summary)}</p>
                                     ${tagChips}
                                 </div>
                             `;
@@ -218,10 +224,13 @@ document.addEventListener('DOMContentLoaded', function() {
                 const card = document.createElement('div');
                 card.className = 'content-card';
                 const categoryTag = (item.category && String(item.category).toLowerCase() !== 'general')
-                    ? `<span class="category-tag">${item.category}</span>`
+                    ? `<span class="category-tag">${escapeHTML(item.category)}</span>`
                     : '';
                 const tagChips = (Array.isArray(item.tags) && item.tags.length > 0)
-                    ? `<div class="tag-chips">${item.tags.slice(0,3).map(t => `<button class="tag-chip" data-tag="${t}">${t}</button>`).join(' ')}</div>`
+                    ? `<div class="tag-chips">${item.tags.slice(0,3).map(t => {
+                            const safe = escapeHTML(t);
+                            return `<button class="tag-chip" data-tag="${safe}">${safe}</button>`;
+                        }).join(' ')}</div>`
                     : '';
 
                 // Resumen compacto en texto plano (150 caracteres)
@@ -245,7 +254,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     <div class="card-content">
                         <span class="date">${escapeHTML(item.date)}</span>
                         <h3>${escapeHTML(item.title)}</h3>
-                        <p>${shortSummary}</p>
+                        <p>${escapeHTML(shortSummary)}</p>
                         ${categoryTag}
                         ${tagChips}
                     </div>

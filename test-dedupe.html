@@ -4,72 +4,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Test Deduplicación</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            max-width: 1200px;
-            margin: 20px auto;
-            padding: 0 20px;
-        }
-        .log {
-            background: #f5f5f5;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            padding: 15px;
-            margin: 20px 0;
-            font-family: monospace;
-            font-size: 12px;
-            max-height: 400px;
-            overflow-y: auto;
-        }
-        .log-entry {
-            margin: 3px 0;
-            padding: 2px 0;
-        }
-        .log-info { color: #0066cc; }
-        .log-warn { color: #ff9900; }
-        .log-error { color: #cc0000; }
-        button {
-            background: #0066cc;
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 14px;
-        }
-        button:hover {
-            background: #0052a3;
-        }
-        .stats {
-            background: #e8f4f8;
-            padding: 15px;
-            border-radius: 4px;
-            margin: 10px 0;
-        }
-        .items-list {
-            max-height: 500px;
-            overflow-y: auto;
-            border: 1px solid #ddd;
-            padding: 10px;
-            margin: 10px 0;
-        }
-        .item {
-            padding: 5px;
-            border-bottom: 1px solid #eee;
-            font-size: 13px;
-        }
-        .item:hover {
-            background: #f9f9f9;
-        }
-    </style>
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://cdn.jsdelivr.net; style-src 'self'; img-src 'self' data: https:; font-src 'self' data:; connect-src 'self' http://localhost:* https://thisisfuerteventura.netlify.app; base-uri 'self'; object-src 'none'; frame-ancestors 'self';">
+    <link rel="stylesheet" href="css/test.css?v=2025111612">
 </head>
 <body>
     <h1>🔍 Test de Deduplicación de Feeds RSS</h1>
     
-    <button onclick="clearCache()">Limpiar Caché localStorage</button>
-    <button onclick="testFeeds()">Probar Feeds</button>
-    <button onclick="clearLogs()">Limpiar Logs</button>
+    <button id="btn-clear-cache" class="btn">Limpiar Caché localStorage</button>
+    <button id="btn-test-feeds" class="btn">Probar Feeds</button>
+    <button id="btn-clear-logs" class="btn">Limpiar Logs</button>
     
     <div class="stats" id="stats">
         <strong>Estado:</strong> Esperando...
@@ -81,128 +24,7 @@
     <h2>Items Obtenidos</h2>
     <div class="items-list" id="items"></div>
     
-    <script>
-        // Interceptar console.log para mostrar en la página
-        const logContainer = document.getElementById('log');
-        const originalLog = console.log;
-        const originalWarn = console.warn;
-        const originalError = console.error;
-        
-        function addLog(message, type = 'info') {
-            const entry = document.createElement('div');
-            entry.className = `log-entry log-${type}`;
-            entry.textContent = `[${new Date().toLocaleTimeString()}] ${message}`;
-            logContainer.appendChild(entry);
-            logContainer.scrollTop = logContainer.scrollHeight;
-        }
-        
-        console.log = function(...args) {
-            originalLog.apply(console, args);
-            addLog(args.join(' '), 'info');
-        };
-        
-        console.warn = function(...args) {
-            originalWarn.apply(console, args);
-            addLog(args.join(' '), 'warn');
-        };
-        
-        console.error = function(...args) {
-            originalError.apply(console, args);
-            addLog(args.join(' '), 'error');
-        };
-        
-        function clearLogs() {
-            logContainer.innerHTML = '';
-        }
-        
-        function clearCache() {
-            // Limpiar todos los caches relacionados con RSS
-            const keys = Object.keys(localStorage);
-            keys.forEach(key => {
-                if (key.includes('rss_cache') || key.includes('article_')) {
-                    localStorage.removeItem(key);
-                    console.log('Eliminado: ' + key);
-                }
-            });
-            document.getElementById('stats').innerHTML = '<strong>Cache limpiado!</strong> Ahora puedes probar feeds frescos.';
-        }
-        
-        async function testFeeds() {
-            document.getElementById('stats').innerHTML = '<strong>Estado:</strong> Cargando feeds...';
-            document.getElementById('items').innerHTML = '';
-            
-            try {
-                // Asegurarse que FeedUtils esté disponible
-                if (!window.FeedUtils) {
-                    throw new Error('FeedUtils no está cargado');
-                }
-                
-                const sources = [
-                    'https://rss.app/feeds/jbwZ2Q9QAvgvI6G0.xml',
-                    'https://rss.app/feeds/8SmCQL7GDZyu2xB4.xml',
-                    'https://rss.app/feeds/IchTPp234IVDaH7V.xml',
-                    'https://rss.app/feeds/cNktFJXkoIBwqQSS.xml',
-                    'https://rss.app/feeds/pGaOMTfcwV2mzdy7.xml'
-                ];
-                
-                console.log('========================================');
-                console.log('Iniciando prueba de feeds...');
-                console.log('Fuentes:', sources.length);
-                
-                const items = await FeedUtils.fetchRSSFeeds(sources);
-                
-                console.log('========================================');
-                console.log('✓ Feeds obtenidos correctamente');
-                
-                // Estadísticas
-                document.getElementById('stats').innerHTML = `
-                    <strong>✓ Completado</strong><br>
-                    Total de items: ${items.length}<br>
-                    Fuentes: ${sources.length}<br>
-                    Promedio por fuente: ${(items.length / sources.length).toFixed(1)}
-                `;
-                
-                // Mostrar items
-                const itemsContainer = document.getElementById('items');
-                items.forEach((item, idx) => {
-                    const div = document.createElement('div');
-                    div.className = 'item';
-                    div.innerHTML = `
-                        <strong>${idx + 1}.</strong> ${item.title}<br>
-                        <small style="color: #666;">
-                            Fuente: ${item.source} | Fecha: ${item.date}
-                        </small>
-                    `;
-                    itemsContainer.appendChild(div);
-                });
-                
-                // Buscar duplicados por título
-                const titleMap = new Map();
-                items.forEach((item, idx) => {
-                    const title = item.title || '';
-                    if (!titleMap.has(title)) {
-                        titleMap.set(title, []);
-                    }
-                    titleMap.get(title).push(idx + 1);
-                });
-                
-                const duplicates = Array.from(titleMap.entries()).filter(([_, indices]) => indices.length > 1);
-                
-                if (duplicates.length > 0) {
-                    console.warn('⚠️ DUPLICADOS ENCONTRADOS:', duplicates.length, 'títulos repetidos');
-                    duplicates.forEach(([title, indices]) => {
-                        console.warn(`  "${title}" en posiciones: ${indices.join(', ')}`);
-                    });
-                } else {
-                    console.log('✓ No se encontraron duplicados por título');
-                }
-                
-            } catch (error) {
-                console.error('Error en la prueba:', error.message);
-                document.getElementById('stats').innerHTML = `<strong>❌ Error:</strong> ${error.message}`;
-            }
-        }
-    </script>
+    <script src="js/test-dedupe.js?v=2025111612" defer></script>
     
     <script src="js/proxy-discovery.js?v=2025110901" defer></script>
     <script src="https://cdn.jsdelivr.net/npm/dompurify@2.4.0/dist/purify.min.js" defer crossorigin="anonymous" integrity="sha384-Tsl3d5pUAO7a13enIvSsL3O0/95nsthPJiPto5NtLuY8w3+LbZOpr3Fl2MNmrh1E"></script>

@@ -15,10 +15,10 @@
     
     <link rel="canonical" href="https://thisisfuerteventura.netlify.app/alojamiento.html">
     <link rel="manifest" href="manifest.webmanifest">
-    <link rel="stylesheet" href="css/styles.css?v=2025111603">
+    <link rel="stylesheet" href="css/styles.css?v=2025111612">
     <link rel="preload" href="images/Fuerteventura.jpeg" as="image" fetchpriority="high">
     <!-- Google Fonts: Inter para texto, Playfair Display para títulos -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Playfair+Display:wght@700;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@400;600;700&family=Yeseva+One&display=swap" rel="stylesheet">
     <!-- Swiper for galleries/timeline -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@9/swiper-bundle.min.css" / crossorigin="anonymous" integrity="sha384-tOPXDsn4moKzmRcYpDt8mOcJWxzy89N8dK0oEkxTx90DZYjDdznDQ4IEiH1pcZH5">
     <!-- Font Awesome 6 -->
@@ -39,23 +39,10 @@
     <meta name="twitter:title" content="Alojamiento en Fuerteventura">
     <meta name="twitter:description" content="Hoteles, apartamentos y villas en Fuerteventura. Encuentra tu alojamiento ideal.">
     <meta name="twitter:image" content="https://thisisfuerteventura.netlify.app/images/logo.jpg">
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://unpkg.com https://www.googletagmanager.com https://analytics.google.com 'sha256-hK8cC0D+KROl3DJExYZpIN6EWESCiqKHGtZevv/3Y4c='; style-src 'self' https://fonts.googleapis.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://unpkg.com; font-src 'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com; img-src 'self' data: https://thisisfuerteventura.netlify.app; media-src 'self'; connect-src 'self' https://thisisfuerteventura.netlify.app https://www.googletagmanager.com https://analytics.google.com http://localhost:3000 http://localhost:3001; base-uri 'self'; object-src none; frame-ancestors 'self';">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://unpkg.com https://www.googletagmanager.com https://analytics.google.com https://www.google-analytics.com; style-src 'self' https://fonts.googleapis.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://unpkg.com; font-src 'self' data: https://fonts.gstatic.com https://cdnjs.cloudflare.com; img-src 'self' data: https: https://unpkg.com https://*.tile.openstreetmap.org; media-src 'self'; connect-src 'self' https://thisisfuerteventura.netlify.app https://www.googletagmanager.com https://www.google-analytics.com https://cdn.jsdelivr.net https://unpkg.com http://localhost:3000 http://localhost:3001 http://localhost:* http://127.0.0.1:* https://api.open-meteo.com https://marine-api.open-meteo.com; base-uri 'self'; object-src 'none'; frame-ancestors 'self';">
     
-    <!-- Structured Data -->
-    <script type="application/ld+json">
-    {
-        "@context": "https://schema.org",
-        "@type": "ItemList",
-        "name": "Alojamiento en Fuerteventura",
-        "description": "Listado de hoteles, apartamentos y alojamientos en Fuerteventura",
-        "url": "https://thisisfuerteventura.netlify.app/alojamiento.html",
-        "numberOfItems": 42,
-        "itemListElement": [{
-            "@type": "LodgingBusiness",
-            "name": "Alojamientos en Fuerteventura"
-        }]
-    }
-    </script>
+    <!-- Structured Data (external to satisfy CSP) -->
+    <script type="application/ld+json" src="data/structured/alojamiento-itemlist.jsonld"></script>
 </head>
 <body class="dark-header">
     <a class="skip-link" href="#main">Saltar al contenido principal</a>
@@ -89,13 +76,13 @@
         </video>
         <div class="hero-overlay"></div>
         <div class="hero-content">
-            <h2>Alojamiento en Fuerteventura</h2>
+            <h2 class="sand-write" data-sand-write data-sand-step="0.08" data-sand-duration="0.95" data-sand-delay="0.12" data-sand-distribution="ease">Alojamiento en Fuerteventura</h2>
             <p>Encuentra tu hogar perfecto en la isla</p>
         </div>
     </section>
 
     <section class="accommodation-search reveal">
-        <h2>Busca tu alojamiento ideal</h2>
+        <h2 class="sand-write" data-sand-write data-sand-step="0.05" data-sand-duration="0.85" data-sand-distribution="ease">Busca tu alojamiento ideal</h2>
         <form class="search-form" role="search" aria-label="Buscar alojamiento" id="booking-search">
             <div class="form-group">
                 <label for="location">Zona</label>
@@ -148,7 +135,7 @@
     <!-- CORRALEJO (Norte) -->
     <section class="tourism-content reveal">
         <div class="container">
-            <h2><i class="fas fa-location-dot"></i> Corralejo - Norte de Fuerteventura</h2>
+            <h2><i class="fas fa-location-dot"></i> <span class="sand-write" data-sand-write data-sand-step="0.045" data-sand-duration="0.8" data-sand-distribution="accelerate">Corralejo - Norte de Fuerteventura</span></h2>
             <p class="zone-intro">Zona animada con dunas, playas espectaculares y excursiones a Isla de Lobos. Ideal para familias, deportes acuáticos y vida nocturna.</p>
             <div class="tourism-grid">
                 <article class="tourism-card">
@@ -247,7 +234,7 @@
     <!-- CALETA DE FUSTE (Centro-Este) -->
     <section class="tourism-content reveal">
         <div class="container">
-            <h2><i class="fas fa-location-dot"></i> Caleta de Fuste - Centro-Este</h2>
+            <h2><i class="fas fa-location-dot"></i> <span class="sand-write" data-sand-write data-sand-step="0.045" data-sand-duration="0.8" data-sand-distribution="accelerate">Caleta de Fuste - Centro-Este</span></h2>
             <p class="zone-intro">Perfecta base para recorrer la isla, cerca del aeropuerto, playa resguardada ideal para familias y campo de golf.</p>
             <div class="tourism-grid">
             <article class="tourism-card">
@@ -345,7 +332,7 @@
     <!-- COSTA CALMA -->
     <section class="tourism-content reveal">
         <div class="container">
-            <h2><i class="fas fa-location-dot"></i> Costa Calma - Sur</h2>
+            <h2><i class="fas fa-location-dot"></i> <span class="sand-write" data-sand-write data-sand-step="0.045" data-sand-duration="0.8" data-sand-distribution="accelerate">Costa Calma - Sur</span></h2>
             <p class="zone-intro">Famosa por la Playa de Sotavento, paraíso del windsurf y kitesurf. Ambiente tranquilo ideal para relajarse.</p>
             <div class="tourism-grid">
             <article class="tourism-card">
@@ -444,7 +431,7 @@
     <!-- JANDÍA / MORRO JABLE (Sur) -->
     <section class="tourism-content reveal">
         <div class="container">
-            <h2><i class="fas fa-location-dot"></i> Jandía / Morro Jable - Sur</h2>
+            <h2><i class="fas fa-location-dot"></i> <span class="sand-write" data-sand-write data-sand-step="0.045" data-sand-duration="0.8" data-sand-distribution="accelerate">Jandía / Morro Jable - Sur</span></h2>
             <p class="zone-intro">Playas infinitas, paseo marítimo animado y faro de Jandía. Zona con más horas de sol de la isla.</p>
             <div class="tourism-grid">
             <article class="tourism-card">
@@ -543,7 +530,7 @@
     <!-- EL COTILLO (Noroeste) -->
     <section class="tourism-content">
         <div class="container">
-            <h2><i class="fas fa-location-dot"></i> El Cotillo - Noroeste</h2>
+            <h2><i class="fas fa-location-dot"></i> <span class="sand-write" data-sand-write data-sand-step="0.045" data-sand-duration="0.8" data-sand-distribution="accelerate">El Cotillo - Noroeste</span></h2>
             <p class="zone-intro">Pueblo pesquero auténtico con lagunas de aguas cristalinas, ambiente tranquilo y puestas de sol espectaculares.</p>
             <div class="tourism-grid">
             <article class="tourism-card">
@@ -642,7 +629,7 @@
     <!-- PUERTO DEL ROSARIO (Capital) -->
     <section class="tourism-content">
         <div class="container">
-            <h2><i class="fas fa-location-dot"></i> Puerto del Rosario - Capital</h2>
+            <h2><i class="fas fa-location-dot"></i> <span class="sand-write" data-sand-write data-sand-step="0.045" data-sand-duration="0.8" data-sand-distribution="accelerate">Puerto del Rosario - Capital</span></h2>
             <p class="zone-intro">Capital de la isla, ideal para viajes de negocios o estancias cortas. Centro administrativo y cultural con ambiente local.</p>
             <div class="tourism-grid">
             <article class="tourism-card">
@@ -741,7 +728,7 @@
     <!-- BETANCURIA Y ZONAS RURALES -->
     <section class="tourism-content">
         <div class="container">
-            <h2><i class="fas fa-location-dot"></i> Betancuria y Zonas Rurales - Interior</h2>
+            <h2><i class="fas fa-location-dot"></i> <span class="sand-write" data-sand-write data-sand-step="0.045" data-sand-duration="0.8" data-sand-distribution="accelerate">Betancuria y Zonas Rurales - Interior</span></h2>
             <p class="zone-intro">Para quienes buscan autenticidad, tranquilidad y naturaleza. Casas rurales canarias en entornos únicos lejos del turismo de playa.</p>
             <div class="tourism-grid">
             <article class="tourism-card">
@@ -838,7 +825,7 @@
     </section>
 
     <section class="stay-zones reveal">
-        <h2>Zonas recomendadas para alojarse</h2>
+        <h2 class="sand-write" data-sand-write data-sand-step="0.05" data-sand-duration="0.85" data-sand-distribution="ease">Zonas recomendadas para alojarse</h2>
         <div class="zones-grid">
             <div class="zone">
                 <h3>Corralejo (norte)</h3>
@@ -856,7 +843,7 @@
     </section>
 
     <section class="saving-tips reveal">
-        <h2>Consejos para ahorrar</h2>
+        <h2 class="sand-write" data-sand-write data-sand-step="0.05" data-sand-duration="0.85" data-sand-distribution="ease">Consejos para ahorrar</h2>
         <ul>
             <li>Reserva con antelación en temporada alta (verano y Navidades).</li>
             <li>Valora apartamentos si viajas en familia o estancias largas.</li>
@@ -865,7 +852,7 @@
     </section>
 
     <section class="accommodation-tips reveal">
-        <h2>Consejos para elegir alojamiento</h2>
+        <h2 class="sand-write" data-sand-write data-sand-step="0.05" data-sand-duration="0.85" data-sand-distribution="ease">Consejos para elegir alojamiento</h2>
         <div class="tips-container">
             <div class="tip">
                 <i class="fas fa-map-marked-alt"></i>
@@ -958,6 +945,7 @@
     <script src="js/narrative-scroll.js?v=2025111508" defer></script>
     <script src="js/ambient-sounds.js?v=2025111508" defer></script>
     <script src="js/booking.js?v=2025111508" defer></script>
+    <script src="js/sand-write.js?v=2025111611" defer></script>
 
     <!-- Cookie Consent Banner -->
     <div id="cookie-consent" class="cookie-consent">

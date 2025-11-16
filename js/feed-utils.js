@@ -44,6 +44,24 @@
     }
 
     /**
+     * Escapa texto plano para uso en innerHTML/atributos
+     * @param {string} str - Texto a escapar
+     * @returns {string} Texto seguro escapado
+     */
+    function escapeHTML(str) {
+        try {
+            return String(str)
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#39;');
+        } catch (_) {
+            return '';
+        }
+    }
+
+    /**
      * Sanitiza HTML básico (elimina scripts, eventos, etc.)
      * @param {string} str - String a sanitizar
      * @returns {string} String sanitizado
@@ -499,6 +517,7 @@
         DEFAULT_NEWS_SOURCES,
         formatDate,
         toPlainText,
+        escapeHTML,
         sanitize,
         sanitizeHTML,
         cacheGet,

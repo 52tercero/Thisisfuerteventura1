@@ -42,7 +42,7 @@
 
     points.forEach(p => {
       const m = L.marker([p.lat, p.lon]);
-      const link = p.url ? `<p style="margin:10px 0 0;"><a class="btn btn-small" href="${p.url}">Ver más</a></p>` : '';
+      const link = p.url ? `<p class="mt-10"><a class="btn btn-small" href="${p.url}">Ver más</a></p>` : '';
       const html = `
         <div class="popup-inner">
           <img src="${p.img}" alt="${p.title}" class="popup-img">
@@ -64,7 +64,7 @@
     container.appendChild(popup);
 
     const renderPopup = (spotId, p) => {
-      const link = p.url ? `<p style="margin:10px 0 0;"><a class=\"btn btn-small\" href=\"${p.url}\">Ver más</a></p>` : '';
+      const link = p.url ? `<p class=\"mt-10\"><a class=\"btn btn-small\" href=\"${p.url}\">Ver más</a></p>` : '';
       popup.innerHTML = `
         <div class="popup-inner">
           <img class="popup-img" src="${p.img}" alt="${p.title}">

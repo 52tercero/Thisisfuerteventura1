@@ -17,8 +17,8 @@
     
     <link rel="canonical" href="https://thisisfuerteventura.netlify.app/contacto.html">
     <link rel="manifest" href="manifest.webmanifest">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Playfair+Display:wght@700;900&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="css/styles.css?v=2025111603">
+    <link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@400;600;700&family=Yeseva+One&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/styles.css?v=2025111612">
     <link rel="preload" href="images/Fuerteventura.jpeg" as="image" fetchpriority="high">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" crossorigin="anonymous" integrity="sha384-t1nt8BQoYMLFN5p42tRAtuAAFQaCQODekUVeKKZrEnEyp4H2R0RHFz0KWpmj7i8g">
     
@@ -28,27 +28,15 @@
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://thisisfuerteventura.netlify.app/contacto.html">
     <meta property="og:image" content="https://thisisfuerteventura.netlify.app/images/logo.jpg">
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://unpkg.com https://www.googletagmanager.com https://analytics.google.com 'sha256-rV1ZcNZbOte5PFt4An4P4IK3fGqI5TkSEE4/Yh2iQI8='; style-src 'self' https://fonts.googleapis.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://unpkg.com; font-src 'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com; img-src 'self' data: https://thisisfuerteventura.netlify.app; media-src 'self'; connect-src 'self' https://thisisfuerteventura.netlify.app https://www.googletagmanager.com https://analytics.google.com http://localhost:3000 http://localhost:3001; base-uri 'self'; object-src none; frame-ancestors 'self';">
+        <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://unpkg.com https://www.googletagmanager.com https://analytics.google.com https://www.google-analytics.com; style-src 'self' https://fonts.googleapis.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://unpkg.com; font-src 'self' data: https://fonts.gstatic.com https://cdnjs.cloudflare.com; img-src 'self' data: https: https://unpkg.com https://*.tile.openstreetmap.org; media-src 'self'; connect-src 'self' https://thisisfuerteventura.netlify.app https://www.googletagmanager.com https://www.google-analytics.com https://cdn.jsdelivr.net https://unpkg.com http://localhost:3000 http://localhost:3001 http://localhost:* http://127.0.0.1:* https://api.open-meteo.com https://marine-api.open-meteo.com; base-uri 'self'; object-src 'none'; frame-ancestors 'self';">
     
     <!-- Twitter Cards -->
     <meta name="twitter:card" content="summary">
     <meta name="twitter:title" content="Contacto - This is Fuerteventura">
     <meta name="twitter:description" content="Contacta con nosotros para información turística sobre Fuerteventura.">
     
-    <!-- Structured Data -->
-    <script type="application/ld+json">
-    {
-        "@context": "https://schema.org",
-        "@type": "ContactPage",
-        "name": "Contacto - This is Fuerteventura",
-        "url": "https://thisisfuerteventura.netlify.app/contacto.html",
-        "mainEntity": {
-            "@type": "Organization",
-            "name": "This is Fuerteventura",
-            "url": "https://thisisfuerteventura.netlify.app/"
-        }
-    }
-    </script>
+    <!-- Structured Data (external to satisfy CSP) -->
+    <script type="application/ld+json" src="data/structured/contacto-contactpage.jsonld"></script>
 </head>
 <body>
     <a class="skip-link" href="#main">Saltar al contenido principal</a>
@@ -82,7 +70,7 @@
         </video>
         <div class="hero-overlay"></div>
         <div class="hero-content">
-            <h2>Contacto</h2>
+            <h2 class="sand-write" data-sand-write data-sand-step="0.08" data-sand-duration="0.95" data-sand-delay="0.12" data-sand-distribution="ease">Contacto</h2>
             <p>Estamos aquí para ayudarte</p>
         </div>
     </section>
@@ -90,7 +78,7 @@
     <section class="contact-content reveal">
         <div class="contact-container">
             <div class="contact-info">
-                <h2>Información de contacto</h2>
+                <h2 class="sand-write" data-sand-write data-sand-step="0.05" data-sand-duration="0.85" data-sand-distribution="ease">Información de contacto</h2>
                 <div class="info-item">
                     <i class="fas fa-envelope"></i>
                     <div>
@@ -125,7 +113,7 @@
             </div>
 
             <div class="contact-form">
-                <h2>Envíanos un mensaje</h2>
+                <h2 class="sand-write" data-sand-write data-sand-step="0.05" data-sand-duration="0.85" data-sand-distribution="ease">Envíanos un mensaje</h2>
                 <form id="contact-form">
                     <div class="form-group">
                         <label for="name">Nombre</label>
@@ -166,7 +154,7 @@
 
     <section class="about-project reveal">
         <div class="container">
-            <h2>Sobre el proyecto</h2>
+            <h2 class="sand-write" data-sand-write data-sand-step="0.05" data-sand-duration="0.85" data-sand-distribution="ease">Sobre el proyecto</h2>
             <p>This is Fuerteventura es una guía independiente pensada para ayudarte a descubrir la isla: noticias, planes, gastronomía y consejos prácticos. Reunimos información útil y la presentamos de forma clara para que planifiques tu viaje o disfrutes si ya vives aquí.</p>
             <div class="about-grid">
                 <figure>
@@ -183,7 +171,7 @@
 
     <section class="press-support reveal">
         <div class="container">
-            <h2>Prensa y soporte</h2>
+            <h2 class="sand-write" data-sand-write data-sand-step="0.05" data-sand-duration="0.85" data-sand-distribution="ease">Prensa y soporte</h2>
             <p>Para colaboraciones, notas de prensa o soporte técnico, indícanos el asunto en el formulario y te responderemos lo antes posible.</p>
             <ul>
                 <li>Colaboraciones y publicidad: selecciona “Colaboración” en Asunto.</li>
@@ -194,7 +182,7 @@
     </section>
 
     <section class="faq reveal">
-        <h2>Preguntas frecuentes</h2>
+        <h2 class="sand-write" data-sand-write data-sand-step="0.05" data-sand-duration="0.85" data-sand-distribution="ease">Preguntas frecuentes</h2>
         <div class="faq-container">
             <div class="faq-item">
                 <h3>¿Cómo puedo colaborar con This is Fuerteventura?</h3>
@@ -260,6 +248,7 @@
     <script src="js/ux.js?v=2025111508" defer></script>
     <script src="js/ambient.js?v=2025111508" defer></script>
     <script src="js/ambient-sounds.js?v=2025111508" defer></script>
+    <script src="js/sand-write.js?v=2025111611" defer></script>
 
     <!-- Cookie Consent Banner -->
     <div id="cookie-consent" class="cookie-consent">

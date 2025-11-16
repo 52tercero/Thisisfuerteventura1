@@ -1,0 +1,12 @@
+﻿{
+  "@context": "https://schema.org",
+  "@type": "TouristDestination",
+  "name": "Fuerteventura",
+  "description": "Guía turística completa de Fuerteventura con los mejores lugares que visitar",
+  "url": "https://thisisfuerteventura.netlify.app/turismo.html",
+  "touristType": ["Familias", "Parejas", "Aventureros", "Amantes de la naturaleza"],
+  "includedInDataCatalog": {
+    "@type": "DataCatalog",
+    "name": "This is Fuerteventura"
+  }
+}

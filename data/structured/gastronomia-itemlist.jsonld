@@ -1,0 +1,14 @@
+﻿{
+  "@context": "https://schema.org",
+  "@type": "ItemList",
+  "name": "Restaurantes de Fuerteventura",
+  "description": "Guía de gastronomía y restaurantes en Fuerteventura",
+  "url": "https://thisisfuerteventura.netlify.app/gastronomia.html",
+  "numberOfItems": 36,
+  "itemListElement": [
+    {
+      "@type": "Restaurant",
+      "name": "Restaurantes en Fuerteventura"
+    }
+  ]
+}
