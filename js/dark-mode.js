@@ -23,21 +23,8 @@
   const initial = getPreferred();
   applyTheme(initial);
 
-  // Create toggle button if not present
-  const ensureToggle = () => {
-    const header = document.querySelector('header');
-    if (!header) return null;
-    let btn = header.querySelector('.theme-toggle');
-    if (btn) return btn;
-    btn = document.createElement('button');
-    btn.className = 'theme-toggle';
-    btn.type = 'button';
-    btn.setAttribute('aria-label', 'Cambiar tema');
-    btn.setAttribute('aria-pressed', initial === 'dark' ? 'true' : 'false');
-    btn.innerHTML = '<i class="fas fa-moon"></i> <span>Tema</span>';
-    header.appendChild(btn);
-    return btn;
-  };
+  // Do NOT auto-create toggle here to avoid duplicates; use existing if present
+  const ensureToggle = () => document.getElementById('theme-toggle') || document.querySelector('.theme-toggle');
 
   const toggle = ensureToggle();
   if (!toggle) return;
