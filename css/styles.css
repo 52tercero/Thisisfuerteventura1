@@ -647,6 +647,13 @@ nav ul li a[aria-current="page"]::after {
 .dark-header nav ul li a:hover { color: var(--secondary-color); }
 .dark-header .mobile-menu { color: #ffffff; }
 
+/* Forzar header claro (blanco) en todas las páginas */
+.dark-header header { background-color: #ffffff !important; backdrop-filter: none !important; }
+html[data-theme="dark"].dark-header header { background-color: #ffffff !important; }
+.dark-header nav ul li a { color: var(--header-text) !important; }
+.dark-header nav ul li a:hover { color: var(--primary-color) !important; }
+.dark-header .mobile-menu { color: var(--dark-color) !important; }
+
 .mobile-menu {
     display: none;
     font-size: 1.8rem;
@@ -707,7 +714,6 @@ nav ul li a[aria-current="page"]::after {
     margin-bottom: 30px;
 }
 
-/* Hero heading (unified typography for h1/h2 across video/static) */
 .hero .hero-content h2 {
     font-size: 3.5rem;
     line-height: 1.15;
