@@ -17,16 +17,16 @@
   # Note: CSP is enforced per-page via meta tag with JSON-LD hashes. Avoid conflicting header-level CSP.
   # Content-Security-Policy removed here to let page-level policies apply.
 
-# CSS and JS - cache for 1 hour
+# CSS and JS - long cache with immutable (fingerprinted via ?v=)
 /css/*
-  Cache-Control: public, max-age=3600, must-revalidate
+  Cache-Control: public, max-age=2592000, immutable
 
 /js/*
-  Cache-Control: public, max-age=3600, must-revalidate
+  Cache-Control: public, max-age=2592000, immutable
 
-# Images - cache for 7 days
+# Images - cache for 30 days
 /images/*
-  Cache-Control: public, max-age=604800, immutable
+  Cache-Control: public, max-age=2592000, immutable
 
 # Web manifest
 /manifest.webmanifest
