@@ -66,34 +66,50 @@ function updateCspMeta(html, hashes) {
   const policy = contentMatch[2];
   try { console.log('[inject-jsonld:internal] policy raw:', policy); } catch {}
 
-  // Parse script-src directive
+  // Parse directives into ordered list and a map
   const directives = policy.split(';').map(s => s.trim()).filter(Boolean);
   try { console.log('[inject-jsonld:internal] directives:', directives); } catch {}
-  const idx = directives.findIndex(d => d.startsWith('script-src '));
-  if (idx === -1) {
+
+  const dirMap = new Map();
+  for (const d of directives) {
+    const sp = d.split(/\s+/);
+    const key = sp.shift();
+    dirMap.set(key, sp);
+  }
+
+  if (!dirMap.has('script-src')) {
     try { console.log('[inject-jsonld:internal] no script-src directive found'); } catch {}
-    // No script-src found; leave unchanged
-    return html;
+    // If missing, initialize with self (mirror default-src behavior)
+    dirMap.set('script-src', ["'self'"]);
+    directives.push("script-src 'self'");
   }
 
-  let scriptSrc = directives[idx]; // e.g., "script-src 'self' https://...".
-  let parts = scriptSrc.split(/\s+/);
-  const name = parts.shift(); // 'script-src'
-  let set = new Set(parts);
-
-  // Remove 'unsafe-inline'
+  // Update script-src with hashes and remove unsafe-inline
+  const scriptParts = dirMap.get('script-src');
+  const set = new Set(scriptParts);
   if (set.has("'unsafe-inline'")) set.delete("'unsafe-inline'");
+  for (const h of hashes) set.add(`'sha256-${h}'`);
+  dirMap.set('script-src', Array.from(set));
 
-  // Add hashes
-  for (const h of hashes) {
-    const token = `'sha256-${h}'`;
-    set.add(token);
+  // Ensure additional hardening directives
+  if (!dirMap.has('base-uri')) dirMap.set('base-uri', ["'self'"]);
+  if (!dirMap.has('object-src')) dirMap.set('object-src', ['none']);
+  if (!dirMap.has('frame-ancestors')) dirMap.set('frame-ancestors', ["'self'"]);
+
+  // Rebuild policy preserving original order, appending any new ones
+  const knownOrder = [];
+  const seen = new Set();
+  for (const d of directives) {
+    const key = d.split(/\s+/)[0];
+    if (!seen.has(key) && dirMap.has(key)) {
+      knownOrder.push(`${key} ${dirMap.get(key).join(' ')}`.trim());
+      seen.add(key);
+    }
   }
-
-  const updatedScriptSrc = [name, ...Array.from(set)].join(' ');
-  // if (updatedScriptSrc === scriptSrc) { /* no-op */ }
-  directives[idx] = updatedScriptSrc;
-  const updatedPolicy = directives.join('; ') + ';';
+  for (const key of dirMap.keys()) {
+    if (!seen.has(key)) knownOrder.push(`${key} ${dirMap.get(key).join(' ')}`.trim());
+  }
+  const updatedPolicy = knownOrder.join('; ') + ';';
   try {
     if (updatedPolicy === policy) {
       console.log('[inject-jsonld:internal] policy unchanged');
