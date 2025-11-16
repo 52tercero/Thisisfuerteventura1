@@ -707,6 +707,23 @@ nav ul li a[aria-current="page"]::after {
     margin-bottom: 30px;
 }
 
+/* Hero heading (unified typography for h1/h2 across video/static) */
+.hero .hero-content h1,
+.hero .hero-content h2 {
+    font-size: clamp(2rem, 3.6vw, 3rem);
+    line-height: 1.15;
+    letter-spacing: -0.01em;
+    margin-bottom: 18px;
+    color: var(--text-white);
+    text-shadow: 0 2px 6px rgba(0,0,0,0.4);
+}
+@media (max-width: 768px) {
+    .hero .hero-content h1,
+    .hero .hero-content h2 {
+        font-size: clamp(1.6rem, 6vw, 2rem);
+    }
+}
+
 /* Hero de página de noticias */
 .page-header {
     height: 40vh;
@@ -1900,6 +1917,399 @@ button:disabled.btn {
         padding: 30px 5%;
     }
 }
+
+/* Sand-write text effect */
+[data-sand-write] {
+    --sand-ease: cubic-bezier(.25,.6,.3,1);
+}
+[data-sand-write] > span {
+    display: inline-block;
+    opacity: 0;
+    transform: translateY(0.35em);
+    filter: blur(3px);
+    animation-name: sd-in;
+    animation-duration: 0.85s;
+    animation-timing-function: var(--sand-ease);
+    animation-fill-mode: forwards;
+}
+.sd-dur-short > span { animation-duration: 0.7s; }
+.sd-dur-med > span { animation-duration: 0.85s; }
+.sd-dur-long > span { animation-duration: 1s; }
+.sd-space { display: inline-block; width: 0.35em; }
+.sand-write.done { text-shadow: 0 1px 0 rgba(0,0,0,0.02); }
+@keyframes sd-in {
+    from { opacity: 0; transform: translateY(0.45em); filter: blur(4px); }
+    to { opacity: 1; transform: translateY(0); filter: blur(0); }
+}
+@media (prefers-reduced-motion: reduce) {
+    [data-sand-write] > span { animation: none !important; opacity: 1 !important; transform: none !important; filter: none !important; }
+}
+/* Speed: fast (0.04s increments) */
+.sd-f-0 { animation-delay: 0s; }
+.sd-f-1 { animation-delay: 0.04s; }
+.sd-f-2 { animation-delay: 0.08s; }
+.sd-f-3 { animation-delay: 0.12s; }
+.sd-f-4 { animation-delay: 0.16s; }
+.sd-f-5 { animation-delay: 0.2s; }
+.sd-f-6 { animation-delay: 0.24s; }
+.sd-f-7 { animation-delay: 0.28s; }
+.sd-f-8 { animation-delay: 0.32s; }
+.sd-f-9 { animation-delay: 0.36s; }
+.sd-f-10 { animation-delay: 0.4s; }
+.sd-f-11 { animation-delay: 0.44s; }
+.sd-f-12 { animation-delay: 0.48s; }
+.sd-f-13 { animation-delay: 0.52s; }
+.sd-f-14 { animation-delay: 0.56s; }
+.sd-f-15 { animation-delay: 0.6s; }
+.sd-f-16 { animation-delay: 0.64s; }
+.sd-f-17 { animation-delay: 0.68s; }
+.sd-f-18 { animation-delay: 0.72s; }
+.sd-f-19 { animation-delay: 0.76s; }
+.sd-f-20 { animation-delay: 0.8s; }
+.sd-f-21 { animation-delay: 0.84s; }
+.sd-f-22 { animation-delay: 0.88s; }
+.sd-f-23 { animation-delay: 0.92s; }
+.sd-f-24 { animation-delay: 0.96s; }
+.sd-f-25 { animation-delay: 1s; }
+.sd-f-26 { animation-delay: 1.04s; }
+.sd-f-27 { animation-delay: 1.08s; }
+.sd-f-28 { animation-delay: 1.12s; }
+.sd-f-29 { animation-delay: 1.16s; }
+.sd-f-30 { animation-delay: 1.2s; }
+.sd-f-31 { animation-delay: 1.24s; }
+.sd-f-32 { animation-delay: 1.28s; }
+.sd-f-33 { animation-delay: 1.32s; }
+.sd-f-34 { animation-delay: 1.36s; }
+.sd-f-35 { animation-delay: 1.4s; }
+.sd-f-36 { animation-delay: 1.44s; }
+.sd-f-37 { animation-delay: 1.48s; }
+.sd-f-38 { animation-delay: 1.52s; }
+.sd-f-39 { animation-delay: 1.56s; }
+.sd-f-40 { animation-delay: 1.6s; }
+.sd-f-41 { animation-delay: 1.64s; }
+.sd-f-42 { animation-delay: 1.68s; }
+.sd-f-43 { animation-delay: 1.72s; }
+.sd-f-44 { animation-delay: 1.76s; }
+.sd-f-45 { animation-delay: 1.8s; }
+.sd-f-46 { animation-delay: 1.84s; }
+.sd-f-47 { animation-delay: 1.88s; }
+.sd-f-48 { animation-delay: 1.92s; }
+.sd-f-49 { animation-delay: 1.96s; }
+.sd-f-50 { animation-delay: 2s; }
+.sd-f-51 { animation-delay: 2.04s; }
+.sd-f-52 { animation-delay: 2.08s; }
+.sd-f-53 { animation-delay: 2.12s; }
+.sd-f-54 { animation-delay: 2.16s; }
+.sd-f-55 { animation-delay: 2.2s; }
+.sd-f-56 { animation-delay: 2.24s; }
+.sd-f-57 { animation-delay: 2.28s; }
+.sd-f-58 { animation-delay: 2.32s; }
+.sd-f-59 { animation-delay: 2.36s; }
+.sd-f-60 { animation-delay: 2.4s; }
+.sd-f-61 { animation-delay: 2.44s; }
+.sd-f-62 { animation-delay: 2.48s; }
+.sd-f-63 { animation-delay: 2.52s; }
+.sd-f-64 { animation-delay: 2.56s; }
+.sd-f-65 { animation-delay: 2.6s; }
+.sd-f-66 { animation-delay: 2.64s; }
+.sd-f-67 { animation-delay: 2.68s; }
+.sd-f-68 { animation-delay: 2.72s; }
+.sd-f-69 { animation-delay: 2.76s; }
+.sd-f-70 { animation-delay: 2.8s; }
+.sd-f-71 { animation-delay: 2.84s; }
+.sd-f-72 { animation-delay: 2.88s; }
+.sd-f-73 { animation-delay: 2.92s; }
+.sd-f-74 { animation-delay: 2.96s; }
+.sd-f-75 { animation-delay: 3s; }
+.sd-f-76 { animation-delay: 3.04s; }
+.sd-f-77 { animation-delay: 3.08s; }
+.sd-f-78 { animation-delay: 3.12s; }
+.sd-f-79 { animation-delay: 3.16s; }
+.sd-f-80 { animation-delay: 3.2s; }
+.sd-f-81 { animation-delay: 3.24s; }
+.sd-f-82 { animation-delay: 3.28s; }
+.sd-f-83 { animation-delay: 3.32s; }
+.sd-f-84 { animation-delay: 3.36s; }
+.sd-f-85 { animation-delay: 3.4s; }
+.sd-f-86 { animation-delay: 3.44s; }
+.sd-f-87 { animation-delay: 3.48s; }
+.sd-f-88 { animation-delay: 3.52s; }
+.sd-f-89 { animation-delay: 3.56s; }
+.sd-f-90 { animation-delay: 3.6s; }
+.sd-f-91 { animation-delay: 3.64s; }
+.sd-f-92 { animation-delay: 3.68s; }
+.sd-f-93 { animation-delay: 3.72s; }
+.sd-f-94 { animation-delay: 3.76s; }
+.sd-f-95 { animation-delay: 3.8s; }
+.sd-f-96 { animation-delay: 3.84s; }
+.sd-f-97 { animation-delay: 3.88s; }
+.sd-f-98 { animation-delay: 3.92s; }
+.sd-f-99 { animation-delay: 3.96s; }
+.sd-f-100 { animation-delay: 4s; }
+.sd-f-101 { animation-delay: 4.04s; }
+.sd-f-102 { animation-delay: 4.08s; }
+.sd-f-103 { animation-delay: 4.12s; }
+.sd-f-104 { animation-delay: 4.16s; }
+.sd-f-105 { animation-delay: 4.2s; }
+.sd-f-106 { animation-delay: 4.24s; }
+.sd-f-107 { animation-delay: 4.28s; }
+.sd-f-108 { animation-delay: 4.32s; }
+.sd-f-109 { animation-delay: 4.36s; }
+.sd-f-110 { animation-delay: 4.4s; }
+.sd-f-111 { animation-delay: 4.44s; }
+.sd-f-112 { animation-delay: 4.48s; }
+.sd-f-113 { animation-delay: 4.52s; }
+.sd-f-114 { animation-delay: 4.56s; }
+.sd-f-115 { animation-delay: 4.6s; }
+.sd-f-116 { animation-delay: 4.64s; }
+.sd-f-117 { animation-delay: 4.68s; }
+.sd-f-118 { animation-delay: 4.72s; }
+.sd-f-119 { animation-delay: 4.76s; }
+.sd-f-120 { animation-delay: 4.8s; }
+/* Speed: medium (0.06s increments) */
+.sd-m-0 { animation-delay: 0s; }
+.sd-m-1 { animation-delay: 0.06s; }
+.sd-m-2 { animation-delay: 0.12s; }
+.sd-m-3 { animation-delay: 0.18s; }
+.sd-m-4 { animation-delay: 0.24s; }
+.sd-m-5 { animation-delay: 0.3s; }
+.sd-m-6 { animation-delay: 0.36s; }
+.sd-m-7 { animation-delay: 0.42s; }
+.sd-m-8 { animation-delay: 0.48s; }
+.sd-m-9 { animation-delay: 0.54s; }
+.sd-m-10 { animation-delay: 0.6s; }
+.sd-m-11 { animation-delay: 0.66s; }
+.sd-m-12 { animation-delay: 0.72s; }
+.sd-m-13 { animation-delay: 0.78s; }
+.sd-m-14 { animation-delay: 0.84s; }
+.sd-m-15 { animation-delay: 0.9s; }
+.sd-m-16 { animation-delay: 0.96s; }
+.sd-m-17 { animation-delay: 1.02s; }
+.sd-m-18 { animation-delay: 1.08s; }
+.sd-m-19 { animation-delay: 1.14s; }
+.sd-m-20 { animation-delay: 1.2s; }
+.sd-m-21 { animation-delay: 1.26s; }
+.sd-m-22 { animation-delay: 1.32s; }
+.sd-m-23 { animation-delay: 1.38s; }
+.sd-m-24 { animation-delay: 1.44s; }
+.sd-m-25 { animation-delay: 1.5s; }
+.sd-m-26 { animation-delay: 1.56s; }
+.sd-m-27 { animation-delay: 1.62s; }
+.sd-m-28 { animation-delay: 1.68s; }
+.sd-m-29 { animation-delay: 1.74s; }
+.sd-m-30 { animation-delay: 1.8s; }
+.sd-m-31 { animation-delay: 1.86s; }
+.sd-m-32 { animation-delay: 1.92s; }
+.sd-m-33 { animation-delay: 1.98s; }
+.sd-m-34 { animation-delay: 2.04s; }
+.sd-m-35 { animation-delay: 2.1s; }
+.sd-m-36 { animation-delay: 2.16s; }
+.sd-m-37 { animation-delay: 2.22s; }
+.sd-m-38 { animation-delay: 2.28s; }
+.sd-m-39 { animation-delay: 2.34s; }
+.sd-m-40 { animation-delay: 2.4s; }
+.sd-m-41 { animation-delay: 2.46s; }
+.sd-m-42 { animation-delay: 2.52s; }
+.sd-m-43 { animation-delay: 2.58s; }
+.sd-m-44 { animation-delay: 2.64s; }
+.sd-m-45 { animation-delay: 2.7s; }
+.sd-m-46 { animation-delay: 2.76s; }
+.sd-m-47 { animation-delay: 2.82s; }
+.sd-m-48 { animation-delay: 2.88s; }
+.sd-m-49 { animation-delay: 2.94s; }
+.sd-m-50 { animation-delay: 3s; }
+.sd-m-51 { animation-delay: 3.06s; }
+.sd-m-52 { animation-delay: 3.12s; }
+.sd-m-53 { animation-delay: 3.18s; }
+.sd-m-54 { animation-delay: 3.24s; }
+.sd-m-55 { animation-delay: 3.3s; }
+.sd-m-56 { animation-delay: 3.36s; }
+.sd-m-57 { animation-delay: 3.42s; }
+.sd-m-58 { animation-delay: 3.48s; }
+.sd-m-59 { animation-delay: 3.54s; }
+.sd-m-60 { animation-delay: 3.6s; }
+.sd-m-61 { animation-delay: 3.66s; }
+.sd-m-62 { animation-delay: 3.72s; }
+.sd-m-63 { animation-delay: 3.78s; }
+.sd-m-64 { animation-delay: 3.84s; }
+.sd-m-65 { animation-delay: 3.9s; }
+.sd-m-66 { animation-delay: 3.96s; }
+.sd-m-67 { animation-delay: 4.02s; }
+.sd-m-68 { animation-delay: 4.08s; }
+.sd-m-69 { animation-delay: 4.14s; }
+.sd-m-70 { animation-delay: 4.2s; }
+.sd-m-71 { animation-delay: 4.26s; }
+.sd-m-72 { animation-delay: 4.32s; }
+.sd-m-73 { animation-delay: 4.38s; }
+.sd-m-74 { animation-delay: 4.44s; }
+.sd-m-75 { animation-delay: 4.5s; }
+.sd-m-76 { animation-delay: 4.56s; }
+.sd-m-77 { animation-delay: 4.62s; }
+.sd-m-78 { animation-delay: 4.68s; }
+.sd-m-79 { animation-delay: 4.74s; }
+.sd-m-80 { animation-delay: 4.8s; }
+.sd-m-81 { animation-delay: 4.86s; }
+.sd-m-82 { animation-delay: 4.92s; }
+.sd-m-83 { animation-delay: 4.98s; }
+.sd-m-84 { animation-delay: 5.04s; }
+.sd-m-85 { animation-delay: 5.1s; }
+.sd-m-86 { animation-delay: 5.16s; }
+.sd-m-87 { animation-delay: 5.22s; }
+.sd-m-88 { animation-delay: 5.28s; }
+.sd-m-89 { animation-delay: 5.34s; }
+.sd-m-90 { animation-delay: 5.4s; }
+.sd-m-91 { animation-delay: 5.46s; }
+.sd-m-92 { animation-delay: 5.52s; }
+.sd-m-93 { animation-delay: 5.58s; }
+.sd-m-94 { animation-delay: 5.64s; }
+.sd-m-95 { animation-delay: 5.7s; }
+.sd-m-96 { animation-delay: 5.76s; }
+.sd-m-97 { animation-delay: 5.82s; }
+.sd-m-98 { animation-delay: 5.88s; }
+.sd-m-99 { animation-delay: 5.94s; }
+.sd-m-100 { animation-delay: 6s; }
+.sd-m-101 { animation-delay: 6.06s; }
+.sd-m-102 { animation-delay: 6.12s; }
+.sd-m-103 { animation-delay: 6.18s; }
+.sd-m-104 { animation-delay: 6.24s; }
+.sd-m-105 { animation-delay: 6.3s; }
+.sd-m-106 { animation-delay: 6.36s; }
+.sd-m-107 { animation-delay: 6.42s; }
+.sd-m-108 { animation-delay: 6.48s; }
+.sd-m-109 { animation-delay: 6.54s; }
+.sd-m-110 { animation-delay: 6.6s; }
+.sd-m-111 { animation-delay: 6.66s; }
+.sd-m-112 { animation-delay: 6.72s; }
+.sd-m-113 { animation-delay: 6.78s; }
+.sd-m-114 { animation-delay: 6.84s; }
+.sd-m-115 { animation-delay: 6.9s; }
+.sd-m-116 { animation-delay: 6.96s; }
+.sd-m-117 { animation-delay: 7.02s; }
+.sd-m-118 { animation-delay: 7.08s; }
+.sd-m-119 { animation-delay: 7.14s; }
+.sd-m-120 { animation-delay: 7.2s; }
+/* Speed: slow (0.08s increments) */
+.sd-s-0 { animation-delay: 0s; }
+.sd-s-1 { animation-delay: 0.08s; }
+.sd-s-2 { animation-delay: 0.16s; }
+.sd-s-3 { animation-delay: 0.24s; }
+.sd-s-4 { animation-delay: 0.32s; }
+.sd-s-5 { animation-delay: 0.4s; }
+.sd-s-6 { animation-delay: 0.48s; }
+.sd-s-7 { animation-delay: 0.56s; }
+.sd-s-8 { animation-delay: 0.64s; }
+.sd-s-9 { animation-delay: 0.72s; }
+.sd-s-10 { animation-delay: 0.8s; }
+.sd-s-11 { animation-delay: 0.88s; }
+.sd-s-12 { animation-delay: 0.96s; }
+.sd-s-13 { animation-delay: 1.04s; }
+.sd-s-14 { animation-delay: 1.12s; }
+.sd-s-15 { animation-delay: 1.2s; }
+.sd-s-16 { animation-delay: 1.28s; }
+.sd-s-17 { animation-delay: 1.36s; }
+.sd-s-18 { animation-delay: 1.44s; }
+.sd-s-19 { animation-delay: 1.52s; }
+.sd-s-20 { animation-delay: 1.6s; }
+.sd-s-21 { animation-delay: 1.68s; }
+.sd-s-22 { animation-delay: 1.76s; }
+.sd-s-23 { animation-delay: 1.84s; }
+.sd-s-24 { animation-delay: 1.92s; }
+.sd-s-25 { animation-delay: 2s; }
+.sd-s-26 { animation-delay: 2.08s; }
+.sd-s-27 { animation-delay: 2.16s; }
+.sd-s-28 { animation-delay: 2.24s; }
+.sd-s-29 { animation-delay: 2.32s; }
+.sd-s-30 { animation-delay: 2.4s; }
+.sd-s-31 { animation-delay: 2.48s; }
+.sd-s-32 { animation-delay: 2.56s; }
+.sd-s-33 { animation-delay: 2.64s; }
+.sd-s-34 { animation-delay: 2.72s; }
+.sd-s-35 { animation-delay: 2.8s; }
+.sd-s-36 { animation-delay: 2.88s; }
+.sd-s-37 { animation-delay: 2.96s; }
+.sd-s-38 { animation-delay: 3.04s; }
+.sd-s-39 { animation-delay: 3.12s; }
+.sd-s-40 { animation-delay: 3.2s; }
+.sd-s-41 { animation-delay: 3.28s; }
+.sd-s-42 { animation-delay: 3.36s; }
+.sd-s-43 { animation-delay: 3.44s; }
+.sd-s-44 { animation-delay: 3.52s; }
+.sd-s-45 { animation-delay: 3.6s; }
+.sd-s-46 { animation-delay: 3.68s; }
+.sd-s-47 { animation-delay: 3.76s; }
+.sd-s-48 { animation-delay: 3.84s; }
+.sd-s-49 { animation-delay: 3.92s; }
+.sd-s-50 { animation-delay: 4s; }
+.sd-s-51 { animation-delay: 4.08s; }
+.sd-s-52 { animation-delay: 4.16s; }
+.sd-s-53 { animation-delay: 4.24s; }
+.sd-s-54 { animation-delay: 4.32s; }
+.sd-s-55 { animation-delay: 4.4s; }
+.sd-s-56 { animation-delay: 4.48s; }
+.sd-s-57 { animation-delay: 4.56s; }
+.sd-s-58 { animation-delay: 4.64s; }
+.sd-s-59 { animation-delay: 4.72s; }
+.sd-s-60 { animation-delay: 4.8s; }
+.sd-s-61 { animation-delay: 4.88s; }
+.sd-s-62 { animation-delay: 4.96s; }
+.sd-s-63 { animation-delay: 5.04s; }
+.sd-s-64 { animation-delay: 5.12s; }
+.sd-s-65 { animation-delay: 5.2s; }
+.sd-s-66 { animation-delay: 5.28s; }
+.sd-s-67 { animation-delay: 5.36s; }
+.sd-s-68 { animation-delay: 5.44s; }
+.sd-s-69 { animation-delay: 5.52s; }
+.sd-s-70 { animation-delay: 5.6s; }
+.sd-s-71 { animation-delay: 5.68s; }
+.sd-s-72 { animation-delay: 5.76s; }
+.sd-s-73 { animation-delay: 5.84s; }
+.sd-s-74 { animation-delay: 5.92s; }
+.sd-s-75 { animation-delay: 6s; }
+.sd-s-76 { animation-delay: 6.08s; }
+.sd-s-77 { animation-delay: 6.16s; }
+.sd-s-78 { animation-delay: 6.24s; }
+.sd-s-79 { animation-delay: 6.32s; }
+.sd-s-80 { animation-delay: 6.4s; }
+.sd-s-81 { animation-delay: 6.48s; }
+.sd-s-82 { animation-delay: 6.56s; }
+.sd-s-83 { animation-delay: 6.64s; }
+.sd-s-84 { animation-delay: 6.72s; }
+.sd-s-85 { animation-delay: 6.8s; }
+.sd-s-86 { animation-delay: 6.88s; }
+.sd-s-87 { animation-delay: 6.96s; }
+.sd-s-88 { animation-delay: 7.04s; }
+.sd-s-89 { animation-delay: 7.12s; }
+.sd-s-90 { animation-delay: 7.2s; }
+.sd-s-91 { animation-delay: 7.28s; }
+.sd-s-92 { animation-delay: 7.36s; }
+.sd-s-93 { animation-delay: 7.44s; }
+.sd-s-94 { animation-delay: 7.52s; }
+.sd-s-95 { animation-delay: 7.6s; }
+.sd-s-96 { animation-delay: 7.68s; }
+.sd-s-97 { animation-delay: 7.76s; }
+.sd-s-98 { animation-delay: 7.84s; }
+.sd-s-99 { animation-delay: 7.92s; }
+.sd-s-100 { animation-delay: 8s; }
+.sd-s-101 { animation-delay: 8.08s; }
+.sd-s-102 { animation-delay: 8.16s; }
+.sd-s-103 { animation-delay: 8.24s; }
+.sd-s-104 { animation-delay: 8.32s; }
+.sd-s-105 { animation-delay: 8.4s; }
+.sd-s-106 { animation-delay: 8.48s; }
+.sd-s-107 { animation-delay: 8.56s; }
+.sd-s-108 { animation-delay: 8.64s; }
+.sd-s-109 { animation-delay: 8.72s; }
+.sd-s-110 { animation-delay: 8.8s; }
+.sd-s-111 { animation-delay: 8.88s; }
+.sd-s-112 { animation-delay: 8.96s; }
+.sd-s-113 { animation-delay: 9.04s; }
+.sd-s-114 { animation-delay: 9.12s; }
+.sd-s-115 { animation-delay: 9.2s; }
+.sd-s-116 { animation-delay: 9.28s; }
+.sd-s-117 { animation-delay: 9.36s; }
+.sd-s-118 { animation-delay: 9.44s; }
+.sd-s-119 { animation-delay: 9.52s; }
+.sd-s-120 { animation-delay: 9.6s; }
 /* Widget: Tiempo general de Fuerteventura */
 .island-weather { padding: 50px 5%; background:#fff; border-top:1px solid #eee; border-bottom:1px solid #eee; }
 .island-weather h2 { text-align:center; font-size: 2rem; margin-bottom: 18px; color: var(--dark-color); }
