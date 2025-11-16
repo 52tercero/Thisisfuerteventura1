@@ -1,8 +1,8 @@
 ﻿(function(){
   const S = {
-    ocean: '/media/olas.mp3',
-    wind: '/media/viento.mp3',
-    music: '/media/musica-local.mp3'
+    ocean: 'sonidos/olas.mp3',
+    wind: 'sonidos/viento.mp3',
+    music: 'sonidos/musica-local.mp3'
   };
   let current = null;
   let audio = null;
@@ -32,7 +32,7 @@
         current = key;
         status.textContent = 'Reproduciendo: ' + (key==='ocean'?'Olas':key==='wind'?'Viento':'Música local');
       }catch(e){
-        status.textContent = 'No se pudo reproducir. ¿Están instalados los audios en /media/?';
+        status.textContent = 'No se pudo reproducir. ¿Está el audio en /sonidos/?';
       }
     });
   }
