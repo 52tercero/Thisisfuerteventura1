@@ -1,4 +1,65 @@
-﻿/* dark-mode.js - Toggle de modo oscuro/claro */
+﻿// Dark/Light mode toggle with persistence and prefers-color-scheme
+(() => {
+  if (typeof window === 'undefined') return;
+  const root = document.documentElement;
+  const STORAGE_KEY = 'theme';
+
+  const getPreferred = () => {
+    const saved = localStorage.getItem(STORAGE_KEY);
+    if (saved === 'dark' || saved === 'light') return saved;
+    const mql = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)');
+    return mql && mql.matches ? 'dark' : 'light';
+  };
+
+  const applyTheme = (theme) => {
+    if (theme === 'dark') {
+      root.setAttribute('data-theme', 'dark');
+    } else {
+      root.removeAttribute('data-theme');
+    }
+  };
+
+  // Initialize
+  const initial = getPreferred();
+  applyTheme(initial);
+
+  // Create toggle button if not present
+  const ensureToggle = () => {
+    const header = document.querySelector('header');
+    if (!header) return null;
+    let btn = header.querySelector('.theme-toggle');
+    if (btn) return btn;
+    btn = document.createElement('button');
+    btn.className = 'theme-toggle';
+    btn.type = 'button';
+    btn.setAttribute('aria-label', 'Cambiar tema');
+    btn.setAttribute('aria-pressed', initial === 'dark' ? 'true' : 'false');
+    btn.innerHTML = '<i class="fas fa-moon"></i> <span>Tema</span>';
+    header.appendChild(btn);
+    return btn;
+  };
+
+  const toggle = ensureToggle();
+  if (!toggle) return;
+
+  const updateIcon = (theme) => {
+    const i = toggle.querySelector('i');
+    if (!i) return;
+    i.className = theme === 'dark' ? 'fas fa-sun' : 'fas fa-moon';
+  };
+
+  updateIcon(initial);
+
+  toggle.addEventListener('click', () => {
+    const current = root.getAttribute('data-theme') === 'dark' ? 'dark' : 'light';
+    const next = current === 'dark' ? 'light' : 'dark';
+    applyTheme(next);
+    localStorage.setItem(STORAGE_KEY, next);
+    toggle.setAttribute('aria-pressed', next === 'dark' ? 'true' : 'false');
+    updateIcon(next);
+  });
+})();
+/* dark-mode.js - Toggle de modo oscuro/claro */
 
 const THEME_KEY = 'fuerteventura-theme';
 const DARK_THEME = 'dark';

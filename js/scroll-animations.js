@@ -1,4 +1,71 @@
-﻿/* scroll-animations.js - Animaciones narrativas con scroll */
+﻿// Scroll animations using GSAP + ScrollTrigger (progressive enhancement)
+(() => {
+  if (typeof window === 'undefined') return;
+  const hasGSAP = typeof window.gsap !== 'undefined' && typeof window.ScrollTrigger !== 'undefined';
+  if (!hasGSAP) return;
+
+  const { gsap } = window;
+  gsap.registerPlugin(window.ScrollTrigger);
+
+  // Reveal elements with .reveal
+  const reveals = Array.from(document.querySelectorAll('.reveal'));
+  if (reveals.length) {
+    reveals.forEach((el) => {
+      gsap.fromTo(
+        el,
+        { autoAlpha: 0, y: 24 },
+        {
+          autoAlpha: 1,
+          y: 0,
+          duration: 0.8,
+          ease: 'power2.out',
+          scrollTrigger: {
+            trigger: el,
+            start: 'top 85%',
+            once: true,
+          },
+        }
+      );
+    });
+  }
+
+  // Subtle hero parallax for video/image backgrounds
+  const hero = document.querySelector('.hero-video, .hero.parallax');
+  if (hero) {
+    const bg = hero.querySelector('.hero-bg');
+    if (bg) {
+      gsap.to(bg, {
+        yPercent: 10,
+        ease: 'none',
+        scrollTrigger: {
+          trigger: hero,
+          start: 'top top',
+          end: 'bottom top',
+          scrub: true,
+        },
+      });
+    }
+    const content = hero.querySelector('.hero-content');
+    if (content) {
+      gsap.fromTo(
+        content,
+        { y: 0, autoAlpha: 1 },
+        {
+          y: -40,
+          autoAlpha: 0.9,
+          ease: 'none',
+          scrollTrigger: {
+            trigger: hero,
+            start: 'top top',
+            end: 'bottom top',
+            scrub: true,
+          },
+        }
+      );
+    }
+  }
+})();
+/* scroll-animations.js - Animaciones narrativas con scroll */
 
 // Configuración de Intersection Observer para animaciones
 const observerOptions = {

@@ -396,6 +396,30 @@ a {
     color: var(--primary-color);
 }
 
+/* In-content links: animated underline, accessible contrast */
+main a:not(.btn):not([role="button"]) {
+    position: relative;
+    transition: color var(--transition-base);
+}
+main a:not(.btn):not([role="button"])::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: auto;
+    bottom: -2px;
+    height: 2px;
+    width: 0;
+    background: currentColor;
+    transition: width var(--transition-fast);
+}
+main a:hover:not(.btn):not([role="button"])::after,
+main a:focus-visible:not(.btn):not([role="button"])::after {
+    width: 100%;
+}
+/* Avoid underline effect on pure icon links */
+.social-icons a::after { content: none !important; }
+.cookie-btn::after { content: none !important; }
+
 ul {
     list-style: none;
 }
@@ -541,10 +565,27 @@ nav ul li a {
     color: var(--header-text);
     font-weight: 500;
     transition: color var(--transition-base);
+    position: relative;
 }
 
 nav ul li a:hover {
     color: var(--primary-color);
+}
+
+/* Microinteracción: subrayado animado en navegación */
+nav ul li a::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: -6px;
+    height: 2px;
+    width: 0;
+    background: currentColor;
+    transition: width var(--transition-fast);
+}
+nav ul li a:hover::after,
+nav ul li a[aria-current="page"]::after {
+    width: 100%;
 }
 
 /* Mejorar contraste en páginas con header oscuro */
@@ -731,6 +772,11 @@ nav ul li a:hover {
     #featured-news {
         grid-template-columns: 1fr;
     }
+}
+
+/* Desktop amplio: 4 columnas en destacados */
+@media (min-width: 1280px) {
+    #featured-news { grid-template-columns: repeat(4, 1fr); }
 }
 
 .content-card {
@@ -2369,6 +2415,18 @@ html[data-theme="dark"] .theme-toggle { border-color: rgba(255,255,255,0.25); }
     display: inline-block;
 }
 
+/* Tipografía más expresiva en pantallas grandes */
+@media (min-width: 1440px) {
+    .hero-video .hero-content h1,
+    .hero-video .hero-content h2,
+    .hero.beaches-hero .hero-content h1,
+    .hero.beaches-hero .hero-content h2,
+    .hero.parallax .hero-content h1,
+    .hero.parallax .hero-content h2 {
+        font-size: clamp(3rem, 5vw, 6rem);
+    }
+}
+
 @media (max-width: 768px) {
     .hero-video,
     .hero.beaches-hero,
@@ -2665,6 +2723,19 @@ select:focus-visible {
 
 /* Utilidad: oculto (reemplaza style="display:none") */
 .hidden { display: none !important; }
+
+/* Utilidad: oculto solo para lectores de pantalla */
+.visually-hidden {
+    position: absolute !important;
+    width: 1px !important;
+    height: 1px !important;
+    padding: 0 !important;
+    margin: -1px !important;
+    overflow: hidden !important;
+    clip: rect(0 0 0 0) !important;
+    white-space: nowrap !important;
+    border: 0 !important;
+}
 
 /* Alto contraste para usuarios que lo prefieran */
 @media (prefers-contrast: high) {
