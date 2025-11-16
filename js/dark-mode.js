@@ -63,18 +63,18 @@ function getPreferredTheme() {
 
 // Aplicar tema
 function applyTheme(theme) {
-    document.documentElement.setAttribute('data-theme', theme);
-    localStorage.setItem(THEME_KEY, theme);
+  document.documentElement.setAttribute('data-theme', theme);
+  localStorage.setItem(THEME_KEY, theme);
     
-    // Actualizar botón toggle
-    const toggleBtn = document.getElementById('theme-toggle');
-    if (toggleBtn) {
-        const icon = toggleBtn.querySelector('i');
-        if (icon) {
-            icon.className = theme === DARK_THEME ? 'fas fa-sun' : 'fas fa-moon';
-        }
-        toggleBtn.setAttribute('aria-label', theme === DARK_THEME ? 'Activar modo claro' : 'Activar modo oscuro');
+  // Actualizar botón toggle (id o clase)
+  const toggleBtn = document.getElementById('theme-toggle') || document.querySelector('.theme-toggle');
+  if (toggleBtn) {
+    const icon = toggleBtn.querySelector('i');
+    if (icon) {
+      icon.className = theme === DARK_THEME ? 'fas fa-sun' : 'fas fa-moon';
     }
+    toggleBtn.setAttribute('aria-label', theme === DARK_THEME ? 'Activar modo claro' : 'Activar modo oscuro');
+  }
 }
 
 // Toggle entre temas
@@ -90,7 +90,7 @@ document.addEventListener('DOMContentLoaded', () => {
     applyTheme(theme);
     
     // Añadir botón toggle si no existe
-    const existingToggle = document.getElementById('theme-toggle');
+    const existingToggle = document.getElementById('theme-toggle') || document.querySelector('.theme-toggle');
     if (!existingToggle) {
         const nav = document.querySelector('nav');
         if (nav) {
