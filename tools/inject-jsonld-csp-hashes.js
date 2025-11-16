@@ -127,11 +127,6 @@ function updateCspMeta(html, hashes) {
 function processFile(filePath) {
   const original = fs.readFileSync(filePath, 'utf8');
   const blocks = getJsonLdBlocks(original);
-  if (blocks.length === 0) {
-    // No JSON-LD blocks found
-    return false;
-  }
-
   const hashes = blocks.map(b => computeSha256Base64(b.inner));
   const updated = updateCspMeta(original, hashes);
   if (updated && updated !== original) {
@@ -174,18 +169,14 @@ function processFile(filePath) {
 }
 
 function main() {
-  const topLevelHtmlFiles = [
-    'index.html',
-    'noticias.html',
-    'turismo.html',
-    'alojamiento.html',
-    'playas.html',
-    'gastronomia.html',
-    'contacto.html',
-  ].map(f => path.join(ROOT, f)).filter(f => fs.existsSync(f));
+  // Process all top-level HTML files except explicit test pages
+  const all = fs.readdirSync(ROOT)
+    .filter(name => name.toLowerCase().endsWith('.html'))
+    .filter(name => !/^test-.*\.(html)$/i.test(name))
+    .map(name => path.join(ROOT, name));
 
   let changed = 0, total = 0;
-  for (const f of topLevelHtmlFiles) {
+  for (const f of all) {
     total++;
     const res = processFile(f);
     if (res && typeof res === 'object') {
