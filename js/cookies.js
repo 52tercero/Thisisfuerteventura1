@@ -20,6 +20,16 @@ const CookieConsent = {
      * Inicializar el sistema de cookies
      */
     init() {
+        // Dev helpers via query params: ?cookies=reset | ?cookies=show
+        try {
+            const params = new URLSearchParams(location.search || '');
+            const action = (params.get('cookies') || '').toLowerCase();
+            if (action === 'reset') {
+                this.clearConsent();
+            } else if (action === 'show') {
+                this.clearConsent();
+            }
+        } catch(_) { /* ignore */ }
         // Verificar si ya existe consentimiento
         const consent = this.getConsent();
         
@@ -141,6 +151,15 @@ const CookieConsent = {
         expires.setDate(expires.getDate() + this.cookieExpireDays);
         
         document.cookie = `${this.cookieName}=${consent}; expires=${expires.toUTCString()}; path=/; SameSite=Lax`;
+    },
+
+    /**
+     * Borrar consentimiento guardado
+     */
+    clearConsent() {
+        try {
+            document.cookie = `${this.cookieName}=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/; SameSite=Lax`;
+        } catch(_) { /* ignore */ }
     },
 
     /**

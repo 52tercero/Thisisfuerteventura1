@@ -693,7 +693,6 @@ nav ul li a[aria-current="page"]::after {
 .hero-content h1, .hero-content h2 {
     /* No partir palabras por defecto */
     word-break: normal;
-    overflow-wrap: break-word; /* solo si es necesario para evitar desbordes */
     white-space: normal;
 }
 
