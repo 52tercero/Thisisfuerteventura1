@@ -12,11 +12,7 @@ const OUTPUT_FILE = path.join(OUTPUT_DIR, 'feeds.json');
 
 // Same feed list used in the client
 const newsSources = [
-  'https://rss.app/feeds/jbwZ2Q9QAvgvI6G0.xml',
-  'https://rss.app/feeds/8SmCQL7GDZyu2xB4.xml',
-  'https://rss.app/feeds/IchTPp234IVDaH7V.xml',
-  'https://rss.app/feeds/cNktFJXkoIBwqQSS.xml',
-  'https://rss.app/feeds/pGaOMTfcwV2mzdy7.xml'
+  'https://rss.app/feeds/jbwZ2Q9QAvgvI6G0.xml'
 ];
 
 function withTimeout(ms) {
@@ -68,6 +64,7 @@ async function main() {
   console.log('[SNAPSHOT] Fetching feeds...');
   const results = await Promise.allSettled(newsSources.map(src => fetchFeed(src)));
   let items = results.filter(r => r.status === 'fulfilled').map(r => r.value).flat();
+  // With a single source, still limit quantity for snapshot size
 
   // Dedupe by link/title and sort by date desc
   const seen = new Set();
