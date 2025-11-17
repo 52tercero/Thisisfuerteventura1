@@ -116,7 +116,8 @@ document.addEventListener('DOMContentLoaded', async function() {
         async function fetchLatestFeeds() {
             try {
                 if (window.FeedUtils && typeof FeedUtils.fetchRSSFeeds === 'function') {
-                    return await FeedUtils.fetchRSSFeeds(activeNewsSources);
+                    // Bypass caché para portada para maximizar frescura
+                    return await FeedUtils.fetchRSSFeeds(activeNewsSources, { noCache: true });
                 }
             } catch (e) {
                 console.warn('[CONTENT-LOADER] FeedUtils.fetchRSSFeeds failed:', e);
@@ -125,6 +126,27 @@ document.addEventListener('DOMContentLoaded', async function() {
             return [];
         }
         
+        // Utilidad: normalizar fecha para ordenación descendente
+        const normalizeTime = (item) => {
+            if (item && item.publishedAt) {
+                const dt = new Date(item.publishedAt);
+                if (!Number.isNaN(dt.getTime())) return dt.getTime();
+            }
+            if (item && item.raw) {
+                const rawDate = item.raw?.pubDate || item.raw?.published || item.raw?.updated || null;
+                if (rawDate) {
+                    const dt = new Date(rawDate);
+                    if (!Number.isNaN(dt.getTime())) return dt.getTime();
+                }
+            }
+            try {
+                const parts = (item?.date || '').split(' de ').reverse().join(' ');
+                const fallback = new Date(parts);
+                if (!Number.isNaN(fallback.getTime())) return fallback.getTime();
+            } catch (_) {}
+            return 0;
+        };
+
         // Intentar snapshot estático para primer render rápido
         (async () => {
             try {
@@ -164,31 +186,16 @@ document.addEventListener('DOMContentLoaded', async function() {
                             };
                         }));
 
-                        // Render rápido desde snapshot (hasta 12)
+                        // Ordenar por fecha desc y mostrar hasta 12
                         featuredNewsContainer.innerHTML = '';
-                        const bySource = {};
-                        normalized.forEach(item => {
-                            const src = item.source || 'desconocido';
-                            if (!bySource[src]) bySource[src] = [];
-                            bySource[src].push(item);
-                        });
-                        let featured = [];
-                        const sources = Object.keys(bySource);
-                        let round = 0;
-                        while (featured.length < 12 && round < 10) {
-                            for (const src of sources) {
-                                if (bySource[src].length > 0 && featured.length < 12) {
-                                    featured.push(bySource[src].shift());
-                                }
-                            }
-                            round++;
-                        }
+                        const featured = normalized.sort((a,b) => normalizeTime(b) - normalizeTime(a)).slice(0, 12);
                         featured.forEach((item) => {
                             const card = document.createElement('div');
                             card.className = 'content-card';
                             const fullText = (item.description || item.summary || '').replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim();
                             const shortDescription = fullText.length > 150 ? fullText.slice(0, 150) + '...' : fullText;
-                            const articleId = btoa(encodeURIComponent(item.title + item.date)).replace(/[^a-zA-Z0-9]/g, '').substring(0, 32);
+                            const idBase = `${item.title || ''}|${item.publishedAt || item.date || ''}`;
+                            const articleId = (function(){ try { return btoa(encodeURIComponent(idBase)).replace(/[^a-zA-Z0-9]/g, '').substring(0, 32); } catch(_) { return Math.random().toString(36).slice(2, 34); } })();
                             try { localStorage.setItem(`article_${articleId}`, JSON.stringify(item)); } catch (_) {}
                             card.innerHTML = `
                                 <img src="${toImageSrc(item.image)}" alt="${escapeHTML(item.title)}" loading="lazy" referrerpolicy="no-referrer">
@@ -232,30 +239,9 @@ document.addEventListener('DOMContentLoaded', async function() {
                 return;
             }
 
-            // Limpiar contenedor solo cuando hay datos para renderizar
+            // Limpiar contenedor y ordenar por fecha desc, tomar hasta 12
             featuredNewsContainer.innerHTML = '';
-            
-            // Agrupar por fuente y tomar artículos de forma balanceada
-            const bySource = {};
-            newsItems.forEach(item => {
-                const src = item.source || 'desconocido';
-                if (!bySource[src]) bySource[src] = [];
-                bySource[src].push(item);
-            });
-            
-            // Mezclar: distribuir artículos de todas las fuentes hasta completar 12 (reducido de 18)
-            let featured = [];
-            const sources = Object.keys(bySource);
-            let round = 0;
-            while (featured.length < 12 && round < 10) {
-                for (const src of sources) {
-                    if (bySource[src].length > 0 && featured.length < 12) {
-                        featured.push(bySource[src].shift());
-                    }
-                }
-                round++;
-            }
-            
+            const featured = [...newsItems].sort((a,b) => normalizeTime(b) - normalizeTime(a)).slice(0, 12);
             console.log('[CONTENT-LOADER] Mostrando', featured.length, 'artículos destacados');
             
             // Mostrar las noticias (resumen compacto en portada)
@@ -270,8 +256,9 @@ document.addEventListener('DOMContentLoaded', async function() {
                     ? fullText.slice(0, 150) + '...' 
                     : fullText;
 
-                // Crear ID único para el artículo basado en título y fecha
-                const articleId = btoa(encodeURIComponent(item.title + item.date)).replace(/[^a-zA-Z0-9]/g, '').substring(0, 32);
+                // Crear ID único para el artículo basado en título y publishedAt/fecha
+                const idBase = `${item.title || ''}|${item.publishedAt || item.date || ''}`;
+                const articleId = (function(){ try { return btoa(encodeURIComponent(idBase)).replace(/[^a-zA-Z0-9]/g, '').substring(0, 32); } catch(_) { return Math.random().toString(36).slice(2, 34); } })();
                 
                 // Guardar artículo completo en localStorage para acceso en noticia.html
                 try {

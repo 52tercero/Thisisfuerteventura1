@@ -76,7 +76,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
         try {
             if (window.FeedUtils && typeof FeedUtils.fetchRSSFeeds === 'function') {
-                const items = await FeedUtils.fetchRSSFeeds(activeNewsSources);
+                const items = await FeedUtils.fetchRSSFeeds(activeNewsSources, { noCache: !!forceRefresh });
                 cachedNewsItems = items.map((it, idx) => ({
                     id: idx + 1,
                     title: it.title,
@@ -422,8 +422,8 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // Carga inicial
-    loadAndDisplayNews();
+    // Carga inicial (forzar red para evitar caché local desactualizada)
+    loadAndDisplayNews({ forceRefresh: true });
 
     // Eliminada interacción con chips de etiqueta (ya no se usan para filtrar)
 

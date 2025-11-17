@@ -14,7 +14,7 @@
     ];
 
     // Configuración de caché
-    const CACHE_TTL_MS = 15 * 60 * 1000; // 15 minutos
+    const CACHE_TTL_MS = 5 * 60 * 1000; // 5 minutos para mayor frescura
 
     /**
      * Formatea una fecha al formato español
@@ -223,11 +223,7 @@
             return 'images/logo.jpg?v=2025110501';
         }
         
-        // Si es HTTP (no seguro), usar fallback
-        if (/^http:/.test(candidate)) {
-            return 'images/logo.jpg?v=2025110501';
-        }
-        
+        // No forzar fallback por esquema http:; el renderer proxificará si es externo
         return candidate;
     }
 
@@ -236,21 +232,22 @@
      * @param {Array<string>} sources - URLs de los feeds
      * @returns {Promise<Array>} Items normalizados
      */
-    async function fetchRSSFeeds(sources = DEFAULT_NEWS_SOURCES) {
+    async function fetchRSSFeeds(sources = DEFAULT_NEWS_SOURCES, options = {}) {
+        const { noCache = false } = options;
         let proxyBase = await discoverLocalProxy();
 
         try {
             console.debug('[FEED-UTILS] Proxy base:', proxyBase);
             
             // Intentar endpoint agregado primero
-            const aggKey = 'rss_cache_v5_title_only_AGG'; // Version bump para forzar recarga con nueva lógica
-            let items = cacheGet(aggKey);
+            const aggKey = 'rss_cache_v6_title_only_AGG'; // bump para nueva lógica + TTL
+            let items = noCache ? null : cacheGet(aggKey);
             
             if (!items) {
                 const aggPath = proxyBase === '' 
                     ? '/.netlify/functions/aggregate' 
                     : (proxyBase.endsWith('/.netlify/functions') ? '/aggregate' : '/api/aggregate');
-                const aggUrl = `${proxyBase}${aggPath}?sources=${encodeURIComponent(sources.join(','))}&dedupe=1`;
+                const aggUrl = `${proxyBase}${aggPath}?sources=${encodeURIComponent(sources.join(','))}&dedupe=1${noCache ? `&t=${Date.now()}` : ''}`;
                 
                 console.log('[FEED-UTILS] Fetching aggregate from:', aggUrl);
                 
@@ -271,7 +268,7 @@
                     // Fallback: obtener feeds individualmente
                     const fetches = sources.map(async (src) => {
                         const cacheKey = 'rss_cache_v3_media_' + btoa(src);
-                        const cached = cacheGet(cacheKey);
+                        const cached = noCache ? null : cacheGet(cacheKey);
                         if (cached) return cached;
                         
                         try {
@@ -279,7 +276,7 @@
                                 ? '/.netlify/functions/rss' 
                                 : (proxyBase.endsWith('/.netlify/functions') ? '/rss' : '/api/rss');
                             const isLocal = /^http:\/\/(localhost|127\.0\.0\.1)(:\d+)?/i.test(proxyBase);
-                            const rr = await fetch(`${proxyBase}${rssPath}?url=${encodeURIComponent(src)}`, { cache: 'no-store', ...(isLocal ? { targetAddressSpace: 'local' } : {}) });
+                            const rr = await fetch(`${proxyBase}${rssPath}?url=${encodeURIComponent(src)}${noCache ? `&t=${Date.now()}` : ''}`, { cache: 'no-store', ...(isLocal ? { targetAddressSpace: 'local' } : {}) });
                             
                             if (!rr.ok) throw new Error('bad response');
                             
@@ -307,7 +304,7 @@
                     const aggPath2 = proxyBase === '' 
                         ? '/.netlify/functions/aggregate' 
                         : (proxyBase.endsWith('/.netlify/functions') ? '/aggregate' : '/api/aggregate');
-                    const aggUrl2 = `${proxyBase}${aggPath2}?sources=${encodeURIComponent(sources.join(','))}&dedupe=1`;
+                    const aggUrl2 = `${proxyBase}${aggPath2}?sources=${encodeURIComponent(sources.join(','))}&dedupe=1${noCache ? `&t=${Date.now()}` : ''}`;
                     const isLocal2 = /^http:\/\/(localhost|127\.0\.0\.1)(:\\d+)?/i.test(proxyBase);
                     const r2 = await fetch(aggUrl2, { cache: 'no-store', ...(isLocal2 ? { targetAddressSpace: 'local' } : {}) });
                     if (r2.ok) {
