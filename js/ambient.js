@@ -26,6 +26,42 @@
   const layerPhase = [0.0, 0.7, 1.4];
   const yOffsets = [32, 44, 56];
 
+  // Intensidad de espuma modulable (0..1)
+  function clamp01(n){ return Math.max(0, Math.min(1, n)); }
+  function parseIntensityToken(v){
+    if (!v) return null;
+    const s = String(v).trim().toLowerCase();
+    if (s === 'off' || s === 'none' || s === '0') return 0;
+    if (s === 'low') return 0.35;
+    if (s === 'med' || s === 'mid' || s === 'medium') return 0.6;
+    if (s === 'high' || s === 'max' || s === '1') return 0.9;
+    const f = parseFloat(s);
+    return isFinite(f) ? clamp01(f) : null;
+  }
+  function getFoamIntensity(){
+    // 1) URL param ?foam= (low|med|high|0..1)
+    try {
+      const p = new URL(location.href).searchParams.get('foam');
+      const v = parseIntensityToken(p);
+      if (v !== null) return v;
+    } catch(_){}
+    // 2) CSS var --foam-intensity
+    try {
+      const cssV = getComputedStyle(document.documentElement).getPropertyValue('--foam-intensity');
+      const v = parseIntensityToken(cssV);
+      if (v !== null) return v;
+    } catch(_){}
+    // 3) localStorage foamIntensity
+    try {
+      const ls = localStorage.getItem('foamIntensity');
+      const v = parseIntensityToken(ls);
+      if (v !== null) return v;
+    } catch(_){}
+    // 4) por defecto
+    return 0.6;
+  }
+  let FOAM_INTENSITY = getFoamIntensity();
+
   // Color base océano
   let baseColor = '0,136,204';
   try {
@@ -80,9 +116,11 @@
       const phase = layerPhase[i];
       const yBase = h - yOffsets[i];
       const chopAmp = amp * 0.25; const chopFreq = freq * 0.55; const chopSpeed = speed * 0.6;
-      const foamHeight = Math.max(2, Math.min(4, amp * 0.22));
-      const crestThreshold = 0.82; // dónde empieza a aparecer espuma
-      const density = 2; // paso en px
+      // Modulación por intensidad
+      const INT = FOAM_INTENSITY;
+      const foamHeight = Math.max(2, Math.min(5, amp * (0.18 + 0.20*INT)));
+      const crestThreshold = Math.min(0.92, Math.max(0.6, 0.85 - INT*0.22)); // menor umbral = más espuma
+      const density = Math.max(2, Math.min(3, Math.round(3 - INT*0.7))); // 2..3 px según intensidad
 
       // blending más suave para espuma
       const prevComp = ctx.globalCompositeOperation; ctx.globalCompositeOperation = 'screen';
@@ -98,13 +136,15 @@
         if (crestness > crestThreshold){
           // pseudo ruido simple y rápido dependiente de x y tiempo
           const noise = (Math.sin(x*0.35 + t*1.3) + Math.sin(x*0.12 + t*0.9 + 1.7))*0.25 + 0.5; // ~[0,1]
-          const alpha = Math.min(0.95, (crestness - crestThreshold) * 1.6 * (0.55 + 0.45*noise));
+          const alphaBase = Math.min(0.95, (crestness - crestThreshold) * 1.6 * (0.55 + 0.45*noise));
+          const alpha = alphaBase * (0.4 + 0.6*INT); // escalar por intensidad
           ctx.fillStyle = `rgba(255,255,255,${alpha.toFixed(3)})`;
           const jitter = (noise - 0.5) * foamHeight; // bordes irregulares
           ctx.fillRect(x, y - foamHeight - jitter, density+1, foamHeight + jitter*0.5);
 
           // gotitas finas salpicadas detrás de la cresta
-          if ((x % 6) === 0 && alpha > 0.35){
+          const dotStep = Math.max(4, Math.min(8, Math.round(8 - INT*4))); // 4..8
+          if ((x % dotStep) === 0 && alpha > 0.35){
             const dotY = y - foamHeight - 2 - noise*3;
             const dotA = alpha * 0.35;
             ctx.fillStyle = `rgba(255,255,255,${dotA.toFixed(3)})`;
