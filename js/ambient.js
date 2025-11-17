@@ -69,10 +69,37 @@
     const m = /rgb\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)\s*\)/i.exec(pc.trim());
     if (m) baseColor = `${m[1]},${m[2]},${m[3]}`;
   } catch(_){}
+  // Intensidad de azul/ola (0..1)
+  function getWaveIntensity(){
+    try {
+      const url = new URL(location.href);
+      const p1 = url.searchParams.get('wave');
+      const p2 = url.searchParams.get('water');
+      const v = parseIntensityToken(p1 ?? p2);
+      if (v !== null) return v;
+    } catch(_){ }
+    try {
+      const cssV = getComputedStyle(document.documentElement).getPropertyValue('--wave-intensity');
+      const v = parseIntensityToken(cssV);
+      if (v !== null) return v;
+    } catch(_){ }
+    try {
+      const ls = localStorage.getItem('waveIntensity');
+      const v = parseIntensityToken(ls);
+      if (v !== null) return v;
+    } catch(_){ }
+    return 0.85; // por defecto: más intenso que antes
+  }
+  const WAVE_INTENSITY = getWaveIntensity();
+
+  // Opacidades por capa en función de la intensidad
+  const a0 = Math.min(0.60, 0.23 + 0.32 * WAVE_INTENSITY);
+  const a1 = Math.min(0.42, 0.16 + 0.26 * WAVE_INTENSITY);
+  const a2 = Math.min(0.30, 0.10 + 0.20 * WAVE_INTENSITY);
   const colors = [
-    `rgba(${baseColor},0.23)`,
-    `rgba(${baseColor},0.16)`,
-    `rgba(${baseColor},0.10)`
+    `rgba(${baseColor},${a0.toFixed(3)})`,
+    `rgba(${baseColor},${a1.toFixed(3)})`,
+    `rgba(${baseColor},${a2.toFixed(3)})`
   ];
 
   // Animación con delta temporal (independiente de FPS)
@@ -118,12 +145,12 @@
       const chopAmp = amp * 0.25; const chopFreq = freq * 0.55; const chopSpeed = speed * 0.6;
       // Modulación por intensidad
       const INT = FOAM_INTENSITY;
-      const foamHeight = Math.max(2, Math.min(5, amp * (0.18 + 0.20*INT)));
-      const crestThreshold = Math.min(0.92, Math.max(0.6, 0.85 - INT*0.22)); // menor umbral = más espuma
+      const foamHeight = Math.max(3, Math.min(7, amp * (0.22 + 0.26*INT)));
+      const crestThreshold = Math.min(0.90, Math.max(0.55, 0.80 - INT*0.25)); // menor umbral = más espuma
       const density = Math.max(2, Math.min(3, Math.round(3 - INT*0.7))); // 2..3 px según intensidad
 
-      // blending más suave para espuma
-      const prevComp = ctx.globalCompositeOperation; ctx.globalCompositeOperation = 'screen';
+      // dibuja espuma por encima para máximo contraste
+      const prevComp = ctx.globalCompositeOperation; ctx.globalCompositeOperation = 'source-over';
 
       for(let x=0; x<=w; x+=density){
         const s = Math.sin(x*freq + t*speed + phase);
@@ -136,17 +163,17 @@
         if (crestness > crestThreshold){
           // pseudo ruido simple y rápido dependiente de x y tiempo
           const noise = (Math.sin(x*0.35 + t*1.3) + Math.sin(x*0.12 + t*0.9 + 1.7))*0.25 + 0.5; // ~[0,1]
-          const alphaBase = Math.min(0.95, (crestness - crestThreshold) * 1.6 * (0.55 + 0.45*noise));
-          const alpha = alphaBase * (0.4 + 0.6*INT); // escalar por intensidad
+          const alphaBase = Math.min(1.0, (crestness - crestThreshold) * 1.9 * (0.55 + 0.45*noise));
+          const alpha = Math.min(1, alphaBase * (0.7 + 0.9*INT) + 0.15*INT); // más opaco y con base
           ctx.fillStyle = `rgba(255,255,255,${alpha.toFixed(3)})`;
           const jitter = (noise - 0.5) * foamHeight; // bordes irregulares
           ctx.fillRect(x, y - foamHeight - jitter, density+1, foamHeight + jitter*0.5);
 
           // gotitas finas salpicadas detrás de la cresta
           const dotStep = Math.max(4, Math.min(8, Math.round(8 - INT*4))); // 4..8
-          if ((x % dotStep) === 0 && alpha > 0.35){
+          if ((x % dotStep) === 0 && alpha > 0.25){
             const dotY = y - foamHeight - 2 - noise*3;
-            const dotA = alpha * 0.35;
+            const dotA = Math.min(1, alpha * 0.45);
             ctx.fillStyle = `rgba(255,255,255,${dotA.toFixed(3)})`;
             ctx.fillRect(x, dotY, 1, 1);
           }
