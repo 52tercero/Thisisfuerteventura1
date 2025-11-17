@@ -39,11 +39,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const REFRESH_INTERVAL = 30 * 60 * 1000;
     const FEED_REFRESH_EVENT = 'feed:refresh';
     const FALLBACK_NEWS_SOURCES = [
-        'https://rss.app/feeds/jbwZ2Q9QAvgvI6G0.xml',
-        'https://rss.app/feeds/8SmCQL7GDZyu2xB4.xml',
-        'https://rss.app/feeds/IchTPp234IVDaH7V.xml',
-        'https://rss.app/feeds/cNktFJXkoIBwqQSS.xml',
-        'https://rss.app/feeds/pGaOMTfcwV2mzdy7.xml'
+        'https://rss.app/feeds/jbwZ2Q9QAvgvI6G0.xml'
     ];
     const activeNewsSources = (Array.isArray(window.FeedUtils?.DEFAULT_NEWS_SOURCES) && window.FeedUtils.DEFAULT_NEWS_SOURCES.length > 0)
         ? window.FeedUtils.DEFAULT_NEWS_SOURCES
