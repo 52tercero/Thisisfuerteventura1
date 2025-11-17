@@ -81,6 +81,23 @@ document.addEventListener('DOMContentLoaded', () => {
             }
             return html;
         };
+        // Proxy para imágenes embebidas dentro del contenido enriquecido
+        function toImageSrc(url) {
+            try {
+                if (!url || typeof url !== 'string') return url;
+                const u = new URL(url, location.href);
+                if (u.origin === location.origin) return u.toString();
+                if (window.__RSS_PROXY_URL === '') {
+                    return `/.netlify/functions/image?url=${encodeURIComponent(u.toString())}`;
+                }
+                if (typeof window.__RSS_PROXY_URL === 'string' && window.__RSS_PROXY_URL) {
+                    return `${window.__RSS_PROXY_URL}/api/image?url=${encodeURIComponent(u.toString())}`;
+                }
+                return u.toString();
+            } catch (_) {
+                return url;
+            }
+        }
 
         // Escapar texto plano para evitar inyección al usar innerHTML
         const escapeHTML = (str) => {
@@ -244,11 +261,13 @@ document.addEventListener('DOMContentLoaded', () => {
                </a>`
             : '';
 
-        // Elegir el contenido más extenso disponible: content:encoded > content > description > summary
+        // Elegir el contenido más completo disponible: fullHtml > content > raw content:encoded > raw content > description > summary
         const pickRichHtml = () => {
             try {
                 const raw = article.raw || {};
                 const candidates = [
+                    article.fullHtml,
+                    article.content,
                     raw['content:encoded'],
                     raw.content,
                     article.description,
@@ -262,7 +281,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
                 return best || '';
             } catch (_) {
-                return article.description || article.summary || '';
+                return article.fullHtml || article.content || article.description || article.summary || '';
             }
         };
 
@@ -290,6 +309,18 @@ document.addEventListener('DOMContentLoaded', () => {
                 </footer>
             </article>
         `;
+
+        // Reescribir imágenes internas del contenido para pasar por el proxy y añadir fallback
+        try {
+            const imgs = articleContainer.querySelectorAll('.article-content img');
+            imgs.forEach((img) => {
+                const orig = img.getAttribute('src');
+                if (orig) img.setAttribute('src', toImageSrc(orig));
+                img.setAttribute('loading', 'lazy');
+                img.setAttribute('referrerpolicy', 'no-referrer');
+                img.addEventListener('error', () => { img.src = 'images/Fuerteventura.jpeg?v=2025110501'; });
+            });
+        } catch (_) {}
 
         // Asegurar fallback de imagen destacada sin usar onerror en HTML
         try {
