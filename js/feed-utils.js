@@ -421,6 +421,17 @@
 
                     const image = await extractImageFromRaw(it, link);
                     const cleaned = sanitize(description);
+                    const publishedAt = (() => {
+                        try {
+                            const rawDate = it.raw?.pubDate || it.raw?.published || it.raw?.updated || pub;
+                            if (!rawDate) return null;
+                            const dt = new Date(rawDate);
+                            if (Number.isNaN(dt.getTime())) return null;
+                            return dt.toISOString();
+                        } catch (_) {
+                            return null;
+                        }
+                    })();
                     
                     // Etiquetas y categoría primaria
                     const tags = extractTags(it);
@@ -467,6 +478,7 @@
                         summary: cleaned,
                         fullHtml,
                         date: pub ? formatDate(new Date(pub)) : formatDate(new Date()),
+                        publishedAt,
                         category: primaryCategory || 'General',
                         tags,
                         source,

@@ -1,5 +1,37 @@
 ﻿# Registro de Mejoras del Código - This is Fuerteventura
 
+# Registro de Mejoras del Código - This is Fuerteventura
+
+## Fecha: 17 de Noviembre de 2025
+
+### Resumen
+Refactor importante del flujo de noticias para eliminar duplicación, mejorar la experiencia de refresco y exponer metadatos de fecha consistentes.
+
+---
+
+## 📰 Noticias (cliente)
+
+- ✅ `content-loader.js` ya no intenta renderizar la página completa de noticias; delega en `news.js` y publica eventos `feed:refresh`.
+- ✅ `news.js` incorpora caché en memoria, control de snapshot estático y auto-refresh respetando filtros/paginación.
+- ✅ Añadido listener para `feed:refresh` + intervalo local de 30 min para sincronizar con el proxy sin parpadeos.
+- ✅ Evita skeletons en refrescos silenciosos y preserva la búsqueda del usuario.
+
+## 🧠 Utilidades compartidas
+
+- ✅ `FeedUtils.fetchRSSFeeds` añade el campo `publishedAt` (ISO) a cada item normalizado, exponiendo metadatos fiables a las vistas cliente.
+- ✅ El snapshot inicial sólo se procesa una vez y se cachea hasta que llegan feeds reales.
+
+## 🧪 Tests
+
+- ✅ Actualizado Jest a la versión 29 y el script `npm test` para ejecutarse en modo CI mediante `cross-env`, eliminando fallos al detectar cambios.
+
+## 📄 Documentación
+
+- ✅ Actualizado `MEJORAS.md` con la nueva sección “Motor de noticias unificado”.
+- ✅ Fecha de última actualización ajustada al 17/11/2025.
+
+---
+
 ## Fecha: 9 de Noviembre de 2025
 
 ### Resumen

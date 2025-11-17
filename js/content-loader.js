@@ -57,6 +57,17 @@ document.addEventListener('DOMContentLoaded', async function() {
             return url;
         }
     }
+    const FALLBACK_NEWS_SOURCES = [
+        'https://rss.app/feeds/jbwZ2Q9QAvgvI6G0.xml',
+        'https://rss.app/feeds/8SmCQL7GDZyu2xB4.xml',
+        'https://rss.app/feeds/IchTPp234IVDaH7V.xml',
+        'https://rss.app/feeds/cNktFJXkoIBwqQSS.xml',
+        'https://rss.app/feeds/pGaOMTfcwV2mzdy7.xml'
+    ];
+    const activeNewsSources = (Array.isArray(window.FeedUtils?.DEFAULT_NEWS_SOURCES) && window.FeedUtils.DEFAULT_NEWS_SOURCES.length > 0)
+        ? window.FeedUtils.DEFAULT_NEWS_SOURCES
+        : FALLBACK_NEWS_SOURCES;
+    let featuredSnapshotRendered = false;
     // Detectar proxy antes de cargar noticias
     if (typeof window.discoverRSSProxy === 'function') {
         try {
@@ -101,21 +112,11 @@ document.addEventListener('DOMContentLoaded', async function() {
             `;
         }
         
-        // Fuentes de noticias (RSS feeds de sitios de noticias sobre Fuerteventura/Canarias)
-        // Fuentes RSS agregadas desde rss.app
-        const newsSources = [
-            'https://rss.app/feeds/jbwZ2Q9QAvgvI6G0.xml',
-            'https://rss.app/feeds/8SmCQL7GDZyu2xB4.xml',
-            'https://rss.app/feeds/IchTPp234IVDaH7V.xml',
-            'https://rss.app/feeds/cNktFJXkoIBwqQSS.xml',
-            'https://rss.app/feeds/pGaOMTfcwV2mzdy7.xml'
-        ];
-        
         // Función para obtener y parsear feeds RSS (delegada a FeedUtils)
-        async function fetchRSSFeeds() {
+        async function fetchLatestFeeds() {
             try {
                 if (window.FeedUtils && typeof FeedUtils.fetchRSSFeeds === 'function') {
-                    return await FeedUtils.fetchRSSFeeds(newsSources);
+                    return await FeedUtils.fetchRSSFeeds(activeNewsSources);
                 }
             } catch (e) {
                 console.warn('[CONTENT-LOADER] FeedUtils.fetchRSSFeeds failed:', e);
@@ -127,6 +128,7 @@ document.addEventListener('DOMContentLoaded', async function() {
         // Intentar snapshot estático para primer render rápido
         (async () => {
             try {
+                if (featuredSnapshotRendered) return;
                 const snapRes = await fetch('/data/feeds.json', { cache: 'no-store' });
                 if (snapRes.ok) {
                     const snap = await snapRes.json();
@@ -154,6 +156,7 @@ document.addEventListener('DOMContentLoaded', async function() {
                                 summary: cleaned,
                                 fullHtml: cleaned,
                                 date: pub ? formatDate(new Date(pub)) : formatDate(new Date()),
+                                publishedAt: pub ? new Date(pub).toISOString() : new Date().toISOString(),
                                 category: 'General',
                                 source,
                                 link,
@@ -206,6 +209,7 @@ document.addEventListener('DOMContentLoaded', async function() {
                             card.querySelector('.card-content').appendChild(readMoreBtn);
                             featuredNewsContainer.appendChild(card);
                         });
+                        featuredSnapshotRendered = true;
                     }
                 }
             } catch (_) {
@@ -214,7 +218,7 @@ document.addEventListener('DOMContentLoaded', async function() {
         })();
 
         // Obtener noticias y (re)mostrarlas con datos frescos
-        fetchRSSFeeds().then(newsItems => {
+        fetchLatestFeeds().then(newsItems => {
             console.log('[CONTENT-LOADER] Noticias recibidas:', newsItems.length);
             
             // Si no hay noticias frescas: conservar snapshot/SSR si existe
@@ -297,6 +301,9 @@ document.addEventListener('DOMContentLoaded', async function() {
                 
                 featuredNewsContainer.appendChild(card);
             });
+            if (newsItems.length > 0) {
+                featuredSnapshotRendered = true;
+            }
         });
     }
     
@@ -309,318 +316,6 @@ document.addEventListener('DOMContentLoaded', async function() {
     // Cargar noticias destacadas
     loadFeaturedNews();
     
-    // Función para cargar noticias completas
-    function loadFullNewsPage() {
-        const newsContainer = document.getElementById('news-container');
-        
-        if (!newsContainer) return;
-        
-        // Variables para paginación y filtrado
-        let currentPage = 1;
-        const itemsPerPage = 9;
-        let currentCategory = 'all';
-        let currentSort = 'newest';
-        let currentSearch = '';
-        
-        // Elementos de control
-    const prevPageBtns = [document.getElementById('prev-page'), document.getElementById('prev-page-top')].filter(Boolean);
-    const nextPageBtns = [document.getElementById('next-page'), document.getElementById('next-page-top')].filter(Boolean);
-    const pageInfos = [document.getElementById('page-info'), document.getElementById('page-info-top')].filter(Boolean);
-        const categoryFilter = document.getElementById('category-filter');
-        const dateFilter = document.getElementById('date-filter');
-        const applyFiltersBtn = document.getElementById('apply-filters');
-        const searchInput = document.getElementById('news-search');
-        const searchBtn = document.getElementById('search-btn');
-        
-        // Función para obtener noticias: use the shared RSS fetcher which queries the proxy
-        async function fetchNews() {
-            try {
-                const items = await fetchRSSFeeds();
-                // Map normalized items to the structure expected by the list UI
-                return items.map((it, idx) => ({
-                    id: idx + 1,
-                    title: it.title,
-                    image: it.image,
-                    summary: it.summary || it.description || '',
-                    content: it.description || '',
-                    date: it.date,
-                    category: it.category,
-                    source: it.source,
-                    tags: it.tags || []
-                }));
-            } catch (e) {
-                console.warn('Error fetching news for full page', e);
-                return [];
-            }
-        }
-        
-        // Función para filtrar noticias
-        function filterNews(news) {
-            return news.filter(item => {
-                // Filtrar por categoría
-                if (currentCategory !== 'all' && item.category.toLowerCase() !== currentCategory.toLowerCase()) {
-                    return false;
-                }
-                
-                // Filtrar por búsqueda
-                if (currentSearch && !item.title.toLowerCase().includes(currentSearch.toLowerCase()) && 
-                    !item.summary.toLowerCase().includes(currentSearch.toLowerCase())) {
-                    return false;
-                }
-                
-                return true;
-            });
-        }
-        
-        // Función para ordenar noticias
-        function sortNews(news) {
-            return news.sort((a, b) => {
-                const dateA = new Date(a.date.split(' de ').reverse().join(' '));
-                const dateB = new Date(b.date.split(' de ').reverse().join(' '));
-                
-                if (currentSort === 'newest') {
-                    return dateB - dateA;
-                } else {
-                    return dateA - dateB;
-                }
-            });
-        }
-        
-        // Función para paginar noticias
-        function paginateNews(news) {
-            const startIndex = (currentPage - 1) * itemsPerPage;
-            return news.slice(startIndex, startIndex + itemsPerPage);
-        }
-        
-        // Función para actualizar la información de paginación
-        function updatePaginationInfo(totalItems) {
-            const totalPages = Math.max(1, Math.ceil(totalItems / itemsPerPage));
-            pageInfos.forEach(el => { el.textContent = `Página ${currentPage} de ${totalPages}`; });
-            prevPageBtns.forEach(btn => { btn.disabled = currentPage === 1; });
-            nextPageBtns.forEach(btn => { btn.disabled = currentPage === totalPages; });
-        }
-        
-        // Función para cargar y mostrar noticias
-        async function loadAndDisplayNews() {
-            // Mostrar skeleton loader en lugar de mensaje simple
-            newsContainer.innerHTML = `
-                <div class="loading-skeleton">
-                    ${Array(9).fill(0).map(() => `
-                        <div class="skeleton-card">
-                            <div class="skeleton-image"></div>
-                            <div class="skeleton-content">
-                                <div class="skeleton-date"></div>
-                                <div class="skeleton-title"></div>
-                                <div class="skeleton-text"></div>
-                                <div class="skeleton-text short"></div>
-                            </div>
-                        </div>
-                    `).join('')}
-                </div>
-            `;
-            
-            try {
-                // Obtener todas las noticias
-                const allNews = await fetchNews();
-                
-                // Filtrar noticias
-                const filteredNews = filterNews(allNews);
-                
-                // Ordenar noticias
-                const sortedNews = sortNews(filteredNews);
-                
-                // Paginar noticias
-                const paginatedNews = paginateNews(sortedNews);
-                
-                // Actualizar información de paginación
-                updatePaginationInfo(filteredNews.length);
-                
-                // Limpiar contenedor
-                newsContainer.innerHTML = '';
-                
-                // Si no hay resultados
-                if (paginatedNews.length === 0) {
-                    newsContainer.innerHTML = '<div class="no-results">No se encontraron noticias que coincidan con tu búsqueda.</div>';
-                    return;
-                }
-                
-                // Mostrar noticias
-                paginatedNews.forEach(item => {
-                    const newsCard = document.createElement('div');
-                    newsCard.className = 'news-card';
-
-                    // Resumen compacto seguro en texto plano (150 caracteres)
-                    const fullText = String(item.summary || item.description || '')
-                        .replace(/<[^>]*>/g, ' ')
-                        .replace(/\s+/g, ' ')
-                        .trim();
-                    const shortSummary = fullText.length > 150 ? fullText.slice(0, 150) + '...' : fullText;
-
-                    newsCard.innerHTML = `
-                        <div class="news-image">
-                            <img src="${toImageSrc(item.image)}" alt="${escapeHTML(item.title)}" loading="lazy" referrerpolicy="no-referrer">
-                        </div>
-                        <div class="news-content">
-                            <span class="news-date">${escapeHTML(item.date)}</span>
-                            <h3>${escapeHTML(item.title)}</h3>
-                            <p>${escapeHTML(shortSummary)}</p>
-                        </div>
-                    `;
-                    const imgNews = newsCard.querySelector('img');
-                    if (imgNews) {
-                        imgNews.addEventListener('error', () => { imgNews.src = 'images/logo.jpg?v=2025110501'; });
-                    }
-                    
-                    const readMoreBtn = document.createElement('a');
-                    readMoreBtn.href = item.link || '#';
-                    readMoreBtn.target = '_blank';
-                    readMoreBtn.rel = 'noopener noreferrer';
-                    readMoreBtn.className = 'btn';
-                    readMoreBtn.textContent = 'Leer más';
-                    newsCard.querySelector('.news-content').appendChild(readMoreBtn);
-                    
-                    newsContainer.appendChild(newsCard);
-                });
-                
-            } catch (error) {
-                console.error('Error al cargar noticias:', error);
-                newsContainer.innerHTML = '<div class="error">Error al cargar las noticias. Por favor, inténtalo de nuevo más tarde.</div>';
-            }
-        }
-        
-        // Configurar eventos para controles de paginación y filtrado
-        prevPageBtns.forEach(btn => btn.addEventListener('click', () => {
-            if (currentPage > 1) {
-                currentPage--;
-                loadAndDisplayNews();
-            }
-        }));
-        
-        nextPageBtns.forEach(btn => btn.addEventListener('click', () => {
-            currentPage++;
-            loadAndDisplayNews();
-        }));
-        
-        if (applyFiltersBtn) {
-            applyFiltersBtn.addEventListener('click', () => {
-                currentPage = 1;
-                
-                if (categoryFilter) {
-                    currentCategory = categoryFilter.value;
-                }
-                
-                if (dateFilter) {
-                    currentSort = dateFilter.value;
-                }
-                
-                loadAndDisplayNews();
-            });
-        }
-        
-        if (searchBtn) {
-            searchBtn.addEventListener('click', () => {
-                currentPage = 1;
-                currentSearch = searchInput ? searchInput.value.trim() : '';
-                loadAndDisplayNews();
-            });
-        }
-        
-        if (searchInput) {
-            searchInput.addEventListener('keypress', (e) => {
-                if (e.key === 'Enter') {
-                    currentPage = 1;
-                    currentSearch = searchInput.value.trim();
-                    loadAndDisplayNews();
-                }
-            });
-        }
-        
-        // Cargar noticias inicialmente
-        loadAndDisplayNews();
-    }
-    
-    // Cargar página completa de noticias si estamos en esa página
-    if (window.location.pathname.includes('noticias.html')) {
-        loadFullNewsPage();
-    }
-    
-    // Función para cargar una noticia individual
-    function loadSingleNews() {
-        const articleContainer = document.getElementById('article-container');
-        
-        if (!articleContainer) return;
-        
-        // Obtener ID de la noticia de la URL
-        const urlParams = new URLSearchParams(window.location.search);
-        const newsId = urlParams.get('id');
-        const newsTitle = urlParams.get('title');
-        
-        if (!newsId && !newsTitle) {
-            articleContainer.innerHTML = '<div class="error">Noticia no encontrada</div>';
-            return;
-        }
-        
-        // Mostrar indicador de carga
-        articleContainer.innerHTML = '<div class="loading">Cargando noticia...</div>';
-        
-        // Try to fetch article data from the feeds (requires the proxy to be running)
-        (async () => {
-            try {
-                const items = await fetchRSSFeeds();
-                let article = null;
-                if (newsTitle) {
-                    article = items.find(it => it.title === newsTitle);
-                }
-                if (!article && newsId) {
-                    const idx = parseInt(newsId, 10) - 1;
-                    if (!Number.isNaN(idx) && items[idx]) article = items[idx];
-                }
-
-                if (!article) {
-                    articleContainer.innerHTML = '<div class="no-news">Noticia no disponible. Asegúrate de que el proxy esté en funcionamiento y que la fuente esté permitida.</div>';
-                    return;
-                }
-
-                // Render the found article
-                // Si la imagen extraída es el logo (fallback de feeds) o está vacía, usar la imagen escénica local
-                if (!article.image || /images\/logo\.jpg(\?v=.*)?$/i.test(article.image)) {
-                    article.image = 'images/Fuerteventura.jpeg?v=2025110501';
-                }
-                const content = article.description || article.summary || '';
-                const safeContent = sanitizeHTML(content);
-                articleContainer.innerHTML = `
-                    <article class="news-article">
-                        <header class="article-header">
-                            <h1>${escapeHTML(article.title)}</h1>
-                            <div class="article-meta">
-                                <span class="article-date">${escapeHTML(article.date)}</span>
-                            </div>
-                        </header>
-
-                        <div class="article-featured-image">
-                            <img src="${toImageSrc(article.image)}" alt="${escapeHTML(article.title)}" referrerpolicy="no-referrer">
-                        </div>
-
-                        <div class="article-content">
-                            ${safeContent}
-                        </div>
-                `;
-                const artImg = articleContainer.querySelector('.article-featured-image img');
-                if (artImg) {
-                    artImg.addEventListener('error', () => { artImg.src = 'images/Fuerteventura.jpeg?v=2025110501'; });
-                }
-            } catch (e) {
-                console.error('Error loading article:', e);
-                articleContainer.innerHTML = '<div class="error">Error al cargar la noticia.</div>';
-            }
-        })();
-    }
-    
-    // Cargar noticia individual si estamos en esa página
-    if (window.location.pathname.includes('noticia.html')) {
-        loadSingleNews();
-    }
-
     // Configurar actualización automática de noticias
     function setupAutoRefresh() {
         // Actualizar noticias cada 30 minutos (en milisegundos)
@@ -633,11 +328,7 @@ document.addEventListener('DOMContentLoaded', async function() {
             if (document.getElementById('featured-news')) {
                 loadFeaturedNews();
             }
-            
-            if (document.getElementById('news-container') && window.location.pathname.includes('noticias.html')) {
-                // Mantener los filtros y página actuales al actualizar
-                loadFullNewsPage();
-            }
+            document.dispatchEvent(new CustomEvent('feed:refresh'));
         }, refreshInterval);
     }
     
@@ -650,12 +341,6 @@ document.addEventListener('DOMContentLoaded', async function() {
             try {
                 if (document.getElementById('featured-news')) {
                     loadFeaturedNews();
-                }
-                if (document.getElementById('news-container') && window.location.pathname.includes('noticias.html')) {
-                    // Rehidratar listado con filtros actuales
-                    if (typeof loadFullNewsPage === 'function') {
-                        loadFullNewsPage();
-                    }
                 }
             } catch (e) {
                 console.warn('BFCache re-render failed:', e);

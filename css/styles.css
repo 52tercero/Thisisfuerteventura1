@@ -1203,6 +1203,23 @@ footer {
     -webkit-box-orient: vertical;
     overflow: hidden;
 }
+/* Etiquetas y chips en tarjetas de noticias */
+.tag-chips { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
+.tag-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 10px;
+    border-radius: 999px;
+    border: 1px solid #e4e7eb;
+    background: #f8fafc;
+    color: #334155;
+    font-size: .85rem;
+    line-height: 1;
+    cursor: default;
+}
+.tag-chip:hover { border-color: #d0d7de; background: #f1f5f9; }
+.category-tag { position: absolute; left: 10px; top: 10px; background: #0f4c81; color: #fff; padding: 6px 10px; border-radius: 999px; font-size: .8rem; }
 @media (max-width: 992px) {
     .news-card { grid-template-columns: 1fr; }
     .news-image img { height: 200px; }
