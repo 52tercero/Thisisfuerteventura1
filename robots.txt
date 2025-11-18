@@ -5,8 +5,12 @@ Disallow: /tools/
 Disallow: /test-*.html
 Disallow: /*.backup$
 
-# Crawl delay
-Crawl-delay: 1
+# Explicit allowances for major bots
+User-agent: Googlebot
+Allow: /
 
-# Sitemap
+User-agent: Bingbot
+Allow: /
+
+# Sitemap (absolute URL recommended)
 Sitemap: https://thisisfuerteventura.netlify.app/sitemap.xml
