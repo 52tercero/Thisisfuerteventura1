@@ -1,0 +1,474 @@
+﻿[
+  {
+    "id": "parque-natural-de-corralejo",
+    "title": "Parque Natural de Corralejo",
+    "summary": "Imponentes dunas doradas junto al Atlántico, con kilómetros de playas.",
+    "heroImage": "images/turismo/corralejo-dunas.jpg",
+    "gallery": [
+      "images/turismo/corralejo-dunas.jpg",
+      "images/turismo/isla-de-lobos.jpg",
+      "images/turismo/popcorn-beach.jpg"
+    ],
+    "placeQuery": "Parque Natural de Corralejo, Fuerteventura",
+    "lat": 28.7189,
+    "lng": -13.8346,
+    "features": ["Naturaleza", "Dunas", "Fácil acceso"],
+    "description": "Explora las impresionantes dunas de arena dorada y las vistas al mar cristalino en uno de los parques naturales más emblemáticos de la isla. Las Grandes Playas se extienden por kilómetros junto al azul turquesa del Atlántico. Recomendación: visita al amanecer o al atardecer para disfrutar de luz suave y menos viento; aparcamiento señalizado a lo largo de la FV-1.",
+    "history": "El sistema dunar de Corralejo se formó por la acción combinada del viento y el mar, modelando arenas claras de origen marino que avanzan lentamente hacia el interior. Su valor ecológico y paisajístico ha motivado su protección como espacio natural, salvaguardando hábitats costeros y especies adaptadas al viento y la aridez. El cercano pueblo de Corralejo creció de la pesca y, más tarde, del turismo ligado a sus playas y al embarque hacia Lobos y Lanzarote.",
+    "longDescription": "El parque reúne playas abiertas, campos de dunas móviles y zonas de matorral costero. Caminar por las crestas al amanecer permite disfrutar de texturas y sombras únicas, mientras que al atardecer el viento suele ser más suave. Es un entorno sin sombra ni servicios: lleva agua, protección solar y respeta senderos marcados para no dañar la vegetación. Desde algunos puntos se divisan Lobos y Lanzarote; en días claros, el horizonte es inabarcable.",
+    "info": {
+      "bestTime": "Amanecer y atardecer; menos viento en primeras/últimas horas",
+      "parking": "Aparcamientos señalizados a lo largo de la FV-1",
+      "accessibility": "Terreno arenoso; accesos a playa sin sombra",
+      "services": "Sin servicios directos en dunas; ocio y restauración en Corralejo",
+      "duration": "1,5–3 horas (paseo + playa)",
+      "difficulty": "Baja (arena blanda)",
+      "tips": "Lleva agua y protección solar; no salgas de senderos marcados"
+    }
+  },
+  {
+    "id": "betancuria",
+    "title": "Betancuria",
+    "summary": "Antigua capital, arquitectura tradicional y museos en un valle histórico.",
+    "heroImage": "images/turismo/betancuria.jpg",
+    "gallery": [
+      "images/turismo/betancuria.jpg",
+      "images/turismo/mirador-morro-velosa.jpg",
+      "images/turismo/molino-antigua.jpg"
+    ],
+    "placeQuery": "Betancuria, Fuerteventura",
+    "lat": 28.4230,
+    "lng": -14.0561,
+    "features": ["Historia", "Museo", "Mirador"],
+    "description": "Visita la antigua capital de Fuerteventura, un pueblo histórico con arquitectura tradicional y museos. Recorre sus calles empedradas, la iglesia de Santa María y los miradores cercanos. Hay restaurantes con cocina local y aparcamiento municipal en el centro.",
+    "history": "Betancuria fue fundada por colonos europeos y desempeñó durante siglos un papel administrativo y religioso clave en la isla. El valle ofrecía abrigo frente a los vientos y favorecía pequeñas zonas de cultivo y pastoreo. A lo largo del tiempo, reconstrucciones y reformas dejaron huella en templos y edificios civiles, hoy testimonio de la historia majorera.",
+    "longDescription": "El conjunto histórico conserva casas encaladas, patios y calles que invitan a pasear sin prisa. La iglesia de Santa María, los pequeños museos y los miradores de los alrededores trazan una ruta perfecta para medio día. Disfruta la gastronomía local (quesos, cabrito, mojos) y detente en el valle para observar el paisaje interior. Aparca en las zonas habilitadas y camina el centro a pie para apreciar sus detalles.",
+    "info": {
+      "bestTime": "Mañanas templadas; evita mediodía en verano",
+      "parking": "Aparcamiento municipal en el centro del pueblo",
+      "accessibility": "Centro llano; calles empedradas en algunos tramos",
+      "services": "Restaurantes, cafeterías y pequeños museos",
+      "duration": "2–3 horas",
+      "difficulty": "Baja",
+      "tips": "Combina con miradores cercanos (Morro Velosa)"
+    }
+  },
+  {
+    "id": "faro-de-morro-jable",
+    "title": "Faro de Morro Jable",
+    "summary": "Atardeceres memorables en el sur con paseo marítimo y playa de Jandía.",
+    "heroImage": "images/turismo/faro-morro-jable.jpg",
+    "gallery": [
+      "images/turismo/faro-morro-jable.jpg",
+      "images/turismo/parque-natural-jandia.jpg",
+      "images/turismo/punta-pesebre.jpg"
+    ],
+    "placeQuery": "Faro de Morro Jable, Fuerteventura",
+    "lat": 28.0498,
+    "lng": -14.3406,
+    "features": ["Atardecer", "Faro", "Paseo marítimo"],
+    "description": "Contempla las mejores puestas de sol de la isla desde este faro icónico junto a la playa de Jandía. Acceso a pie por el paseo marítimo, con bares y tiendas en las cercanías. Ideal para familias y fotografía.",
+    "history": "El litoral de Morro Jable pasó de enclave pesquero a destino turístico, integrando el faro como referencia visual del paseo. La franja costera y el sistema dunar cercano muestran la dinámica entre viento, mareas y vegetación litoral, hoy compatibilizada con uso recreativo.",
+    "longDescription": "Durante el día, la playa ofrece aguas tranquilas y un amplio arenal; al caer la tarde, el cielo y el océano se tiñen de dorados. El paseo está salpicado de cafeterías, comercios y zonas de descanso. Es un recorrido accesible y llano, perfecto para familias y personas mayores. Lleva una chaqueta ligera por la brisa vespertina y disfruta del ocaso desde los bancos frente al faro.",
+    "info": {
+      "bestTime": "Atardecer",
+      "parking": "Aparcamientos en zona urbana de Morro Jable",
+      "accessibility": "Paseo llano y accesible; bancos y sombras puntuales",
+      "services": "Tiendas, bares y restaurantes junto al paseo",
+      "duration": "1–2 horas (paseo + ocaso)",
+      "difficulty": "Baja",
+      "tips": "Lleva prenda ligera por brisa; buen punto fotográfico"
+    }
+  },
+  {
+    "id": "isla-de-lobos",
+    "title": "Isla de Lobos",
+    "summary": "Reserva natural para senderismo y snorkel a 15 minutos de Corralejo.",
+    "heroImage": "images/turismo/isla-de-lobos.jpg",
+    "gallery": [
+      "images/turismo/isla-de-lobos.jpg",
+      "images/turismo/corralejo-dunas.jpg"
+    ],
+    "placeQuery": "Isla de Lobos, Fuerteventura",
+    "lat": 28.7436,
+    "lng": -13.8266,
+    "features": ["Senderismo", "Snorkel", "Reserva"],
+    "description": "Descubre este paraíso natural con senderos volcánicos y aguas cristalinas. Es necesaria reserva de permiso con antelación y el acceso se realiza en barco desde Corralejo. Lleva agua, protección solar y respeta los itinerarios señalizados.",
+    "history": "La pequeña isla debe su nombre a las focas monje que habitaron sus costas. Su faro y el caserío tradicional reflejan la relación entre mar y subsistencia en un enclave aislado. La declaración de protección limita aforos y usos para conservar sus hábitats y tranquilidad.",
+    "longDescription": "El sendero principal bordea parajes volcánicos y saladares; el Puertito y la playa de La Concha son puntos perfectos para descansar y nadar cuando el mar lo permite. No hay sombra ni servicios estables, así que planifica agua y comida. Respeta la señalización, no salgas de los caminos y verifica horarios del barco de regreso.",
+    "info": {
+      "bestTime": "Mañana; consultar mareas para baño",
+      "parking": "Aparca en Corralejo y toma barco a Lobos",
+      "accessibility": "Senderos irregulares; no recomendado con movilidad reducida",
+      "services": "Servicios limitados; lleva agua y comida",
+      "duration": "3–5 horas (ruta + baño)",
+      "difficulty": "Baja–media",
+      "tips": "Reserva permiso con antelación y revisa horarios de barco"
+    }
+  },
+  {
+    "id": "el-cotillo",
+    "title": "El Cotillo",
+    "summary": "Pueblo pesquero con lagunas y restaurantes de pescado fresco.",
+    "heroImage": "images/turismo/el-cotillo.avif",
+    "gallery": [
+      "images/turismo/el-cotillo.avif",
+      "images/turismo/popcorn-beach.jpg"
+    ],
+    "placeQuery": "El Cotillo, Fuerteventura",
+    "lat": 28.6827,
+    "lng": -14.0133,
+    "features": ["Pescado fresco"],
+    "description": "Encanto marinero, lagunas de aguas turquesas y puestas de sol espectaculares. Ideal para familias por sus calas protegidas. Gastronomía con pescado local y terrazas frente al mar.",
+    "history": "El Cotillo creció alrededor de la pesca artesanal y del pequeño puerto, expandiéndose con el turismo gracias a sus lagunas resguardadas y su carácter tranquilo. La presencia de antiguas defensas y caminos costeros recuerda su pasado marinero y la importancia del litoral.",
+    "longDescription": "Las lagunas al norte ofrecen aguas calmadas, estupendas para darse un baño con niños. En el núcleo, restaurantes y bares sirven pescado del día y tapas canarias. Al atardecer, el cielo suele regalar tonos intensos sobre el mar. Aparca en áreas designadas y camina por el paseo y las calas cercanas.",
+    "info": {
+      "bestTime": "Tarde y ocaso; mañanas para baño en lagunas",
+      "parking": "Zonas de aparcamiento en el núcleo y cercanías",
+      "accessibility": "Paseos llanos; accesos variables a calas",
+      "services": "Restaurantes y bares frente al mar",
+      "duration": "2–4 horas",
+      "difficulty": "Baja",
+      "tips": "Comprueba viento; protege equipo de arena"
+    }
+  },
+  {
+    "id": "playa-de-cofete",
+    "title": "Playa de Cofete",
+    "summary": "Playa salvaje rodeada de montañas. Acceso por pista. Vistas épicas.",
+    "heroImage": "images/turismo/cofete.jpg",
+    "gallery": [
+      "images/turismo/cofete.jpg",
+      "images/turismo/parque-natural-jandia.jpg",
+      "images/turismo/punta-pesebre.jpg"
+    ],
+    "placeQuery": "Playa de Cofete, Fuerteventura",
+    "lat": 28.1083,
+    "lng": -14.3845,
+    "features": ["Naturaleza salvaje", "Fotografía", "4x4 recomendado"],
+    "description": "Una de las playas más vírgenes de Canarias, con arena dorada y un entorno montañoso impresionante. Acceso por pista de tierra; conducir con precaución. No hay servicios, lleva agua y comida. Mejor evitar días de viento fuerte.",
+    "history": "El aislamiento de Cofete ha preservado su carácter salvaje. Entre el macizo montañoso y el océano se extiende un paisaje de arenas y nieblas costeras. La zona ha inspirado relatos y fotografías por su atmósfera remota e imponente.",
+    "longDescription": "El trayecto por pista exige prudencia y tiempo; consulta el estado antes de salir. En la playa no hay sombra ni chiringuitos, por lo que conviene planificar víveres y vestimenta. La amplitud del arenal y el oleaje resaltan en días despejados; en condiciones de viento fuerte, limita la estancia.",
+    "info": {
+      "bestTime": "Mañana con poco viento",
+      "parking": "Zonas informales al final de la pista",
+      "accessibility": "Acceso por pista; no apto para carritos/sillas",
+      "services": "Sin servicios en playa",
+      "duration": "3–5 horas (trayecto + estancia)",
+      "difficulty": "Media (pista de tierra)",
+      "tips": "Lleva víveres y revisa el parte de viento"
+    }
+  },
+  {
+    "id": "cuevas-de-ajuy",
+    "title": "Cuevas de Ajuy",
+    "summary": "Cuevas marinas y acantilados volcánicos, sendero costero señalizado.",
+    "heroImage": "images/turismo/ajuy.webp",
+    "gallery": [
+      "images/turismo/ajuy.webp",
+      "images/turismo/punta-pesebre.jpg"
+    ],
+    "placeQuery": "Cuevas de Ajuy, Fuerteventura",
+    "lat": 28.3996,
+    "lng": -14.1611,
+    "features": ["Geología", "Cuevas marinas", "Sendero"],
+    "description": "Formaciones geológicas milenarias creadas por la erosión del océano. Sendero con barandillas y miradores; calzado cómodo recomendado. En el pueblo hay restaurantes y aparcamiento.",
+    "history": "La costa oeste muestra acantilados y estratos que cuentan la historia volcánica de la isla. El trabajo del mar labró cavidades y arcos donde hoy se aprecia la fuerza del oleaje. Ajuy conserva el ambiente marinero y el vínculo con antiguas rutas costeras.",
+    "longDescription": "El itinerario señalizado asciende entre roca y muretes hasta miradores naturales sobre el océano. Evita acercarte a bordes expuestos con mar de fondo o viento. Tras el paseo, el pequeño núcleo ofrece cocina local y descanso frente a la playa de arena oscura.",
+    "info": {
+      "bestTime": "Mañana o tarde sin mar de fondo",
+      "parking": "Aparcamiento en el núcleo de Ajuy",
+      "accessibility": "Sendero con escalones y barandillas; no accesible",
+      "services": "Restaurantes junto a la playa",
+      "duration": "1,5–3 horas",
+      "difficulty": "Baja–media",
+      "tips": "Calzado cómodo; precaución con viento en miradores"
+    }
+  },
+  {
+    "id": "la-oliva",
+    "title": "La Oliva",
+    "summary": "Villa histórica con iglesia y Casa de los Coroneles.",
+    "heroImage": "images/turismo/la-oliva.avif",
+    "gallery": [
+      "images/turismo/la-oliva.avif",
+      "images/turismo/betancuria.jpg"
+    ],
+    "placeQuery": "La Oliva, Fuerteventura",
+    "lat": 28.6100,
+    "lng": -13.9286,
+    "features": ["Patrimonio", "Arquitectura", "Centro de arte"],
+    "description": "Historia y patrimonio majorero en un entorno tradicional. Visita la iglesia de Nuestra Señora de la Candelaria y la Casa de los Coroneles. Aparcamiento en calles adyacentes.",
+    "history": "La Oliva fue sede de mandos militares y administrativos en diferentes etapas, lo que dejó un legado singular de arquitectura civil y religiosa. Casas señoriales, ermitas y plazas reflejan la vida rural y la organización del territorio.",
+    "longDescription": "El trazado urbano invita a pasear entre fachadas encaladas, patios interiores y pequeñas plazas. La Casa de los Coroneles y la iglesia son paradas imprescindibles para comprender la historia local. Completa la visita con un café en el centro y alguna exhibición de arte si está disponible.",
+    "info": {
+      "bestTime": "Mañanas y media tarde",
+      "parking": "Aparcamiento en calles adyacentes",
+      "accessibility": "Tramos llanos; pavimento irregular en puntos",
+      "services": "Cafeterías, centro cultural y comercios",
+      "duration": "1,5–2,5 horas",
+      "difficulty": "Baja",
+      "tips": "Revisa horarios de la Casa de los Coroneles"
+    }
+  },
+  {
+    "id": "mirador-de-morro-velosa",
+    "title": "Mirador de Morro Velosa",
+    "summary": "Mirador icónico con vistas del interior de la isla.",
+    "heroImage": "images/turismo/mirador-morro-velosa.jpg",
+    "gallery": [
+      "images/turismo/mirador-morro-velosa.jpg",
+      "images/turismo/betancuria.jpg"
+    ],
+    "placeQuery": "Mirador de Morro Velosa, Fuerteventura",
+    "lat": 28.4390,
+    "lng": -14.0069,
+    "features": ["Vistas panorámicas"],
+    "description": "Obra vinculada a Manrique, ofrece panorámicas a 360°. Días despejados permiten ver gran parte de la isla. Acceso por carretera de montaña con curvas.",
+    "history": "El diseño del mirador se integra en el paisaje, acercando la geografía insular al visitante. Los altos cercanos siempre fueron puntos de referencia para orientarse en el interior árido de Fuerteventura.",
+    "longDescription": "Subir a este mirador permite leer el relieve: barrancos, lomas suaves y planicies. El viento puede soplar con fuerza; lleva abrigo ligero. Combina la parada con la visita a Betancuria o con otros miradores del entorno.",
+    "info": {
+      "bestTime": "Días despejados; primeras/últimas horas",
+      "parking": "Aparcamiento en el propio mirador",
+      "accessibility": "Acceso por carretera; zonas expuestas al viento",
+      "services": "Servicios limitados",
+      "duration": "30–60 min",
+      "difficulty": "Baja",
+      "tips": "Evita bordes en días ventosos; lleva abrigo ligero"
+    }
+  },
+  {
+    "id": "caleta-de-fuste",
+    "title": "Caleta de Fuste",
+    "summary": "Destino familiar con playa protegida, golf y puerto deportivo.",
+    "heroImage": "images/turismo/caleta-de-Fuste.jpg",
+    "gallery": [
+      "images/turismo/caleta-de-Fuste.jpg",
+      "images/turismo/puerto-del-rosario-.jpg"
+    ],
+    "placeQuery": "Caleta de Fuste, Fuerteventura",
+    "lat": 28.3921,
+    "lng": -13.8629,
+    "features": ["Familiar"],
+    "description": "Zona turística con servicios, ideal para familias. Playa abrigada de oleaje, actividades náuticas suaves y paseo marítimo. Aparcamiento amplio y oferta de restauración.",
+    "history": "El núcleo se consolidó como destino vacacional por su bahía protegida y su cercanía al aeropuerto. La oferta hotelera y de ocio se fue diversificando hasta configurar un centro turístico cómodo y accesible.",
+    "longDescription": "La playa central ofrece aguas tranquilas, alquiler de hamacas y paseos seguros. El puerto deportivo concentra salidas recreativas, y el paseo permite llegar a comercios y cafeterías. Ideal para viajar con niños o personas con movilidad reducida.",
+    "info": {
+      "bestTime": "Todo el año; poco oleaje habitual",
+      "parking": "Aparcamiento amplio en zona urbana",
+      "accessibility": "Paseos llanos y accesos adaptados en tramos",
+      "services": "Restauración, comercios, alquiler de hamacas",
+      "duration": "2–4 horas",
+      "difficulty": "Baja",
+      "tips": "Paseo cómodo para familias y personas mayores"
+    }
+  },
+  {
+    "id": "puerto-del-rosario",
+    "title": "Puerto del Rosario",
+    "summary": "Capital con arte urbano, museos y comercio local.",
+    "heroImage": "images/turismo/puerto-del-rosario-.jpg",
+    "gallery": [
+      "images/turismo/puerto-del-rosario-.jpg",
+      "images/turismo/Salinas-carmen.webp"
+    ],
+    "placeQuery": "Puerto del Rosario, Fuerteventura",
+    "lat": 28.5004,
+    "lng": -13.8620,
+    "features": ["Arte urbano"],
+    "description": "Murales, museos y vida cultural en la capital majorera. Recorre la avenida marítima y las esculturas urbanas. Buenas conexiones de transporte público.",
+    "history": "La capital ha evolucionado de puerto funcional a ciudad de servicios y cultura, incorporando rutas de escultura y murales contemporáneos. Su posición estratégica facilitó el comercio y la conexión con otras islas.",
+    "longDescription": "Pasear por el centro revela fachadas intervenidas por artistas y pequeñas galerías. El frente marítimo es perfecto para caminar al atardecer. Encontrarás museos, comercios y gastronomía local con buena oferta de transporte urbano.",
+    "info": {
+      "bestTime": "Tarde y atardecer",
+      "parking": "Aparcamiento urbano (zona azul/verde según área)",
+      "accessibility": "Calles y aceras llanas; semáforos y pasos habilitados",
+      "services": "Museos, comercios, restauración",
+      "duration": "2–3 horas",
+      "difficulty": "Baja",
+      "tips": "Ruta de esculturas y murales por el centro"
+    }
+  },
+  {
+    "id": "montana-de-tindaya",
+    "title": "Montaña de Tindaya",
+    "summary": "Montaña sagrada con grabados rupestres en su entorno.",
+    "heroImage": "images/turismo/tindaya.webp",
+    "gallery": [
+      "images/turismo/tindaya.webp",
+      "images/turismo/la-oliva.avif"
+    ],
+    "placeQuery": "Montaña de Tindaya, Fuerteventura",
+    "lat": 28.5629,
+    "lng": -13.9602,
+    "features": ["Arqueología"],
+    "description": "Espacio natural y cultural con gran simbolismo aborigen. Respeta las normas de protección y consulta restricciones de acceso antes de planificar tu visita.",
+    "history": "Considerada montaña sagrada por los antiguos pobladores, su entorno alberga grabados y testimonios arqueológicos. El valor simbólico y patrimonial ha motivado medidas de protección específicas.",
+    "longDescription": "El paisaje que la rodea destaca por su sobriedad y colores terrosos, ideales para la observación tranquila. Infórmate de posibles restricciones de acceso o visitas guiadas. Evita salirse de caminos y respeta la señalización de protección.",
+    "info": {
+      "bestTime": "Mañana con buena visibilidad",
+      "parking": "Aparcamiento en puntos cercanos señalizados",
+      "accessibility": "Senderos no adaptados; terreno pedregoso",
+      "services": "Servicios limitados",
+      "duration": "1–2 horas",
+      "difficulty": "Baja–media",
+      "tips": "Respeta normas de protección y señalización"
+    }
+  },
+  {
+    "id": "parque-natural-de-jandia",
+    "title": "Parque Natural de Jandía",
+    "summary": "Reserva en el sur con largas playas y fauna endémica.",
+    "heroImage": "images/turismo/parque-natural-jandia.jpg",
+    "gallery": [
+      "images/turismo/parque-natural-jandia.jpg",
+      "images/turismo/cofete.jpg"
+    ],
+    "placeQuery": "Parque Natural de Jandía, Fuerteventura",
+    "lat": 28.0625,
+    "lng": -14.3394,
+    "features": ["Naturaleza"],
+    "description": "Espacios protegidos, dunas y sistemas costeros únicos. Rutas de senderismo señalizadas, avistamiento de aves y playas casi infinitas. Lleva agua y protección solar.",
+    "history": "La península de Jandía conserva una de las mayores extensiones naturales de la isla, con ecosistemas áridos, playas abiertas y cordales montañosos. Su protección garantiza la conservación de hábitats y fauna costera.",
+    "longDescription": "Existen senderos balizados que cruzan el interior y bajan a playas remotas. Lleva calzado adecuado, agua y protección solar: la insolación es alta y la sombra escasa. En época de viento, ajusta rutas y horarios.",
+    "info": {
+      "bestTime": "Octubre–mayo; evitar horas centrales en verano",
+      "parking": "Varias zonas según playa/sendero",
+      "accessibility": "Senderos no adaptados; tramos de arena y roca",
+      "services": "Escasos; consulta antes de salir",
+      "duration": "3–6 horas (según ruta)",
+      "difficulty": "Media",
+      "tips": "Planifica agua, ruta y retorno antes de entrar en parque"
+    }
+  },
+  {
+    "id": "ecomuseo-la-alcogida",
+    "title": "Ecomuseo La Alcogida",
+    "summary": "Conjunto de casas tradicionales que muestran la vida rural.",
+    "heroImage": "images/turismo/ecomuseo-la-alcogida.jpg",
+    "gallery": [
+      "images/turismo/ecomuseo-la-alcogida.jpg",
+      "images/turismo/molino-antigua.jpg"
+    ],
+    "placeQuery": "Ecomuseo La Alcogida, Tefía",
+    "lat": 28.4811,
+    "lng": -13.9881,
+    "features": ["Arquitectura tradicional"],
+    "description": "Museo etnográfico al aire libre en Tefía que recrea la vida campesina. Ideal para familias; consulta horarios y actividades.",
+    "history": "El conjunto recupera viviendas, corrales y dependencias tradicionales que muestran oficios, artesanía y modos de vida rurales. Es fruto de labores de restauración y recopilación patrimonial de la isla.",
+    "longDescription": "El recorrido permite ver aperos de labranza, cocina tradicional y espacios de trabajo. En ocasiones hay demostraciones de oficios. Es una visita perfecta para comprender la autosuficiencia y la arquitectura adaptada al clima árido.",
+    "info": {
+      "bestTime": "Mañana",
+      "parking": "Aparcamiento propio del ecomuseo",
+      "accessibility": "Espacios mayormente llanos; suelos irregulares",
+      "services": "Taquilla y exposición; revisa horarios",
+      "duration": "1–2 horas",
+      "difficulty": "Baja",
+      "tips": "Consulta talleres o demostraciones el día de la visita"
+    }
+  },
+  {
+    "id": "molino-de-antigua",
+    "title": "Molino de Antigua",
+    "summary": "Molino restaurado con museo del gofio y artesanía.",
+    "heroImage": "images/turismo/molino-antigua.jpg",
+    "gallery": [
+      "images/turismo/molino-antigua.jpg",
+      "images/turismo/ecomuseo-la-alcogida.jpg"
+    ],
+    "placeQuery": "Molino de Antigua, Fuerteventura",
+    "lat": 28.4191,
+    "lng": -14.0092,
+    "features": ["Molino"],
+    "description": "Patrimonio industrial majorero convertido en museo del gofio y artesanía. Aparcamiento cercano y fácil acceso.",
+    "history": "Los molinos y molinas fueron esenciales para transformar el cereal en gofio, alimento básico de Canarias. Este molino restaurado preserva la memoria técnica y social del proceso.",
+    "longDescription": "La visita enseña la maquinaria, la molienda y el papel del gofio en la dieta insular. Suele complementarse con tienda de productos locales y artesanía. Acceso llano y señalizado, ideal para una parada breve y didáctica.",
+    "info": {
+      "bestTime": "Mañana",
+      "parking": "Aparcamiento cercano señalizado",
+      "accessibility": "Acceso llano; interiores con escalones puntuales",
+      "services": "Tienda de productos locales",
+      "duration": "45–90 min",
+      "difficulty": "Baja",
+      "tips": "Prueba el gofio local en comercios cercanos"
+    }
+  },
+  {
+    "id": "playa-de-las-palomitas",
+    "title": "Playa de las Palomitas",
+    "summary": "Cala con \"palomitas\" de coral rodolitos fosilizados.",
+    "heroImage": "images/turismo/popcorn-beach.jpg",
+    "gallery": [
+      "images/turismo/popcorn-beach.jpg",
+      "images/turismo/corralejo-dunas.jpg"
+    ],
+    "placeQuery": "Popcorn Beach, Corralejo",
+    "lat": 28.7482,
+    "lng": -13.8732,
+    "features": ["Fenómeno natural"],
+    "description": "Singular playa con rodolitos blancos semejantes a palomitas. Respeta el entorno: está prohibido llevarse los rodolitos. Acceso por pista corta y aparcamiento limitado.",
+    "history": "Los rodolitos son estructuras calcáreas formadas por algas marinas que, tras fragmentarse y blanquearse, se acumulan en la costa. Su extracción daña el ecosistema costero, por lo que se protege y se apela al turismo responsable.",
+    "longDescription": "El acceso es sencillo pero conviene ir con calzado cómodo. Es un lugar fotogénico y frágil: evita pisar acumulaciones y no te lleves piezas. El viento puede ser intenso; elige momentos de menor racha para disfrutar del paisaje.",
+    "info": {
+      "bestTime": "Mañana o última hora (menos viento)",
+      "parking": "Pequeñas zonas junto al acceso por pista",
+      "accessibility": "Pista y rocas; no adaptado",
+      "services": "Sin servicios",
+      "duration": "45–90 min",
+      "difficulty": "Baja",
+      "tips": "No extraigas rodolitos; respeta el entorno"
+    }
+  },
+  {
+    "id": "salinas-del-carmen",
+    "title": "Salinas del Carmen",
+    "summary": "Salinas artesanales del XVIII con museo de la sal.",
+    "heroImage": "images/turismo/Salinas-carmen.webp",
+    "gallery": [
+      "images/turismo/Salinas-carmen.webp",
+      "images/turismo/caleta-de-Fuste.jpg"
+    ],
+    "placeQuery": "Salinas del Carmen, Fuerteventura",
+    "lat": 28.3729,
+    "lng": -13.8298,
+    "features": ["Salinas"],
+    "description": "Conjunto histórico y museo junto al mar. Exposición interpretativa de la obtención de sal y paseo por las salinas. Aparcamiento junto al museo.",
+    "history": "La producción de sal a partir de la evaporación solar fue una actividad clave para conservar alimentos y abastecer rutas marítimas. Las salinas, sus cocederos y tajos, son hoy patrimonio cultural y paisajístico.",
+    "longDescription": "El museo explica técnicas, herramientas y la vida en torno a la sal. El paseo por los estanques permite apreciar geometrías y reflejos al atardecer. Respeta las zonas de trabajo y la señalización.",
+    "info": {
+      "bestTime": "Tarde; atardeceres con reflejos",
+      "parking": "Aparcamiento junto al museo",
+      "accessibility": "Recorridos llanos; zonas exteriores expuestas al sol",
+      "services": "Museo y posible tienda",
+      "duration": "1–2 horas",
+      "difficulty": "Baja",
+      "tips": "Sombrero y agua; el sol incide con fuerza"
+    }
+  },
+  {
+    "id": "punta-de-pesebre",
+    "title": "Punta de Pesebre",
+    "summary": "Extremo occidental con paisajes volcánicos y vistas al Atlántico.",
+    "heroImage": "images/turismo/punta-pesebre.jpg",
+    "gallery": [
+      "images/turismo/punta-pesebre.jpg",
+      "images/turismo/parque-natural-jandia.jpg"
+    ],
+    "placeQuery": "Punta de Pesebre, Jandía",
+    "lat": 28.0490,
+    "lng": -14.5010,
+    "features": ["Extremo norte"],
+    "description": "Rincón remoto y ventoso con espectaculares paisajes marinos. Pista sin asfaltar; evitar con mal tiempo. Lleva ropa de abrigo por el viento.",
+    "history": "Los extremos de Jandía han sido puntos de referencia para navegantes y pastores. La rudeza del terreno y el viento marcan un carácter aislado que ha mantenido el paisaje prácticamente intacto.",
+    "longDescription": "La pista de acceso requiere conducción prudente y revisar previsiones meteorológicas. No hay servicios ni sombra; planifica agua y tiempo. La recompensa: soledad, cielos cambiantes y un litoral volcánico de gran fuerza escénica.",
+    "info": {
+      "bestTime": "Mañana con menos viento",
+      "parking": "Espacios informales al final de pista",
+      "accessibility": "No adaptado; terreno irregular y ventoso",
+      "services": "Sin servicios",
+      "duration": "2–3 horas",
+      "difficulty": "Media (pista)",
+      "tips": "Evita días de mal tiempo; lleva abrigo por el viento"
+    }
+  }
+]
