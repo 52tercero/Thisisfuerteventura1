@@ -86,6 +86,9 @@ html {
     scroll-behavior: auto;
 }
 
+/* Evitar desplazamientos horizontales por desbordes accidentales */
+html, body { overflow-x: hidden; }
+
 /* CSP-safe helpers for JS-generated markup */
 .ns-inline { display: inline-block; }
 .mt-10 { margin: 10px 0 0; }
@@ -715,17 +718,12 @@ html[data-theme="dark"].dark-header header { background-color: #ffffff !importan
 }
 
 .hero .hero-content h2 {
-    font-size: 3.5rem;
+    font-size: clamp(1.8rem, 4.2vw, 3.5rem);
     line-height: 1.15;
     letter-spacing: -0.01em;
     margin-bottom: 18px;
     color: var(--text-white);
     text-shadow: 0 2px 6px rgba(0,0,0,0.4);
-}
-@media (max-width: 768px) {
-    .hero .hero-content h2 {
-        font-size: clamp(1.6rem, 6vw, 2rem);
-    }
 }
 
 /* Hero de página de noticias */
@@ -818,20 +816,8 @@ html[data-theme="dark"].dark-header header { background-color: #ffffff !importan
 /* Grid de noticias: 3 por línea en escritorio */
 .news-grid {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 30px;
-}
-
-@media (max-width: 992px) {
-    .news-grid {
-        grid-template-columns: repeat(2, 1fr);
-    }
-}
-
-@media (max-width: 600px) {
-    .news-grid {
-        grid-template-columns: 1fr;
-    }
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 24px;
 }
 
 /* Featured news grid: exactamente 3 por línea en escritorio */
