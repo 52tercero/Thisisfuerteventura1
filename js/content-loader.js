@@ -162,9 +162,10 @@ document.addEventListener('DOMContentLoaded', async function() {
                             let source = '';
                             try { source = link ? (new URL(link)).hostname.replace('www.', '') : 'fuente'; } catch (e) { source = 'fuente'; }
                             const image = await (async () => {
-                                if (!it.image) return 'images/logo.jpg?v=2025110501';
-                                if (/^http:/.test(it.image)) return 'images/logo.jpg?v=2025110501';
-                                return it.image;
+                                if (!it.image || typeof it.image !== 'string' || !it.image.trim()) {
+                                    return 'images/logo.jpg?v=2025110501';
+                                }
+                                return it.image; // proxificado en render con toImageSrc()
                             })();
                             const cleaned = (window.DOMPurify && DOMPurify.sanitize) ? DOMPurify.sanitize(description) : description.replace(/<[^>]*>/g, ' ');
                             return {

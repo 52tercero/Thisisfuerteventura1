@@ -267,10 +267,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 const pub = it.pubDate || it.published || '';
                 let source = '';
                 try { source = link ? (new URL(link)).hostname.replace('www.', '') : 'fuente'; } catch (_) { source = 'fuente'; }
-                let image = it.image;
-                if (!image || /^http:/.test(image)) {
-                    image = 'images/logo.jpg?v=2025110501';
-                }
+                let image = (typeof it.image === 'string' && it.image.trim()) ? it.image : 'images/logo.jpg?v=2025110501';
                 const tags = [];
                 const push = (v) => {
                     if (!v) return;
