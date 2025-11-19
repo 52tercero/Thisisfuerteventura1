@@ -29,7 +29,7 @@
     // Alojamiento (zonas)
     { slug: 'caleta', lat: 28.3920, lon: -13.8600, title: 'Caleta de Fuste', desc: 'Zona céntrica con resorts y golf.', img: 'images/playa_del_castillo_caleta_de_fuste.webp', url: 'alojamiento.html' },
     // Gastronomía
-    { slug: 'la-oliva', lat: 28.6100, lon: -13.9260, title: 'La Oliva', desc: 'Cocina local y productos de km 0.', img: 'images/turismo/la-oliva.avif', url: 'gastronomia.html' },
+    { slug: 'la-oliva', lat: 28.6100, lon: -13.9260, title: 'La Oliva', desc: 'Cocina local y productos de km 0.', img: 'images/turismo/la-oliva.avif', url: 'senderos.html' },
   ];
 
   function buildLeaflet() {

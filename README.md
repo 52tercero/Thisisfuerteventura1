@@ -28,7 +28,7 @@ Notes:
 - `index.html` – hero + featured news
 - `noticias.html` – full news list with filters, search, and pagination (top & bottom toolbars)
 - `noticia.html` – single article view (requires `?id=` or `?title=`)
-- `turismo.html`, `alojamiento.html`, `playas.html`, `gastronomia.html`, `contacto.html` – informational pages
+- `turismo.html`, `alojamiento.html`, `playas.html`, `senderos.html`, `contacto.html` – informational pages
 
 ## RSS proxy (server / local) & Netlify Functions
 Located in `/server`. Requires Node 18+.

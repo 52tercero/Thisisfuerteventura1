@@ -36,19 +36,11 @@ document.addEventListener('DOMContentLoaded', function() {
     const newsContainer = document.getElementById('news-container');
     if (!newsContainer) return;
 
-    // Política solicitada: las feeds sólo se muestran en Destacados (portada).
-    // En la página de noticias no cargamos el listado desde RSS.
-    newsContainer.innerHTML = '<div class="no-results">Las noticias se muestran en la sección de Destacados de la portada.</div>';
-    return;
-
     const REFRESH_INTERVAL = 30 * 60 * 1000;
     const FEED_REFRESH_EVENT = 'feed:refresh';
-    const FALLBACK_NEWS_SOURCES = [
-        'https://rss.app/feeds/jbwZ2Q9QAvgvI6G0.xml'
-    ];
-    const activeNewsSources = (Array.isArray(window.FeedUtils?.DEFAULT_NEWS_SOURCES) && window.FeedUtils.DEFAULT_NEWS_SOURCES.length > 0)
-        ? window.FeedUtils.DEFAULT_NEWS_SOURCES
-        : FALLBACK_NEWS_SOURCES;
+    // Fuente EXCLUSIVA para la página de Noticias (no mezclar con portada)
+    const NOTICIAS_NEWS_SOURCE = 'https://rss.app/feeds/jbwZ2Q9QAvgvI6G0.xml';
+    const activeNewsSources = [NOTICIAS_NEWS_SOURCE];
 
     let hasRenderedSnapshot = false;
     let isLoading = false;
@@ -77,7 +69,8 @@ document.addEventListener('DOMContentLoaded', function() {
         }
         try {
             if (window.FeedUtils && typeof FeedUtils.fetchRSSFeeds === 'function') {
-                const items = await FeedUtils.fetchRSSFeeds(activeNewsSources, { noCache: !!forceRefresh });
+                // Forzar siempre noCache en Noticias para datos frescos
+                const items = await FeedUtils.fetchRSSFeeds(activeNewsSources, { noCache: true });
                 cachedNewsItems = items.map((it, idx) => ({
                     id: idx + 1,
                     title: it.title,
@@ -255,75 +248,7 @@ document.addEventListener('DOMContentLoaded', function() {
         renderNewsCards(pageItems);
     }
 
-    async function renderSnapshotIfNeeded() {
-        if (hasRenderedSnapshot) return;
-        try {
-            const snapRes = await fetch('/data/feeds.json', { cache: 'no-store' });
-            if (!snapRes.ok) return;
-            const snap = await snapRes.json();
-            const items = Array.isArray(snap.items) ? snap.items : [];
-            if (items.length === 0) return;
-
-            const normalized = items.slice(0, 60).map(it => {
-                const title = it.title || 'Sin título';
-                const description = typeof it.description === 'string' ? it.description : '';
-                const summary = description.replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim();
-                const link = it.link || '';
-                const pub = it.pubDate || it.published || '';
-                let source = '';
-                try { source = link ? (new URL(link)).hostname.replace('www.', '') : 'fuente'; } catch (_) { source = 'fuente'; }
-                let image = (typeof it.image === 'string' && it.image.trim()) ? it.image : 'images/logo.jpg?v=2025110501';
-                const tags = [];
-                const push = (v) => {
-                    if (!v) return;
-                    if (Array.isArray(v)) {
-                        v.forEach(push);
-                        return;
-                    }
-                    if (typeof v !== 'string') return;
-                    v.split(/[,;|]/).forEach(seg => {
-                        const s = seg.trim();
-                        if (!s) return;
-                        const display = s.charAt(0).toUpperCase() + s.slice(1);
-                        if (!tags.some(t => t.toLowerCase() === display.toLowerCase())) {
-                            tags.push(display);
-                        }
-                    });
-                };
-                push(it.tags);
-                push(it.categories);
-                push(it.category);
-                const publishedAt = (() => {
-                    if (!pub) return null;
-                    const dt = new Date(pub);
-                    return Number.isNaN(dt.getTime()) ? null : dt.toISOString();
-                })();
-                const displayDate = publishedAt
-                    ? new Date(publishedAt).toLocaleDateString('es-ES', { day: 'numeric', month: 'long', year: 'numeric' })
-                    : new Date().toLocaleDateString('es-ES', { day: 'numeric', month: 'long', year: 'numeric' });
-                return {
-                    title,
-                    image,
-                    summary,
-                    content: summary,
-                    date: displayDate,
-                    publishedAt,
-                    category: tags.find(t => t.toLowerCase() !== 'general') || tags[0] || 'General',
-                    source,
-                    link,
-                    tags
-                };
-            });
-
-            if (normalized.length === 0) return;
-            cachedNewsItems = normalized;
-            isSnapshotCache = true;
-            hasRenderedSnapshot = true;
-            applyNewsData(cachedNewsItems, { keepPage: true });
-        } catch (err) {
-            console.warn('[NEWS] Snapshot render failed:', err);
-        }
-    }
+    // Snapshot deshabilitado en Noticias para evitar feeds antiguos
 
     async function loadAndDisplayNews(options = {}) {
         const {
@@ -363,11 +288,9 @@ document.addEventListener('DOMContentLoaded', function() {
                 `;
             }
 
-            if (!skipSnapshot && !hasRenderedSnapshot) {
-                await renderSnapshotIfNeeded();
-            }
+            // No snapshot en noticias: evitamos contenido desactualizado
 
-            const fetched = await fetchNews(forceRefresh || isSnapshotCache);
+            const fetched = await fetchNews(true);
             if (fetched.length === 0) {
                 if (newsContainer.childElementCount === 0) {
                     newsContainer.innerHTML = '<div class="no-results">No se pudieron cargar las noticias. Inténtalo más tarde.</div>';
@@ -420,8 +343,8 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // Carga inicial (forzar red para evitar caché local desactualizada)
-    loadAndDisplayNews({ forceRefresh: true });
+    // Carga inicial: sin snapshot y siempre fresco
+    loadAndDisplayNews({ forceRefresh: true, skipSnapshot: true });
 
     // Eliminada interacción con chips de etiqueta (ya no se usan para filtrar)
 

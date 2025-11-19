@@ -236,7 +236,9 @@
             console.debug('[FEED-UTILS] Proxy base:', proxyBase);
             
             // Intentar endpoint agregado primero
-            const aggKey = 'rss_cache_v6_title_only_AGG'; // bump para nueva lógica + TTL
+            // Clave de caché debe depender de las fuentes para evitar mezclar resultados entre páginas
+            const sourcesKey = (() => { try { return btoa([...(sources||[])].map(String).sort().join(',')); } catch(_) { return String([...(sources||[])].sort().join(',')); } })();
+            const aggKey = `rss_cache_v7_AGG_${sourcesKey}`; // v7: cache segmentado por conjunto de fuentes
             let items = noCache ? null : cacheGet(aggKey);
             
             if (!items) {

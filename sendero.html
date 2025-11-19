@@ -1,0 +1,173 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sendero | This is Fuerteventura</title>
+    <meta name="theme-color" content="#0f4c81">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
+    <link rel="dns-prefetch" href="https://cdnjs.cloudflare.com">
+    <link rel="dns-prefetch" href="https://unpkg.com">
+    <link rel="canonical" href="https://thisisfuerteventura.es/sendero.html">
+    <link rel="manifest" href="manifest.webmanifest">
+    <link rel="stylesheet" href="css/styles.css?v=2025111803">
+    <link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@400;600;700&family=Yeseva+One&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@9/swiper-bundle.min.css" / crossorigin="anonymous" integrity="sha384-tOPXDsn4moKzmRcYpDt8mOcJWxzy89N8dK0oEkxTx90DZYjDdznDQ4IEiH1pcZH5">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" crossorigin="anonymous" integrity="sha384-t1nt8BQoYMLFN5p42tRAtuAAFQaCQODekUVeKKZrEnEyp4H2R0RHFz0KWpmj7i8g">
+    <meta name="description" content="Detalles del sendero: mapa, distancia, desnivel, dificultad y GPX.">
+    <meta name="robots" content="index, follow">
+    <meta property="og:title" content="Sendero - Detalle">
+    <meta property="og:description" content="Mapa, datos técnicos y GPX del sendero.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://thisisfuerteventura.es/sendero.html">
+    <meta property="og:image" content="https://thisisfuerteventura.es/images/logo.jpg">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Sendero - Detalle">
+    <meta name="twitter:description" content="Mapa, datos técnicos y GPX del sendero.">
+    <meta name="twitter:image" content="https://thisisfuerteventura.es/images/logo.jpg">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://unpkg.com https://www.googletagmanager.com https://analytics.google.com https://www.google-analytics.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://unpkg.com; font-src 'self' data: https://fonts.gstatic.com https://cdnjs.cloudflare.com; img-src 'self' data: https: https://unpkg.com https://*.tile.openstreetmap.org; media-src 'self'; connect-src 'self' https://thisisfuerteventura.es https://www.googletagmanager.com https://www.google-analytics.com https://cdn.jsdelivr.net https://unpkg.com http://localhost:3000 http://localhost:3001 http://localhost:* http://127.0.0.1:* https://api.open-meteo.com https://marine-api.open-meteo.com https://ingesteer.services-prod.nsvcs.net; base-uri 'self'; object-src 'none'; frame-ancestors 'self';">
+</head>
+<body class="dark-header">
+<a class="skip-link" href="#main">Saltar al contenido principal</a>
+<header>
+  <div class="logo-container">
+    <img src="images/logo.jpg" alt="This is Fuerteventura Logo" class="logo" loading="lazy" decoding="async" width="70" height="70">
+    <h1>This is Fuerteventura</h1>
+  </div>
+  <nav id="site-nav" aria-label="Navegación principal" role="navigation">
+    <ul>
+      <li><a href="index.html">Inicio</a></li>
+      <li><a href="noticias.html">Noticias</a></li>
+      <li><a href="turismo.html">Turismo</a></li>
+      <li><a href="alojamiento.html">Alojamiento</a></li>
+      <li><a href="playas.html">Playas</a></li>
+      <li><a href="senderos.html">Senderos</a></li>
+      <li><a href="blog.html">Blog</a></li>
+      <li><a href="contacto.html">Contacto</a></li>
+    </ul>
+  </nav>
+  <button type="button" class="mobile-menu" aria-label="Abrir menú" aria-controls="site-nav" aria-expanded="false">
+    <i class="fas fa-bars" aria-hidden="true"></i>
+  </button>
+</header>
+
+<main id="main">
+  <section class="hero parallax reveal">
+    <div class="hero-overlay"></div>
+    <div class="hero-content">
+      <h2 id="trail-title">Sendero</h2>
+      <p id="trail-sub">Detalles y mapa</p>
+    </div>
+  </section>
+
+  <section class="tourism-content reveal">
+    <div class="container">
+      <div id="trail-content">
+        <div class="tourism-grid">
+          <article class="tourism-card">
+            <div class="tourism-info">
+              <h3>Datos</h3>
+              <div class="features" id="trail-features"></div>
+              <p id="trail-summary"></p>
+              <div class="btn-row">
+                <a id="trail-gpx" class="btn" download>Descargar GPX</a>
+                <a id="trail-maps" class="btn" target="_blank" rel="noopener"><i class="fas fa-map-location-dot"></i> Cómo llegar</a>
+              </div>
+            </div>
+          </article>
+          <article class="tourism-card" style="width:100%">
+            <div id="trail-map" style="height: 420px; width: 100%; border-radius: 12px;"></div>
+          </article>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="footer-content">
+      <div class="footer-logo">
+          <img src="images/logo.jpg" alt="This is Fuerteventura Logo" class="logo" loading="lazy" decoding="async" width="40" height="40">
+          <h3>This is Fuerteventura</h3>
+      </div>
+      <div class="footer-links">
+          <h4>Enlaces rápidos</h4>
+          <ul>
+              <li><a href="index.html">Inicio</a></li>
+              <li><a href="noticias.html">Noticias</a></li>
+              <li><a href="turismo.html">Turismo</a></li>
+              <li><a href="alojamiento.html">Alojamiento</a></li>
+              <li><a href="playas.html">Playas</a></li>
+          </ul>
+      </div>
+      <div class="footer-social">
+          <h4>Síguenos</h4>
+          <div class="social-icons">
+              <a href="https://www.facebook.com/thisisfuerteventura" target="_blank" rel="noopener noreferrer" aria-label="Facebook"><i class="fab fa-facebook"></i></a>
+              <a href="https://twitter.com/thisisfuertev" target="_blank" rel="noopener noreferrer" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+              <a href="https://www.instagram.com/thisisfuerteventura" target="_blank" rel="noopener noreferrer" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+              <a href="https://www.youtube.com/@thisisfuerteventura" target="_blank" rel="noopener noreferrer" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
+          </div>
+      </div>
+      <div class="footer-contact">
+          <h4>Contacto</h4>
+          <p><i class="fas fa-envelope"></i> info@thisisfuerteventura.es</p>
+          <p><i class="fas fa-phone"></i> +34 633 938 539</p>
+      </div>
+  </div>
+  <div class="footer-bottom">
+      <p>&copy; 2025 This is Fuerteventura. Todos los derechos reservados.</p>
+  </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/dompurify@2.4.0/dist/purify.min.js" defer crossorigin="anonymous" integrity="sha384-Tsl3d5pUAO7a13enIvSsL3O0/95nsthPJiPto5NtLuY8w3+LbZOpr3Fl2MNmrh1E"></script>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin="" defer></script>
+<script>
+document.addEventListener('DOMContentLoaded', async () => {
+  const params = new URLSearchParams(location.search);
+  const slug = params.get('slug');
+  const titleEl = document.getElementById('trail-title');
+  const sumEl = document.getElementById('trail-summary');
+  const featEl = document.getElementById('trail-features');
+  const gpxEl = document.getElementById('trail-gpx');
+  const mapsEl = document.getElementById('trail-maps');
+  const mapDiv = document.getElementById('trail-map');
+  try{
+    const res = await fetch('data/senderos.json', { cache: 'no-store' });
+    const all = await res.json();
+    const t = all.find(x => x.slug === slug) || all[0];
+    document.title = t.name + ' | This is Fuerteventura';
+    titleEl.textContent = t.name;
+    sumEl.textContent = t.summary;
+    featEl.innerHTML = `
+      <span><i class="fas fa-route"></i> ${t.distanceKm} km</span>
+      <span><i class="fas fa-mountain"></i> +${t.ascentM} m</span>
+      <span><i class="fas fa-clock"></i> ${Math.floor(t.durationMin/60)} h ${t.durationMin%60? (t.durationMin%60+' min') : ''}</span>
+      <span><i class="fas fa-signal"></i> ${t.difficulty.charAt(0).toUpperCase()+t.difficulty.slice(1)}</span>
+    `;
+    if(t.gpx){
+      gpxEl.href = t.gpx;
+    } else {
+      gpxEl.classList.add('disabled');
+      gpxEl.textContent = 'GPX no disponible';
+      gpxEl.removeAttribute('download');
+    }
+    if(t.mapsQuery){
+      mapsEl.href = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(t.mapsQuery)}`;
+    }
+    if(mapDiv && window.L){
+      const map = L.map(mapDiv).setView([t.start.lat, t.start.lon], 12);
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { attribution: '&copy; OpenStreetMap' }).addTo(map);
+      L.marker([t.start.lat, t.start.lon]).addTo(map).bindPopup(t.name);
+    }
+  }catch(e){
+    console.error('[SENDEROS-DETALLE] Error', e);
+    sumEl.textContent = 'No se pudo cargar la información del sendero.';
+  }
+});
+</script>
+</body>
+</html>
