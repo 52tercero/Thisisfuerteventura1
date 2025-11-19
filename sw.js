@@ -1,5 +1,5 @@
 ﻿// Service Worker con estrategia segura (network-first para documentos) para evitar contenido obsoleto
-const SW_VERSION = 'v9-modern';
+const SW_VERSION = 'v10-feed-freshness';
 const APP_CACHE = `app-${SW_VERSION}`;
 
 const PRECACHE = [
@@ -42,6 +42,25 @@ self.addEventListener('fetch', (event) => {
   const url = new URL(req.url);
 
   if (req.method !== 'GET') return;
+
+  // Nunca cachear Netlify Functions
+  if (url.pathname.startsWith('/.netlify/functions/')) {
+    event.respondWith((async () => {
+      try {
+        return await fetch(req);
+      } catch (e) {
+        const isImage = req.destination === 'image';
+        if (isImage) {
+          return (await caches.match('/images/logo.jpg')) || new Response('', { status: 503 });
+        }
+        return new Response(JSON.stringify({ error: 'offline' }), {
+          status: 503,
+          headers: { 'Content-Type': 'application/json' }
+        });
+      }
+    })());
+    return;
+  }
 
   // Nunca cachear /api – si la red falla, responder JSON de error (evita promesas rechazadas)
   if (url.pathname.startsWith('/api/')) {
