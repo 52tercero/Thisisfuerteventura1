@@ -160,21 +160,6 @@
         container.innerHTML = `<div class="error"><h2>Elemento no encontrado</h2><p>Vuelve a <a href=\"turismo.html\">Turismo</a> y elige un lugar.</p></div>`;
         return;
       }
-      // Registrar vista y metadata para ranking de destacados
-      try {
-        const viewKey = `site_content_views_turismo_${id}`;
-        const metaKey = `site_content_meta_turismo_${id}`;
-        const prev = parseInt(localStorage.getItem(viewKey) || '0', 10) || 0;
-        localStorage.setItem(viewKey, String(prev + 1));
-        const meta = {
-          id: `turismo_${id}`,
-          title: place.title,
-          image: place.heroImage || (place.gallery && place.gallery[0]) || 'images/logo.jpg',
-          url: window.location.href,
-          date: new Date().toLocaleDateString('es-ES', { day: 'numeric', month: 'long', year: 'numeric' })
-        };
-        localStorage.setItem(metaKey, JSON.stringify(meta));
-      } catch(_) { /* ignore storage errors */ }
       renderPlace(place);
     } catch (e){
       console.error(e);
