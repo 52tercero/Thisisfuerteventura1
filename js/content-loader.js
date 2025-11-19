@@ -95,7 +95,7 @@ document.addEventListener('DOMContentLoaded', async function() {
         if (!featuredNewsContainer.querySelector('.content-card')) {
             featuredNewsContainer.innerHTML = `
                 <div class="loading-skeleton">
-                    ${Array(6).fill(0).map(() => `
+                    ${Array(20).fill(0).map(() => `
                         <div class="skeleton-card">
                             <div class="skeleton-image"></div>
                             <div class="skeleton-content">
@@ -114,7 +114,52 @@ document.addEventListener('DOMContentLoaded', async function() {
         async function fetchLatestFeeds() {
             try {
                 if (window.FeedUtils && typeof FeedUtils.fetchRSSFeeds === 'function') {
-                    // Bypass caché para portada para maximizar frescura
+                    // Si tenemos justo dos fuentes de portada, obtener 10 por cada una
+                    if (Array.isArray(activeNewsSources) && activeNewsSources.length === 2) {
+                        const [srcA, srcB] = activeNewsSources;
+                        const [itemsA, itemsB] = await Promise.all([
+                            FeedUtils.fetchRSSFeeds([srcA], { noCache: true }),
+                            FeedUtils.fetchRSSFeeds([srcB], { noCache: true })
+                        ]);
+
+                        const sortByTimeDesc = (arr) => {
+                            const norm = (it) => {
+                                if (it && it.publishedAt) {
+                                    const dt = new Date(it.publishedAt);
+                                    if (!Number.isNaN(dt.getTime())) return dt.getTime();
+                                }
+                                if (it && it.raw) {
+                                    const rawDate = it.raw?.pubDate || it.raw?.published || it.raw?.updated || null;
+                                    if (rawDate) {
+                                        const dt = new Date(rawDate);
+                                        if (!Number.isNaN(dt.getTime())) return dt.getTime();
+                                    }
+                                }
+                                try {
+                                    const parts = (it?.date || '').split(' de ').reverse().join(' ');
+                                    const fallback = new Date(parts);
+                                    if (!Number.isNaN(fallback.getTime())) return fallback.getTime();
+                                } catch(_){}
+                                return 0;
+                            };
+                            return [...arr].sort((a,b)=> norm(b)-norm(a));
+                        };
+
+                        const topA = sortByTimeDesc(itemsA).slice(0, 10).map(x => ({ ...x, __feed: 'A' }));
+                        const topB = sortByTimeDesc(itemsB).slice(0, 10).map(x => ({ ...x, __feed: 'B' }));
+
+                        // Intercalar A y B para equilibrio visual
+                        const interleaved = [];
+                        for (let i=0; i<Math.max(topA.length, topB.length); i++) {
+                            if (i < topA.length) interleaved.push(topA[i]);
+                            if (i < topB.length) interleaved.push(topB[i]);
+                        }
+                        // Marcar para que no se reordene después
+                        interleaved.__preserveOrder = true;
+                        return interleaved;
+                    }
+
+                    // Bypass caché para portada para maximizar frescura (modo general)
                     return await FeedUtils.fetchRSSFeeds(activeNewsSources, { noCache: true });
                 }
             } catch (e) {
@@ -239,9 +284,12 @@ document.addEventListener('DOMContentLoaded', async function() {
                 return;
             }
 
-            // Limpiar contenedor y ordenar por fecha desc, tomar hasta 12
+            // Limpiar contenedor y preparar selección (20 artículos: 10 por fuente)
             featuredNewsContainer.innerHTML = '';
-            const featured = [...newsItems].sort((a,b) => normalizeTime(b) - normalizeTime(a)).slice(0, 12);
+            const preserveOrder = newsItems && newsItems.__preserveOrder === true;
+            const featured = preserveOrder
+                ? newsItems.slice(0, 20)
+                : [...newsItems].sort((a,b) => normalizeTime(b) - normalizeTime(a)).slice(0, 20);
             console.log('[CONTENT-LOADER] Mostrando', featured.length, 'artículos destacados');
             
             // Mostrar las noticias (resumen compacto en portada)
