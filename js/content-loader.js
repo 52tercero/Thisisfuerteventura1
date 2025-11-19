@@ -145,18 +145,10 @@ document.addEventListener('DOMContentLoaded', async function() {
                             return [...arr].sort((a,b)=> norm(b)-norm(a));
                         };
 
-                        const topA = sortByTimeDesc(itemsA).slice(0, 10).map(x => ({ ...x, __feed: 'A' }));
-                        const topB = sortByTimeDesc(itemsB).slice(0, 10).map(x => ({ ...x, __feed: 'B' }));
-
-                        // Intercalar A y B para equilibrio visual
-                        const interleaved = [];
-                        for (let i=0; i<Math.max(topA.length, topB.length); i++) {
-                            if (i < topA.length) interleaved.push(topA[i]);
-                            if (i < topB.length) interleaved.push(topB[i]);
-                        }
-                        // Marcar para que no se reordene después
-                        interleaved.__preserveOrder = true;
-                        return interleaved;
+                        const topA = sortByTimeDesc(itemsA).slice(0, 10);
+                        const topB = sortByTimeDesc(itemsB).slice(0, 10);
+                        // Devolver combinación; el orden final será por fecha global (más reciente -> más antiguo)
+                        return topA.concat(topB);
                     }
 
                     // Bypass caché para portada para maximizar frescura (modo general)
@@ -286,10 +278,7 @@ document.addEventListener('DOMContentLoaded', async function() {
 
             // Limpiar contenedor y preparar selección (20 artículos: 10 por fuente)
             featuredNewsContainer.innerHTML = '';
-            const preserveOrder = newsItems && newsItems.__preserveOrder === true;
-            const featured = preserveOrder
-                ? newsItems.slice(0, 20)
-                : [...newsItems].sort((a,b) => normalizeTime(b) - normalizeTime(a)).slice(0, 20);
+            const featured = [...newsItems].sort((a,b) => normalizeTime(b) - normalizeTime(a)).slice(0, 20);
             console.log('[CONTENT-LOADER] Mostrando', featured.length, 'artículos destacados');
             
             // Mostrar las noticias (resumen compacto en portada)
