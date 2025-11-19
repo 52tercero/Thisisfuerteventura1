@@ -79,6 +79,116 @@ document.addEventListener('DOMContentLoaded', async function() {
         
         if (!featuredNewsContainer) return;
 
+        // Nueva lógica: mostrar sólo artículos más clicados (personalizados).
+        // Recolectar clicks de localStorage.
+        function getTopClickedArticles(limit = 12) {
+            const articles = [];
+            try {
+                for (let i = 0; i < localStorage.length; i += 1) {
+                    const k = localStorage.key(i);
+                    if (!k || !k.startsWith('article_clicks_')) continue;
+                    const id = k.replace('article_clicks_', '');
+                    const clicks = parseInt(localStorage.getItem(k) || '0', 10);
+                    if (!id || !Number.isFinite(clicks) || clicks <= 0) continue;
+                    try {
+                        const raw = localStorage.getItem(`article_${id}`);
+                        if (!raw) continue;
+                        const data = JSON.parse(raw);
+                        if (!data || !data.title) continue;
+                        articles.push({ ...data, articleId: id, clicks });
+                    } catch (_) { /* ignore */ }
+                }
+            } catch (_) { /* ignore top-level */ }
+            // Ordenar por clicks desc, luego por fecha (publishedAt) desc
+            articles.sort((a, b) => {
+                if (b.clicks !== a.clicks) return b.clicks - a.clicks;
+                const ta = Date.parse(a.publishedAt || a.raw?.pubDate || a.date || '') || 0;
+                const tb = Date.parse(b.publishedAt || b.raw?.pubDate || b.date || '') || 0;
+                return tb - ta;
+            });
+            return articles.slice(0, limit);
+        }
+
+        // Obtener contenido interno más visto (turismo u otros tipos)
+        function getTopSiteContent(limit = 12) {
+            const content = [];
+            try {
+                for (let i = 0; i < localStorage.length; i += 1) {
+                    const k = localStorage.key(i);
+                    if (!k || !k.startsWith('site_content_views_')) continue;
+                    const views = parseInt(localStorage.getItem(k) || '0', 10) || 0;
+                    if (views <= 0) continue;
+                    const base = k.replace('site_content_views_', ''); // e.g. turismo_parque-natural
+                    const metaRaw = localStorage.getItem(`site_content_meta_${base}`);
+                    if (!metaRaw) continue;
+                    try {
+                        const meta = JSON.parse(metaRaw);
+                        if (!meta || !meta.title) continue;
+                        content.push({ ...meta, views });
+                    } catch(_) { /* ignore */ }
+                }
+            } catch(_) {}
+            content.sort((a, b) => {
+                if (b.views !== a.views) return b.views - a.views;
+                return (Date.parse(b.date || '')||0) - (Date.parse(a.date || '')||0);
+            });
+            return content.slice(0, limit);
+        }
+
+        const topClicked = getTopClickedArticles();
+        const topContent = getTopSiteContent();
+        const combined = [...topContent, ...topClicked];
+        if (combined.length === 0) {
+            featuredNewsContainer.innerHTML = '<div class="no-news">Aún no hay destacados personales. Navega y lee contenido para generar tus favoritos.</div>';
+            return;
+        }
+        // Ordenar combinado por métrica principal (views o clicks)
+        combined.sort((a, b) => {
+            const va = (b.views || 0) - (a.views || 0);
+            if (va !== 0) return va; // ensure highest views first
+            return (b.clicks || 0) - (a.clicks || 0);
+        });
+        const finalList = combined.slice(0, 12);
+        featuredNewsContainer.innerHTML = '';
+        finalList.forEach(item => {
+            const card = document.createElement('div');
+            card.className = 'content-card';
+            const rawDesc = (item.description || item.summary || item.fullHtml || '')
+                .replace(/<[^>]*>/g, ' ') // strip tags
+                .replace(/\s+/g, ' ')
+                .trim();
+            const shortDescription = rawDesc.length > 150 ? rawDesc.slice(0, 150) + '...' : rawDesc;
+            const imgSrc = toImageSrc(item.image);
+            const metric = item.views ? `${item.views} visita${item.views === 1 ? '' : 's'}` : (item.clicks ? `${item.clicks} clic${item.clicks === 1 ? '' : 's'}` : '');
+            const dateStr = escapeHTML(item.date || '');
+            card.innerHTML = `
+                <img src="${imgSrc}" alt="${escapeHTML(item.title)}" loading="lazy" referrerpolicy="no-referrer">
+                <div class="card-content">
+                    <span class="date">${dateStr}</span>
+                    <h3>${escapeHTML(item.title)}</h3>
+                    <p>${escapeHTML(shortDescription)}</p>
+                    ${metric ? `<div class="meta-clicks">${metric}</div>` : ''}
+                </div>
+            `;
+            const imgEl = card.querySelector('img');
+            if (imgEl) { imgEl.addEventListener('error', () => { imgEl.src = 'images/logo.jpg?v=2025110501'; }); }
+            // Determine link: internal content or article
+            let linkHref = '#';
+            if (item.articleId) {
+                linkHref = `noticia.html?id=${item.articleId}`;
+            } else if (item.url) {
+                linkHref = item.url;
+            }
+            if (linkHref && linkHref !== '#') {
+                const readMoreBtn = document.createElement('a');
+                readMoreBtn.href = linkHref;
+                readMoreBtn.className = 'btn';
+                readMoreBtn.textContent = 'Ver más';
+                card.querySelector('.card-content').appendChild(readMoreBtn);
+            }
+            featuredNewsContainer.appendChild(card);
+        });
+        return; // end personalized logic
         // Helper: convertir HTML a texto plano para truncar sin romper etiquetas
         function toPlainText(html) {
             if (!html) return '';
@@ -297,7 +407,7 @@ document.addEventListener('DOMContentLoaded', async function() {
         return date.toLocaleDateString('es-ES', options);
     }
     
-    // Cargar noticias destacadas
+    // Cargar noticias destacadas (ahora sólo artículos más clicados)
     loadFeaturedNews();
     
     // Configurar actualización automática de noticias
@@ -330,6 +440,21 @@ document.addEventListener('DOMContentLoaded', async function() {
                 console.warn('BFCache re-render failed:', e);
             }
         }
+    });
+
+    // Listener global para registrar clics en "Leer más"
+    document.addEventListener('click', (e) => {
+        const a = e.target.closest('a.btn');
+        if (!a) return;
+        if (!a.href.includes('noticia.html')) return;
+        try {
+            const url = new URL(a.href, location.href);
+            const id = url.searchParams.get('id');
+            if (!id) return;
+            const key = `article_clicks_${id}`;
+            const prev = parseInt(localStorage.getItem(key) || '0', 10) || 0;
+            localStorage.setItem(key, String(prev + 1));
+        } catch (_) { /* ignore */ }
     });
 });
 

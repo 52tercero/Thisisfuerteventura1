@@ -224,6 +224,7 @@ document.addEventListener('DOMContentLoaded', function() {
             const readMoreBtn = document.createElement('a');
             readMoreBtn.href = `noticia.html?id=${articleId}`;
             readMoreBtn.className = 'btn';
+            readMoreBtn.dataset.articleId = articleId;
             readMoreBtn.textContent = 'Leer más';
             card.querySelector('.card-content').appendChild(readMoreBtn);
 
@@ -435,5 +436,20 @@ document.addEventListener('DOMContentLoaded', function() {
         if (evt.persisted) {
             loadAndDisplayNews({ keepPage: true, skipSnapshot: true, showSkeleton: false });
         }
+    });
+
+    // Registrar clics en enlaces de lectura para ranking de destacados
+    document.addEventListener('click', (e) => {
+        const a = e.target.closest('a.btn');
+        if (!a) return;
+        if (!a.href.includes('noticia.html')) return;
+        try {
+            const url = new URL(a.href, location.href);
+            const id = url.searchParams.get('id');
+            if (!id) return;
+            const key = `article_clicks_${id}`;
+            const prev = parseInt(localStorage.getItem(key) || '0', 10) || 0;
+            localStorage.setItem(key, String(prev + 1));
+        } catch (_) { /* ignore */ }
     });
 });
