@@ -114,6 +114,7 @@ document.addEventListener('DOMContentLoaded', async function() {
         async function fetchLatestFeeds() {
             try {
                 if (window.FeedUtils && typeof FeedUtils.fetchRSSFeeds === 'function') {
+                    console.log('[CONTENT-LOADER] Portada: usando fuentes exclusivas:', HOMEPAGE_NEWS_SOURCES);
                     // Si tenemos justo dos fuentes de portada, obtener 10 por cada una
                     if (Array.isArray(activeNewsSources) && activeNewsSources.length === 2) {
                         const [srcA, srcB] = activeNewsSources;
