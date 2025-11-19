@@ -65,6 +65,7 @@ document.addEventListener('DOMContentLoaded', async function() {
     // En portada usaremos sólo estas fuentes, ignorando las globales
     const activeNewsSources = HOMEPAGE_NEWS_SOURCES;
     let featuredSnapshotRendered = false;
+    const ENABLE_SNAPSHOT = false; // Desactivar snapshot para forzar exclusividad de fuentes en portada
     // Detectar proxy antes de cargar noticias
     if (typeof window.discoverRSSProxy === 'function') {
         try {
@@ -146,6 +147,7 @@ document.addEventListener('DOMContentLoaded', async function() {
 
         // Intentar snapshot estático para primer render rápido
         (async () => {
+            if (!ENABLE_SNAPSHOT) return;
             try {
                 if (featuredSnapshotRendered) return;
                 const snapRes = await fetch('/data/feeds.json', { cache: 'no-store' });
