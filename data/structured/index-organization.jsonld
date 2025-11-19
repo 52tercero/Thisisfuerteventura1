@@ -3,9 +3,9 @@
   "@type": "TouristInformationCenter",
   "name": "This is Fuerteventura",
   "description": "Portal de información turística sobre Fuerteventura, Islas Canarias",
-  "url": "https://thisisfuerteventura.netlify.app/",
-  "logo": "https://thisisfuerteventura.netlify.app/images/logo.jpg",
-  "image": "https://thisisfuerteventura.netlify.app/images/logo.jpg",
+  "url": "https://thisisfuerteventura.es/",
+  "logo": "https://thisisfuerteventura.es/images/logo.jpg",
+  "image": "https://thisisfuerteventura.es/images/logo.jpg",
   "address": {
     "@type": "PostalAddress",
     "addressRegion": "Islas Canarias",

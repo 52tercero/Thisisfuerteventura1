@@ -13,4 +13,4 @@ User-agent: Bingbot
 Allow: /
 
 # Sitemap (absolute URL recommended)
-Sitemap: https://thisisfuerteventura.netlify.app/sitemap.xml
+Sitemap: https://thisisfuerteventura.es/sitemap.xml

@@ -3,7 +3,7 @@
   "@type": "ItemList",
   "name": "Playas de Fuerteventura",
   "description": "Guía completa de las mejores playas de Fuerteventura",
-  "url": "https://thisisfuerteventura.netlify.app/playas.html",
+  "url": "https://thisisfuerteventura.es/playas.html",
   "itemListElement": [
     {
       "@type": "Beach",

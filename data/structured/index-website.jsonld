@@ -3,19 +3,19 @@
   "@type": "WebSite",
   "name": "This is Fuerteventura",
   "alternateName": "Fuerteventura Guía Turística",
-  "url": "https://thisisfuerteventura.netlify.app/",
+  "url": "https://thisisfuerteventura.es/",
   "description": "Guía turística completa de Fuerteventura: playas, alojamiento, gastronomía y noticias",
   "publisher": {
     "@type": "Organization",
     "name": "This is Fuerteventura",
     "logo": {
       "@type": "ImageObject",
-      "url": "https://thisisfuerteventura.netlify.app/images/logo.jpg"
+      "url": "https://thisisfuerteventura.es/images/logo.jpg"
     }
   },
   "potentialAction": {
     "@type": "SearchAction",
-    "target": "https://thisisfuerteventura.netlify.app/noticias.html?q={search_term_string}",
+    "target": "https://thisisfuerteventura.es/noticias.html?q={search_term_string}",
     "query-input": "required name=search_term_string"
   }
 }

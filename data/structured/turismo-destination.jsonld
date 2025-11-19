@@ -3,7 +3,7 @@
   "@type": "TouristDestination",
   "name": "Fuerteventura",
   "description": "Guía turística completa de Fuerteventura con los mejores lugares que visitar",
-  "url": "https://thisisfuerteventura.netlify.app/turismo.html",
+  "url": "https://thisisfuerteventura.es/turismo.html",
   "touristType": ["Familias", "Parejas", "Aventureros", "Amantes de la naturaleza"],
   "includedInDataCatalog": {
     "@type": "DataCatalog",
