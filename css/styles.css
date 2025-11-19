@@ -1000,6 +1000,43 @@ html[data-theme="dark"].dark-header header { background-color: #ffffff !importan
     margin-right: auto;
 }
 
+/* Timeline de noticias con fondo a juego del tema */
+.news-timeline {
+    /* Fallback amplio soporte */
+    background: linear-gradient(135deg, rgba(255,255,255,0.88) 0%, rgba(255,255,255,0.88) 100%),
+                linear-gradient(135deg, var(--secondary-color) 0%, var(--primary-color) 100%);
+    background-blend-mode: lighten;
+    /* Gradiente avanzado (si el navegador soporta color-mix/oklab) */
+    background: linear-gradient(
+        135deg,
+        color-mix(in oklab, var(--secondary-color) 12%, #ffffff) 0%,
+        color-mix(in oklab, var(--primary-color) 12%, #ffffff) 100%
+    );
+    padding: 50px 5%;
+}
+
+.news-timeline .timeline-container {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+/* Panel del carrusel con efecto sutil de cristal esmerilado */
+.timeline-swiper {
+    /* Fallback amplio soporte */
+    background: rgba(255,255,255,0.9);
+    /* Tono sutil con color-mix cuando esté disponible */
+    background: color-mix(in oklab, #ffffff 68%, var(--secondary-color) 4%);
+    border: 1px solid rgba(255, 255, 255, 0.7);
+    border-radius: 14px;
+    padding: 12px;
+    box-shadow: 0 10px 24px rgba(0, 0, 0, 0.06);
+    backdrop-filter: saturate(1.1) blur(6px);
+}
+
+@media (prefers-reduced-transparency: reduce) {
+    .timeline-swiper { backdrop-filter: none; }
+}
+
 #newsletter-form {
     display: flex;
     max-width: 500px;

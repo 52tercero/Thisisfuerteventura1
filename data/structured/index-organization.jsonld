@@ -6,6 +6,12 @@
   "url": "https://thisisfuerteventura.es/",
   "logo": "https://thisisfuerteventura.es/images/logo.jpg",
   "image": "https://thisisfuerteventura.es/images/logo.jpg",
+  "sameAs": [
+    "https://www.facebook.com/profile.php?id=61583457788241",
+    "https://www.instagram.com/thisisfuertevntura.es/",
+    "https://x.com/thisisfuerte_es",
+    "https://www.youtube.com/@thisisfuerteventura"
+  ],
   "address": {
     "@type": "PostalAddress",
     "addressRegion": "Islas Canarias",
