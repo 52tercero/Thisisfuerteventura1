@@ -17,7 +17,7 @@ document.addEventListener('DOMContentLoaded', function() {
         if (!nav) {
             console.warn('No <nav> element found for mobile menu toggle');
         } else {
-            // Helper: punto de quiebre responsivo
+            // Utilidad: punto de quiebre responsivo
             const isMobile = () => window.matchMedia('(max-width: 768px)').matches;
 
             // Asegurar que nav tenga un id para que aria-controls pueda apuntar a él
@@ -63,16 +63,16 @@ document.addEventListener('DOMContentLoaded', function() {
 
             function toggleNav() {
                 if (!isMobile()) {
-                    // En escritorio, nav siempre es visible; ignorar alternancia
+                    // En escritorio la navegación siempre es visible; ignorar alternancia
                     return;
                 }
-                // alternar usando una clase para que los estilos puedan manejarse en CSS
+                // Alternar usando una clase para que los estilos se gestionen en CSS
                 const willOpen = !nav.classList.contains('active');
                 nav.classList.toggle('active');
 
-                // CSS controla las transiciones mediante clases; sin estilos inline
+                // CSS controla las transiciones mediante clases; sin estilos en línea
 
-                // actualizar aria-expanded y aria-hidden para accesibilidad
+                // Actualizar aria-expanded y aria-hidden para accesibilidad
                 try {
                     const expanded = nav.classList.contains('active') ? 'true' : 'false';
                     mobileMenuBtn.setAttribute('aria-expanded', expanded);
@@ -82,12 +82,12 @@ document.addEventListener('DOMContentLoaded', function() {
                     /* ignorar */
                 }
 
-                // Transición gestionada en CSS
+                // La transición se gestiona en CSS
             }
 
             mobileMenuBtn.addEventListener('click', toggleNav);
 
-            // soporte de teclado: Enter y Espacio deben alternar el menú cuando está enfocado
+            // Soporte de teclado: Enter y Espacio deben alternar el menú cuando está enfocado
             mobileMenuBtn.addEventListener('keydown', function (e) {
                 if (e.key === 'Enter' || e.key === ' ') {
                     e.preventDefault();
@@ -95,7 +95,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
             });
 
-            // Recalcular maxHeight al redimensionar si nav está abierto para que el tamaño expandido coincida con el contenido
+            // Recalcular el estado responsivo al redimensionar para que el tamaño expandido coincida con el contenido
             window.addEventListener('resize', function () { try { applyResponsiveNavState(); } catch(_){} });
         }
     }
@@ -141,14 +141,14 @@ document.addEventListener('DOMContentLoaded', function() {
     document.querySelectorAll('a[href^="#"]').forEach(anchor => {
         anchor.addEventListener('click', function(e) {
             const targetId = this.getAttribute('href');
-            if (!targetId || targetId === '#') return; // no-op para anclas vacías
+            if (!targetId || targetId === '#') return; // sin acción para anclas vacías
 
             // Solo prevenir default y desplazarse suavemente cuando existe un elemento objetivo
             let targetElement = null;
             try {
                 targetElement = document.querySelector(targetId);
             } catch (err) {
-                // selector inválido
+                // Selector inválido
                 targetElement = null;
             }
 
@@ -185,7 +185,7 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
     }
-    // Lazy loading imágenes (unificada para evitar doble listener)
+    // Carga diferida (lazy loading) de imágenes unificada para evitar doble listener
     const lazyLoadOptions = { root: null, rootMargin: '70px', threshold: 0.02 };
     const lazyLoadObserver = ('IntersectionObserver' in window) ? new IntersectionObserver((entries, observer) => {
         for (const entry of entries) {
@@ -218,7 +218,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
-    // Fallback genérico de imágenes sin inline onerror (CSP-friendly)
+    // Alternativa genérica de imágenes sin onerror en línea (compatible con CSP)
     (function attachImageFallbacks(){
         const FALLBACK_SRC = 'images/Fuerteventura.jpeg?v=2025110501';
         const mark = '__fallback_attached__';
@@ -253,7 +253,7 @@ document.addEventListener('DOMContentLoaded', function() {
         } catch(_) { /* ignore */ }
     })();
 
-    // GSAP ripple splash on button clicks
+    // Efecto de onda (ripple) GSAP al hacer clic en botones
     (function setupGsapRipple(){
         try {
             const prefersReduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -262,10 +262,10 @@ document.addEventListener('DOMContentLoaded', function() {
             const forceRipple = urlForce || lsForce;
             if (prefersReduced && !forceRipple) return; // respeta reduce motion salvo que esté forzado
 
-            // Lazy-load GSAP if not already present
+            // Cargar GSAP de forma diferida si aún no está presente
             function ensureGSAP(cb){
                 if (window.gsap) { cb(); return; }
-                if (document.getElementById('gsap-lib-loader')) { // already loading
+                if (document.getElementById('gsap-lib-loader')) { // ya se está cargando
                     const existing = document.getElementById('gsap-lib-loader');
                     existing.addEventListener('load', () => cb());
                     existing.addEventListener('error', () => {/* ignore */});
@@ -274,16 +274,16 @@ document.addEventListener('DOMContentLoaded', function() {
                 const s = document.createElement('script');
                 s.src = 'https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js';
                 s.id = 'gsap-lib-loader';
-                // Use async for dynamically injected scripts to execute promptly
+                // Usar async para que el script inyectado se ejecute rápidamente
                 s.async = true;
                 s.crossOrigin = 'anonymous';
                 s.addEventListener('load', () => cb());
-                // Swallow errors silently; effect just won't run
+                // Ignorar errores silenciosamente; el efecto simplemente no se ejecutará
                 s.addEventListener('error', () => {});
                 document.head.appendChild(s);
             }
 
-            // Parse rgb(...) string to [r,g,b]
+            // Interpretar cadena rgb(...) a arreglo [r,g,b]
             function parseRGB(str){
                 const m = /rgb\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)\s*\)/i.exec(str);
                 if (!m) return [46,196,182];
@@ -296,14 +296,14 @@ document.addEventListener('DOMContentLoaded', function() {
                 const x = (evt.clientX || (rect.left + rect.width/2)) - rect.left;
                 const y = (evt.clientY || (rect.top + rect.height/2)) - rect.top;
 
-                // Remove any existing ripples quickly (clean up old leftovers)
+                // Eliminar rápidamente ondulaciones anteriores (limpieza de restos)
                 try { container.querySelectorAll('.gsap-ripple, .gsap-ripple-ring, .gsap-ripple-ring2, .gsap-drop, .gsap-surface-flash').forEach(n => { if (n._removing) return; }); } catch(_){}
 
-                // Resolve accent color from CSS variable
+                // Resolver color de énfasis desde la variable CSS
                 const pc = getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || 'rgb(46, 196, 182)';
                 const [r,g,b] = parseRGB(pc.trim());
 
-                // Base ripple (filled)
+                // Ondulación base (rellena)
                 const ripple = document.createElement('span');
                 ripple.className = 'gsap-ripple';
                 ripple.style.position = 'absolute';
@@ -317,7 +317,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 ripple.style.transform = 'translate(-50%, -50%) scale(0)';
                 ripple.style.willChange = 'transform, opacity';
 
-                // Ring ripple (stroke)
+                // Ondulación de anillo (contorno)
                 const ring = document.createElement('span');
                 ring.className = 'gsap-ripple-ring';
                 ring.style.position = 'absolute';
@@ -332,7 +332,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 ring.style.transform = 'translate(-50%, -50%) scale(0.6)';
                 ring.style.willChange = 'transform, opacity, box-shadow';
 
-                // Secondary outer ring (larger, softer)
+                // Segundo anillo exterior (más grande y suave)
                 const ring2 = document.createElement('span');
                 ring2.className = 'gsap-ripple-ring2';
                 ring2.style.position = 'absolute';
@@ -346,7 +346,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 ring2.style.transform = 'translate(-50%, -50%) scale(0.4)';
                 ring2.style.willChange = 'transform, opacity';
 
-                // Surface shimmer flash
+                // Destello superficial (shimmer)
                 const flash = document.createElement('span');
                 flash.className = 'gsap-surface-flash';
                 flash.style.position = 'absolute';
@@ -364,21 +364,21 @@ document.addEventListener('DOMContentLoaded', function() {
                 container.appendChild(ring2);
                 container.appendChild(flash);
 
-                // Compute scale to cover the larger side
+                // Calcular escala para cubrir el lado mayor
                 const maxDim = Math.max(rect.width, rect.height);
                 const endSize = Math.max(180, Math.min(320, Math.hypot(rect.width, rect.height) * 0.12));
                 const scaleVal = endSize / 20; // from 20px base
 
                 try {
                     const tl = window.gsap.timeline({ defaults: { ease: 'power2.out' } });
-                    // Surface flash
+                    // Destello superficial
                     tl.to(flash, { duration: 0.12, opacity: 1, ease: 'power1.out' }, 0)
                       .to(flash, { duration: 0.22, opacity: 0, ease: 'power1.in', onComplete(){ try{ flash.remove(); }catch(_){} } }, '>-0.04');
 
-                    // Base fill ripple
+                    // Ondulación de relleno base
                     tl.to(ripple, { duration: 0.72, scale: scaleVal, opacity: 0, ease: 'expo.out', onComplete(){ ripple.remove(); } }, 0.02);
 
-                    // Primary ring
+                    // Anillo primario
                     tl.to(ring, {
                         duration: 0.82,
                         scale: scaleVal * 0.98,
@@ -387,7 +387,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         onComplete(){ ring.remove(); }
                     }, 0.02);
 
-                    // Secondary outer ring
+                    // Segundo anillo exterior
                     tl.to(ring2, {
                         duration: 0.95,
                         scale: scaleVal * 1.2,
@@ -396,7 +396,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         onComplete(){ try { ring2.remove(); } catch(_){} }
                     }, 0.08);
 
-                    // Water splash droplets
+                    // Gotas de salpicadura
                     const drops = Math.max(10, Math.min(18, Math.round(Math.min(rect.width, rect.height)/30)));
                     const baseDist = Math.max(24, Math.min(72, Math.min(rect.width, rect.height) * 0.18));
                     const liftMin = Math.max(10, Math.min(24, Math.min(rect.width, rect.height) * 0.08));
@@ -416,7 +416,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         d.style.top = y + 'px';
                         d.style.width = size + 'px';
                         d.style.height = size + 'px';
-                        // Slight ellipse for teardrop feel
+                        // Elipse leve para efecto de gota
                         d.style.borderRadius = '50% / 60%';
                         d.style.pointerEvents = 'none';
                         d.style.background = `rgba(${r},${g},${b},0.9)`;
@@ -433,18 +433,18 @@ document.addEventListener('DOMContentLoaded', function() {
                         const upDur = 0.20 + Math.random()*0.08;
                         const downDur = 0.30 + Math.random()*0.12;
                         const rot = (Math.random() * 40 - 20);
-                        // Up (arc) with slight rotation
+                        // Subida (arco) con ligera rotación
                         dtl.to(d, { duration: upDur, x: dx*0.55, y: dy*0.55 - lift, opacity: 1, scale: 1.0, rotation: rot, ease: 'circ.out' }, 0)
-                           // Down and dissipate with gravity-like ease
+                           // Bajada y disipación con una sensación de gravedad
                            .to(d, { duration: downDur, x: dx, y: dy + lift*0.28, opacity: 0, scale: 0.55, rotation: rot*1.2, ease: 'quad.in' }, '>-0.02');
                     }
                 } catch (e) {
-                    // If GSAP animation fails, remove elements to avoid clutter
+                    // Si falla la animación GSAP, eliminar elementos para evitar desorden
                     try { ripple.remove(); ring.remove(); } catch(_){}
                 }
             }
 
-            // Create or reuse a full-screen overlay layer
+            // Crear o reutilizar una capa superpuesta de pantalla completa
             let layer = document.getElementById('gsap-ripple-layer');
             if (!layer) {
                 layer = document.createElement('div');
@@ -459,14 +459,14 @@ document.addEventListener('DOMContentLoaded', function() {
             let lastTs = 0;
             let rippleDoneAt = 0; // timestamp (ms) when current splash is expected to finish
             function splashHandler(e){
-                if (e.button !== undefined && e.button !== 0) return; // main button only
+                if (e.button !== undefined && e.button !== 0) return; // sólo botón principal
                 const ts = e.timeStamp || Date.now();
-                if (ts - lastTs < 40) return; // throttle ultra-rapid repeats
+                if (ts - lastTs < 40) return; // limitar repeticiones ultra rápidas
                 lastTs = ts;
                 ensureGSAP(() => {
                     try {
                         createRipple(layer, e);
-                        // Estimate when animation completes based on current timings
+                        // Estimar cuándo la animación terminará según los tiempos actuales
                         // Longest element: ring2 starts at 0.08s and lasts 0.95s
                         const now = (typeof performance !== 'undefined' && performance.now) ? performance.now() : Date.now();
                         rippleDoneAt = now + Math.round((0.08 + 0.95) * 1000);
@@ -483,14 +483,14 @@ document.addEventListener('DOMContentLoaded', function() {
                 if (!a) return;
                 const href = a.getAttribute('href') || '';
                 if (!href) return;
-                // ignore pure hashes and javascript: or mailto: etc.
+                // Ignorar hashes puros y esquemas javascript:, mailto:, tel:, etc.
                 if (href.startsWith('#') || /^(javascript:|mailto:|tel:)/i.test(href)) return;
-                // open in new tab or modified clicks shouldn't be gated
+                // Aperturas en nueva pestaña o clics modificados no deben ser interceptados
                 const newTab = (a.target && a.target.toLowerCase() === '_blank');
                 const modified = e.metaKey || e.ctrlKey || e.shiftKey || e.altKey;
                 if (newTab || modified) return;
 
-                // Determine destination (preserve index self-refresh behavior)
+                // Determinar destino (preservar comportamiento de auto-refresco en index)
                 let destination = a.href;
                 try {
                     const normalizedHref = href.replace(/^\.\//,'');
@@ -500,9 +500,9 @@ document.addEventListener('DOMContentLoaded', function() {
                     }
                 } catch(_) {}
 
-                // Prevent default and delay until current splash finishes
+                // Prevenir acción por defecto y retrasar hasta que termine el efecto
                 e.preventDefault();
-                if (navPending) return; // avoid double scheduling
+                if (navPending) return; // evitar doble planificación
                 navPending = true;
                 const now = (typeof performance !== 'undefined' && performance.now) ? performance.now() : Date.now();
                 const wait = Math.max(0, rippleDoneAt - now);
@@ -534,7 +534,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
 // Forzar recarga si se hace clic en Inicio estando ya en Inicio (evitar contenido cacheado)
 document.addEventListener('click', function (e) {
-    if (window.__RIPPLE_NAV_GUARD) return; // Ripple nav guard handles this case
+    if (window.__RIPPLE_NAV_GUARD) return; // El guard de navegación del ripple gestiona este caso
     const target = e.target.closest('a[href]');
     if (!target) return;
     const href = target.getAttribute('href') || '';
@@ -543,7 +543,7 @@ document.addEventListener('click', function (e) {
         if (isOnIndex) {
             e.preventDefault();
             const bust = Date.now();
-            // Small delay to play ripple before navigation
+            // Pequeño retraso para reproducir el efecto antes de navegar
             setTimeout(() => { location.href = `index.html?ts=${bust}`; }, 220);
         }
     }

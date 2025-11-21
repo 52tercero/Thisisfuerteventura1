@@ -7,7 +7,7 @@
   const applyBtn = document.getElementById('apply-trail-filters');
 
   /**
-   * durationBucket: 'todos' | '0-120' | '121-240' | '241+'
+   * durationBucket: 'todos' | '0-120' | '121-240' | '241+' (rangos de duración en minutos)
    */
   function matchDuration(mins, bucket){
     if(!bucket || bucket==='todos') return true;
@@ -78,7 +78,7 @@
     try{
       const res = await fetch(DATA_URL, { cache: 'no-store' });
       const all = await res.json();
-      // Sort by duration ascending by default
+      // Ordenar por duración ascendente por defecto
       all.sort((a,b) => a.durationMin - b.durationMin);
       render(all);
       const handler = () => applyFilters(all);

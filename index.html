@@ -6,7 +6,7 @@
     <title>This is Fuerteventura - Guía Turística Completa de Fuerteventura 2025</title>
     <meta name="theme-color" content="#0f4c81">
     
-    <!-- Preconnect to external resources for performance -->
+    <!-- Preconexión a recursos externos para mejorar el rendimiento -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
@@ -20,16 +20,16 @@
     <link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@400;600;700&family=Yeseva+One&display=swap" rel="stylesheet">
     <!-- Leaflet CSS para mapa interactivo -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" / crossorigin="anonymous" integrity="sha384-sHL9NAb7lN7rfvG5lfHpm643Xkcjzp4jFvuavGOndn6pjVqS6ny56CAt3nsEVT4H">
-    <!-- Swiper for galleries/timeline -->
+    <!-- Swiper para galerías / timeline -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@9/swiper-bundle.min.css" / crossorigin="anonymous" integrity="sha384-tOPXDsn4moKzmRcYpDt8mOcJWxzy89N8dK0oEkxTx90DZYjDdznDQ4IEiH1pcZH5">
-    <!-- Font Awesome 6 (stylesheet direct to avoid inline onload attribute for stricter CSP) -->
+    <!-- Font Awesome 6 (hoja de estilos directa para evitar onload inline y cumplir CSP estricta) -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" crossorigin="anonymous" integrity="sha384-t1nt8BQoYMLFN5p42tRAtuAAFQaCQODekUVeKKZrEnEyp4H2R0RHFz0KWpmj7i8g">
     <meta name="description" content="Descubre Fuerteventura con nuestra guía completa 2025: mejores playas, hoteles, restaurantes, actividades turísticas y noticias actualizadas de las Islas Canarias.">
     <meta name="keywords" content="Fuerteventura, turismo Fuerteventura, playas Fuerteventura, hoteles Fuerteventura, Islas Canarias, qué hacer en Fuerteventura, alojamiento Canarias, vacaciones Fuerteventura">
     <meta name="author" content="This is Fuerteventura">
     <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
     
-    <!-- Open Graph -->
+    <!-- Metadatos Open Graph -->
     <meta property="og:title" content="This is Fuerteventura - Guía Turística Completa 2025">
     <meta property="og:description" content="Descubre Fuerteventura: mejores playas, hoteles, restaurantes y actividades turísticas. Tu guía completa de las Islas Canarias.">
     <meta property="og:type" content="website">
@@ -40,7 +40,7 @@
     <meta property="og:locale" content="es_ES">
     <meta property="og:site_name" content="This is Fuerteventura">
     
-    <!-- Twitter Cards -->
+    <!-- Metadatos Twitter Cards -->
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="This is Fuerteventura - Guía Turística Completa 2025">
     <meta name="twitter:description" content="Descubre Fuerteventura: playas, hoteles, restaurantes y actividades imprescindibles.">
@@ -48,7 +48,7 @@
     <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://unpkg.com https://www.googletagmanager.com https://analytics.google.com https://www.google-analytics.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://unpkg.com; font-src 'self' data: https://fonts.gstatic.com https://cdnjs.cloudflare.com; img-src 'self' data: https: https://unpkg.com https://*.tile.openstreetmap.org; media-src 'self'; connect-src 'self' https://thisisfuerteventura.es https://www.googletagmanager.com https://www.google-analytics.com https://cdn.jsdelivr.net https://unpkg.com http://localhost:3000 http://localhost:3001 http://localhost:* http://127.0.0.1:* https://api.open-meteo.com https://marine-api.open-meteo.com https://ingesteer.services-prod.nsvcs.net; base-uri 'self'; object-src 'none'; frame-ancestors 'self';">
     <meta name="twitter:site" content="@thisisfuerte_es">
     
-    <!-- Structured Data via external JSON-LD to satisfy strict CSP -->
+    <!-- Datos estructurados mediante JSON-LD externo para cumplir CSP estricta -->
     <script type="application/ld+json" src="data/structured/index-website.jsonld"></script>
     <script type="application/ld+json" src="data/structured/index-organization.jsonld"></script>
 </head>
@@ -91,7 +91,7 @@
     <section class="featured-content reveal reveal-deep">
         <h2>Destacados</h2>
         <div class="content-grid card-stagger" id="featured-news">
-            <!-- El contenido se cargará dinámicamente con JavaScript -->
+            <!-- El contenido se carga dinámicamente con JavaScript -->
             <div class="loading">Cargando contenido...</div>
         </div>
     </section>
@@ -126,7 +126,7 @@
         </div>
     </section>
 
-    <!-- Widgets de datos en tiempo real -->
+    <!-- Widgets con datos en tiempo real -->
     <section class="reveal widgets-section">
         <h2 class="sand-write" data-sand-write data-sand-step="0.045" data-sand-duration="0.8" data-sand-distribution="accelerate">Condiciones Actuales</h2>
         <div class="widgets-grid">
@@ -145,7 +145,7 @@
         </div>
     </section>
 
-    <!-- Blog preview -->
+    <!-- Vista previa del blog -->
     <section class="reveal">
         <h2>Blog: rutas y entrevistas</h2>
         <div id="blog-preview"></div>
@@ -182,7 +182,7 @@
         </form>
     </section>
 
-    <!-- Noticias en timeline (auto de featured) -->
+    <!-- Noticias en timeline (derivadas de destacadas) -->
     <section class="news-timeline reveal" aria-label="Timeline de noticias">
         <div class="timeline-container">
             <div id="news-timeline" class="timeline-swiper"></div>
@@ -228,11 +228,11 @@
     </footer>
 
     
-    <!-- GSAP + ScrollTrigger for narrative animations -->
+    <!-- GSAP + ScrollTrigger para animaciones narrativas -->
     <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js" defer crossorigin="anonymous" integrity="sha384-g4NTh/Iv5PPU4xPyhEWqPcwtNXOvdaDI8LLnyYfyNZOjKJeYQyjzQ9X5275eBjpt"></script>
     <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js" defer crossorigin="anonymous" integrity="sha384-Z3REaz79l2IaAZqJsSABtTbhjgOUYyV3p90XNnAPCSHg3EMTz1fouunq9WZRtj3d"></script>
 
-    <!-- Cookie Consent Banner -->
+    <!-- Banner de consentimiento de cookies -->
     <div id="cookie-consent" class="cookie-consent">
         <div class="cookie-consent-content">
             <div class="cookie-consent-text">
@@ -248,7 +248,7 @@
         </div>
     </div>
 
-    <!-- Cookie Settings Modal -->
+    <!-- Modal de configuración de cookies -->
     <div id="cookie-modal" class="cookie-modal">
         <div class="cookie-modal-content">
             <div class="cookie-modal-header">

@@ -15,7 +15,7 @@ document.addEventListener('DOMContentLoaded', function() {
             return '';
         }
     }
-    // Helper para proxificar imágenes externas mediante Netlify Functions o proxy local
+    // Utilidad para proxificar imágenes externas mediante Netlify Functions o un proxy local
     function toImageSrc(url) {
         try {
             if (!url || typeof url !== 'string') return url;
@@ -32,7 +32,7 @@ document.addEventListener('DOMContentLoaded', function() {
             return url;
         }
     }
-    // Listado simple de noticias, paginación y filtrado para noticias.html
+    // Listado simple de noticias con paginación y búsqueda para noticias.html
     const newsContainer = document.getElementById('news-container');
     if (!newsContainer) return;
 
@@ -248,7 +248,7 @@ document.addEventListener('DOMContentLoaded', function() {
         renderNewsCards(pageItems);
     }
 
-    // Snapshot deshabilitado en Noticias para evitar feeds antiguos
+    // Instantánea (snapshot) deshabilitada en Noticias para evitar contenidos antiguos
 
     async function loadAndDisplayNews(options = {}) {
         const {
@@ -288,7 +288,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 `;
             }
 
-            // No snapshot en noticias: evitamos contenido desactualizado
+            // No se usa instantánea en noticias: se evita contenido desactualizado
 
             const fetched = await fetchNews(true);
             if (fetched.length === 0) {
@@ -343,7 +343,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // Carga inicial: sin snapshot y siempre fresco
+    // Carga inicial: sin instantánea y siempre contenido fresco
     loadAndDisplayNews({ forceRefresh: true, skipSnapshot: true });
 
     // Eliminada interacción con chips de etiqueta (ya no se usan para filtrar)
@@ -358,7 +358,7 @@ document.addEventListener('DOMContentLoaded', function() {
         loadAndDisplayNews({ forceRefresh: true, keepPage: true, skipSnapshot: true, showSkeleton: false });
     }, REFRESH_INTERVAL);
 
-    // Re-render si volvemos desde el historial con BFCache
+    // Re-renderizar si se regresa desde el historial usando BFCache
     window.addEventListener('pageshow', (evt) => {
         if (evt.persisted) {
             loadAndDisplayNews({ keepPage: true, skipSnapshot: true, showSkeleton: false });

@@ -77,7 +77,7 @@ self.addEventListener('fetch', (event) => {
     return;
   }
 
-  // Documentos/navegación: network-first con fallbacks válidos
+  // Documentos/navegación: primero red con alternativas válidas
   if (req.mode === 'navigate' || req.destination === 'document') {
     event.respondWith((async () => {
       try {
@@ -101,7 +101,7 @@ self.addEventListener('fetch', (event) => {
     return;
   }
 
-  // CSS: network-first para estilos
+  // CSS: primero red para estilos
   if (req.destination === 'style') {
     event.respondWith((async () => {
       try {
@@ -120,7 +120,7 @@ self.addEventListener('fetch', (event) => {
     return;
   }
 
-  // Imágenes: cache-first, fallback a logo (también para 404 del origen)
+  // Imágenes: primero caché, alternativa al logo (también para 404 del origen)
   if (req.destination === 'image') {
     event.respondWith((async () => {
       const cached = await caches.match(req);
@@ -139,7 +139,7 @@ self.addEventListener('fetch', (event) => {
     return;
   }
 
-  // Otros: cache, luego red; si todo falla, 504 vacío (siempre Response válida)
+  // Otros: caché, luego red; si todo falla, 504 vacío (siempre respuesta válida)
   event.respondWith((async () => {
     const cached = await caches.match(req);
     if (cached) return cached;

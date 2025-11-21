@@ -34,7 +34,7 @@ document.addEventListener('DOMContentLoaded', async function() {
             return '';
         }
     }
-    // Helper para enrutar imágenes externas a través del proxy cuando esté disponible
+    // Utilidad para enrutar imágenes externas a través del proxy cuando esté disponible
     function toImageSrc(url) {
         try {
             if (!url || typeof url !== 'string') return url;
@@ -43,15 +43,15 @@ document.addEventListener('DOMContentLoaded', async function() {
             const isExternal = u.origin !== location.origin;
             if (!isExternal) return u.toString();
 
-            // Detectar si estamos usando Netlify Functions (cadena vacía)
+            // Detectar si se está usando Netlify Functions (cadena vacía)
             if (window.__RSS_PROXY_URL === '') {
                 return `/.netlify/functions/image?url=${encodeURIComponent(u.toString())}`;
             }
-            // Si hay un proxy local descubierto
+            // Si existe un proxy local descubierto
             if (typeof window.__RSS_PROXY_URL === 'string' && window.__RSS_PROXY_URL) {
                 return `${window.__RSS_PROXY_URL}/api/image?url=${encodeURIComponent(u.toString())}`;
             }
-            // Fallback: dejar URL directa
+            // Alternativa: dejar URL directa sin modificación
             return u.toString();
         } catch (_) {
             return url;
@@ -158,7 +158,7 @@ document.addEventListener('DOMContentLoaded', async function() {
             } catch (e) {
                 console.warn('[CONTENT-LOADER] FeedUtils.fetchRSSFeeds failed:', e);
             }
-            // Fallback: sin utilidades cargadas, devolver vacío
+            // Alternativa: si las utilidades no están cargadas, devolver arreglo vacío
             return [];
         }
         
@@ -193,7 +193,7 @@ document.addEventListener('DOMContentLoaded', async function() {
                     const snap = await snapRes.json();
                     const items = Array.isArray(snap.items) ? snap.items : [];
                     if (items.length > 0) {
-                        // Normalizar y renderizar hasta 12 items de snapshot (optimizado)
+                        // Normalizar y renderizar hasta 12 elementos del snapshot (optimizado)
                         const normalized = await Promise.all(items.slice(0, 12).map(async (it) => {
                             const title = it.title || 'Sin título';
                             const descriptionRaw = it.description || '';
@@ -224,7 +224,7 @@ document.addEventListener('DOMContentLoaded', async function() {
                             };
                         }));
 
-                        // Ordenar por fecha desc y mostrar hasta 12
+                        // Ordenar por fecha descendente y mostrar hasta 12 elementos
                         featuredNewsContainer.innerHTML = '';
                         const featured = normalized.sort((a,b) => normalizeTime(b) - normalizeTime(a)).slice(0, 12);
                         featured.forEach((item) => {
@@ -270,35 +270,35 @@ document.addEventListener('DOMContentLoaded', async function() {
             if (newsItems.length === 0) {
                 console.error('[CONTENT-LOADER] No hay noticias para mostrar');
                 if (featuredNewsContainer.querySelector('.content-card')) {
-                    // Ya hay tarjetas (snapshot o SSR). No borrar contenido.
+                    // Ya existen tarjetas (snapshot o SSR). No borrar el contenido actual.
                     return;
                 }
                 featuredNewsContainer.innerHTML = '<div class="no-news">No se pudieron cargar las noticias. Inténtalo más tarde.</div>';
                 return;
             }
 
-            // Limpiar contenedor y preparar selección (20 artículos: 10 por fuente)
+            // Limpiar el contenedor y preparar la selección (20 artículos: 10 por fuente)
             featuredNewsContainer.innerHTML = '';
             const featured = [...newsItems].sort((a,b) => normalizeTime(b) - normalizeTime(a)).slice(0, 20);
             console.log('[CONTENT-LOADER] Mostrando', featured.length, 'artículos destacados');
             
-            // Mostrar las noticias (resumen compacto en portada)
+            // Mostrar las noticias (resumen compacto en la portada)
             featured.forEach((item, index) => {
                 console.log(`[CONTENT-LOADER] Renderizando artículo ${index + 1}:`, item.title, 'Image:', item.image);
                 const card = document.createElement('div');
                 card.className = 'content-card';
 
-                // Descripción en texto plano truncada (150 caracteres)
+                // Descripción en texto plano truncada a 150 caracteres
                 const fullText = toPlainText(item.description || item.summary || '');
                 const shortDescription = fullText.length > 150 
                     ? fullText.slice(0, 150) + '...' 
                     : fullText;
 
-                // Crear ID único para el artículo basado en título y publishedAt/fecha
+                // Crear un ID único para el artículo basado en título y publishedAt/fecha
                 const idBase = `${item.title || ''}|${item.publishedAt || item.date || ''}`;
                 const articleId = (function(){ try { return btoa(encodeURIComponent(idBase)).replace(/[^a-zA-Z0-9]/g, '').substring(0, 32); } catch(_) { return Math.random().toString(36).slice(2, 34); } })();
                 
-                // Guardar artículo completo en localStorage para acceso en noticia.html
+                // Guardar el artículo completo en localStorage para acceso desde noticia.html
                 try {
                     localStorage.setItem(`article_${articleId}`, JSON.stringify(item));
                 } catch (e) {

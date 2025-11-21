@@ -310,7 +310,7 @@ document.addEventListener('DOMContentLoaded', () => {
             </article>
         `;
 
-        // Reescribir imágenes internas del contenido para pasar por el proxy y añadir fallback
+        // Reescribir imágenes internas del contenido para pasar por el proxy y añadir alternativa (fallback)
         try {
             const imgs = articleContainer.querySelectorAll('.article-content img');
             imgs.forEach((img) => {
@@ -322,7 +322,7 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         } catch (_) {}
 
-        // Asegurar fallback de imagen destacada sin usar onerror en HTML
+        // Asegurar alternativa para la imagen destacada sin usar onerror en HTML
         try {
             const img = document.querySelector('.article-featured-image img');
             if (img) {

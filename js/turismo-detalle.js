@@ -97,7 +97,7 @@
       </section>
     `;
 
-    // Init map if coords
+    // Inicializar mapa si existen coordenadas
     if (typeof L !== 'undefined' && place.lat && place.lng){
       const map = L.map('place-map', { scrollWheelZoom: false });
       map.setView([place.lat, place.lng], 12);
@@ -107,7 +107,7 @@
       }).addTo(map);
       L.marker([place.lat, place.lng]).addTo(map).bindPopup(escapeHTML(place.title));
     } else {
-      // No coords: show a subtle message and keep directions link
+      // Sin coordenadas: mostrar un mensaje sutil y mantener el enlace de direcciones
       const el = document.getElementById('place-map');
       if (el) el.innerHTML = '<div class="no-results" style="padding:16px">Mapa no disponible. Usa el botón "Abrir en Google Maps" para ver la ubicación.</div>';
     }
