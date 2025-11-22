@@ -63,12 +63,10 @@
 
     <section class="reveal">
       <h2>Facebook: lo último de la isla</h2>
-      <div class="content-card embed-card">
-        <iframe title="Facebook Feed" class="embed-iframe"
-          src="https://www.facebook.com/plugins/page.php?href=https%3A%2F%2Fwww.facebook.com%2Fprofile.php%3Fid%3D61583457788241&tabs=timeline&width=500&height=700&small_header=true&adapt_container_width=true&hide_cover=false&show_facepile=false"
-          scrolling="no" frameborder="0" allowfullscreen="true" allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share"></iframe>
-        <p class="meta">Si no puedes ver el feed, visita <a href="https://www.facebook.com/profile.php?id=61583457788241" target="_blank" rel="noopener noreferrer">nuestro Facebook</a>.</p>
+      <div class="content-card" id="fb-feed" aria-live="polite">
+        <div class="loading">Cargando publicaciones...</div>
       </div>
+      <p class="meta">Si no ves publicaciones, es posible que la app esté en modo desarrollo o falte el token de acceso. También puedes visitar <a href="https://www.facebook.com/profile.php?id=61583457788241" target="_blank" rel="noopener noreferrer">nuestro Facebook</a>.</p>
     </section>
   </main>
 
@@ -115,5 +113,6 @@
   <script src="js/blog.js?v=2025111508" defer></script>
   <script src="js/sand-write.js?v=2025111612" defer></script>
   <script src="js/ambient-sounds.js?v=2025111508" defer></script>
+  <script src="js/facebook-feed.js?v=2025112201" defer></script>
 </body>
 </html>
