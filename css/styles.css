@@ -1135,6 +1135,28 @@ footer {
 }
 .quiz-nav { display: flex; gap: 10px; margin-top: 12px; }
 .quiz-error { margin-top: 8px; min-height: 1.2em; }
+/* Layout detallado de quiz options */
+.quiz-form fieldset { border: none; padding: 0; margin: 0 0 4px; }
+.quiz-options label {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        padding: 8px 12px;
+        background: #f8fafc;
+        margin-bottom: 8px;
+        border-radius: 8px;
+        cursor: pointer;
+        border: 1px solid #e2e8f0;
+        transition: background var(--transition-fast), border-color var(--transition-fast);
+}
+.quiz-options label:hover { background: #eef2f7; border-color: #cbd5e1; }
+.quiz-options input[type="radio"] { accent-color: var(--primary-color); }
+.quiz-result { margin-top: 14px; font-weight: 600; }
+.badge-wrap { margin-top: 20px; }
+@media (max-width: 600px) {
+    .quiz-options label { padding: 10px 14px; }
+    .quiz-nav { flex-direction: column; }
+}
 
 /* Página de noticias: filtros y paginación */
 .news-filters {
