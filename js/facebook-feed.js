@@ -1,6 +1,7 @@
-﻿// Renderiza publicaciones de Facebook usando la función Netlify
+﻿// Renderiza publicaciones obtenidas vía Zapier (sustituye Graph API)
 (function(){
-  const FEED_ENDPOINT = '/.netlify/functions/facebook?limit=5';
+  // Nuevo endpoint serverless que normaliza la respuesta de Zapier
+  const FEED_ENDPOINT = '/.netlify/functions/zapier-feed?limit=5';
 
   function esc(str){
     return (str || '').replace(/[&<>"']/g, s => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[s]));
@@ -30,7 +31,7 @@
       }
       root.innerHTML = items.map(cardHtml).join('');
     } catch (e) {
-      root.innerHTML = `<div class="no-results">No se pudieron cargar las publicaciones (Graph). ${esc(String(e.message||e))}</div>`;
+      root.innerHTML = `<div class="no-results">No se pudieron cargar las publicaciones (Zapier). ${esc(String(e.message||e))}</div>`;
     }
   }
 
