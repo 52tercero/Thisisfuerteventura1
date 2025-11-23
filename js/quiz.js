@@ -33,7 +33,29 @@
   function create(el, cls){ const n = document.createElement(el); if(cls) n.className = cls; return n; }
 
   function buildQuiz(container){
-    const state = { idx: 0, answers: Array(QUESTIONS.length).fill(null) };
+    const state = { idx: 0, answers: Array(QUESTIONS.length).fill(null), completed: false };
+
+    const STORAGE_KEY = 'tiFv_quiz_state';
+    const SCORE_KEY = 'tiFv_quiz_score';
+
+    function saveState(){
+      try {
+        const data = { idx: state.idx, answers: state.answers, completed: state.completed };
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+      } catch(e) {}
+    }
+
+    function loadState(){
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if(!raw) return;
+        const data = JSON.parse(raw);
+        if(!data || !Array.isArray(data.answers) || data.answers.length !== QUESTIONS.length) return;
+        state.answers = data.answers.map(v => (v===null || v===undefined) ? null : Number(v));
+        state.idx = Math.min(Math.max(Number(data.idx)||0,0), QUESTIONS.length-1);
+        state.completed = !!data.completed;
+      } catch(e) {}
+    }
 
     const card = create('div','conditions-card quiz-card sea');
     const inner = create('div','quiz-inner');
@@ -114,17 +136,30 @@
         if(state.answers[i] !== null && Number(state.answers[i])===QUESTIONS[i].c) score++;
       }
       const pct = Math.round((score/QUESTIONS.length)*100);
-      localStorage.setItem('tiFv_quiz_score', String(score));
+      localStorage.setItem(SCORE_KEY, String(score));
       result.textContent = `Resultado: ${score}/${QUESTIONS.length} (${pct}%).`;
       // Deshabilitar navegación tras finalizar
       prevBtn.disabled = true; nextBtn.disabled = true;
+      state.completed = true; saveState();
       generateBadge(pct, container);
+      // Botón para reiniciar
+      const restartBtn = create('button','btn'); restartBtn.type='button'; restartBtn.textContent='Reiniciar'; restartBtn.style.marginLeft='10px';
+      restartBtn.addEventListener('click', ()=>{
+        state.idx = 0; state.answers = Array(QUESTIONS.length).fill(null); state.completed = false;
+        saveState();
+        prevBtn.disabled = false; nextBtn.disabled = false;
+        result.textContent='';
+        const badge = container.querySelector('.badge-wrap'); if(badge) badge.remove();
+        renderQuestion(state.idx);
+      });
+      nav.appendChild(restartBtn);
     }
 
     prevBtn.addEventListener('click', ()=>{
       const sel = getSelected();
       if(sel !== null) state.answers[state.idx] = sel;
       if(state.idx>0){ state.idx--; renderQuestion(state.idx); }
+      saveState();
     });
 
     nextBtn.addEventListener('click', ()=>{
@@ -136,9 +171,18 @@
       } else {
         completeQuiz();
       }
+      saveState();
     });
-
-    renderQuestion(state.idx);
+    // Intentar restaurar estado previo
+    loadState();
+    if(state.completed){
+      // Mostrar último estado y resultado
+      state.idx = QUESTIONS.length - 1;
+      renderQuestion(state.idx);
+      completeQuiz();
+    } else {
+      renderQuestion(state.idx);
+    }
   }
 
   function generateBadge(pct, container){
