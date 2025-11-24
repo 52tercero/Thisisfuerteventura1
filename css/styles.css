@@ -84,7 +84,8 @@ html[data-theme="dark"] {
     --card-bg: #121a1f;
     --header-bg: #0b0f14;
     --header-text: #e5e7eb;
-    --dark-color: #f3f4f6; /* usado por muchos h2/h3 en secciones */
+    /* Mantener títulos legibles sin romper fondos oscuros del footer */
+    --dark-color: #e5e7eb; /* se usa como color de texto para h2/h3 */
     --shadow: 0 1px 2px rgba(0,0,0,0.35);
 }
 
@@ -1138,6 +1139,30 @@ footer {
     color: #999;
 }
 
+/* Oscuro: footer debe mantenerse realmente oscuro y legible */
+html[data-theme="dark"] footer {
+    background-color: #0b0f14 !important;
+    color: #e5e7eb;
+}
+html[data-theme="dark"] .footer-links h4,
+html[data-theme="dark"] .footer-social h4,
+html[data-theme="dark"] .footer-contact h4 { color: var(--secondary-color); }
+html[data-theme="dark"] .footer-links ul li a { color: #cbd5e1; }
+html[data-theme="dark"] .footer-links ul li a:hover { color: #ffffff; }
+html[data-theme="dark"] .social-icons a { color: #e5e7eb; }
+html[data-theme="dark"] .social-icons a:hover { color: var(--secondary-color); }
+html[data-theme="dark"] .footer-bottom { border-top-color: #243041; color: #94a3b8; }
+
+/* Quiz: tarjetas y opciones en modo oscuro */
+.quiz-card { background: var(--card-bg); border-radius: 12px; padding: 16px; box-shadow: var(--shadow); }
+html[data-theme="dark"] .quiz-card { background: #121a1f; }
+html[data-theme="dark"] .quiz-options label {
+    background: #1b2430;
+    border-color: #334155;
+    color: var(--text-color);
+}
+html[data-theme="dark"] .quiz-error { color: #fca5a5 !important; }
+
 /* Quiz: barra de progreso y layout mínimo */
 .quiz-progress-wrap { margin: 10px 0 14px; }
 .quiz-progress-track {
@@ -1890,6 +1915,45 @@ html[data-theme="dark"] .beaches-content h2 {
         border-radius: var(--border-radius-sm);
     }
 }
+
+/* Dark mode: navegación móvil y elementos de formulario */
+html[data-theme="dark"] nav { background-color: var(--header-bg); }
+html[data-theme="dark"] nav ul li a { color: var(--header-text); }
+html[data-theme="dark"] nav ul li a:hover { color: var(--primary-color); }
+
+/* Barras de filtros y búsqueda de noticias */
+html[data-theme="dark"] .news-filters { background: #0b0f14; border-top-color: #243041; border-bottom-color: #243041; }
+html[data-theme="dark"] .search-bar input[type="text"] {
+    background: #0b0f14; color: #e5e7eb; border-color: #334155;
+}
+html[data-theme="dark"] .search-bar input[type="text"]::placeholder { color: #94a3b8; }
+
+/* Paginación sticky */
+html[data-theme="dark"] .pagination.top { background: #0b0f14; border-color: #243041; }
+
+/* Tarjetas y textos secundarios en dark */
+html[data-theme="dark"] .category-card p,
+html[data-theme="dark"] .intro-text,
+html[data-theme="dark"] .beach-info p,
+html[data-theme="dark"] .restaurant-info,
+html[data-theme="dark"] .tourism-info p,
+html[data-theme="dark"] .card-content p,
+html[data-theme="dark"] .article-content,
+html[data-theme="dark"] .article-source,
+html[data-theme="dark"] .article-meta { color: var(--text-light); }
+
+/* Artículos y bordes */
+html[data-theme="dark"] .article-full,
+html[data-theme="dark"] .news-article { background: var(--card-bg); }
+html[data-theme="dark"] .article-full .article-header,
+html[data-theme="dark"] .article-full .article-footer { border-color: #243041; }
+html[data-theme="dark"] .article-full .article-image { background: #0b0f14; }
+
+/* Newsletter input en dark */
+html[data-theme="dark"] #newsletter-form input {
+    background: #0b0f14; color: #e5e7eb; border: 1px solid #334155;
+}
+html[data-theme="dark"] #newsletter-form input::placeholder { color: #94a3b8; }
 
 /* Estilos adicionales para móviles muy pequeños */
 @media (max-width: 480px) {
