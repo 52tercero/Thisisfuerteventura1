@@ -58,18 +58,135 @@
     }
 
     /**
-     * Sanitiza HTML básico (elimina scripts, eventos, etc.)
-     * @param {string} str - String a sanitizar
-     * @returns {string} String sanitizado
+     * Verifica y normaliza URLs permitiendo solo protocolos seguros
+     * @param {string} url
+     * @param {Array<string>} allowedProtocols - e.g. ['http:', 'https:', 'mailto:', 'tel:']
+     * @returns {string} URL segura o cadena vacía
+     */
+    function safeURL(url, allowedProtocols = ['http:', 'https:', 'mailto:', 'tel:']) {
+        try {
+            if (!url || typeof url !== 'string') return '';
+            const trimmed = url.trim();
+            if (trimmed.startsWith('#')) return trimmed; // ancla interna
+            // Permitir URLs relativas
+            const u = new URL(trimmed, location.href);
+            if (allowedProtocols.includes(u.protocol)) return u.toString();
+            return '';
+        } catch (_) {
+            return '';
+        }
+    }
+
+    /**
+     * Sanitiza HTML con una whitelist de etiquetas y atributos. Si DOMPurify está
+     * disponible se usará desde sanitize(); aquí dejamos un fallback robusto.
+     * @param {string} str - HTML a sanitizar
+     * @returns {string} HTML sanitizado
      */
     function sanitizeHTML(str) {
-        if (!str) return '';
-        str = str.replace(/<script[\s\S]*?>[\s\S]*?<\/script>/gi, '');
-        str = str.replace(/<style[\s\S]*?>[\s\S]*?<\/style>/gi, '');
-        str = str.replace(/\son\w+=\"[^\"]*\"/gi, '');
-        str = str.replace(/\son\w+='[^']*'/gi, '');
-        str = str.replace(/href=\"\s*javascript:[^\"]*\"/gi, 'href="#"');
-        return str;
+        if (!str || typeof str !== 'string') return '';
+        try {
+            // Crear un contenedor aislado
+            const template = document.createElement('template');
+            template.innerHTML = String(str);
+
+            const allowedTags = new Set([
+                'p','br','strong','b','em','i','u','span','ul','ol','li',
+                'blockquote','code','pre','h2','h3','h4','a','img'
+            ]);
+            const allowedAttrs = {
+                'a': new Set(['href','title','target','rel']),
+                'img': new Set(['src','alt','title','loading','referrerpolicy'])
+            };
+
+            const sanitizeNode = (node) => {
+                if (node.nodeType === Node.TEXT_NODE) {
+                    return document.createTextNode(node.nodeValue);
+                }
+                if (node.nodeType !== Node.ELEMENT_NODE) {
+                    return document.createTextNode('');
+                }
+                const tag = node.tagName.toLowerCase();
+                if (!allowedTags.has(tag)) {
+                    // Descartar el nodo pero conservar sus hijos sanitizados (unwrap)
+                    const frag = document.createDocumentFragment();
+                    Array.from(node.childNodes).forEach(child => {
+                        const clean = sanitizeNode(child);
+                        if (clean) frag.appendChild(clean);
+                    });
+                    return frag;
+                }
+
+                const cleanEl = document.createElement(tag);
+
+                // Copiar atributos permitidos por tag
+                const attrsAllowed = allowedAttrs[tag] || new Set();
+                Array.from(node.attributes || []).forEach(attr => {
+                    const name = attr.name.toLowerCase();
+                    const value = attr.value || '';
+                    // Bloquear handlers/eventos y estilos inline
+                    if (name.startsWith('on') || name === 'style') return;
+                    if (attrsAllowed.has(name)) {
+                        if (tag === 'a' && name === 'href') {
+                            const safe = safeURL(value, ['http:', 'https:', 'mailto:', 'tel:']);
+                            if (safe) cleanEl.setAttribute('href', safe);
+                            return;
+                        }
+                        if (tag === 'a' && name === 'target') {
+                            // Solo permitir _blank y añadir rel seguro
+                            const tgt = value === '_blank' ? '_blank' : '';
+                            if (tgt) {
+                                cleanEl.setAttribute('target', '_blank');
+                                cleanEl.setAttribute('rel', 'noopener noreferrer');
+                            }
+                            return;
+                        }
+                        if (tag === 'img' && name === 'src') {
+                            const safe = safeURL(value, ['http:', 'https:']);
+                            if (safe) cleanEl.setAttribute('src', safe);
+                            return;
+                        }
+                        // Copiar otros atributos simples
+                        cleanEl.setAttribute(name, value);
+                    }
+                });
+
+                // Asegurar atributos seguros por defecto
+                if (tag === 'img') {
+                    if (!cleanEl.getAttribute('loading')) cleanEl.setAttribute('loading', 'lazy');
+                    cleanEl.setAttribute('referrerpolicy', 'no-referrer');
+                    if (!cleanEl.getAttribute('alt')) cleanEl.setAttribute('alt', '');
+                }
+
+                Array.from(node.childNodes).forEach(child => {
+                    const clean = sanitizeNode(child);
+                    if (clean) cleanEl.appendChild(clean);
+                });
+                return cleanEl;
+            };
+
+            const frag = document.createDocumentFragment();
+            Array.from(template.content.childNodes).forEach(child => {
+                const clean = sanitizeNode(child);
+                if (clean) frag.appendChild(clean);
+            });
+            const out = document.createElement('div');
+            out.appendChild(frag);
+            return out.innerHTML;
+        } catch (_) {
+            // Fallback mínimo por regex si el DOM parsing falla
+            try {
+                return String(str)
+                    .replace(/<script[\s\S]*?>[\s\S]*?<\/script>/gi, '')
+                    .replace(/<style[\s\S]*?>[\s\S]*?<\/style>/gi, '')
+                    .replace(/on[a-z]+\s*=\s*"[^"]*"/gi, '')
+                    .replace(/on[a-z]+\s*=\s*'[^']*'/gi, '')
+                    .replace(/href=\s*"\s*javascript:[^"]*"/gi, 'href="#"')
+                    .replace(/href=\s*'\s*javascript:[^']*'/gi, "href='#'");
+            } catch (_) {
+                return '';
+            }
+        }
     }
 
     /**
@@ -525,6 +642,7 @@
         formatDate,
         toPlainText,
         escapeHTML,
+        safeURL,
         sanitize,
         sanitizeHTML,
         cacheGet,

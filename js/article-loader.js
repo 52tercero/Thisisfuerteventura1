@@ -74,12 +74,29 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
-        // Sanitizar contenido si DOMPurify está disponible
+        // Sanitizar contenido enriquecido con múltiples capas de seguridad
         const sanitize = (html) => {
-            if (typeof DOMPurify !== 'undefined') {
-                return DOMPurify.sanitize(html);
+            try {
+                if (window.FeedUtils && typeof FeedUtils.sanitize === 'function') {
+                    return FeedUtils.sanitize(html);
+                }
+            } catch (_) { /* fallback siguiente */ }
+            try {
+                if (typeof DOMPurify !== 'undefined' && DOMPurify.sanitize) {
+                    return DOMPurify.sanitize(html);
+                }
+            } catch (_) { /* fallback siguiente */ }
+            try {
+                return String(html)
+                    .replace(/<script[\s\S]*?>[\s\S]*?<\/script>/gi, '')
+                    .replace(/<style[\s\S]*?>[\s\S]*?<\/style>/gi, '')
+                    .replace(/on[a-z]+\s*=\s*"[^"]*"/gi, '')
+                    .replace(/on[a-z]+\s*=\s*'[^']*'/gi, '')
+                    .replace(/href=\s*"\s*javascript:[^"]*"/gi, 'href="#"')
+                    .replace(/href=\s*'\s*javascript:[^']*'/gi, "href='#'");
+            } catch (_) {
+                return '';
             }
-            return html;
         };
         // Proxy para imágenes embebidas dentro del contenido enriquecido
         function toImageSrc(url) {
