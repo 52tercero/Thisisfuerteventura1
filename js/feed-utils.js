@@ -346,7 +346,7 @@
      * @returns {Promise<Array>} Items normalizados
      */
     async function fetchRSSFeeds(sources = DEFAULT_NEWS_SOURCES, options = {}) {
-        const { noCache = false } = options;
+        const { noCache = false, signal = null, progressive = false } = options;
         let proxyBase = await discoverLocalProxy();
 
         try {
@@ -368,7 +368,7 @@
                 
                 try {
                     const isLocal = /^http:\/\/(localhost|127\.0\.0\.1)(:\d+)?/i.test(proxyBase);
-                    const r = await fetch(aggUrl, { cache: 'no-store', ...(isLocal ? { targetAddressSpace: 'local' } : {}) });
+                    const r = await fetch(aggUrl, { cache: 'no-store', ...(isLocal ? { targetAddressSpace: 'local' } : {}), ...(signal ? { signal } : {}) });
                     console.log('[FEED-UTILS] Aggregate response status:', r.status);
                     
                     if (!r.ok) throw new Error('bad response');
@@ -391,7 +391,7 @@
                                 ? '/.netlify/functions/rss' 
                                 : (proxyBase.endsWith('/.netlify/functions') ? '/rss' : '/api/rss');
                             const isLocal = /^http:\/\/(localhost|127\.0\.0\.1)(:\d+)?/i.test(proxyBase);
-                            const rr = await fetch(`${proxyBase}${rssPath}?url=${encodeURIComponent(src)}${noCache ? `&t=${Date.now()}` : ''}`, { cache: 'no-store', ...(isLocal ? { targetAddressSpace: 'local' } : {}) });
+                            const rr = await fetch(`${proxyBase}${rssPath}?url=${encodeURIComponent(src)}${noCache ? `&t=${Date.now()}` : ''}`, { cache: 'no-store', ...(isLocal ? { targetAddressSpace: 'local' } : {}), ...(signal ? { signal } : {}) });
                             
                             if (!rr.ok) throw new Error('bad response');
                             
@@ -405,8 +405,24 @@
                         }
                     });
                     
-                    const results = await Promise.all(fetches);
-                    items = results.flat();
+                    if (progressive) {
+                        // Ir resolviendo cada fuente a medida que llega y emitir evento parcial
+                        const settledItems = [];
+                        await Promise.all(fetches.map(async (p, idx) => {
+                            try {
+                                const part = await p;
+                                if (Array.isArray(part) && part.length) {
+                                    settledItems.push(...part);
+                                    // Emitir evento con copia defensiva
+                                    document.dispatchEvent(new CustomEvent('feed:partial', { detail: { sourceIndex: idx, items: part.slice() } }));
+                                }
+                            } catch (_) { /* ignorar */ }
+                        }));
+                        items = settledItems;
+                    } else {
+                        const results = await Promise.all(fetches);
+                        items = results.flat();
+                    }
                 }
             }
 
@@ -627,6 +643,10 @@
                     return (isNaN(pb)?0:pb) - (isNaN(pa)?0:pa);
                 });
                 console.log('[FEED-UTILS] Returning', final.length, 'final deduplicated items');
+                // Emitir evento final si modo progresivo
+                if (progressive) {
+                    document.dispatchEvent(new CustomEvent('feed:complete', { detail: { items: final.slice() } }));
+                }
                 return final;
             }
         } catch (err) {

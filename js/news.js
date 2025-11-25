@@ -63,14 +63,17 @@ document.addEventListener('DOMContentLoaded', function() {
     const searchBtn = document.getElementById('search-btn');
 
     // Obtener noticias delegando a FeedUtils para evitar duplicación
+    let currentAbort = null;
     async function fetchNews(forceRefresh = false) {
         if (!forceRefresh && cachedNewsItems.length > 0 && !isSnapshotCache) {
             return cachedNewsItems;
         }
         try {
             if (window.FeedUtils && typeof FeedUtils.fetchRSSFeeds === 'function') {
-                // Forzar siempre noCache en Noticias para datos frescos
-                const items = await FeedUtils.fetchRSSFeeds(activeNewsSources, { noCache: true });
+                if (currentAbort) { try { currentAbort.abort(); } catch(_){ } }
+                currentAbort = new AbortController();
+                // Usar noCache sólo si forceRefresh; permitir caché corta para mejorar tiempo de respuesta
+                const items = await FeedUtils.fetchRSSFeeds(activeNewsSources, { noCache: forceRefresh, progressive: true, signal: currentAbort.signal });
                 cachedNewsItems = items.map((it, idx) => ({
                     id: idx + 1,
                     title: it.title,
@@ -178,7 +181,9 @@ document.addEventListener('DOMContentLoaded', function() {
 
     function renderNewsCards(items) {
         newsContainer.innerHTML = '';
-        items.forEach(item => {
+        const immediate = items.slice(0,3); // primeros 3 arriba del pliegue
+        const deferred = items.slice(3);
+        const renderItem = (item) => {
             const card = document.createElement('div');
             card.className = 'content-card';
 
@@ -226,7 +231,16 @@ document.addEventListener('DOMContentLoaded', function() {
             card.querySelector('.card-content').appendChild(readMoreBtn);
 
             newsContainer.appendChild(card);
-        });
+        };
+        immediate.forEach(renderItem);
+        if (deferred.length) {
+            const renderDeferred = () => deferred.forEach(renderItem);
+            if ('requestIdleCallback' in window) {
+                requestIdleCallback(renderDeferred, { timeout: 1500 });
+            } else {
+                setTimeout(renderDeferred, 0);
+            }
+        }
     }
 
     function applyNewsData(newsItems, { keepPage = true } = {}) {
@@ -355,7 +369,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Refresco periódico independiente por si el evento global no se dispara
     setInterval(() => {
-        loadAndDisplayNews({ forceRefresh: true, keepPage: true, skipSnapshot: true, showSkeleton: false });
+        loadAndDisplayNews({ forceRefresh: false, keepPage: true, skipSnapshot: true, showSkeleton: false });
     }, REFRESH_INTERVAL);
 
     // Re-renderizar si se regresa desde el historial usando BFCache

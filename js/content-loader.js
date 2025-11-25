@@ -111,17 +111,21 @@ document.addEventListener('DOMContentLoaded', async function() {
         }
         
         // Función para obtener y parsear feeds RSS (delegada a FeedUtils)
+        let currentAbort = null;
         async function fetchLatestFeeds() {
             try {
                 if (window.FeedUtils && typeof FeedUtils.fetchRSSFeeds === 'function') {
+                    // Abort anterior si existe
+                    if (currentAbort) { try { currentAbort.abort(); } catch(_){ } }
+                    currentAbort = new AbortController();
                     console.log('[CONTENT-LOADER] Portada: usando fuentes exclusivas:', HOMEPAGE_NEWS_SOURCES);
                     // Si tenemos justo dos fuentes de portada, obtener 10 por cada una
                     if (Array.isArray(activeNewsSources) && activeNewsSources.length === 2) {
                         const [srcA, srcB] = activeNewsSources;
-                        const [itemsA, itemsB] = await Promise.all([
-                            FeedUtils.fetchRSSFeeds([srcA], { noCache: true }),
-                            FeedUtils.fetchRSSFeeds([srcB], { noCache: true })
-                        ]);
+                        // Progressive: lanzar cada fuente y renderizar parcial al llegar
+                        const pA = FeedUtils.fetchRSSFeeds([srcA], { noCache: true, progressive: true, signal: currentAbort.signal });
+                        const pB = FeedUtils.fetchRSSFeeds([srcB], { noCache: true, progressive: true, signal: currentAbort.signal });
+                        const [itemsA, itemsB] = await Promise.all([pA, pB]);
 
                         const sortByTimeDesc = (arr) => {
                             const norm = (it) => {
@@ -153,7 +157,7 @@ document.addEventListener('DOMContentLoaded', async function() {
                     }
 
                     // Bypass caché para portada para maximizar frescura (modo general)
-                    return await FeedUtils.fetchRSSFeeds(activeNewsSources, { noCache: true });
+                    return await FeedUtils.fetchRSSFeeds(activeNewsSources, { noCache: true, progressive: true, signal: currentAbort.signal });
                 }
             } catch (e) {
                 console.warn('[CONTENT-LOADER] FeedUtils.fetchRSSFeeds failed:', e);
@@ -263,6 +267,44 @@ document.addEventListener('DOMContentLoaded', async function() {
         })();
 
         // Obtener noticias y (re)mostrarlas con datos frescos
+        // Escuchar eventos progresivos y pintar incrementos si aún hay skeleton
+        const handlePartial = (evt) => {
+            const partItems = evt.detail.items || [];
+            if (!featuredNewsContainer || partItems.length === 0) return;
+            // Si aún hay skeleton, reemplazar gradualmente
+            const skeleton = featuredNewsContainer.querySelector('.loading-skeleton');
+            if (skeleton) {
+                // Limpiar skeleton al llegar primeros items
+                featuredNewsContainer.innerHTML = '';
+            }
+            // Renderizar sólo primeros 5 de cada parcial para no saturar
+            const limited = partItems.slice(0,5);
+            limited.forEach((item) => {
+                const card = document.createElement('div');
+                card.className = 'content-card';
+                const fullText = (item.description || item.summary || '').replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim();
+                const shortDescription = fullText.length > 150 ? fullText.slice(0, 150) + '...' : fullText;
+                const idBase = `${item.title || ''}|${item.publishedAt || item.date || ''}`;
+                const articleId = (()=>{ try { return btoa(encodeURIComponent(idBase)).replace(/[^a-zA-Z0-9]/g,'').substring(0,32);} catch(_){ return Math.random().toString(36).slice(2,34);} })();
+                try { localStorage.setItem(`article_${articleId}`, JSON.stringify(item)); } catch(_){ }
+                card.innerHTML = `
+                    <img src="${toImageSrc(item.image)}" alt="${escapeHTML(item.title)}" loading="lazy" referrerpolicy="no-referrer">
+                    <div class="card-content">
+                        <span class="date">${escapeHTML(item.date)}</span>
+                        <h3>${escapeHTML(item.title)}</h3>
+                        <p>${shortDescription}</p>
+                    </div>`;
+                const imgEl = card.querySelector('img');
+                if (imgEl) imgEl.addEventListener('error', () => { imgEl.src = 'images/logo.jpg?v=2025110501'; });
+                const readMoreBtn = document.createElement('a');
+                readMoreBtn.href = `noticia.html?id=${articleId}`;
+                readMoreBtn.className = 'btn';
+                readMoreBtn.textContent = 'Leer más';
+                card.querySelector('.card-content').appendChild(readMoreBtn);
+                featuredNewsContainer.appendChild(card);
+            });
+        };
+        document.addEventListener('feed:partial', handlePartial, { passive: true });
         fetchLatestFeeds().then(newsItems => {
             console.log('[CONTENT-LOADER] Noticias recibidas:', newsItems.length);
             
@@ -283,7 +325,10 @@ document.addEventListener('DOMContentLoaded', async function() {
             console.log('[CONTENT-LOADER] Mostrando', featured.length, 'artículos destacados');
             
             // Mostrar las noticias (resumen compacto en la portada)
-            featured.forEach((item, index) => {
+            // Pintar primeros 6 inmediatamente, resto diferido para no bloquear el hilo principal
+            const immediate = featured.slice(0,6);
+            const deferred = featured.slice(6);
+            immediate.forEach((item, index) => {
                 console.log(`[CONTENT-LOADER] Renderizando artículo ${index + 1}:`, item.title, 'Image:', item.image);
                 const card = document.createElement('div');
                 card.className = 'content-card';
@@ -326,9 +371,44 @@ document.addEventListener('DOMContentLoaded', async function() {
                 
                 featuredNewsContainer.appendChild(card);
             });
+            if (deferred.length) {
+                const renderDeferred = () => {
+                    deferred.forEach((item) => {
+                        const card = document.createElement('div');
+                        card.className = 'content-card';
+                        const fullText = (item.description || item.summary || '').replace(/<[^>]*>/g,' ').replace(/\s+/g,' ').trim();
+                        const shortDescription = fullText.length > 150 ? fullText.slice(0,150) + '...' : fullText;
+                        const idBase = `${item.title || ''}|${item.publishedAt || item.date || ''}`;
+                        const articleId = (()=>{ try { return btoa(encodeURIComponent(idBase)).replace(/[^a-zA-Z0-9]/g,'').substring(0,32);} catch(_){ return Math.random().toString(36).slice(2,34);} })();
+                        try { localStorage.setItem(`article_${articleId}`, JSON.stringify(item)); } catch(_){ }
+                        card.innerHTML = `
+                            <img src="${toImageSrc(item.image)}" alt="${escapeHTML(item.title)}" loading="lazy" referrerpolicy="no-referrer">
+                            <div class="card-content">
+                                <span class="date">${escapeHTML(item.date)}</span>
+                                <h3>${escapeHTML(item.title)}</h3>
+                                <p>${shortDescription}</p>
+                            </div>`;
+                        const imgEl = card.querySelector('img');
+                        if (imgEl) imgEl.addEventListener('error', () => { imgEl.src = 'images/logo.jpg?v=2025110501'; });
+                        const readMoreBtn = document.createElement('a');
+                        readMoreBtn.href = `noticia.html?id=${articleId}`;
+                        readMoreBtn.className = 'btn';
+                        readMoreBtn.textContent = 'Leer más';
+                        card.querySelector('.card-content').appendChild(readMoreBtn);
+                        featuredNewsContainer.appendChild(card);
+                    });
+                };
+                if ('requestIdleCallback' in window) {
+                    requestIdleCallback(renderDeferred, { timeout: 1200 });
+                } else {
+                    setTimeout(renderDeferred, 0);
+                }
+            }
             if (newsItems.length > 0) {
                 featuredSnapshotRendered = true;
             }
+            // limpiar listener de progresivo
+            document.removeEventListener('feed:partial', handlePartial);
         });
     }
     
