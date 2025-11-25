@@ -240,6 +240,19 @@ document.addEventListener('DOMContentLoaded', () => {
                         </div>
                     `;
                 } else if (video.type === 'direct') {
+                    try {
+                        const u = new URL(video.url, location.href);
+                        const isMixed = (location.protocol === 'https:' && u.protocol === 'http:');
+                        if (isMixed) {
+                            // Evitar mixed content bloqueado: ofrecer enlace externo
+                            return `
+                                <div class="article-video">
+                                    <p>Este vídeo se aloja en una conexión no segura. Ábrelo en una pestaña nueva:</p>
+                                    <p><a class="btn" href="${u.toString()}" target="_blank" rel="noopener noreferrer">Ver vídeo</a></p>
+                                </div>
+                            `;
+                        }
+                    } catch(_) {}
                     return `
                         <div class="article-video">
                             <video controls>
