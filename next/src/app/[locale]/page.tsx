@@ -46,7 +46,10 @@ export default async function HomeLocale({ params }: { params: Promise<{ locale:
               featured.map((n: any, idx: number) => {
                 const title = n.title || 'Sin título';
                 const date = n.pubDate || n.date || '';
-                const img = n.image || '/images/logo.jpg';
+                const rawImg = n.image || '/images/logo.jpg';
+                const img = rawImg.startsWith('http')
+                  ? `/api/image?url=${encodeURIComponent(rawImg)}`
+                  : rawImg;
                 const slug = slugify(title);
                 const summary = sanitizeHTML(n.description || n.summary || '');
                 return (
