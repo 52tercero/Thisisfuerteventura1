@@ -8,6 +8,13 @@ export const dynamic = 'force-dynamic';
 
 interface PageProps { params: Promise<{ locale: string }> }
 
+export async function generateMetadata({ params }: PageProps) {
+  const { locale } = await params;
+  const title = locale === 'en' ? 'Beaches of Fuerteventura' : locale === 'de' ? 'Strände von Fuerteventura' : 'Playas de Fuerteventura';
+  const description = locale === 'en' ? 'Explore major beaches of Fuerteventura grouped by zone with map markers.' : locale === 'de' ? 'Erkunde wichtige Strände Fuerteventuras nach Zonen gruppiert mit Kartenmarkern.' : 'Descubre las principales playas de Fuerteventura agrupadas por zonas y con mapa.';
+  return { title, description, alternates: { canonical: `/${locale}/playas` } };
+}
+
 export default async function PlayasPage({ params }: PageProps) {
   const { locale } = await params;
   const messages = getMessages(locale);
@@ -28,9 +35,16 @@ export default async function PlayasPage({ params }: PageProps) {
       .replace(/^-|-$/g,'');
     return messages.features?.[slug] || label;
   };
+  const itemListJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'ItemList',
+    name: 'Playas Fuerteventura',
+    itemListElement: PLAYAS.map((p, i) => ({ '@type': 'ListItem', position: i + 1, name: p.title, url: `/${locale}/playas#${p.id}` }))
+  };
   return (
     <main className="container mx-auto px-4 py-10">
       <h1 className="text-3xl font-bold mb-8">{tNav.beaches}</h1>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(itemListJsonLd) }} />
       {zoneOrder.map(zone => {
         const items = byZone[zone].map<GridItem>(b => ({
           id: b.id,
