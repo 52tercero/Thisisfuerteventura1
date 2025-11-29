@@ -47,8 +47,12 @@ export default async function NoticiaDetalle({ params }: PageProps) {
           <p className="text-sm text-gray-500">{tArticle.published}: {new Date(match.pubDate).toLocaleDateString(locale === 'es' ? 'es-ES' : locale === 'de' ? 'de-DE' : 'en-GB')}</p>
         )}
         {match.image && (
-          <div className="my-6">
-            <ImageWithFallback src={match.image} alt={match.title || 'Noticia'} className="w-full max-h-[480px] object-cover rounded" />
+            <div className="my-6">
+              const rawImg = match?.image || '/images/logo.jpg';
+              const image = rawImg && rawImg.startsWith('http')
+                ? `/api/image?url=${encodeURIComponent(rawImg)}`
+                : rawImg;
+              <ImageWithFallback src={image} alt={match.title || 'Noticia'} className="w-full max-h-[480px] object-cover rounded" />
           </div>
         )}
         <div className="mt-4 text-gray-700">

@@ -53,9 +53,11 @@ export default async function Noticias({ params, searchParams }: PageProps) {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {pageItems.length === 0 ? <div className="col-span-full rounded border p-4">{tNews.noResults}</div> : pageItems.map((n:any,idx:number) => {
           const slug = slugify(n.title||'');
+          const rawImg = n.image || '/images/Fuerteventura.jpeg';
+          const img = rawImg && rawImg.startsWith('http') ? `/api/image?url=${encodeURIComponent(rawImg)}` : rawImg;
           return (
             <article key={idx} className="rounded border overflow-hidden bg-white hover:shadow transition">
-              <img src={n.image || '/images/Fuerteventura.jpeg'} alt={n.title||'Noticia'} className="w-full h-48 object-cover" />
+              <img src={img} alt={n.title||'Noticia'} className="w-full h-48 object-cover" />
               <div className="p-4 flex flex-col gap-2">
                 <h3 className="text-lg font-semibold leading-tight line-clamp-3">{n.title||'Noticia'}</h3>
                 <p className="text-xs text-gray-500">{n.pubDate ? new Date(n.pubDate).toLocaleDateString(locale==='de'?'de-DE':locale==='en'?'en-GB':'es-ES') : ''}</p>
