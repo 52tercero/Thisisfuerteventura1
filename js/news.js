@@ -95,6 +95,31 @@ document.addEventListener('DOMContentLoaded', function() {
         } catch (e) {
             console.warn('[NEWS] FeedUtils.fetchRSSFeeds failed:', e);
         }
+        // Fallback directo al proxy local/Netlify
+        try {
+            const url = 'http://localhost:3000/api/aggregate?sources=' + encodeURIComponent(activeNewsSources.join(','));
+            const res = await fetch(url, { cache: forceRefresh ? 'no-store' : 'default' });
+            if (res.ok) {
+                const json = await res.json();
+                const items = Array.isArray(json.items) ? json.items : [];
+                cachedNewsItems = items.map((it, idx) => ({
+                    id: idx + 1,
+                    title: it.title,
+                    image: it.image,
+                    summary: it.summary || it.description || '',
+                    content: it.fullHtml || it.description || '',
+                    date: it.date,
+                    publishedAt: it.publishedAt || null,
+                    category: it.category,
+                    tags: Array.isArray(it.tags) ? it.tags : [],
+                    source: it.source,
+                    link: it.link,
+                    raw: it.raw || null
+                }));
+                isSnapshotCache = false;
+                return cachedNewsItems;
+            }
+        } catch(_) {}
         if (cachedNewsItems.length === 0) {
             cachedNewsItems = [];
         }
@@ -306,9 +331,12 @@ document.addEventListener('DOMContentLoaded', function() {
 
             const fetched = await fetchNews(true);
             if (fetched.length === 0) {
-                if (newsContainer.childElementCount === 0) {
-                    newsContainer.innerHTML = '<div class="no-results">No se pudieron cargar las noticias. Inténtalo más tarde.</div>';
-                }
+                newsContainer.innerHTML = '<div class="no-results">No se pudieron cargar las noticias. Inténtalo más tarde.</div>';
+                // Tarjeta placeholder para confirmar layout
+                var ph = document.createElement('div');
+                ph.className = 'news-card';
+                ph.innerHTML = '<img class="news-image" src="images/logo.jpg?v=2025110501" alt="Placeholder" loading="lazy"><div class="news-content"><span class="date">'+escapeHTML(formatDate(new Date()))+'</span><h3>Sin datos disponibles</h3><p>Inténtalo más tarde.</p></div>';
+                newsContainer.appendChild(ph);
                 return;
             }
 
@@ -359,6 +387,20 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Carga inicial: sin instantánea y siempre contenido fresco
     loadAndDisplayNews({ forceRefresh: true, skipSnapshot: true });
+
+    // Watchdog: si el contenedor sigue con "Cargando noticias..." tras unos segundos, mostrar estado amistoso
+    (function(){
+        try {
+            var watchdogMs = 4000;
+            setTimeout(function(){
+                var hasLoading = !!newsContainer.querySelector('.loading');
+                var hasCards = !!newsContainer.querySelector('.news-card');
+                if (hasLoading && !hasCards) {
+                    newsContainer.innerHTML = '<div class="no-results">No se pudieron cargar las noticias. Inténtalo más tarde.</div>';
+                }
+            }, watchdogMs);
+        } catch(_) { /* noop */ }
+    })();
 
     // Eliminada interacción con chips de etiqueta (ya no se usan para filtrar)
 

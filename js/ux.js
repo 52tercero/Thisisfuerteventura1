@@ -52,6 +52,7 @@
       });
       wrapper.appendChild(inner);
       grid.parentNode.replaceChild(wrapper, grid);
+      try { void window.getComputedStyle(wrapper); } catch(_) { /* ignore */ }
       new Swiper(wrapper, { slidesPerView: 1.2, spaceBetween: 12, loop: true, centeredSlides: false,
         breakpoints: { 480:{slidesPerView:1.6}, 640:{slidesPerView:2.2}, 960:{slidesPerView:3.2} },
         autoplay: { delay: 2500, disableOnInteraction: false },
@@ -79,6 +80,7 @@
       slide.appendChild(pill); inner.appendChild(slide);
     });
     wrapper.appendChild(inner); container.appendChild(wrapper);
+    try { void window.getComputedStyle(wrapper); } catch(_) { /* ignore */ }
     new Swiper(wrapper, { slidesPerView: 'auto', spaceBetween: 10, freeMode: true, loop: true,
       speed: 800, autoplay: { delay: 3000, disableOnInteraction: false }, freeModeMomentum: false,
     });

@@ -62,6 +62,7 @@
       const result = await probePort(p, options.timeout);
       if (result) {
         try { localStorage.setItem(cacheKey, JSON.stringify({ url: result, ts: Date.now() })); } catch (e) { /* ignore */ }
+        try { window.__RSS_PROXY_URL = result; console.log('✓ Proxy local detectado en', result); } catch(_) { /* ignore */ }
         return result;
       }
     }

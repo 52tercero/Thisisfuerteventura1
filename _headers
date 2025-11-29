@@ -3,6 +3,7 @@
 
 # Global security headers for SEO and security
 /*
+  Content-Security-Policy: frame-ancestors 'self'
   X-Frame-Options: SAMEORIGIN
   X-Content-Type-Options: nosniff
   X-XSS-Protection: 1; mode=block

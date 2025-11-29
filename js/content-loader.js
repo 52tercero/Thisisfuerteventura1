@@ -59,8 +59,9 @@ document.addEventListener('DOMContentLoaded', async function() {
     }
     // Fuentes exclusivas de portada (Destacados)
     const HOMEPAGE_NEWS_SOURCES = [
-        'https://rss.app/feeds/CXaQi3rf5kkWoXGn.xml',
-        'https://rss.app/feeds/EDdlnIW9piuZsKIc.xml'
+        // Fuentes con respuesta verificada en local (smoke test)
+        'https://rss.app/feeds/jbwZ2Q9QAvgvI6G0.xml',
+        'https://rss.app/feeds/8SmCQL7GDZyu2xB4.xml'
     ];
     // En portada usaremos sólo estas fuentes, ignorando las globales
     const activeNewsSources = HOMEPAGE_NEWS_SOURCES;
@@ -162,6 +163,29 @@ document.addEventListener('DOMContentLoaded', async function() {
             } catch (e) {
                 console.warn('[CONTENT-LOADER] FeedUtils.fetchRSSFeeds failed:', e);
             }
+            // Fallback: intentar el proxy local/Netlify directamente
+            try {
+                // Usar proxy local confirmado (healthy) para asegurar datos
+                const url = 'http://localhost:3000/api/aggregate?sources=' + encodeURIComponent(activeNewsSources.join(','));
+                const res = await fetch(url, { cache: 'no-store' });
+                if (res.ok) {
+                    const json = await res.json();
+                    const items = Array.isArray(json.items) ? json.items : [];
+                    return items.map(it => ({
+                        title: it.title,
+                        image: it.image,
+                        summary: it.summary || it.description || '',
+                        description: it.description || it.summary || '',
+                        fullHtml: it.fullHtml || it.description || '',
+                        date: it.date,
+                        publishedAt: it.publishedAt || null,
+                        category: it.category,
+                        source: it.source,
+                        link: it.link,
+                        raw: it.raw || null
+                    }));
+                }
+            } catch(_) {}
             // Alternativa: si las utilidades no están cargadas, devolver arreglo vacío
             return [];
         }
@@ -267,6 +291,19 @@ document.addEventListener('DOMContentLoaded', async function() {
         })();
 
         // Obtener noticias y (re)mostrarlas con datos frescos
+        // Watchdog: si tras unos segundos sigue el skeleton, mostrar mensaje amistoso
+        (function(){
+            try {
+                var watchdogMs = 4000;
+                setTimeout(function(){
+                    var hasSkeleton = !!featuredNewsContainer.querySelector('.loading-skeleton');
+                    var hasCards = !!featuredNewsContainer.querySelector('.content-card');
+                    if (hasSkeleton && !hasCards) {
+                        featuredNewsContainer.innerHTML = '<div class="no-news">No se pudieron cargar las noticias. Inténtalo más tarde.</div>';
+                    }
+                }, watchdogMs);
+            } catch(_) { /* noop */ }
+        })();
         // Escuchar eventos progresivos y pintar incrementos si aún hay skeleton
         const handlePartial = (evt) => {
             const partItems = evt.detail.items || [];
@@ -311,11 +348,15 @@ document.addEventListener('DOMContentLoaded', async function() {
             // Si no hay noticias frescas: conservar snapshot/SSR si existe
             if (newsItems.length === 0) {
                 console.error('[CONTENT-LOADER] No hay noticias para mostrar');
-                if (featuredNewsContainer.querySelector('.content-card')) {
-                    // Ya existen tarjetas (snapshot o SSR). No borrar el contenido actual.
-                    return;
+                const hasCards = !!featuredNewsContainer.querySelector('.content-card');
+                if (!hasCards) {
+                    featuredNewsContainer.innerHTML = '<div class="no-news">No se pudieron cargar las noticias. Inténtalo más tarde.</div>';
+                    // Renderizar una tarjeta placeholder para verificar layout
+                    const ph = document.createElement('div');
+                    ph.className = 'content-card';
+                    ph.innerHTML = '<img src="images/logo.jpg?v=2025110501" alt="Placeholder" loading="lazy"><div class="card-content"><span class="date">'+escapeHTML(formatDate(new Date()))+'</span><h3>Sin datos disponibles</h3><p>Inténtalo más tarde.</p></div>';
+                    featuredNewsContainer.appendChild(ph);
                 }
-                featuredNewsContainer.innerHTML = '<div class="no-news">No se pudieron cargar las noticias. Inténtalo más tarde.</div>';
                 return;
             }
 

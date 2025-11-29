@@ -6,7 +6,9 @@
 
   const initTimeline = () => {
     const el = document.querySelector('.timeline-swiper');
-    if (!(el instanceof HTMLElement)) return null;
+    if (!el || !(el instanceof HTMLElement)) return null;
+    // Asegura que el elemento es válido antes de inicializar Swiper
+    try { void window.getComputedStyle(el); } catch(_) { /* ignore */ }
     const config = {
       slidesPerView: 'auto',
       spaceBetween: 12,
@@ -28,6 +30,7 @@
     const galleries = document.querySelectorAll('.gallery-swiper');
     galleries.forEach((node) => {
       if (!(node instanceof HTMLElement)) return;
+      try { void window.getComputedStyle(node); } catch(_) { /* ignore */ }
       const paginationEl = node.querySelector('.swiper-pagination');
       const nextEl = node.querySelector('.swiper-button-next');
       const prevEl = node.querySelector('.swiper-button-prev');

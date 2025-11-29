@@ -1,0 +1,56 @@
+﻿@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html, body { height: 100%; }
+
+/* Legacy design tokens (subset) from static site */
+:root {
+	--color-mar: #2ec4b6;
+	--color-arena: #ffd97d;
+	--color-volcan: #22223b;
+	--color-cielo: #0f4c81;
+	--primary-color: var(--color-mar);
+	--secondary-color: var(--color-arena);
+	--text-color: #333333;
+	--text-light: #666666;
+	--text-white: #ffffff;
+	--bg-color: #fffaf3;
+	--card-bg: #ffffff;
+	--shadow-md: 0 4px 6px rgba(0,0,0,0.1);
+}
+html[data-theme="dark"] {
+	--bg-color: #0b0f14;
+	--text-color: #e5e7eb;
+	--text-light: #cbd5e1;
+	--card-bg: #121a1f;
+}
+
+body {
+	font-family: 'Nunito Sans', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+	background: var(--bg-color);
+	color: var(--text-color);
+	background: var(--color-bg);
+	color: var(--color-text);
+}
+
+/* Hero basics */
+.hero { position: relative; }
+.hero .hero-bg { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; z-index:0; }
+.hero-overlay { position:absolute; inset:0; background: linear-gradient(180deg, rgba(0,0,0,0.45) 0%, rgba(0,0,0,0.25) 100%); z-index:1; }
+.hero-content { position:relative; z-index:2; color: var(--text-white); text-shadow:0 2px 6px rgba(0,0,0,0.4); }
+
+/* Simple grid reused across legacy pages */
+.legacy-grid { display:grid; gap:1.5rem; grid-template-columns:repeat(auto-fill,minmax(240px,1fr)); }
+.legacy-card { background:var(--card-bg); border-radius:10px; box-shadow:var(--shadow-md); padding:1rem 1.1rem; display:flex; flex-direction:column; gap:.6rem; }
+.legacy-card h3 { font-weight:600; color: var(--primary-color); }
+.legacy-card img { width:100%; height:160px; object-fit:cover; border-radius:8px; }
+
+/* Accessibility helpers */
+.skip-link { position:absolute; left:-10000px; top:auto; width:1px; height:1px; overflow:hidden; }
+.skip-link:focus { left:16px; top:16px; width:auto; height:auto; padding:8px 12px; background:#000; color:#fff; border-radius:6px; }
+
+/* Utility fallbacks (until fully mapped to Tailwind) */
+.mt-10 { margin-top:10px; }
+.text-light { color: var(--text-light); }
+.btn-back { display:inline-flex; align-items:center; gap:8px; margin:20px 0; }

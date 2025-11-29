@@ -11,5 +11,43 @@
   "hero": {
     "welcome": "Willkommen auf Fuerteventura",
     "subtitle": "Entdecken Sie das Paradies der Kanarischen Inseln"
+  },
+  "news": {
+    "searchLabel": "Suchen",
+    "searchPlaceholder": "Titel suchen...",
+    "filter": "Filtern",
+    "page": "Seite",
+    "of": "von",
+    "items": "Nachrichten",
+    "noResults": "Keine Ergebnisse",
+    "prev": "← Zurück",
+    "next": "Weiter →",
+    "showing": "Anzeigen"
+  }
+  ,
+  "blog": {
+    "title": "Blog",
+    "readMore": "Mehr lesen",
+    "noPosts": "Keine Beiträge"
+  },
+  "contact": {
+    "title": "Kontakt",
+    "name": "Name",
+    "email": "E-Mail",
+    "message": "Nachricht",
+    "send": "Senden"
+  },
+  "quiz": {
+    "title": "Quiz",
+    "start": "Start",
+    "next": "Weiter",
+    "finish": "Beenden",
+    "score": "Ihre Punktzahl"
+  },
+  "cookies": {
+    "title": "Cookies",
+    "accept": "Akzeptieren",
+    "reject": "Ablehnen",
+    "manage": "Einstellungen verwalten"
   }
 }

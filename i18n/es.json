@@ -11,5 +11,43 @@
   "hero": {
     "welcome": "Bienvenido a Fuerteventura",
     "subtitle": "Descubre el paraíso de las Islas Canarias"
+  },
+  "news": {
+    "searchLabel": "Buscar",
+    "searchPlaceholder": "Buscar título...",
+    "filter": "Filtrar",
+    "page": "Página",
+    "of": "de",
+    "items": "noticias",
+    "noResults": "Sin resultados",
+    "prev": "← Anterior",
+    "next": "Siguiente →",
+    "showing": "Mostrando"
+  }
+  ,
+  "blog": {
+    "title": "Blog",
+    "readMore": "Leer más",
+    "noPosts": "No hay publicaciones"
+  },
+  "contact": {
+    "title": "Contacto",
+    "name": "Nombre",
+    "email": "Correo",
+    "message": "Mensaje",
+    "send": "Enviar"
+  },
+  "quiz": {
+    "title": "Quiz",
+    "start": "Comenzar",
+    "next": "Siguiente",
+    "finish": "Finalizar",
+    "score": "Tu puntuación"
+  },
+  "cookies": {
+    "title": "Cookies",
+    "accept": "Aceptar",
+    "reject": "Rechazar",
+    "manage": "Gestionar preferencias"
   }
 }

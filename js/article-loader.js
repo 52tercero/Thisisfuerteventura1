@@ -348,7 +348,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (orig) img.setAttribute('src', toImageSrc(orig));
                 img.setAttribute('loading', 'lazy');
                 img.setAttribute('referrerpolicy', 'no-referrer');
-                img.addEventListener('error', () => { img.src = 'images/Fuerteventura.jpeg?v=2025110501'; });
+                img.addEventListener('error', () => { img.src = 'images/logo.jpg?v=2025110501'; });
             });
         } catch (_) {}
 
@@ -356,7 +356,7 @@ document.addEventListener('DOMContentLoaded', () => {
         try {
             const img = document.querySelector('.article-featured-image img');
             if (img) {
-                img.addEventListener('error', () => { img.src = 'images/Fuerteventura.jpeg?v=2025110501'; });
+                img.addEventListener('error', () => { img.src = 'images/logo.jpg?v=2025110501'; });
             }
         } catch (_) {}
 

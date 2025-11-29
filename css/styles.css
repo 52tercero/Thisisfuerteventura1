@@ -689,8 +689,8 @@ html[data-theme="dark"] .dark-header header {
 /* Sección Hero (estático). No afectes a héroes con video */
 .hero:not(.hero-video) {
     height: 70vh;
-    /* Usar la imagen hero proporcionada para Fuerteventura. Colocar el archivo en images/fuerteventura.jpeg */
-    background-image: linear-gradient(rgba(0, 0, 0, 0.45), rgba(0, 0, 0, 0.45)), url('../images/Fuerteventura.jpeg');
+    /* Hero fallback usando una imagen existente */
+    background-image: linear-gradient(rgba(0, 0, 0, 0.45), rgba(0, 0, 0, 0.45)), url('../images/turismo/el-cotillo.avif');
     background-size: cover;
     background-position: center;
     color: white;
@@ -750,7 +750,7 @@ html[data-theme="dark"] .dark-header header {
 /* Hero de página de noticias */
 .page-header {
     height: 40vh;
-    background-image: linear-gradient(rgba(0, 0, 0, 0.45), rgba(0, 0, 0, 0.45)), url('../images/Fuerteventura.jpeg');
+    background-image: linear-gradient(rgba(0, 0, 0, 0.45), rgba(0, 0, 0, 0.45)), url('../images/turismo/el-cotillo.avif');
     background-size: cover;
     background-position: center;
     color: white;
@@ -3334,7 +3334,7 @@ html[data-theme="dark"] .theme-toggle { border-color: rgba(255,255,255,0.25); }
     box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
     margin: 2rem 0;
     position: relative;
-    background-image: url('images/Fuerteventura.jpeg');
+    background-image: url('../images/turismo/el-cotillo.avif');
     background-size: cover;
     background-position: center;
 }

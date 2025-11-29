@@ -218,7 +218,10 @@ async function fetchFeedItems(url, { bypassCache = false, _triedDiscovery = fals
     }
 
     console.log('[RSS PROXY] Fetching:', url);
-    const upstream = await fetchUrl(url, { headers: { 'User-Agent': 'FuerteventuraRSSProxy/1.0 (+https://example.local)' } });
+    const upstream = await fetchUrl(url, { headers: {
+      'User-Agent': 'FuerteventuraRSSProxy/1.1 (+https://www.thisisfuerteventura.es) Mozilla/5.0',
+      'Accept': 'application/rss+xml, application/atom+xml, application/xml;q=0.9, text/xml;q=0.8, text/html;q=0.7,*/*;q=0.5'
+    } });
     if (!upstream.ok) {
       console.warn(`[RSS PROXY] Upstream error for ${url}: status ${upstream.status}`);
       return [];
@@ -275,6 +278,9 @@ async function fetchFeedItems(url, { bypassCache = false, _triedDiscovery = fals
           raw: rawClean
         };
       });
+      if (normalizedFP.length === 0) {
+        console.warn(`[RSS PROXY] FeedParser parsed 0 items for ${url}`);
+      }
       cacheSet(cacheKey, normalizedFP);
       return normalizedFP;
     }
@@ -324,6 +330,9 @@ async function fetchFeedItems(url, { bypassCache = false, _triedDiscovery = fals
     return { title, link, description, pubDate, image, raw: it };
   });
 
+  if (normalized.length === 0) {
+    console.warn(`[RSS PROXY] xml2js parsed 0 items for ${url} (ctype='${ctype}')`);
+  }
   cacheSet(cacheKey, normalized);
   return normalized;
   } catch (err) {
@@ -446,9 +455,10 @@ app.get('/api/rss', async (req, res) => {
 app.get('/api/aggregate', async (req, res) => {
   try {
     const querySources = (req.query.sources || '').toString();
-    let sources = querySources
+    const sourcesOriginal = querySources
       ? querySources.split(',').map(s => s.trim()).filter(Boolean)
       : ALLOWED_SOURCES.slice();
+    let sources = sourcesOriginal.slice();
 
     // Aplicar lista permitida a menos que ALLOW_ALL esté habilitado
     if (!ALLOW_ALL) {
@@ -517,6 +527,17 @@ app.get('/api/aggregate', async (req, res) => {
     const afterCount = items.length;
     console.log(`[RSS PROXY] Aggregate dedupe: ${beforeCount} -> ${afterCount} items (fuentes: ${sources.length})`);
 
+    if (req.query.debug === '1' || req.query.debug === 'true') {
+      return res.json({
+        items,
+        sourcesOriginal,
+        sourcesEffective: sources,
+        beforeCount,
+        afterCount,
+        allowAll: ALLOW_ALL,
+        allowedSources: ALLOWED_SOURCES
+      });
+    }
     res.json({ items });
   } catch (err) {
     console.error('[RSS PROXY] Aggregate error:', err);
