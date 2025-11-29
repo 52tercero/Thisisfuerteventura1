@@ -49,8 +49,9 @@ export default async function NoticiaDetalle({ params }: PageProps) {
         {match.image && (
             <div className="my-6">
               const rawImg = match?.image || '/images/logo.jpg';
+              const proxyBase = process.env.NEXT_PUBLIC_PROXY_URL || 'http://localhost:3000';
               const image = rawImg && rawImg.startsWith('http')
-                ? `/api/image?url=${encodeURIComponent(rawImg)}`
+                ? `${proxyBase}/api/image?url=${encodeURIComponent(rawImg)}`
                 : rawImg;
               <ImageWithFallback src={image} alt={match.title || 'Noticia'} className="w-full max-h-[480px] object-cover rounded" />
           </div>

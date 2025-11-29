@@ -54,7 +54,8 @@ export default async function Noticias({ params, searchParams }: PageProps) {
         {pageItems.length === 0 ? <div className="col-span-full rounded border p-4">{tNews.noResults}</div> : pageItems.map((n:any,idx:number) => {
           const slug = slugify(n.title||'');
           const rawImg = n.image || '/images/Fuerteventura.jpeg';
-          const img = rawImg && rawImg.startsWith('http') ? `/api/image?url=${encodeURIComponent(rawImg)}` : rawImg;
+          const proxyBase = process.env.NEXT_PUBLIC_PROXY_URL || 'http://localhost:3000';
+          const img = rawImg && rawImg.startsWith('http') ? `${proxyBase}/api/image?url=${encodeURIComponent(rawImg)}` : rawImg;
           return (
             <article key={idx} className="rounded border overflow-hidden bg-white hover:shadow transition">
               <img src={img} alt={n.title||'Noticia'} className="w-full h-48 object-cover" />

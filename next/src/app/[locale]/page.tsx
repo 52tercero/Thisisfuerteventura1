@@ -47,8 +47,9 @@ export default async function HomeLocale({ params }: { params: Promise<{ locale:
                 const title = n.title || 'Sin título';
                 const date = n.pubDate || n.date || '';
                 const rawImg = n.image || '/images/logo.jpg';
+                const proxyBase = process.env.NEXT_PUBLIC_PROXY_URL || 'http://localhost:3000';
                 const img = rawImg.startsWith('http')
-                  ? `/api/image?url=${encodeURIComponent(rawImg)}`
+                  ? `${proxyBase}/api/image?url=${encodeURIComponent(rawImg)}`
                   : rawImg;
                 const slug = slugify(title);
                 const summary = sanitizeHTML(n.description || n.summary || '');
