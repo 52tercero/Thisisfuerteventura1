@@ -60,7 +60,6 @@ document.addEventListener('DOMContentLoaded', async function () {
   // Fuentes exclusivas de portada (Destacados)
   const HOMEPAGE_NEWS_SOURCES = [
     // Fuentes con respuesta verificada en local (smoke test)
-    'https://rss.app/feeds/jbwZ2Q9QAvgvI6G0.xml',
     'https://rss.app/feeds/8SmCQL7GDZyu2xB4.xml'
   ];
     // En portada usaremos sólo estas fuentes, ignorando las globales
