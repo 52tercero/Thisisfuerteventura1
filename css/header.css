@@ -1,0 +1,612 @@
+﻿/**
+ * Header Styles - Modern, Responsive & Animated
+ * 
+ * Design principles:
+ * - Minimalista pero impactante
+ * - Responsive-first approach
+ * - Accessibility-compliant contrast ratios
+ * - Performance-optimized (no heavy dependencies)
+ * - Coherent with Fuerteventura's identity (ocean, sand, nature)
+ * 
+ * Color scheme:
+ * - Primary: #2ec4b6 (turquesa/océano)
+ * - Secondary: #ffd97d (arena dorada)
+ * - Neutral: #0f4c81 (cielo/profundidad)
+ * - Text: #333333 (oscuro para legibilidad)
+ */
+
+/* ============================================================================
+   HEADER CONTAINER & LAYOUT
+   ========================================================================== */
+
+header {
+  position: sticky;
+  top: 0;
+  z-index: var(--z-sticky);
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(255, 250, 243, 0.95) 100%);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border-bottom: 1px solid rgba(46, 196, 182, 0.15);
+  box-shadow: var(--shadow-sm);
+  transition: box-shadow var(--transition-base);
+}
+
+/* Dark mode adaptation */
+html[data-theme="dark"] header {
+  background: linear-gradient(135deg, rgba(11, 15, 20, 0.95) 0%, rgba(18, 26, 31, 0.95) 100%);
+  border-bottom-color: rgba(46, 196, 182, 0.2);
+}
+
+header .header-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem 1.5rem;
+  max-width: 1400px;
+  margin: 0 auto;
+  gap: 2rem;
+}
+
+/* ============================================================================
+   LOGO & BRANDING
+   ========================================================================== */
+
+header .header-logo {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  text-decoration: none;
+  color: var(--header-text);
+  font-family: var(--font-display);
+  font-size: 1.25rem;
+  font-weight: 700;
+  line-height: 1.2;
+  transition: color var(--transition-base);
+  flex-shrink: 0;
+  min-width: 200px;
+}
+
+header .header-logo:hover,
+header .header-logo:focus-visible {
+  color: var(--color-mar);
+}
+
+header .header-logo img {
+  width: 50px;
+  height: 50px;
+  border-radius: var(--border-radius-md);
+  object-fit: cover;
+  transition: transform var(--transition-base);
+}
+
+header .header-logo:hover img {
+  transform: scale(1.05) rotate(-2deg);
+}
+
+header .header-logo-text {
+  display: flex;
+  flex-direction: column;
+  gap: 0.125rem;
+}
+
+header .header-logo-text h1 {
+  margin: 0;
+  font-size: 1.1rem;
+  font-weight: 700;
+  letter-spacing: -0.5px;
+}
+
+header .header-logo-text .tagline {
+  font-size: 0.7rem;
+  font-weight: 500;
+  color: var(--color-mar);
+  opacity: 0.85;
+}
+
+/* ============================================================================
+   MAIN NAVIGATION
+   ========================================================================== */
+
+header .header-nav {
+  display: flex;
+  align-items: center;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  gap: 2rem;
+  flex: 1;
+}
+
+header .header-nav a {
+  position: relative;
+  color: var(--header-text);
+  text-decoration: none;
+  font-size: 0.95rem;
+  font-weight: 500;
+  transition: color var(--transition-base);
+  padding: 0.5rem 0;
+}
+
+header .header-nav a::before {
+  content: '';
+  position: absolute;
+  bottom: -4px;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background: linear-gradient(90deg, var(--color-mar), var(--color-arena));
+  transition: width var(--transition-base);
+}
+
+header .header-nav a:hover::before,
+header .header-nav a:focus-visible::before {
+  width: 100%;
+}
+
+header .header-nav a:hover,
+header .header-nav a:focus-visible {
+  color: var(--color-mar);
+}
+
+header .header-nav a[aria-current="page"] {
+  color: var(--color-mar);
+  font-weight: 600;
+}
+
+header .header-nav a[aria-current="page"]::before {
+  width: 100%;
+}
+
+/* ============================================================================
+   SEARCH BAR
+   ========================================================================== */
+
+header .header-search {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  position: relative;
+}
+
+header .header-search-input {
+  width: 200px;
+  padding: 0.6rem 1rem;
+  border: 1px solid rgba(46, 196, 182, 0.3);
+  border-radius: var(--border-radius-md);
+  background: rgba(255, 255, 255, 0.6);
+  color: var(--header-text);
+  font-family: var(--font-body);
+  font-size: 0.9rem;
+  transition: all var(--transition-base);
+}
+
+header .header-search-input:focus {
+  outline: none;
+  border-color: var(--color-mar);
+  background: rgba(255, 255, 255, 0.95);
+  box-shadow: 0 0 0 3px rgba(46, 196, 182, 0.1);
+}
+
+header .header-search-input::placeholder {
+  color: var(--text-light);
+  opacity: 0.7;
+}
+
+header .header-search-btn {
+  padding: 0.6rem;
+  background: none;
+  border: none;
+  color: var(--header-text);
+  cursor: pointer;
+  font-size: 1.1rem;
+  transition: color var(--transition-base), transform var(--transition-base);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--border-radius-md);
+}
+
+header .header-search-btn:hover,
+header .header-search-btn:focus-visible {
+  color: var(--color-mar);
+  transform: scale(1.1);
+}
+
+html[data-theme="dark"] header .header-search-input {
+  background: rgba(30, 40, 50, 0.6);
+  border-color: rgba(46, 196, 182, 0.2);
+  color: var(--text-white);
+}
+
+html[data-theme="dark"] header .header-search-input:focus {
+  background: rgba(30, 40, 50, 0.95);
+}
+
+/* ============================================================================
+   SOCIAL ICONS
+   ========================================================================== */
+
+header .header-social {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+header .header-social a {
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--border-radius-md);
+  background: rgba(46, 196, 182, 0.1);
+  color: var(--color-mar);
+  text-decoration: none;
+  font-size: 1rem;
+  transition: all var(--transition-base);
+}
+
+header .header-social a:hover,
+header .header-social a:focus-visible {
+  background: rgba(46, 196, 182, 0.25);
+  transform: translateY(-3px);
+}
+
+header .header-social a:active {
+  transform: translateY(0);
+}
+
+/* ============================================================================
+   CTA BUTTON
+   ========================================================================== */
+
+header .header-cta {
+  padding: 0.7rem 1.5rem;
+  background: linear-gradient(135deg, var(--color-mar), #1aa8a0);
+  color: white;
+  border: none;
+  border-radius: var(--border-radius-md);
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all var(--transition-base);
+  box-shadow: 0 4px 15px rgba(46, 196, 182, 0.25);
+  white-space: nowrap;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+header .header-cta:hover,
+header .header-cta:focus-visible {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(46, 196, 182, 0.4);
+}
+
+header .header-cta:active {
+  transform: translateY(0);
+  box-shadow: 0 4px 12px rgba(46, 196, 182, 0.3);
+}
+
+/* ============================================================================
+   MOBILE HAMBURGER MENU
+   ========================================================================== */
+
+header .header-hamburger {
+  display: none;
+  flex-direction: column;
+  gap: 5px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  color: var(--header-text);
+  font-size: 1.5rem;
+  transition: color var(--transition-base);
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: var(--border-radius-md);
+}
+
+header .header-hamburger:hover,
+header .header-hamburger:focus-visible {
+  color: var(--color-mar);
+  background: rgba(46, 196, 182, 0.1);
+}
+
+header .header-hamburger.active {
+  color: var(--color-mar);
+}
+
+header .header-hamburger i {
+  transition: transform var(--transition-base);
+}
+
+header .header-hamburger.active i {
+  transform: rotate(90deg);
+}
+
+/* ============================================================================
+   MOBILE MENU
+   ========================================================================== */
+
+header .header-nav-mobile {
+  display: none;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.98) 0%, rgba(255, 250, 243, 0.98) 100%);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border-bottom: 1px solid rgba(46, 196, 182, 0.15);
+  flex-direction: column;
+  gap: 0;
+  padding: 0;
+  list-style: none;
+  margin: 0;
+  max-height: 0;
+  overflow: hidden;
+  opacity: 0;
+  pointer-events: none;
+  transition: all var(--transition-base);
+}
+
+header .header-nav-mobile.active {
+  max-height: 500px;
+  opacity: 1;
+  pointer-events: auto;
+}
+
+header .header-nav-mobile li {
+  border-top: 1px solid rgba(46, 196, 182, 0.1);
+}
+
+header .header-nav-mobile a {
+  display: block;
+  padding: 1rem 1.5rem;
+  color: var(--header-text);
+  text-decoration: none;
+  font-size: 0.95rem;
+  font-weight: 500;
+  transition: background var(--transition-base), color var(--transition-base);
+}
+
+header .header-nav-mobile a:hover,
+header .header-nav-mobile a:focus-visible {
+  background: rgba(46, 196, 182, 0.1);
+  color: var(--color-mar);
+  padding-left: 2rem;
+}
+
+header .header-nav-mobile a[aria-current="page"] {
+  background: rgba(46, 196, 182, 0.15);
+  color: var(--color-mar);
+  font-weight: 600;
+  border-left: 3px solid var(--color-mar);
+  padding-left: calc(1.5rem - 3px);
+}
+
+html[data-theme="dark"] header .header-nav-mobile {
+  background: linear-gradient(135deg, rgba(11, 15, 20, 0.98) 0%, rgba(18, 26, 31, 0.98) 100%);
+}
+
+/* ============================================================================
+   RESPONSIVE DESIGN
+   ========================================================================== */
+
+@media (max-width: 768px) {
+  header .header-container {
+    padding: 0.75rem 1rem;
+    gap: 1rem;
+  }
+
+  header .header-logo {
+    min-width: auto;
+    flex: 1;
+  }
+
+  header .header-logo-text h1 {
+    font-size: 0.95rem;
+  }
+
+  header .header-logo img {
+    width: 40px;
+    height: 40px;
+  }
+
+  header .header-nav {
+    display: none;
+  }
+
+  header .header-nav-mobile {
+    display: flex;
+  }
+
+  header .header-hamburger {
+    display: flex;
+  }
+
+  header .header-search {
+    order: -1;
+  }
+
+  header .header-search-input {
+    width: 150px;
+    padding: 0.5rem 0.75rem;
+    font-size: 0.85rem;
+  }
+
+  header .header-social {
+    gap: 0.5rem;
+  }
+
+  header .header-social a {
+    width: 32px;
+    height: 32px;
+    font-size: 0.9rem;
+  }
+
+  header .header-cta {
+    padding: 0.6rem 1.2rem;
+    font-size: 0.85rem;
+  }
+}
+
+@media (max-width: 480px) {
+  header .header-container {
+    padding: 0.5rem 0.75rem;
+    gap: 0.5rem;
+  }
+
+  header .header-logo {
+    gap: 0.5rem;
+  }
+
+  header .header-logo-text {
+    gap: 0;
+  }
+
+  header .header-logo-text h1 {
+    font-size: 0.85rem;
+  }
+
+  header .header-logo-text .tagline {
+    font-size: 0.6rem;
+  }
+
+  header .header-logo img {
+    width: 35px;
+    height: 35px;
+  }
+
+  header .header-search-input {
+    width: 120px;
+    padding: 0.4rem 0.6rem;
+    font-size: 0.8rem;
+  }
+
+  header .header-search-btn {
+    padding: 0.4rem;
+  }
+
+  header .header-social {
+    display: none;
+  }
+
+  header .header-cta {
+    padding: 0.5rem 1rem;
+    font-size: 0.8rem;
+  }
+
+  header .header-nav-mobile a {
+    padding: 0.75rem 1rem;
+  }
+
+  header .header-nav-mobile a:hover {
+    padding-left: 1.5rem;
+  }
+}
+
+/* ============================================================================
+   LIGHT MODE & PRINT STYLES
+   ========================================================================== */
+
+@media (prefers-color-scheme: light) {
+  header {
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(255, 250, 243, 0.95) 100%);
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  header {
+    background: linear-gradient(135deg, rgba(11, 15, 20, 0.95) 0%, rgba(18, 26, 31, 0.95) 100%);
+  }
+}
+
+@media print {
+  header {
+    position: static;
+    background: white;
+    border: none;
+    box-shadow: none;
+  }
+
+  header .header-search,
+  header .header-cta,
+  header .header-hamburger,
+  header .header-nav-mobile {
+    display: none;
+  }
+
+  header .header-nav {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+}
+
+/* ============================================================================
+   ANIMATION & PERFORMANCE OPTIMIZATIONS
+   ========================================================================== */
+
+/* Reduce motion for accessibility */
+@media (prefers-reduced-motion: reduce) {
+  header,
+  header * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* GPU acceleration for smooth animations */
+header .header-logo img,
+header .header-nav a,
+header .header-social a,
+header .header-cta {
+  will-change: transform;
+}
+
+/* ============================================================================
+   UTILITY CLASSES
+   ========================================================================== */
+
+.header-hidden {
+  display: none !important;
+}
+
+.header-visible {
+  display: block !important;
+}
+
+/* Focus visible ring (keyboard navigation) */
+header *:focus-visible {
+  outline: 2px solid var(--color-mar);
+  outline-offset: 2px;
+}
+
+/* Reduced transparency for better readability */
+@supports (backdrop-filter: blur(0)) or (-webkit-backdrop-filter: blur(0)) {
+  header {
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+  }
+}
+
+/* Graceful degradation for older browsers */
+@supports not (backdrop-filter: blur(0)) and not (-webkit-backdrop-filter: blur(0)) {
+  header {
+    background: rgba(255, 255, 255, 0.98);
+  }
+
+  html[data-theme="dark"] header {
+    background: rgba(11, 15, 20, 0.98);
+  }
+}
