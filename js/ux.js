@@ -12,29 +12,7 @@
   }, { rootMargin:'0px 0px -10% 0px' }) : null;
   if (io) { d.querySelectorAll('.reveal').forEach(el => io.observe(el)); }
 
-  // Dark mode toggle
-  const THEME_KEY = 'tif.theme';
-  function applyTheme(t) { d.documentElement.setAttribute('data-theme', t); }
-  const saved = localStorage.getItem(THEME_KEY);
-  if (saved) { applyTheme(saved); }
-  // Inject toggle button next to nav if not present
-  const nav = d.querySelector('nav');
-  if (nav && !d.querySelector('.theme-toggle')) {
-    const btn = d.createElement('button');
-    btn.className = 'theme-toggle';
-    btn.type = 'button';
-    btn.title = 'Cambiar tema';
-    btn.innerHTML = '<i class="fas fa-moon"></i> Modo';
-    btn.addEventListener('click', () => {
-      const cur = d.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
-      applyTheme(cur);
-      localStorage.setItem(THEME_KEY, cur);
-      btn.innerHTML = cur === 'dark' ? '<i class="fas fa-sun"></i> Modo' : '<i class="fas fa-moon"></i> Modo';
-      // Emit custom event for particles.js and other modules
-      window.dispatchEvent(new CustomEvent('data-theme-change', { detail: { theme: cur } }));
-    });
-    nav.parentNode && nav.parentNode.insertBefore(btn, nav.nextSibling);
-  }
+
 
   // Transform simple image galleries to Swiper if Swiper is loaded
   function initGalleries() {

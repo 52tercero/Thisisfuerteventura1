@@ -19,15 +19,14 @@
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     camera.position.z = 15;
 
-    // Determinar tipo de partículas según tema
-    const isDark = d.documentElement.getAttribute('data-theme') === 'dark';
+    // Determinar tipo de partículas según contexto
     const isBeach = hero.classList.contains('beaches-hero');
 
     let particleCount = 800;
-    let color = isDark ? 0xffffff : 0xf4e4c1; // estrellas blancas o arena dorada
-    const particleSize = isDark ? 0.15 : 0.25;
+    let color = 0xf4e4c1; // arena dorada
+    const particleSize = 0.25;
 
-    if (isBeach && !isDark) {
+    if (isBeach) {
       particleCount = 500;
       color = 0xf4e4c1; // arena
     }
@@ -48,7 +47,7 @@
       color,
       size: particleSize,
       transparent: true,
-      opacity: isDark ? 0.8 : 0.6,
+      opacity: 0.6,
       sizeAttenuation: true
     });
 
@@ -59,7 +58,7 @@
     function animate() {
       animationId = requestAnimationFrame(animate);
       // Rotación suave simulando viento/deriva estelar
-      particles.rotation.y += isDark ? 0.0003 : 0.0008;
+      particles.rotation.y += 0.0008;
       particles.rotation.x += 0.0002;
       renderer.render(scene, camera);
     }
@@ -86,13 +85,5 @@
       }
     });
     mutObs.observe(d.body, { childList: true, subtree: true });
-
-    // Re-render al cambiar tema
-    d.documentElement.addEventListener('data-theme-change', () => {
-      const nowDark = d.documentElement.getAttribute('data-theme') === 'dark';
-      material.color.setHex(nowDark ? 0xffffff : 0xf4e4c1);
-      material.opacity = nowDark ? 0.8 : 0.6;
-      material.size = nowDark ? 0.15 : 0.25;
-    });
   });
 })();
