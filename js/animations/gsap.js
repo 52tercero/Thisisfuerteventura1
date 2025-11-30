@@ -29,12 +29,25 @@
       const name = ch.getAttribute('data-chapter') || 'capitulo';
       const tl = gsap.timeline({ paused: true });
       tl.fromTo(ch, { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: 0.9, ease: 'power2.out' });
+      // subtle parallax for headings and buttons inside chapter
+      const heading = ch.querySelector('h2, h3');
+      if (heading) tl.fromTo(heading, { y: 10 }, { y: 0, duration: 0.6, ease: 'power1.out' }, '<');
+      const btn = ch.querySelector('.btn');
+      if (btn) tl.fromTo(btn, { opacity: 0, y: 12 }, { opacity: 1, y: 0, duration: 0.6 }, '-=0.3');
+
       if (!state.reduceMotion && window.ScrollTrigger) {
         window.ScrollTrigger.create({
           trigger: ch,
-          start: 'top 80%',
-          end: 'bottom 20%',
-          onEnter: () => tl.play(0),
+          start: 'top 85%',
+          end: '+=60%',
+          pin: true,
+          pinSpacing: true,
+          scrub: 0.6,
+          onEnter: () => {
+            tl.play(0);
+            document.dispatchEvent(new CustomEvent('chapter:enter', { detail: { name } }));
+          },
+          onLeave: () => document.dispatchEvent(new CustomEvent('chapter:leave', { detail: { name } })),
           onEnterBack: () => tl.play(0),
         });
       } else {
@@ -63,6 +76,21 @@
   function init() {
     initChapters();
     initMicroInteractions();
+    // Hook ambient sounds if available; play gentle cues on chapter enter
+    document.addEventListener('chapter:enter', (e) => {
+      if (state.reduceMotion) return;
+      const name = (e.detail && e.detail.name) || '';
+      if (window.AmbientSounds && typeof window.AmbientSounds.playCue === 'function') {
+        // map simple names to cues
+        const cue = /playas/i.test(name) ? 'waves' : (/volcan/i.test(name) ? 'earth' : 'wind');
+        try { window.AmbientSounds.playCue(cue, { volume: 0.35 }); } catch(_) {}
+      }
+    });
+    document.addEventListener('chapter:leave', () => {
+      if (window.AmbientSounds && typeof window.AmbientSounds.fadeOut === 'function') {
+        try { window.AmbientSounds.fadeOut(0.8); } catch(_) {}
+      }
+    });
   }
 
   if (document.readyState === 'loading') {

@@ -76,6 +76,15 @@
         <button type="button" class="mobile-menu" aria-label="Abrir menú" aria-controls="site-nav" aria-expanded="false">
             <i class="fas fa-bars" aria-hidden="true"></i>
         </button>
+                <!-- Accessibility toggles -->
+                <div class="header-toggles" style="display:flex;gap:8px;align-items:center">
+                    <button type="button" id="reduce-motion-toggle" class="mobile-menu" aria-label="Reducir animaciones" title="Reducir animaciones">
+                        <i class="fas fa-universal-access" aria-hidden="true"></i>
+                    </button>
+                    <button type="button" id="ambient-audio-toggle" class="mobile-menu" aria-label="Sonido ambiental" title="Sonido ambiental">
+                        <i class="fas fa-volume-up" aria-hidden="true"></i>
+                    </button>
+                </div>
         <!-- Reduce motion toggle for accessibility -->
         <button type="button" id="reduce-motion-toggle" class="mobile-menu" aria-label="Reducir animaciones" title="Reducir animaciones">
             <i class="fas fa-universal-access" aria-hidden="true"></i>
@@ -371,17 +380,29 @@
     <script src="js/scenes/playas.js?v=2025113001" defer></script>
     <script src="js/scenes/volcan.js?v=2025113001" defer></script>
         <script defer>
-            // Wire reduce-motion toggle
+            // Wire accessibility toggles
             document.addEventListener('DOMContentLoaded', function() {
-                const btn = document.getElementById('reduce-motion-toggle');
-                if (!btn || !window.__ANIMATIONS__) return;
-                const update = () => { btn.setAttribute('aria-pressed', window.__ANIMATIONS__.isReduced() ? 'true' : 'false'); };
-                update();
-                btn.addEventListener('click', () => {
-                    const next = !window.__ANIMATIONS__.isReduced();
-                    window.__ANIMATIONS__.setReduceMotion(next);
+                const reduceBtn = document.getElementById('reduce-motion-toggle');
+                const audioBtn = document.getElementById('ambient-audio-toggle');
+                if (reduceBtn && window.__ANIMATIONS__) {
+                    const update = () => { reduceBtn.setAttribute('aria-pressed', window.__ANIMATIONS__.isReduced() ? 'true' : 'false'); };
                     update();
-                });
+                    reduceBtn.addEventListener('click', () => {
+                        const next = !window.__ANIMATIONS__.isReduced();
+                        window.__ANIMATIONS__.setReduceMotion(next);
+                        update();
+                    });
+                }
+                if (audioBtn && window.AmbientSounds) {
+                    const updateAudio = () => { audioBtn.setAttribute('aria-pressed', window.AmbientSounds.isEnabled ? 'true' : 'false'); };
+                    updateAudio();
+                    audioBtn.addEventListener('click', () => {
+                        try {
+                            if (window.AmbientSounds.isEnabled) { window.AmbientSounds.disable(); } else { window.AmbientSounds.enable({ volume: 0.3 }); }
+                            updateAudio();
+                        } catch(_) {}
+                    });
+                }
             });
         </script>
     <script src="js/content-loader.js?v=2025111902" defer></script>
