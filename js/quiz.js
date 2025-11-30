@@ -33,10 +33,11 @@
   function create(el, cls){ const n = document.createElement(el); if(cls) n.className = cls; return n; }
 
   function buildQuiz(container){
-    const state = { idx: 0, answers: Array(QUESTIONS.length).fill(null), completed: false };
+    const state = { idx: 0, answers: Array(QUESTIONS.length).fill(null), completed: false, score: null };
 
     const STORAGE_KEY = 'tiFv_quiz_state';
     const SCORE_KEY = 'tiFv_quiz_score';
+    const listeners = []; // Track event listeners for cleanup
 
     function saveState(){
       try {
@@ -55,6 +56,29 @@
         state.idx = Math.min(Math.max(Number(data.idx)||0,0), QUESTIONS.length-1);
         state.completed = !!data.completed;
       } catch(e) {}
+    }
+
+    function loadScore(){
+      try {
+        const score = localStorage.getItem(SCORE_KEY) || sessionStorage.getItem(SCORE_KEY);
+        if(score) state.score = Number(score);
+      } catch(e) {}
+    }
+
+    function cleanup(){
+      // Remove all tracked event listeners
+      listeners.forEach(({ el, event, handler }) => {
+        if(el) el.removeEventListener(event, handler);
+      });
+      listeners.length = 0;
+      
+      // Clear badge if exists
+      const badge = container.querySelector('.badge-wrap');
+      if(badge) badge.remove();
+      
+      // Reset error and result messages
+      errorMsg.textContent = '';
+      result.textContent = '';
     }
 
     const card = create('div','conditions-card quiz-card sea');
@@ -136,23 +160,48 @@
         if(state.answers[i] !== null && Number(state.answers[i])===QUESTIONS[i].c) score++;
       }
       const pct = Math.round((score/QUESTIONS.length)*100);
-      localStorage.setItem(SCORE_KEY, String(score));
+      state.score = score; // Store in state
+      
+      // Save to both localStorage and sessionStorage for redundancy
+      try {
+        localStorage.setItem(SCORE_KEY, String(score));
+        sessionStorage.setItem(SCORE_KEY, String(score));
+      } catch(e) {}
+      
       result.textContent = `Resultado: ${score}/${QUESTIONS.length} (${pct}%).`;
       // Deshabilitar navegación tras finalizar
       prevBtn.disabled = true; nextBtn.disabled = true;
       state.completed = true; saveState();
       generateBadge(pct, container);
-      // Botón para reiniciar
-      const restartBtn = create('button','btn'); restartBtn.type='button'; restartBtn.textContent='Reiniciar'; restartBtn.style.marginLeft='10px';
-      restartBtn.addEventListener('click', ()=>{
-        state.idx = 0; state.answers = Array(QUESTIONS.length).fill(null); state.completed = false;
+      
+      // Botón para reiniciar: reusar si existe, crear si no
+      let restartBtn = nav.querySelector('button[data-restart]');
+      if(!restartBtn){
+        restartBtn = create('button','btn'); 
+        restartBtn.type='button'; 
+        restartBtn.textContent='Reiniciar'; 
+        restartBtn.style.marginLeft='10px';
+        restartBtn.setAttribute('data-restart', 'true');
+        nav.appendChild(restartBtn);
+      }
+      
+      // Remove old listener and add new one
+      const oldHandler = restartBtn._quizRestartHandler;
+      if(oldHandler) restartBtn.removeEventListener('click', oldHandler);
+      
+      const newHandler = ()=>{
+        cleanup(); // Explicit cleanup
+        state.idx = 0; 
+        state.answers = Array(QUESTIONS.length).fill(null); 
+        state.completed = false;
+        state.score = null;
         saveState();
         prevBtn.disabled = false; nextBtn.disabled = false;
-        result.textContent='';
-        const badge = container.querySelector('.badge-wrap'); if(badge) badge.remove();
         renderQuestion(state.idx);
-      });
-      nav.appendChild(restartBtn);
+      };
+      
+      restartBtn._quizRestartHandler = newHandler;
+      restartBtn.addEventListener('click', newHandler);
     }
 
     prevBtn.addEventListener('click', ()=>{
@@ -161,6 +210,7 @@
       if(state.idx>0){ state.idx--; renderQuestion(state.idx); }
       saveState();
     });
+    listeners.push({ el: prevBtn, event: 'click', handler: prevBtn.onclick });
 
     nextBtn.addEventListener('click', ()=>{
       const sel = getSelected();
@@ -173,7 +223,9 @@
       }
       saveState();
     });
+    listeners.push({ el: nextBtn, event: 'click', handler: nextBtn.onclick });
     // Intentar restaurar estado previo
+    loadScore();
     loadState();
     if(state.completed){
       // Mostrar último estado y resultado
