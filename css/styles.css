@@ -117,6 +117,12 @@ html, body { overflow-x: hidden; }
         animation: none !important;
         background-position: center !important;
     }
+    /* Disable all GSAP animations when reduce-motion is on */
+    [data-sand-write],
+    [class*="reveal"],
+    [class*="parallax"] {
+        animation: none !important;
+    }
 }
 
 /* Galerías, itinerarios, perfiles, zonas, etc. */
@@ -219,7 +225,7 @@ select:focus-visible,
 textarea:focus-visible {
     outline: 3px solid #ffbf00;
     outline-offset: 2px;
-    box-shadow: 0 0 0 3px rgba(255,191,0,0.35);
+    box-shadow: 0 0 0 3px rgba(255,191,0,0.35), 0 0 0 1px rgba(255,255,255,0.5);
 }
 
 /* Contraste en secciones hero con imagen/vídeo de fondo */
@@ -264,6 +270,13 @@ textarea:focus-visible {
 
 .btn:focus-visible {
     filter: brightness(1.05);
+    outline: 3px solid #ffbf00;
+    outline-offset: 2px;
+}
+
+.hero-content .btn {
+    text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
 }
 
 /* Botón de volver */
