@@ -22,7 +22,7 @@ function response(status, body, contentType = 'application/json') {
 }
 
 exports.handler = async (event) => {
-  if (event.httpMethod === 'OPTIONS') return response(200, '');
+  if (event.httpMethod === 'OPTIONS') {return response(200, '');}
   const feedUrl = process.env.ZAPIER_FEED_URL;
   if (!feedUrl) {
     return response(500, { error: 'ZAPIER_FEED_URL no configurada en variables de entorno' });
@@ -39,15 +39,12 @@ exports.handler = async (event) => {
       const txt = await r.text();
       return response(r.status, { error: 'Zapier feed error', detail: txt });
     }
-    let data = await r.json();
+    const data = await r.json();
 
     // Determinar array de items
     let arr;
-    if (Array.isArray(data)) arr = data;
-    else if (Array.isArray(data.items)) arr = data.items;
-    else if (Array.isArray(data.posts)) arr = data.posts;
-    else if (Array.isArray(data.data)) arr = data.data; // fallback común
-    else arr = [];
+    if (Array.isArray(data)) {arr = data;} else if (Array.isArray(data.items)) {arr = data.items;} else if (Array.isArray(data.posts)) {arr = data.posts;} else if (Array.isArray(data.data)) {arr = data.data;} // fallback común
+    else {arr = [];}
 
     // Normalizar
     const norm = arr.slice(0, limit).map((item, idx) => {

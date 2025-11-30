@@ -26,21 +26,21 @@ exports.handler = async (event) => {
       const list = buildAllowed();
       sources = sources.filter(s => list.some(a => s.startsWith(a)));
     }
-    
+
     if (sources.length === 0) {
       return { statusCode: 200, headers, body: JSON.stringify({ items: [] }) };
     }
 
     const results = await Promise.allSettled(sources.map(src => fetchFeed(src)));
-  let items = results.filter(r => r.status === 'fulfilled').map(r => r.value).flat();
+    let items = results.filter(r => r.status === 'fulfilled').map(r => r.value).flat();
 
     const dedupe = qs.dedupe === '1' || qs.dedupe === 'true';
     if (dedupe) {
       const seen = new Set();
       items = items.filter(it => {
         const key = (it.link || it.title || '').trim();
-        if (!key) return false;
-        if (seen.has(key)) return false;
+        if (!key) {return false;}
+        if (seen.has(key)) {return false;}
         seen.add(key);
         return true;
       });

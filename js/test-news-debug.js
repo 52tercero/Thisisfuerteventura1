@@ -1,7 +1,7 @@
-﻿(function(){
+﻿(function () {
   'use strict';
 
-  function $(id){ return document.getElementById(id); }
+  function $(id) { return document.getElementById(id); }
 
   // Console log capture
   const logsDiv = $('console-logs');
@@ -12,8 +12,7 @@
   function addLog(type, ...args) {
     const timestamp = new Date().toLocaleTimeString();
     const msg = args.map(a => {
-      try { return typeof a === 'object' ? JSON.stringify(a, null, 2) : String(a); }
-      catch(_) { return String(a); }
+      try { return typeof a === 'object' ? JSON.stringify(a, null, 2) : String(a); } catch (_) { return String(a); }
     }).join(' ');
     logsDiv.textContent += `[${timestamp}] [${type}] ${msg}\n`;
     logsDiv.scrollTop = logsDiv.scrollHeight;
@@ -23,7 +22,7 @@
   console.error = (...args) => { originalError(...args); addLog('ERROR', ...args); };
   console.warn = (...args) => { originalWarn(...args); addLog('WARN', ...args); };
 
-  function clearLogs(){ logsDiv.textContent = 'Logs limpiados...\n'; }
+  function clearLogs() { logsDiv.textContent = 'Logs limpiados...\n'; }
 
   // Viewport info
   function updateViewportInfo() {
@@ -33,9 +32,7 @@
 
     const width = window.innerWidth;
     let type = 'Desktop';
-    if (width <= 600) type = 'Mobile (≤600px)';
-    else if (width <= 768) type = 'Tablet pequeña (≤768px)';
-    else if (width <= 992) type = 'Tablet (≤992px)';
+    if (width <= 600) {type = 'Mobile (≤600px)';} else if (width <= 768) {type = 'Tablet pequeña (≤768px)';} else if (width <= 992) {type = 'Tablet (≤992px)';}
     $('vw-type').textContent = type;
   }
 
@@ -49,10 +46,10 @@
     const btnLoader = $('btn-loader');
     const btnClear = $('btn-clear-logs');
 
-    if (btnProxy) btnProxy.addEventListener('click', testProxyDetection);
-    if (btnNews) btnNews.addEventListener('click', testNewsLoad);
-    if (btnLoader) btnLoader.addEventListener('click', testContentLoader);
-    if (btnClear) btnClear.addEventListener('click', clearLogs);
+    if (btnProxy) {btnProxy.addEventListener('click', testProxyDetection);}
+    if (btnNews) {btnNews.addEventListener('click', testNewsLoad);}
+    if (btnLoader) {btnLoader.addEventListener('click', testContentLoader);}
+    if (btnClear) {btnClear.addEventListener('click', clearLogs);}
 
     console.log('Debug page loaded');
   });
@@ -125,8 +122,7 @@
         const items = await window.fetchRSSFeeds();
         result.textContent += `\n✓ Noticias cargadas: ${items.length}\n\n`;
         if (items.length > 0) {
-          try { result.textContent += `Primera noticia:\n${JSON.stringify(items[0], null, 2)}`; }
-          catch(_) { result.textContent += `Primera noticia (no serializable)\n`; }
+          try { result.textContent += `Primera noticia:\n${JSON.stringify(items[0], null, 2)}`; } catch (_) { result.textContent += 'Primera noticia (no serializable)\n'; }
         }
       } else {
         result.textContent += '✗ fetchRSSFeeds no está definida\n';

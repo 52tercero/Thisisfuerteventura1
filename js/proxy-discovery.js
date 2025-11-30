@@ -32,7 +32,7 @@
       const id = setTimeout(() => controller.abort(), timeout);
       const res = await fetch(url, { signal: controller.signal, mode: 'cors', cache: 'no-store', targetAddressSpace: 'local' });
       clearTimeout(id);
-      if (res && res.ok) return `http://localhost:${port}`;
+      if (res && res.ok) {return `http://localhost:${port}`;}
     } catch (e) {
       // ignorar
     }
@@ -62,7 +62,7 @@
       const result = await probePort(p, options.timeout);
       if (result) {
         try { localStorage.setItem(cacheKey, JSON.stringify({ url: result, ts: Date.now() })); } catch (e) { /* ignore */ }
-        try { window.__RSS_PROXY_URL = result; console.log('✓ Proxy local detectado en', result); } catch(_) { /* ignore */ }
+        try { window.__RSS_PROXY_URL = result; console.log('✓ Proxy local detectado en', result); } catch (_) { /* ignore */ }
         return result;
       }
     }
@@ -71,5 +71,5 @@
   }
 
   // Adjuntar a window
-  if (!window.discoverRSSProxy) window.discoverRSSProxy = discoverRSSProxy;
+  if (!window.discoverRSSProxy) {window.discoverRSSProxy = discoverRSSProxy;}
 })();

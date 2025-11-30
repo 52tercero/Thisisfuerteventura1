@@ -1,11 +1,11 @@
 ﻿/* particles.js: sistema de partículas Three.js para hero sections - arena/viento/estrellas */
-(function(){
-  if(typeof THREE === 'undefined') return; // CDN no cargado
+(function () {
+  if (typeof THREE === 'undefined') {return;} // CDN no cargado
   const d = document;
-  
+
   // Detectar si queremos partículas (solo hero sections con .particle-scene)
   const heroes = d.querySelectorAll('.hero.particle-scene');
-  if(!heroes.length) return;
+  if (!heroes.length) {return;}
 
   heroes.forEach(hero => {
     const canvas = d.createElement('canvas');
@@ -22,18 +22,18 @@
     // Determinar tipo de partículas según tema
     const isDark = d.documentElement.getAttribute('data-theme') === 'dark';
     const isBeach = hero.classList.contains('beaches-hero');
-    
+
     let particleCount = 800;
     let color = isDark ? 0xffffff : 0xf4e4c1; // estrellas blancas o arena dorada
-    let particleSize = isDark ? 0.15 : 0.25;
+    const particleSize = isDark ? 0.15 : 0.25;
 
-    if(isBeach && !isDark) {
+    if (isBeach && !isDark) {
       particleCount = 500;
       color = 0xf4e4c1; // arena
     }
 
     const positions = [];
-    for(let i = 0; i < particleCount; i++){
+    for (let i = 0; i < particleCount; i++) {
       positions.push(
         (Math.random() - 0.5) * 50,
         (Math.random() - 0.5) * 30,
@@ -43,7 +43,7 @@
 
     const geometry = new THREE.BufferGeometry();
     geometry.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3));
-    
+
     const material = new THREE.PointsMaterial({
       color,
       size: particleSize,
@@ -56,7 +56,7 @@
     scene.add(particles);
 
     let animationId;
-    function animate(){
+    function animate() {
       animationId = requestAnimationFrame(animate);
       // Rotación suave simulando viento/deriva estelar
       particles.rotation.y += isDark ? 0.0003 : 0.0008;
@@ -66,7 +66,7 @@
     animate();
 
     // Resize
-    const resizeObs = new ResizeObserver(()=>{
+    const resizeObs = new ResizeObserver(() => {
       const w = hero.offsetWidth, h = hero.offsetHeight;
       camera.aspect = w / h;
       camera.updateProjectionMatrix();
@@ -75,8 +75,8 @@
     resizeObs.observe(hero);
 
     // Cleanup si hero se elimina
-    const mutObs = new MutationObserver(()=>{
-      if(!d.body.contains(hero)){
+    const mutObs = new MutationObserver(() => {
+      if (!d.body.contains(hero)) {
         cancelAnimationFrame(animationId);
         resizeObs.disconnect();
         mutObs.disconnect();
@@ -88,7 +88,7 @@
     mutObs.observe(d.body, { childList: true, subtree: true });
 
     // Re-render al cambiar tema
-    d.documentElement.addEventListener('data-theme-change', ()=>{
+    d.documentElement.addEventListener('data-theme-change', () => {
       const nowDark = d.documentElement.getAttribute('data-theme') === 'dark';
       material.color.setHex(nowDark ? 0xffffff : 0xf4e4c1);
       material.opacity = nowDark ? 0.8 : 0.6;

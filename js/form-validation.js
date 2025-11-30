@@ -1,10 +1,10 @@
 ﻿// Realtime form validation for newsletter with visual feedback
 (() => {
-  if (typeof window === 'undefined') return;
+  if (typeof window === 'undefined') {return;}
   const form = document.getElementById('newsletter-form');
-  if (!form) return;
+  if (!form) {return;}
   const email = form.querySelector('input[type="email"]');
-  if (!email) return;
+  if (!email) {return;}
 
   // Create live region for feedback
   const live = document.createElement('span');

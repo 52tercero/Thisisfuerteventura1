@@ -58,11 +58,11 @@ function updateCspMeta(html, hashes) {
   // Find the CSP meta tag regardless of attribute order
   const metaAny = /<meta\b[^>]*http-equiv=["']Content-Security-Policy["'][^>]*>/i;
   const m = metaAny.exec(html);
-  if (!m) return html; // no CSP; skip
+  if (!m) {return html;} // no CSP; skip
   const full = m[0];
   try { console.log('[inject-jsonld:internal] matched meta tag:', full); } catch {}
   const contentMatch = /content=(["'])([\s\S]*?)\1/i.exec(full);
-  if (!contentMatch) return html; // no content attr
+  if (!contentMatch) {return html;} // no content attr
   const policy = contentMatch[2];
   try { console.log('[inject-jsonld:internal] policy raw:', policy); } catch {}
 
@@ -87,14 +87,14 @@ function updateCspMeta(html, hashes) {
   // Update script-src with hashes and remove unsafe-inline
   const scriptParts = dirMap.get('script-src');
   const set = new Set(scriptParts);
-  if (set.has("'unsafe-inline'")) set.delete("'unsafe-inline'");
-  for (const h of hashes) set.add(`'sha256-${h}'`);
+  if (set.has("'unsafe-inline'")) {set.delete("'unsafe-inline'");}
+  for (const h of hashes) {set.add(`'sha256-${h}'`);}
   dirMap.set('script-src', Array.from(set));
 
   // Ensure additional hardening directives
-  if (!dirMap.has('base-uri')) dirMap.set('base-uri', ["'self'"]);
-  if (!dirMap.has('object-src')) dirMap.set('object-src', ['none']);
-  if (!dirMap.has('frame-ancestors')) dirMap.set('frame-ancestors', ["'self'"]);
+  if (!dirMap.has('base-uri')) {dirMap.set('base-uri', ["'self'"]);}
+  if (!dirMap.has('object-src')) {dirMap.set('object-src', ['none']);}
+  if (!dirMap.has('frame-ancestors')) {dirMap.set('frame-ancestors', ["'self'"]);}
 
   // Rebuild policy preserving original order, appending any new ones
   const knownOrder = [];
@@ -107,7 +107,7 @@ function updateCspMeta(html, hashes) {
     }
   }
   for (const key of dirMap.keys()) {
-    if (!seen.has(key)) knownOrder.push(`${key} ${dirMap.get(key).join(' ')}`.trim());
+    if (!seen.has(key)) {knownOrder.push(`${key} ${dirMap.get(key).join(' ')}`.trim());}
   }
   const updatedPolicy = knownOrder.join('; ') + ';';
   try {
@@ -141,14 +141,14 @@ function processFile(filePath) {
       const policy = mm[1];
       const directives = policy.split(';').map(s => s.trim()).filter(Boolean);
       const idx = directives.findIndex(d => d.startsWith('script-src '));
-      let scriptSrc = idx !== -1 ? directives[idx] : '(not found)';
+      const scriptSrc = idx !== -1 ? directives[idx] : '(not found)';
       // recompute what updated would be
       if (idx !== -1) {
-        let parts = scriptSrc.split(/\s+/);
+        const parts = scriptSrc.split(/\s+/);
         const name = parts.shift();
-        let set = new Set(parts);
-        if (set.has("'unsafe-inline'")) set.delete("'unsafe-inline'");
-        for (const h of hashes) set.add(`'sha256-${h}'`);
+        const set = new Set(parts);
+        if (set.has("'unsafe-inline'")) {set.delete("'unsafe-inline'");}
+        for (const h of hashes) {set.add(`'sha256-${h}'`);}
         const recon = [name, ...Array.from(set)].join(' ');
         console.log(`[inject-jsonld:debug] ${path.basename(filePath)} script-src before=`, scriptSrc);
         console.log(`[inject-jsonld:debug] ${path.basename(filePath)} script-src after =`, recon);
@@ -181,7 +181,7 @@ function main() {
     const res = processFile(f);
     if (res && typeof res === 'object') {
       console.log(`[inject-jsonld] ${path.basename(f)}: blocks=${res.count}, updated=${res.updated}`);
-      if (res.updated) changed++;
+      if (res.updated) {changed++;}
     } else {
       console.log(`[inject-jsonld] ${path.basename(f)}: blocks=0, updated=false`);
     }

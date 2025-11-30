@@ -1,10 +1,10 @@
 ﻿// scenes/mapa.js
 // Stylized low-poly map of Fuerteventura with wind particles
-(function() {
-  if (!window.THREE) return;
+(function () {
+  if (!window.THREE) {return;}
   const THREE = window.THREE;
   const container = document.querySelector('#scene-mapa');
-  if (!container) return;
+  if (!container) {return;}
 
   const isReduced = (window.__ANIMATIONS__ && window.__ANIMATIONS__.isReduced) ? window.__ANIMATIONS__.isReduced() : false;
 
@@ -28,8 +28,8 @@
   const pos = islandGeo.attributes.position;
   for (let i = 0; i < pos.count; i++) {
     const x = pos.getX(i), z = pos.getZ(i);
-    const ridge = Math.exp(-((x*x)/(2.1) + (z*z)/(0.4))) * 0.35;
-    pos.setY(i, ridge + (Math.sin(x*2.3) + Math.cos(z*3.1)) * 0.03);
+    const ridge = Math.exp(-((x * x) / (2.1) + (z * z) / (0.4))) * 0.35;
+    pos.setY(i, ridge + (Math.sin(x * 2.3) + Math.cos(z * 3.1)) * 0.03);
   }
   pos.needsUpdate = true;
   const islandMat = new THREE.MeshStandardMaterial({ color: 0xe0c48b, roughness: 0.95, metalness: 0.0, flatShading: true });
@@ -41,9 +41,9 @@
   const windGeo = new THREE.BufferGeometry();
   const windPos = new Float32Array(pCount * 3);
   for (let i = 0; i < pCount; i++) {
-    windPos[i*3+0] = (Math.random() - 0.5) * 3.2; // x
-    windPos[i*3+1] = 0.15 + Math.random() * 0.25; // y
-    windPos[i*3+2] = (Math.random() - 0.5) * 1.6; // z
+    windPos[i * 3 + 0] = (Math.random() - 0.5) * 3.2; // x
+    windPos[i * 3 + 1] = 0.15 + Math.random() * 0.25; // y
+    windPos[i * 3 + 2] = (Math.random() - 0.5) * 1.6; // z
   }
   windGeo.setAttribute('position', new THREE.BufferAttribute(windPos, 3));
   const windMat = new THREE.PointsMaterial({ color: 0xffffff, size: 0.015, transparent: true, opacity: 0.7 });
@@ -80,14 +80,14 @@
   function animate() {
     t += 0.016;
     const p = windGeo.attributes.position.array;
-    for (let i = 0; i < p.length; i+=3) {
-      p[i] += 0.006 + Math.sin(t + i*0.001) * 0.001; // x drift
-      p[i+2] += Math.cos(t*0.5 + i*0.002) * 0.0012; // z meander
-      if (p[i] > 1.6) p[i] = -1.6;
+    for (let i = 0; i < p.length; i += 3) {
+      p[i] += 0.006 + Math.sin(t + i * 0.001) * 0.001; // x drift
+      p[i + 2] += Math.cos(t * 0.5 + i * 0.002) * 0.0012; // z meander
+      if (p[i] > 1.6) {p[i] = -1.6;}
     }
     windGeo.attributes.position.needsUpdate = true;
     renderer.render(scene, camera);
-    if (!isReduced) requestAnimationFrame(animate);
+    if (!isReduced) {requestAnimationFrame(animate);}
   }
   animate();
 })();

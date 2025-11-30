@@ -2,82 +2,82 @@
 
 // API de clima y oleaje (Open-Meteo)
 const FUERTEVENTURA_COORDS = {
-    lat: 28.3587,
-    lon: -14.0537
+  lat: 28.3587,
+  lon: -14.0537
 };
 
 // Fetch clima actual con retry
 async function fetchWeatherData() {
-    const url = `https://api.open-meteo.com/v1/forecast?latitude=${FUERTEVENTURA_COORDS.lat}&longitude=${FUERTEVENTURA_COORDS.lon}&current_weather=true&daily=temperature_2m_max,temperature_2m_min,precipitation_probability_mean&timezone=Atlantic/Canary`;
-    const container = document.getElementById('weather-widget');
-    
-    // Use FetchWithRetry if available, otherwise fallback
-    if (window.FetchWithRetry) {
-        return await window.FetchWithRetry.fetchWithIndicator(url, container);
+  const url = `https://api.open-meteo.com/v1/forecast?latitude=${FUERTEVENTURA_COORDS.lat}&longitude=${FUERTEVENTURA_COORDS.lon}&current_weather=true&daily=temperature_2m_max,temperature_2m_min,precipitation_probability_mean&timezone=Atlantic/Canary`;
+  const container = document.getElementById('weather-widget');
+
+  // Use FetchWithRetry if available, otherwise fallback
+  if (window.FetchWithRetry) {
+    return await window.FetchWithRetry.fetchWithIndicator(url, container);
+  }
+
+  // Fallback: basic fetch
+  try {
+    const response = await fetch(url);
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error('Error fetching weather:', error);
+    if (container) {
+      container.innerHTML = '<div class="widget-error"><i class="fas fa-exclamation-circle"></i> No hay conexión</div>';
     }
-    
-    // Fallback: basic fetch
-    try {
-        const response = await fetch(url);
-        const data = await response.json();
-        return data;
-    } catch (error) {
-        console.error('Error fetching weather:', error);
-        if (container) {
-            container.innerHTML = '<div class="widget-error"><i class="fas fa-exclamation-circle"></i> No hay conexión</div>';
-        }
-        return null;
-    }
+    return null;
+  }
 }
 
 // Fetch datos de oleaje (Marine API) con retry
 async function fetchWaveData() {
-    const url = `https://marine-api.open-meteo.com/v1/marine?latitude=${FUERTEVENTURA_COORDS.lat}&longitude=${FUERTEVENTURA_COORDS.lon}&current=wave_height,wave_direction,wave_period&timezone=Atlantic/Canary`;
-    const container = document.getElementById('wave-widget');
-    
-    // Use FetchWithRetry if available, otherwise fallback
-    if (window.FetchWithRetry) {
-        return await window.FetchWithRetry.fetchWithIndicator(url, container);
+  const url = `https://marine-api.open-meteo.com/v1/marine?latitude=${FUERTEVENTURA_COORDS.lat}&longitude=${FUERTEVENTURA_COORDS.lon}&current=wave_height,wave_direction,wave_period&timezone=Atlantic/Canary`;
+  const container = document.getElementById('wave-widget');
+
+  // Use FetchWithRetry if available, otherwise fallback
+  if (window.FetchWithRetry) {
+    return await window.FetchWithRetry.fetchWithIndicator(url, container);
+  }
+
+  // Fallback: basic fetch
+  try {
+    const response = await fetch(url);
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error('Error fetching wave data:', error);
+    if (container) {
+      container.innerHTML = '<div class="widget-error"><i class="fas fa-exclamation-circle"></i> No hay conexión</div>';
     }
-    
-    // Fallback: basic fetch
-    try {
-        const response = await fetch(url);
-        const data = await response.json();
-        return data;
-    } catch (error) {
-        console.error('Error fetching wave data:', error);
-        if (container) {
-            container.innerHTML = '<div class="widget-error"><i class="fas fa-exclamation-circle"></i> No hay conexión</div>';
-        }
-        return null;
-    }
+    return null;
+  }
 }
 
 // Renderizar widget de clima
 function renderWeatherWidget(data) {
-    const container = document.getElementById('weather-widget');
-    if (!container || !data) return;
+  const container = document.getElementById('weather-widget');
+  if (!container || !data) {return;}
 
-    const current = data.current_weather;
-    const daily = data.daily;
+  const current = data.current_weather;
+  const daily = data.daily;
 
-    const weatherIcons = {
-        0: '☀️', // Clear
-        1: '🌤️', // Mainly clear
-        2: '⛅', // Partly cloudy
-        3: '☁️', // Overcast
-        45: '🌫️', // Fog
-        48: '🌫️', // Fog
-        51: '🌧️', // Drizzle
-        61: '🌧️', // Rain
-        71: '🌨️', // Snow
-        95: '⛈️' // Thunderstorm
-    };
+  const weatherIcons = {
+    0: '☀️', // Clear
+    1: '🌤️', // Mainly clear
+    2: '⛅', // Partly cloudy
+    3: '☁️', // Overcast
+    45: '🌫️', // Fog
+    48: '🌫️', // Fog
+    51: '🌧️', // Drizzle
+    61: '🌧️', // Rain
+    71: '🌨️', // Snow
+    95: '⛈️' // Thunderstorm
+  };
 
-    const icon = weatherIcons[current.weathercode] || '🌤️';
+  const icon = weatherIcons[current.weathercode] || '🌤️';
 
-    container.innerHTML = `
+  container.innerHTML = `
         <div class="widget-card ocean weather-card">
             <div class="widget-header">
                 <div>
@@ -106,12 +106,12 @@ function renderWeatherWidget(data) {
 
 // Renderizar widget de oleaje
 function renderWaveWidget(data) {
-    const container = document.getElementById('wave-widget');
-    if (!container || !data) return;
+  const container = document.getElementById('wave-widget');
+  if (!container || !data) {return;}
 
-    const current = data.current;
+  const current = data.current;
 
-    container.innerHTML = `
+  container.innerHTML = `
         <div class="widget-card sea wave-card">
             <div class="widget-header">
                 <h3 class="widget-title">Condiciones del Mar</h3>
@@ -137,17 +137,17 @@ function renderWaveWidget(data) {
 
 // Inicializar widgets al cargar la página
 document.addEventListener('DOMContentLoaded', async () => {
+  const weatherData = await fetchWeatherData();
+  const waveData = await fetchWaveData();
+
+  if (weatherData) {renderWeatherWidget(weatherData);}
+  if (waveData) {renderWaveWidget(waveData);}
+
+  // Actualizar cada 10 minutos
+  setInterval(async () => {
     const weatherData = await fetchWeatherData();
     const waveData = await fetchWaveData();
-
-    if (weatherData) renderWeatherWidget(weatherData);
-    if (waveData) renderWaveWidget(waveData);
-
-    // Actualizar cada 10 minutos
-    setInterval(async () => {
-        const weatherData = await fetchWeatherData();
-        const waveData = await fetchWaveData();
-        if (weatherData) renderWeatherWidget(weatherData);
-        if (waveData) renderWaveWidget(waveData);
-    }, 600000); // 10 minutos
+    if (weatherData) {renderWeatherWidget(weatherData);}
+    if (waveData) {renderWaveWidget(waveData);}
+  }, 600000); // 10 minutos
 });

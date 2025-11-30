@@ -1,10 +1,10 @@
 ﻿// scenes/playas.js
 // Stylized wave shader plane representing beaches
-(function() {
-  if (!window.THREE) return;
+(function () {
+  if (!window.THREE) {return;}
   const THREE = window.THREE;
   const container = document.querySelector('#scene-playas');
-  if (!container) return;
+  if (!container) {return;}
 
   const isReduced = (window.__ANIMATIONS__ && window.__ANIMATIONS__.isReduced) ? window.__ANIMATIONS__.isReduced() : false;
 
@@ -47,12 +47,12 @@
     transparent: true
   });
   const mesh = new THREE.Mesh(geom, mat);
-  mesh.rotation.x = -Math.PI/3.0;
+  mesh.rotation.x = -Math.PI / 3.0;
   scene.add(mesh);
 
   function onResize() {
     const w = container.clientWidth, h = container.clientHeight;
-    renderer.setSize(w, h); camera.aspect = w/h; camera.updateProjectionMatrix();
+    renderer.setSize(w, h); camera.aspect = w / h; camera.updateProjectionMatrix();
   }
   window.addEventListener('resize', onResize);
 
@@ -60,7 +60,7 @@
   function animate() {
     t += 0.016; mat.uniforms.uTime.value = t;
     renderer.render(scene, camera);
-    if (!isReduced) requestAnimationFrame(animate);
+    if (!isReduced) {requestAnimationFrame(animate);}
   }
   animate();
 

@@ -36,7 +36,7 @@ async function fetchFeed(url) {
   };
   const res = await fetch(url, { headers, signal: controller.signal });
   cancel();
-  if (!res.ok) throw new Error('Upstream status ' + res.status);
+  if (!res.ok) {throw new Error('Upstream status ' + res.status);}
   const text = await res.text();
   let parsed;
   try {
@@ -44,20 +44,16 @@ async function fetchFeed(url) {
   } catch (e) {
     return [];
   }
-  let channel = parsed.rss && parsed.rss.channel ? parsed.rss.channel : parsed.feed || parsed;
+  const channel = parsed.rss && parsed.rss.channel ? parsed.rss.channel : parsed.feed || parsed;
   let items = channel && (channel.item || channel.entry) ? (channel.item || channel.entry) : [];
-  if (!Array.isArray(items)) items = [items];
+  if (!Array.isArray(items)) {items = [items];}
   return items.map(it => {
     const title = it.title && (typeof it.title === 'object' ? (it.title._ || it.title) : it.title) || '';
     const link = it.link && (typeof it.link === 'object' ? (it.link.href || it.link._ || it.link) : it.link) || '';
     const description = it.description || it.summary || it.content || '';
     const pubDate = it.pubDate || it.published || it.updated || '';
     let image = '';
-    if (it.image && typeof it.image === 'string') image = it.image;
-    else if (it.image && it.image.url) image = it.image.url;
-    else if (it.enclosure && typeof it.enclosure === 'object' && it.enclosure.url) image = it.enclosure.url;
-    else if (it['media:content'] && it['media:content'].url) image = it['media:content'].url;
-    else if (it['media:thumbnail'] && it['media:thumbnail'].url) image = it['media:thumbnail'].url;
+    if (it.image && typeof it.image === 'string') {image = it.image;} else if (it.image && it.image.url) {image = it.image.url;} else if (it.enclosure && typeof it.enclosure === 'object' && it.enclosure.url) {image = it.enclosure.url;} else if (it['media:content'] && it['media:content'].url) {image = it['media:content'].url;} else if (it['media:thumbnail'] && it['media:thumbnail'].url) {image = it['media:thumbnail'].url;}
     return { title, link, description, pubDate, image, raw: it };
   });
 }

@@ -17,28 +17,28 @@ function cors(status, body, contentType = 'application/json') {
 }
 
 function pickImageFromAttachments(att) {
-  if (!att) return '';
+  if (!att) {return '';}
   const attachments = att.data || [];
   // Prefer subattachments first (albums), then direct media url
   for (const a of attachments) {
     if (a.subattachments && a.subattachments.data && a.subattachments.data.length) {
       const img = a.subattachments.data.find(x => x.media && x.media.image && x.media.image.src);
-      if (img) return img.media.image.src;
+      if (img) {return img.media.image.src;}
     }
-    if (a.media && a.media.image && a.media.image.src) return a.media.image.src;
-    if (a.url) return a.url;
+    if (a.media && a.media.image && a.media.image.src) {return a.media.image.src;}
+    if (a.url) {return a.url;}
   }
   return '';
 }
 
 exports.handler = async (event) => {
-  if (event.httpMethod === 'OPTIONS') return cors(200, '');
+  if (event.httpMethod === 'OPTIONS') {return cors(200, '');}
   const pageId = process.env.FACEBOOK_PAGE_ID;
   const token = process.env.FACEBOOK_ACCESS_TOKEN;
   if (!pageId || !token) {
     return cors(500, { error: 'FACEBOOK_PAGE_ID or FACEBOOK_ACCESS_TOKEN not configured' });
   }
-  const url = new URL(event.rawUrl || `https://dummy.local/`);
+  const url = new URL(event.rawUrl || 'https://dummy.local/');
   const limit = Math.min(Math.max(parseInt(url.searchParams.get('limit') || '5', 10), 1), 20);
 
   const fields = 'message,permalink_url,created_time,full_picture,attachments{media_type,media,url,subattachments}';

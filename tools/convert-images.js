@@ -19,14 +19,14 @@ try {
 const imagesToConvert = [
   // Hero/Logo
   { src: 'images/logo.jpg', out: 'images/logo.webp', quality: 90 },
-  
+
   // Index.html category cards
   { src: 'images/vistalobos.jpg', out: 'images/vistalobos.webp', quality: 85 },
   { src: 'images/playa-del-cotillo.jpg', out: 'images/playa-del-cotillo.webp', quality: 85 },
-  
+
   // Turismo.html hero
   { src: 'images/Fuerteventura.jpeg', out: 'images/Fuerteventura.webp', quality: 85 },
-  
+
   // Turismo gallery
   { src: 'images/turismo/betancuria.jpg', out: 'images/turismo/betancuria.webp', quality: 85 },
   { src: 'images/turismo/caleta-de-Fuste.jpg', out: 'images/turismo/caleta-de-Fuste.webp', quality: 85 },
@@ -41,33 +41,33 @@ const imagesToConvert = [
   { src: 'images/turismo/puerto-del-rosario-.jpg', out: 'images/turismo/puerto-del-rosario-.webp', quality: 85 },
   { src: 'images/turismo/punta-pesebre.jpg', out: 'images/turismo/punta-pesebre.webp', quality: 85 },
   { src: 'images/turismo/tindaya.webp', out: 'images/turismo/tindaya-reoptimized.webp', quality: 85 },
-  
+
   // Senderos
-  { src: 'images/senderos/morro_velosa.jpeg', out: 'images/senderos/morro_velosa.webp', quality: 85 },
+  { src: 'images/senderos/morro_velosa.jpeg', out: 'images/senderos/morro_velosa.webp', quality: 85 }
 ];
 
 async function convertImages() {
   let converted = 0;
   let skipped = 0;
-  
+
   for (const img of imagesToConvert) {
     const srcPath = path.join(__dirname, '..', img.src);
     const outPath = path.join(__dirname, '..', img.out);
-    
+
     // Skip if already exists
     if (fs.existsSync(outPath)) {
       console.log(`[SKIP] ${img.out} already exists`);
       skipped++;
       continue;
     }
-    
+
     // Skip if source doesn't exist
     if (!fs.existsSync(srcPath)) {
       console.log(`[SKIP] ${img.src} not found`);
       skipped++;
       continue;
     }
-    
+
     try {
       await sharp(srcPath)
         .webp({ quality: img.quality })
@@ -78,7 +78,7 @@ async function convertImages() {
       console.error(`[ERROR] ${img.out}: ${err.message}`);
     }
   }
-  
+
   console.log(`\n✓ Conversion complete: ${converted} converted, ${skipped} skipped`);
 }
 

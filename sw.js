@@ -41,7 +41,7 @@ self.addEventListener('fetch', (event) => {
   const req = event.request;
   const url = new URL(req.url);
 
-  if (req.method !== 'GET') return;
+  if (req.method !== 'GET') {return;}
 
   // Nunca cachear Netlify Functions
   if (url.pathname.startsWith('/.netlify/functions/')) {
@@ -124,10 +124,10 @@ self.addEventListener('fetch', (event) => {
   if (req.destination === 'image') {
     event.respondWith((async () => {
       const cached = await caches.match(req);
-      if (cached) return cached;
+      if (cached) {return cached;}
       try {
         const res = await fetch(req);
-        if (!res.ok) return (await caches.match('/images/logo.jpg')) || new Response('', { status: 404 });
+        if (!res.ok) {return (await caches.match('/images/logo.jpg')) || new Response('', { status: 404 });}
         const copy = res.clone();
         const c = await caches.open(APP_CACHE);
         c.put(req, copy);
@@ -142,7 +142,7 @@ self.addEventListener('fetch', (event) => {
   // Otros: caché, luego red; si todo falla, 504 vacío (siempre respuesta válida)
   event.respondWith((async () => {
     const cached = await caches.match(req);
-    if (cached) return cached;
+    if (cached) {return cached;}
     try {
       return await fetch(req);
     } catch (e) {

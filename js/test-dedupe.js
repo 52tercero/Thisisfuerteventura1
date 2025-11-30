@@ -1,7 +1,7 @@
-﻿(function(){
+﻿(function () {
   'use strict';
 
-  function $(id){ return document.getElementById(id); }
+  function $(id) { return document.getElementById(id); }
 
   // Hook console to UI log
   const logContainer = $('log');
@@ -17,13 +17,13 @@
     logContainer.scrollTop = logContainer.scrollHeight;
   }
 
-  console.log = function(...args) { originalLog.apply(console, args); addLog(args.join(' '), 'info'); };
-  console.warn = function(...args) { originalWarn.apply(console, args); addLog(args.join(' '), 'warn'); };
-  console.error = function(...args) { originalError.apply(console, args); addLog(args.join(' '), 'error'); };
+  console.log = function (...args) { originalLog.apply(console, args); addLog(args.join(' '), 'info'); };
+  console.warn = function (...args) { originalWarn.apply(console, args); addLog(args.join(' '), 'warn'); };
+  console.error = function (...args) { originalError.apply(console, args); addLog(args.join(' '), 'error'); };
 
-  function clearLogs(){ logContainer.innerHTML = ''; }
+  function clearLogs() { logContainer.innerHTML = ''; }
 
-  function clearCache(){
+  function clearCache() {
     const keys = Object.keys(localStorage);
     keys.forEach(key => {
       if (key.includes('rss_cache') || key.includes('article_')) {
@@ -34,12 +34,12 @@
     $('stats').innerHTML = '<strong>Cache limpiado!</strong> Ahora puedes probar feeds frescos.';
   }
 
-  async function testFeeds(){
+  async function testFeeds() {
     $('stats').innerHTML = '<strong>Estado:</strong> Cargando feeds...';
     $('items').innerHTML = '';
 
     try {
-      if (!window.FeedUtils) throw new Error('FeedUtils no está cargado');
+      if (!window.FeedUtils) {throw new Error('FeedUtils no está cargado');}
 
       const sources = [
         'https://rss.app/feeds/jbwZ2Q9QAvgvI6G0.xml',
@@ -82,7 +82,7 @@
       const titleMap = new Map();
       items.forEach((item, idx) => {
         const title = item.title || '';
-        if (!titleMap.has(title)) titleMap.set(title, []);
+        if (!titleMap.has(title)) {titleMap.set(title, []);}
         titleMap.get(title).push(idx + 1);
       });
 
@@ -107,8 +107,8 @@
     const btnTestFeeds = $('btn-test-feeds');
     const btnClearLogs  = $('btn-clear-logs');
 
-    if (btnClearCache) btnClearCache.addEventListener('click', clearCache);
-    if (btnTestFeeds) btnTestFeeds.addEventListener('click', testFeeds);
-    if (btnClearLogs) btnClearLogs.addEventListener('click', clearLogs);
+    if (btnClearCache) {btnClearCache.addEventListener('click', clearCache);}
+    if (btnTestFeeds) {btnTestFeeds.addEventListener('click', testFeeds);}
+    if (btnClearLogs) {btnClearLogs.addEventListener('click', clearLogs);}
   });
 })();

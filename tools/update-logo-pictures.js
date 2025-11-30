@@ -40,24 +40,24 @@ let skipped = 0;
 
 for (const file of htmlFiles) {
   const filePath = path.join(rootDir, file);
-  
+
   // Skip if file doesn't exist
   if (!fs.existsSync(filePath)) {
     console.log(`[SKIP] ${file} (not found)`);
     skipped++;
     continue;
   }
-  
+
   try {
     let content = fs.readFileSync(filePath, 'utf-8');
-    
+
     // Check if already has picture element
     if (content.includes('<source srcset="images/logo.webp"')) {
       console.log(`[SKIP] ${file} (already has picture element)`);
       skipped++;
       continue;
     }
-    
+
     // Replace both 70x70 and 40x40 logos
     let modified = false;
     if (content.includes('width="70" height="70"')) {
@@ -68,7 +68,7 @@ for (const file of htmlFiles) {
       content = content.replace(oldLogoImg40, newLogoImg40);
       modified = true;
     }
-    
+
     if (modified) {
       fs.writeFileSync(filePath, content, 'utf-8');
       console.log(`[DONE] ${file}`);

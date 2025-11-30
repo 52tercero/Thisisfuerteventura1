@@ -1,7 +1,7 @@
 ﻿/**
  * Fetch with retry logic and offline indicator
  * @module FetchWithRetry
- * 
+ *
  * Features:
  * - Exponential backoff retry strategy (3 attempts by default)
  * - AbortController timeout support
@@ -85,7 +85,7 @@ class FetchWithRetry {
       } catch (err) {
         lastError = err;
         const isNetErr = this.isNetworkError(err);
-        
+
         this.log(
           `Attempt ${attempt} failed: ${err.message || err} (network: ${isNetErr})`,
           'warn'
@@ -120,7 +120,7 @@ class FetchWithRetry {
    * @returns {Promise<object|null>} - Parsed JSON response or null on error
    */
   async fetchWithIndicator(url, container, options = {}) {
-    if (!container) return null;
+    if (!container) {return null;}
 
     try {
       const response = await this.fetch(url, options);
@@ -131,14 +131,14 @@ class FetchWithRetry {
       const message = isNetworkIssue
         ? 'No conexión disponible'
         : 'Error al cargar datos';
-      
+
       container.innerHTML = `
         <div class="widget-error" role="alert">
           <i class="fas fa-exclamation-circle"></i>
           <span>${message}</span>
         </div>
       `;
-      
+
       this.log(`Displayed error to user: ${message}`, 'info');
       return null;
     }
@@ -156,7 +156,7 @@ class FetchWithRetry {
 
     // Prevent memory leak from timeout
     const originalAbort = controller.abort.bind(controller);
-    controller.abort = function() {
+    controller.abort = function () {
       clearTimeout(timeoutId);
       return originalAbort();
     };

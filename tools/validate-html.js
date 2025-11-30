@@ -20,26 +20,26 @@ const HTML_GLOB_DIRS = ['.'];
 const ALLOW_HOSTS = new Set([
   'cdn.jsdelivr.net',
   'unpkg.com',
-  'cdnjs.cloudflare.com',
+  'cdnjs.cloudflare.com'
 ]);
 const SKIP_HOSTS = new Set([
   'fonts.googleapis.com',
   'fonts.gstatic.com',
   'www.googletagmanager.com',
   'analytics.google.com',
-  'www.google-analytics.com',
+  'www.google-analytics.com'
 ]);
 
 function listHtmlFiles(dir) {
   const entries = fs.readdirSync(dir, { withFileTypes: true });
-  let files = [];
+  const files = [];
   for (const e of entries) {
     const p = path.join(dir, e.name);
     if (e.isDirectory()) {
       // shallow scan only root for this project
       continue;
     }
-    if (e.isFile() && e.name.toLowerCase().endsWith('.html')) files.push(p);
+    if (e.isFile() && e.name.toLowerCase().endsWith('.html')) {files.push(p);}
   }
   return files;
 }
@@ -47,7 +47,7 @@ function listHtmlFiles(dir) {
 function findAll(regex, str) {
   const results = [];
   let m;
-  while ((m = regex.exec(str)) !== null) results.push(m);
+  while ((m = regex.exec(str)) !== null) {results.push(m);}
   return results;
 }
 
@@ -66,27 +66,26 @@ function validateFile(filePath) {
     errors.push('Missing CSP <meta http-equiv="Content-Security-Policy">');
   } else {
     const content = /content=(["'])([\s\S]*?)\1/i.exec(meta[0]);
-    if (!content) errors.push('CSP meta missing content attribute');
-    else {
+    if (!content) {errors.push('CSP meta missing content attribute');} else {
       const policy = content[2];
-      if (/script-src[^;]*'unsafe-inline'/.test(policy)) errors.push("CSP script-src contains 'unsafe-inline'");
+      if (/script-src[^;]*'unsafe-inline'/.test(policy)) {errors.push("CSP script-src contains 'unsafe-inline'");}
       for (const required of ["base-uri 'self'", 'object-src none', "frame-ancestors 'self'"]) {
-        if (!policy.includes(required)) errors.push(`CSP missing required directive: ${required}`);
+        if (!policy.includes(required)) {errors.push(`CSP missing required directive: ${required}`);}
       }
     }
   }
 
   // 2) Inline event handlers (error)
   const onAttr = findAll(/\son[a-z]+\s*=\s*["'][^"']*["']/gi, html);
-  if (onAttr.length) errors.push(`Inline event handlers found (${onAttr.length})`);
+  if (onAttr.length) {errors.push(`Inline event handlers found (${onAttr.length})`);}
 
   // 3) External assets should have SRI
   const scriptTags = findAll(/<script\b([^>]*?)src=["'](https?:\/\/[^"']+)["']([^>]*)>/gi, html);
   for (const m of scriptTags) {
     const url = m[2];
     const host = hostOf(url);
-    if (SKIP_HOSTS.has(host)) continue;
-    if (!ALLOW_HOSTS.has(host)) continue; // ignore unknown hosts for now
+    if (SKIP_HOSTS.has(host)) {continue;}
+    if (!ALLOW_HOSTS.has(host)) {continue;} // ignore unknown hosts for now
     const tag = m[0];
     if (!/\bintegrity\s*=/.test(tag) || !/\bcrossorigin\s*=/.test(tag)) {
       errors.push(`Missing SRI/crossorigin on <script> from ${host}`);
@@ -99,8 +98,8 @@ function validateFile(filePath) {
     // URL can be in group 3 or 2 depending on which regex matched
     const url = m[3] || m[2];
     const host = hostOf(url);
-    if (SKIP_HOSTS.has(host)) continue;
-    if (!ALLOW_HOSTS.has(host)) continue;
+    if (SKIP_HOSTS.has(host)) {continue;}
+    if (!ALLOW_HOSTS.has(host)) {continue;}
     const tag = m[0];
     if (!/\bintegrity\s*=/.test(tag) || !/\bcrossorigin\s*=/.test(tag)) {
       errors.push(`Missing SRI/crossorigin on <link rel="stylesheet"> from ${host}`);
@@ -117,7 +116,7 @@ function main() {
   for (const r of results) {
     if (r.errors.length) {
       console.log(`✗ ${path.basename(r.filePath)}:`);
-      for (const e of r.errors) console.log(`  - ${e}`);
+      for (const e of r.errors) {console.log(`  - ${e}`);}
       totalErrors += r.errors.length;
     } else {
       console.log(`✓ ${path.basename(r.filePath)}: OK`);

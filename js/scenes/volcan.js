@@ -1,10 +1,10 @@
 ﻿// scenes/volcan.js
 // Stylized low-poly volcano with breathing glow
-(function() {
-  if (!window.THREE) return;
+(function () {
+  if (!window.THREE) {return;}
   const THREE = window.THREE;
   const container = document.querySelector('#scene-volcan');
-  if (!container) return;
+  if (!container) {return;}
 
   const isReduced = (window.__ANIMATIONS__ && window.__ANIMATIONS__.isReduced) ? window.__ANIMATIONS__.isReduced() : false;
 
@@ -18,7 +18,7 @@
   camera.position.set(0.3, 1.2, 2.2);
 
   scene.add(new THREE.AmbientLight(0x404040, 0.4));
-  const dir = new THREE.DirectionalLight(0xffe0b2, 0.8); dir.position.set(1.5,2.2,1.2); scene.add(dir);
+  const dir = new THREE.DirectionalLight(0xffe0b2, 0.8); dir.position.set(1.5, 2.2, 1.2); scene.add(dir);
 
   const volcanoGeo = new THREE.ConeGeometry(0.8, 1.4, 6, 1);
   const volcanoMat = new THREE.MeshStandardMaterial({ color: 0x6a4f3b, roughness: 0.95, metalness: 0.0, flatShading: true });
@@ -42,11 +42,11 @@
     `,
     transparent: true
   });
-  const glow = new THREE.Mesh(glowGeo, glowMat); glow.position.set(0,1.2,0.0); scene.add(glow);
+  const glow = new THREE.Mesh(glowGeo, glowMat); glow.position.set(0, 1.2, 0.0); scene.add(glow);
 
   function onResize() {
     const w = container.clientWidth, h = container.clientHeight;
-    renderer.setSize(w, h); camera.aspect = w/h; camera.updateProjectionMatrix();
+    renderer.setSize(w, h); camera.aspect = w / h; camera.updateProjectionMatrix();
   }
   window.addEventListener('resize', onResize);
 
@@ -54,7 +54,7 @@
   function animate() {
     t += 0.016; glowMat.uniforms.uTime.value = t; volcano.rotation.y += 0.002;
     renderer.render(scene, camera);
-    if (!isReduced) requestAnimationFrame(animate);
+    if (!isReduced) {requestAnimationFrame(animate);}
   }
   animate();
 

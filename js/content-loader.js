@@ -1,100 +1,100 @@
-document.addEventListener('DOMContentLoaded', async function() {
-    // Escapar texto y sanitizar HTML (delegar en FeedUtils si está disponible)
-    function escapeHTML(str) {
-        if (window.FeedUtils && typeof FeedUtils.escapeHTML === 'function') {
-            return FeedUtils.escapeHTML(str);
-        }
-        try {
-            return String(str)
-                .replace(/&/g, '&amp;')
-                .replace(/</g, '&lt;')
-                .replace(/>/g, '&gt;')
-                .replace(/"/g, '&quot;')
-                .replace(/'/g, '&#39;');
-        } catch (_) {
-            return '';
-        }
+document.addEventListener('DOMContentLoaded', async function () {
+  // Escapar texto y sanitizar HTML (delegar en FeedUtils si está disponible)
+  function escapeHTML(str) {
+    if (window.FeedUtils && typeof FeedUtils.escapeHTML === 'function') {
+      return FeedUtils.escapeHTML(str);
     }
-    function sanitizeHTML(html) {
-        if (window.FeedUtils && typeof FeedUtils.sanitize === 'function') {
-            return FeedUtils.sanitize(html);
-        }
-        try {
-            if (typeof DOMPurify !== 'undefined' && DOMPurify.sanitize) {
-                return DOMPurify.sanitize(html);
-            }
-        } catch (_) {}
-        try {
-            return String(html)
-                .replace(/<script[\s\S]*?>[\s\S]*?<\/script>/gi, '')
-                .replace(/on[a-z]+\s*=\s*"[^"]*"/gi, '')
-                .replace(/on[a-z]+\s*=\s*'[^']*'/gi, '')
-                .replace(/javascript:\s*/gi, '');
-        } catch (_) {
-            return '';
-        }
+    try {
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+    } catch (_) {
+      return '';
     }
-    // Utilidad para enrutar imágenes externas a través del proxy cuando esté disponible
-    function toImageSrc(url) {
-        try {
-            if (!url || typeof url !== 'string') return url;
-            // Evitar proxificar imágenes locales
-            const u = new URL(url, location.href);
-            const isExternal = u.origin !== location.origin;
-            if (!isExternal) return u.toString();
+  }
+  function sanitizeHTML(html) {
+    if (window.FeedUtils && typeof FeedUtils.sanitize === 'function') {
+      return FeedUtils.sanitize(html);
+    }
+    try {
+      if (typeof DOMPurify !== 'undefined' && DOMPurify.sanitize) {
+        return DOMPurify.sanitize(html);
+      }
+    } catch (_) {}
+    try {
+      return String(html)
+        .replace(/<script[\s\S]*?>[\s\S]*?<\/script>/gi, '')
+        .replace(/on[a-z]+\s*=\s*"[^"]*"/gi, '')
+        .replace(/on[a-z]+\s*=\s*'[^']*'/gi, '')
+        .replace(/javascript:\s*/gi, '');
+    } catch (_) {
+      return '';
+    }
+  }
+  // Utilidad para enrutar imágenes externas a través del proxy cuando esté disponible
+  function toImageSrc(url) {
+    try {
+      if (!url || typeof url !== 'string') {return url;}
+      // Evitar proxificar imágenes locales
+      const u = new URL(url, location.href);
+      const isExternal = u.origin !== location.origin;
+      if (!isExternal) {return u.toString();}
 
-            // Detectar si se está usando Netlify Functions (cadena vacía)
-            if (window.__RSS_PROXY_URL === '') {
-                return `/.netlify/functions/image?url=${encodeURIComponent(u.toString())}`;
-            }
-            // Si existe un proxy local descubierto
-            if (typeof window.__RSS_PROXY_URL === 'string' && window.__RSS_PROXY_URL) {
-                return `${window.__RSS_PROXY_URL}/api/image?url=${encodeURIComponent(u.toString())}`;
-            }
-            // Alternativa: dejar URL directa sin modificación (fallback)
-            return u.toString();
-        } catch (_) {
-            return url;
-        }
+      // Detectar si se está usando Netlify Functions (cadena vacía)
+      if (window.__RSS_PROXY_URL === '') {
+        return `/.netlify/functions/image?url=${encodeURIComponent(u.toString())}`;
+      }
+      // Si existe un proxy local descubierto
+      if (typeof window.__RSS_PROXY_URL === 'string' && window.__RSS_PROXY_URL) {
+        return `${window.__RSS_PROXY_URL}/api/image?url=${encodeURIComponent(u.toString())}`;
+      }
+      // Alternativa: dejar URL directa sin modificación (fallback)
+      return u.toString();
+    } catch (_) {
+      return url;
     }
-    // Fuentes exclusivas de portada (Destacados)
-    const HOMEPAGE_NEWS_SOURCES = [
-        // Fuentes con respuesta verificada en local (smoke test)
-        'https://rss.app/feeds/jbwZ2Q9QAvgvI6G0.xml',
-        'https://rss.app/feeds/8SmCQL7GDZyu2xB4.xml'
-    ];
+  }
+  // Fuentes exclusivas de portada (Destacados)
+  const HOMEPAGE_NEWS_SOURCES = [
+    // Fuentes con respuesta verificada en local (smoke test)
+    'https://rss.app/feeds/jbwZ2Q9QAvgvI6G0.xml',
+    'https://rss.app/feeds/8SmCQL7GDZyu2xB4.xml'
+  ];
     // En portada usaremos sólo estas fuentes, ignorando las globales
-    const activeNewsSources = HOMEPAGE_NEWS_SOURCES;
-    let featuredSnapshotRendered = false;
-    const ENABLE_SNAPSHOT = false; // Desactivar snapshot para forzar exclusividad de fuentes en portada
-    // Detectar proxy antes de cargar noticias
-    if (typeof window.discoverRSSProxy === 'function') {
-        try {
-            await window.discoverRSSProxy();
-        } catch (e) {
-            console.warn('Error detectando proxy:', e);
-        }
+  const activeNewsSources = HOMEPAGE_NEWS_SOURCES;
+  let featuredSnapshotRendered = false;
+  const ENABLE_SNAPSHOT = false; // Desactivar snapshot para forzar exclusividad de fuentes en portada
+  // Detectar proxy antes de cargar noticias
+  if (typeof window.discoverRSSProxy === 'function') {
+    try {
+      await window.discoverRSSProxy();
+    } catch (e) {
+      console.warn('Error detectando proxy:', e);
     }
-    
-    // Función para cargar noticias destacadas
-    function loadFeaturedNews() {
-        const featuredNewsContainer = document.getElementById('featured-news');
-        
-        if (!featuredNewsContainer) return;
+  }
 
-        // Helper: convertir HTML a texto plano para truncar sin romper etiquetas
-        function toPlainText(html) {
-            if (!html) return '';
-            try {
-                return String(html).replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim();
-            } catch (_) {
-                return String(html);
-            }
-        }
-        
-        // Mostrar mensaje de carga solo si no hay contenido SSR/SSG previo
-        if (!featuredNewsContainer.querySelector('.content-card')) {
-            featuredNewsContainer.innerHTML = `
+  // Función para cargar noticias destacadas
+  function loadFeaturedNews() {
+    const featuredNewsContainer = document.getElementById('featured-news');
+
+    if (!featuredNewsContainer) {return;}
+
+    // Helper: convertir HTML a texto plano para truncar sin romper etiquetas
+    function toPlainText(html) {
+      if (!html) {return '';}
+      try {
+        return String(html).replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim();
+      } catch (_) {
+        return String(html);
+      }
+    }
+
+    // Mostrar mensaje de carga solo si no hay contenido SSR/SSG previo
+    if (!featuredNewsContainer.querySelector('.content-card')) {
+      featuredNewsContainer.innerHTML = `
                 <div class="loading-skeleton">
                     ${Array(20).fill(0).map(() => `
                         <div class="skeleton-card">
@@ -109,125 +109,125 @@ document.addEventListener('DOMContentLoaded', async function() {
                     `).join('')}
                 </div>
             `;
-        }
-        
-        // Función para obtener y parsear feeds RSS (delegada a FeedUtils)
-        let currentAbort = null;
-        async function fetchLatestFeeds() {
-            try {
-                if (window.FeedUtils && typeof FeedUtils.fetchRSSFeeds === 'function') {
-                    // Abort anterior si existe
-                    if (currentAbort) { try { currentAbort.abort(); } catch(_){ } }
-                    currentAbort = new AbortController();
-                    console.log('[CONTENT-LOADER] Portada: usando fuentes exclusivas:', HOMEPAGE_NEWS_SOURCES);
-                    // Usar progressive: true para renderizar items conforme llegan de cada fuente
-                    const itemsAll = await FeedUtils.fetchRSSFeeds(activeNewsSources, { noCache: true, progressive: true, signal: currentAbort.signal });
-                    return Array.isArray(itemsAll) ? itemsAll : [];
-                }
-            } catch (e) {
-                console.warn('[CONTENT-LOADER] FeedUtils.fetchRSSFeeds failed:', e);
-            }
-            // Fallback: intentar el proxy local/Netlify directamente
-            try {
-                // Usar proxy local confirmado (healthy) para asegurar datos
-                const url = 'http://localhost:3000/api/aggregate?sources=' + encodeURIComponent(activeNewsSources.join(','));
-                const res = await fetch(url, { cache: 'no-store' });
-                if (res.ok) {
-                    const json = await res.json();
-                    const items = Array.isArray(json.items) ? json.items : [];
-                    return items.map(it => ({
-                        title: it.title,
-                        image: it.image,
-                        summary: it.summary || it.description || '',
-                        description: it.description || it.summary || '',
-                        fullHtml: it.fullHtml || it.description || '',
-                        date: it.date,
-                        publishedAt: it.publishedAt || null,
-                        category: it.category,
-                        source: it.source,
-                        link: it.link,
-                        raw: it.raw || null
-                    }));
-                }
-            } catch(_) {}
-            // Alternativa: si las utilidades no están cargadas, devolver arreglo vacío
-            return [];
-        }
-        
-        // Utilidad: normalizar fecha para ordenación descendente
-        const normalizeTime = (item) => {
-            if (item && item.publishedAt) {
-                const dt = new Date(item.publishedAt);
-                if (!Number.isNaN(dt.getTime())) return dt.getTime();
-            }
-            if (item && item.raw) {
-                const rawDate = item.raw?.pubDate || item.raw?.published || item.raw?.updated || null;
-                if (rawDate) {
-                    const dt = new Date(rawDate);
-                    if (!Number.isNaN(dt.getTime())) return dt.getTime();
-                }
-            }
-            try {
-                const parts = (item?.date || '').split(' de ').reverse().join(' ');
-                const fallback = new Date(parts);
-                if (!Number.isNaN(fallback.getTime())) return fallback.getTime();
-            } catch (_) {}
-            return 0;
-        };
+    }
 
-        // Intentar snapshot estático para primer render rápido
-        (async () => {
-            if (!ENABLE_SNAPSHOT) return;
-            try {
-                if (featuredSnapshotRendered) return;
-                const snapRes = await fetch('/data/feeds.json', { cache: 'no-store' });
-                if (snapRes.ok) {
-                    const snap = await snapRes.json();
-                    const items = Array.isArray(snap.items) ? snap.items : [];
-                    if (items.length > 0) {
-                        // Normalizar y renderizar hasta 12 elementos del snapshot (optimizado)
-                        const normalized = await Promise.all(items.slice(0, 12).map(async (it) => {
-                            const title = it.title || 'Sin título';
-                            const descriptionRaw = it.description || '';
-                            const description = typeof descriptionRaw === 'object' ? (descriptionRaw._ || '') : descriptionRaw;
-                            const link = it.link || '';
-                            const pub = it.pubDate || '';
-                            let source = '';
-                            try { source = link ? (new URL(link)).hostname.replace('www.', '') : 'fuente'; } catch (e) { source = 'fuente'; }
-                            const image = await (async () => {
-                                if (!it.image || typeof it.image !== 'string' || !it.image.trim()) {
-                                    return 'images/logo.jpg?v=2025110501';
-                                }
-                                return it.image; // proxificado en render con toImageSrc()
-                            })();
-                            const cleaned = (window.DOMPurify && DOMPurify.sanitize) ? DOMPurify.sanitize(description) : description.replace(/<[^>]*>/g, ' ');
-                            return {
-                                title,
-                                image,
-                                description: cleaned,
-                                summary: cleaned,
-                                fullHtml: cleaned,
-                                date: pub ? formatDate(new Date(pub)) : formatDate(new Date()),
-                                publishedAt: pub ? new Date(pub).toISOString() : new Date().toISOString(),
-                                category: 'General',
-                                source,
-                                link,
-                                raw: {}
-                            };
-                        }));
+    // Función para obtener y parsear feeds RSS (delegada a FeedUtils)
+    let currentAbort = null;
+    async function fetchLatestFeeds() {
+      try {
+        if (window.FeedUtils && typeof FeedUtils.fetchRSSFeeds === 'function') {
+          // Abort anterior si existe
+          if (currentAbort) { try { currentAbort.abort(); } catch (_) { } }
+          currentAbort = new AbortController();
+          console.log('[CONTENT-LOADER] Portada: usando fuentes exclusivas:', HOMEPAGE_NEWS_SOURCES);
+          // Usar progressive: true para renderizar items conforme llegan de cada fuente
+          const itemsAll = await FeedUtils.fetchRSSFeeds(activeNewsSources, { noCache: true, progressive: true, signal: currentAbort.signal });
+          return Array.isArray(itemsAll) ? itemsAll : [];
+        }
+      } catch (e) {
+        console.warn('[CONTENT-LOADER] FeedUtils.fetchRSSFeeds failed:', e);
+      }
+      // Fallback: intentar el proxy local/Netlify directamente
+      try {
+        // Usar proxy local confirmado (healthy) para asegurar datos
+        const url = 'http://localhost:3000/api/aggregate?sources=' + encodeURIComponent(activeNewsSources.join(','));
+        const res = await fetch(url, { cache: 'no-store' });
+        if (res.ok) {
+          const json = await res.json();
+          const items = Array.isArray(json.items) ? json.items : [];
+          return items.map(it => ({
+            title: it.title,
+            image: it.image,
+            summary: it.summary || it.description || '',
+            description: it.description || it.summary || '',
+            fullHtml: it.fullHtml || it.description || '',
+            date: it.date,
+            publishedAt: it.publishedAt || null,
+            category: it.category,
+            source: it.source,
+            link: it.link,
+            raw: it.raw || null
+          }));
+        }
+      } catch (_) {}
+      // Alternativa: si las utilidades no están cargadas, devolver arreglo vacío
+      return [];
+    }
 
-                        // Ordenar por fecha descendente y mostrar hasta 12 elementos
-                        featuredNewsContainer.innerHTML = '';
-                        const featured = normalized.sort((a,b) => normalizeTime(b) - normalizeTime(a)).slice(0, 12);
-                        featured.forEach((item) => {
-                            const card = document.createElement('div');
-                            card.className = 'content-card';
-                            const fullText = (item.description || item.summary || '').replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim();
-                            const shortDescription = fullText.length > 150 ? fullText.slice(0, 150) + '...' : fullText;
-                            const idBase = `${item.title || ''}|${item.publishedAt || item.date || ''}`;
-                            const articleId = (function(){ try { return btoa(encodeURIComponent(idBase)).replace(/[^a-zA-Z0-9]/g, '').substring(0, 32); } catch(_) { return Math.random().toString(36).slice(2, 34); } })();
-                            try { localStorage.setItem(`article_${articleId}`, JSON.stringify(item)); } catch (_) {}
-                            card.innerHTML = `
+    // Utilidad: normalizar fecha para ordenación descendente
+    const normalizeTime = (item) => {
+      if (item && item.publishedAt) {
+        const dt = new Date(item.publishedAt);
+        if (!Number.isNaN(dt.getTime())) {return dt.getTime();}
+      }
+      if (item && item.raw) {
+        const rawDate = item.raw?.pubDate || item.raw?.published || item.raw?.updated || null;
+        if (rawDate) {
+          const dt = new Date(rawDate);
+          if (!Number.isNaN(dt.getTime())) {return dt.getTime();}
+        }
+      }
+      try {
+        const parts = (item?.date || '').split(' de ').reverse().join(' ');
+        const fallback = new Date(parts);
+        if (!Number.isNaN(fallback.getTime())) {return fallback.getTime();}
+      } catch (_) {}
+      return 0;
+    };
+
+    // Intentar snapshot estático para primer render rápido
+    (async () => {
+      if (!ENABLE_SNAPSHOT) {return;}
+      try {
+        if (featuredSnapshotRendered) {return;}
+        const snapRes = await fetch('/data/feeds.json', { cache: 'no-store' });
+        if (snapRes.ok) {
+          const snap = await snapRes.json();
+          const items = Array.isArray(snap.items) ? snap.items : [];
+          if (items.length > 0) {
+            // Normalizar y renderizar hasta 12 elementos del snapshot (optimizado)
+            const normalized = await Promise.all(items.slice(0, 12).map(async (it) => {
+              const title = it.title || 'Sin título';
+              const descriptionRaw = it.description || '';
+              const description = typeof descriptionRaw === 'object' ? (descriptionRaw._ || '') : descriptionRaw;
+              const link = it.link || '';
+              const pub = it.pubDate || '';
+              let source = '';
+              try { source = link ? (new URL(link)).hostname.replace('www.', '') : 'fuente'; } catch (e) { source = 'fuente'; }
+              const image = await (async () => {
+                if (!it.image || typeof it.image !== 'string' || !it.image.trim()) {
+                  return 'images/logo.jpg?v=2025110501';
+                }
+                return it.image; // proxificado en render con toImageSrc()
+              })();
+              const cleaned = (window.DOMPurify && DOMPurify.sanitize) ? DOMPurify.sanitize(description) : description.replace(/<[^>]*>/g, ' ');
+              return {
+                title,
+                image,
+                description: cleaned,
+                summary: cleaned,
+                fullHtml: cleaned,
+                date: pub ? formatDate(new Date(pub)) : formatDate(new Date()),
+                publishedAt: pub ? new Date(pub).toISOString() : new Date().toISOString(),
+                category: 'General',
+                source,
+                link,
+                raw: {}
+              };
+            }));
+
+            // Ordenar por fecha descendente y mostrar hasta 12 elementos
+            featuredNewsContainer.innerHTML = '';
+            const featured = normalized.sort((a, b) => normalizeTime(b) - normalizeTime(a)).slice(0, 12);
+            featured.forEach((item) => {
+              const card = document.createElement('div');
+              card.className = 'content-card';
+              const fullText = (item.description || item.summary || '').replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim();
+              const shortDescription = fullText.length > 150 ? fullText.slice(0, 150) + '...' : fullText;
+              const idBase = `${item.title || ''}|${item.publishedAt || item.date || ''}`;
+              const articleId = (function () { try { return btoa(encodeURIComponent(idBase)).replace(/[^a-zA-Z0-9]/g, '').substring(0, 32); } catch (_) { return Math.random().toString(36).slice(2, 34); } })();
+              try { localStorage.setItem(`article_${articleId}`, JSON.stringify(item)); } catch (_) {}
+              card.innerHTML = `
                                 <img src="${toImageSrc(item.image)}" alt="${escapeHTML(item.title)}" loading="lazy" referrerpolicy="no-referrer">
                                 <div class="card-content">
                                     <span class="date">${escapeHTML(item.date)}</span>
@@ -235,130 +235,130 @@ document.addEventListener('DOMContentLoaded', async function() {
                                     <p>${shortDescription}</p>
                                 </div>
                             `;
-                            const imgEl = card.querySelector('img');
-                            if (imgEl) {
-                                imgEl.addEventListener('error', () => {
-                                    // Si falla el proxy o la imagen externa, usar placeholder de noticias
-                                    imgEl.src = 'images/logo.jpg?v=2025110501';
-                                });
-                            }
-                            const readMoreBtn = document.createElement('a');
-                            readMoreBtn.href = `noticia.html?id=${articleId}`;
-                            readMoreBtn.className = 'btn';
-                            readMoreBtn.textContent = 'Leer más';
-                            card.querySelector('.card-content').appendChild(readMoreBtn);
-                            featuredNewsContainer.appendChild(card);
-                        });
-                        featuredSnapshotRendered = true;
-                    }
-                }
-            } catch (_) {
-                // snapshot no disponible; seguimos flujo normal
-            }
-        })();
+              const imgEl = card.querySelector('img');
+              if (imgEl) {
+                imgEl.addEventListener('error', () => {
+                  // Si falla el proxy o la imagen externa, usar placeholder de noticias
+                  imgEl.src = 'images/logo.jpg?v=2025110501';
+                });
+              }
+              const readMoreBtn = document.createElement('a');
+              readMoreBtn.href = `noticia.html?id=${articleId}`;
+              readMoreBtn.className = 'btn';
+              readMoreBtn.textContent = 'Leer más';
+              card.querySelector('.card-content').appendChild(readMoreBtn);
+              featuredNewsContainer.appendChild(card);
+            });
+            featuredSnapshotRendered = true;
+          }
+        }
+      } catch (_) {
+        // snapshot no disponible; seguimos flujo normal
+      }
+    })();
 
-        // Obtener noticias y (re)mostrarlas con datos frescos
-        // Watchdog: si tras unos segundos sigue el skeleton, mostrar mensaje amistoso
-        (function(){
-            try {
-                var watchdogMs = 4000;
-                setTimeout(function(){
-                    var hasSkeleton = !!featuredNewsContainer.querySelector('.loading-skeleton');
-                    var hasCards = !!featuredNewsContainer.querySelector('.content-card');
-                    if (hasSkeleton && !hasCards) {
-                        featuredNewsContainer.innerHTML = '<div class="no-news">No se pudieron cargar las noticias. Inténtalo más tarde.</div>';
-                    }
-                }, watchdogMs);
-            } catch(_) { /* noop */ }
-        })();
-        // Escuchar eventos progresivos y pintar incrementos si aún hay skeleton
-        const handlePartial = (evt) => {
-            const partItems = evt.detail.items || [];
-            if (!featuredNewsContainer || partItems.length === 0) return;
-            // Si aún hay skeleton, reemplazar gradualmente
-            const skeleton = featuredNewsContainer.querySelector('.loading-skeleton');
-            if (skeleton) {
-                // Limpiar skeleton al llegar primeros items
-                featuredNewsContainer.innerHTML = '';
-            }
-            // Renderizar sólo primeros 5 de cada parcial para no saturar
-            const limited = partItems.slice(0,5);
-            limited.forEach((item) => {
-                const card = document.createElement('div');
-                card.className = 'content-card';
-                const fullText = (item.description || item.summary || '').replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim();
-                const shortDescription = fullText.length > 150 ? fullText.slice(0, 150) + '...' : fullText;
-                const idBase = `${item.title || ''}|${item.publishedAt || item.date || ''}`;
-                const articleId = (()=>{ try { return btoa(encodeURIComponent(idBase)).replace(/[^a-zA-Z0-9]/g,'').substring(0,32);} catch(_){ return Math.random().toString(36).slice(2,34);} })();
-                try { localStorage.setItem(`article_${articleId}`, JSON.stringify(item)); } catch(_){ }
-                card.innerHTML = `
+    // Obtener noticias y (re)mostrarlas con datos frescos
+    // Watchdog: si tras unos segundos sigue el skeleton, mostrar mensaje amistoso
+    (function () {
+      try {
+        const watchdogMs = 4000;
+        setTimeout(function () {
+          const hasSkeleton = !!featuredNewsContainer.querySelector('.loading-skeleton');
+          const hasCards = !!featuredNewsContainer.querySelector('.content-card');
+          if (hasSkeleton && !hasCards) {
+            featuredNewsContainer.innerHTML = '<div class="no-news">No se pudieron cargar las noticias. Inténtalo más tarde.</div>';
+          }
+        }, watchdogMs);
+      } catch (_) { /* noop */ }
+    })();
+    // Escuchar eventos progresivos y pintar incrementos si aún hay skeleton
+    const handlePartial = (evt) => {
+      const partItems = evt.detail.items || [];
+      if (!featuredNewsContainer || partItems.length === 0) {return;}
+      // Si aún hay skeleton, reemplazar gradualmente
+      const skeleton = featuredNewsContainer.querySelector('.loading-skeleton');
+      if (skeleton) {
+        // Limpiar skeleton al llegar primeros items
+        featuredNewsContainer.innerHTML = '';
+      }
+      // Renderizar sólo primeros 5 de cada parcial para no saturar
+      const limited = partItems.slice(0, 5);
+      limited.forEach((item) => {
+        const card = document.createElement('div');
+        card.className = 'content-card';
+        const fullText = (item.description || item.summary || '').replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim();
+        const shortDescription = fullText.length > 150 ? fullText.slice(0, 150) + '...' : fullText;
+        const idBase = `${item.title || ''}|${item.publishedAt || item.date || ''}`;
+        const articleId = (() => { try { return btoa(encodeURIComponent(idBase)).replace(/[^a-zA-Z0-9]/g, '').substring(0, 32);} catch (_) { return Math.random().toString(36).slice(2, 34);} })();
+        try { localStorage.setItem(`article_${articleId}`, JSON.stringify(item)); } catch (_) { }
+        card.innerHTML = `
                     <img src="${toImageSrc(item.image)}" alt="${escapeHTML(item.title)}" loading="lazy" referrerpolicy="no-referrer">
                     <div class="card-content">
                         <span class="date">${escapeHTML(item.date)}</span>
                         <h3>${escapeHTML(item.title)}</h3>
                         <p>${shortDescription}</p>
                     </div>`;
-                const imgEl = card.querySelector('img');
-                if (imgEl) imgEl.addEventListener('error', () => { imgEl.src = 'images/logo.jpg?v=2025110501'; });
-                const readMoreBtn = document.createElement('a');
-                readMoreBtn.href = `noticia.html?id=${articleId}`;
-                readMoreBtn.className = 'btn';
-                readMoreBtn.textContent = 'Leer más';
-                card.querySelector('.card-content').appendChild(readMoreBtn);
-                featuredNewsContainer.appendChild(card);
-            });
-        };
-        document.addEventListener('feed:partial', handlePartial, { passive: true });
-        fetchLatestFeeds().then(newsItems => {
-            console.log('[CONTENT-LOADER] Noticias recibidas:', newsItems.length);
-            
-            // Si no hay noticias frescas: conservar snapshot/SSR si existe
-            if (newsItems.length === 0) {
-                console.error('[CONTENT-LOADER] No hay noticias para mostrar');
-                const hasCards = !!featuredNewsContainer.querySelector('.content-card');
-                if (!hasCards) {
-                    featuredNewsContainer.innerHTML = '<div class="no-news">No se pudieron cargar las noticias. Inténtalo más tarde.</div>';
-                    // Renderizar una tarjeta placeholder para verificar layout
-                    const ph = document.createElement('div');
-                    ph.className = 'content-card';
-                    ph.innerHTML = '<img src="images/logo.jpg?v=2025110501" alt="Placeholder" loading="lazy"><div class="card-content"><span class="date">'+escapeHTML(formatDate(new Date()))+'</span><h3>Sin datos disponibles</h3><p>Inténtalo más tarde.</p></div>';
-                    featuredNewsContainer.appendChild(ph);
-                }
-                return;
-            }
+        const imgEl = card.querySelector('img');
+        if (imgEl) {imgEl.addEventListener('error', () => { imgEl.src = 'images/logo.jpg?v=2025110501'; });}
+        const readMoreBtn = document.createElement('a');
+        readMoreBtn.href = `noticia.html?id=${articleId}`;
+        readMoreBtn.className = 'btn';
+        readMoreBtn.textContent = 'Leer más';
+        card.querySelector('.card-content').appendChild(readMoreBtn);
+        featuredNewsContainer.appendChild(card);
+      });
+    };
+    document.addEventListener('feed:partial', handlePartial, { passive: true });
+    fetchLatestFeeds().then(newsItems => {
+      console.log('[CONTENT-LOADER] Noticias recibidas:', newsItems.length);
 
-            // Limpiar el contenedor y preparar la selección (20 artículos: 10 por fuente)
-            featuredNewsContainer.innerHTML = '';
-            const featured = [...newsItems].sort((a,b) => normalizeTime(b) - normalizeTime(a)).slice(0, 20);
-            console.log('[CONTENT-LOADER] Mostrando', featured.length, 'artículos destacados');
-            
-            // Mostrar las noticias (resumen compacto en la portada)
-            // Pintar primeros 6 inmediatamente, resto diferido para no bloquear el hilo principal
-            const immediate = featured.slice(0,6);
-            const deferred = featured.slice(6);
-            immediate.forEach((item, index) => {
-                console.log(`[CONTENT-LOADER] Renderizando artículo ${index + 1}:`, item.title, 'Image:', item.image);
-                const card = document.createElement('div');
-                card.className = 'content-card';
+      // Si no hay noticias frescas: conservar snapshot/SSR si existe
+      if (newsItems.length === 0) {
+        console.error('[CONTENT-LOADER] No hay noticias para mostrar');
+        const hasCards = !!featuredNewsContainer.querySelector('.content-card');
+        if (!hasCards) {
+          featuredNewsContainer.innerHTML = '<div class="no-news">No se pudieron cargar las noticias. Inténtalo más tarde.</div>';
+          // Renderizar una tarjeta placeholder para verificar layout
+          const ph = document.createElement('div');
+          ph.className = 'content-card';
+          ph.innerHTML = '<img src="images/logo.jpg?v=2025110501" alt="Placeholder" loading="lazy"><div class="card-content"><span class="date">' + escapeHTML(formatDate(new Date())) + '</span><h3>Sin datos disponibles</h3><p>Inténtalo más tarde.</p></div>';
+          featuredNewsContainer.appendChild(ph);
+        }
+        return;
+      }
 
-                // Descripción en texto plano truncada a 150 caracteres
-                const fullText = toPlainText(item.description || item.summary || '');
-                const shortDescription = fullText.length > 150 
-                    ? fullText.slice(0, 150) + '...' 
-                    : fullText;
+      // Limpiar el contenedor y preparar la selección (20 artículos: 10 por fuente)
+      featuredNewsContainer.innerHTML = '';
+      const featured = [...newsItems].sort((a, b) => normalizeTime(b) - normalizeTime(a)).slice(0, 20);
+      console.log('[CONTENT-LOADER] Mostrando', featured.length, 'artículos destacados');
 
-                // Crear un ID único para el artículo basado en título y publishedAt/fecha
-                const idBase = `${item.title || ''}|${item.publishedAt || item.date || ''}`;
-                const articleId = (function(){ try { return btoa(encodeURIComponent(idBase)).replace(/[^a-zA-Z0-9]/g, '').substring(0, 32); } catch(_) { return Math.random().toString(36).slice(2, 34); } })();
-                
-                // Guardar el artículo completo en localStorage para acceso desde noticia.html
-                try {
-                    localStorage.setItem(`article_${articleId}`, JSON.stringify(item));
-                } catch (e) {
-                    console.warn('Error guardando artículo en localStorage:', e);
-                }
+      // Mostrar las noticias (resumen compacto en la portada)
+      // Pintar primeros 6 inmediatamente, resto diferido para no bloquear el hilo principal
+      const immediate = featured.slice(0, 6);
+      const deferred = featured.slice(6);
+      immediate.forEach((item, index) => {
+        console.log(`[CONTENT-LOADER] Renderizando artículo ${index + 1}:`, item.title, 'Image:', item.image);
+        const card = document.createElement('div');
+        card.className = 'content-card';
 
-                card.innerHTML = `
+        // Descripción en texto plano truncada a 150 caracteres
+        const fullText = toPlainText(item.description || item.summary || '');
+        const shortDescription = fullText.length > 150
+          ? fullText.slice(0, 150) + '...'
+          : fullText;
+
+        // Crear un ID único para el artículo basado en título y publishedAt/fecha
+        const idBase = `${item.title || ''}|${item.publishedAt || item.date || ''}`;
+        const articleId = (function () { try { return btoa(encodeURIComponent(idBase)).replace(/[^a-zA-Z0-9]/g, '').substring(0, 32); } catch (_) { return Math.random().toString(36).slice(2, 34); } })();
+
+        // Guardar el artículo completo en localStorage para acceso desde noticia.html
+        try {
+          localStorage.setItem(`article_${articleId}`, JSON.stringify(item));
+        } catch (e) {
+          console.warn('Error guardando artículo en localStorage:', e);
+        }
+
+        card.innerHTML = `
                     <img src="${toImageSrc(item.image)}" alt="${escapeHTML(item.title)}" loading="lazy" referrerpolicy="no-referrer">
                     <div class="card-content">
                         <span class="date">${escapeHTML(item.date)}</span>
@@ -366,99 +366,99 @@ document.addEventListener('DOMContentLoaded', async function() {
                         <p>${shortDescription}</p>
                     </div>
                 `;
-                const imgEl = card.querySelector('img');
-                if (imgEl) {
-                    imgEl.addEventListener('error', () => { imgEl.src = 'images/logo.jpg?v=2025110501'; });
-                }
-                
-                const readMoreBtn = document.createElement('a');
-                readMoreBtn.href = `noticia.html?id=${articleId}`;
-                readMoreBtn.className = 'btn';
-                readMoreBtn.textContent = 'Leer más';
-                card.querySelector('.card-content').appendChild(readMoreBtn);
-                
-                featuredNewsContainer.appendChild(card);
-            });
-            if (deferred.length) {
-                const renderDeferred = () => {
-                    deferred.forEach((item) => {
-                        const card = document.createElement('div');
-                        card.className = 'content-card';
-                        const fullText = (item.description || item.summary || '').replace(/<[^>]*>/g,' ').replace(/\s+/g,' ').trim();
-                        const shortDescription = fullText.length > 150 ? fullText.slice(0,150) + '...' : fullText;
-                        const idBase = `${item.title || ''}|${item.publishedAt || item.date || ''}`;
-                        const articleId = (()=>{ try { return btoa(encodeURIComponent(idBase)).replace(/[^a-zA-Z0-9]/g,'').substring(0,32);} catch(_){ return Math.random().toString(36).slice(2,34);} })();
-                        try { localStorage.setItem(`article_${articleId}`, JSON.stringify(item)); } catch(_){ }
-                        card.innerHTML = `
+        const imgEl = card.querySelector('img');
+        if (imgEl) {
+          imgEl.addEventListener('error', () => { imgEl.src = 'images/logo.jpg?v=2025110501'; });
+        }
+
+        const readMoreBtn = document.createElement('a');
+        readMoreBtn.href = `noticia.html?id=${articleId}`;
+        readMoreBtn.className = 'btn';
+        readMoreBtn.textContent = 'Leer más';
+        card.querySelector('.card-content').appendChild(readMoreBtn);
+
+        featuredNewsContainer.appendChild(card);
+      });
+      if (deferred.length) {
+        const renderDeferred = () => {
+          deferred.forEach((item) => {
+            const card = document.createElement('div');
+            card.className = 'content-card';
+            const fullText = (item.description || item.summary || '').replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim();
+            const shortDescription = fullText.length > 150 ? fullText.slice(0, 150) + '...' : fullText;
+            const idBase = `${item.title || ''}|${item.publishedAt || item.date || ''}`;
+            const articleId = (() => { try { return btoa(encodeURIComponent(idBase)).replace(/[^a-zA-Z0-9]/g, '').substring(0, 32);} catch (_) { return Math.random().toString(36).slice(2, 34);} })();
+            try { localStorage.setItem(`article_${articleId}`, JSON.stringify(item)); } catch (_) { }
+            card.innerHTML = `
                             <img src="${toImageSrc(item.image)}" alt="${escapeHTML(item.title)}" loading="lazy" referrerpolicy="no-referrer">
                             <div class="card-content">
                                 <span class="date">${escapeHTML(item.date)}</span>
                                 <h3>${escapeHTML(item.title)}</h3>
                                 <p>${shortDescription}</p>
                             </div>`;
-                        const imgEl = card.querySelector('img');
-                        if (imgEl) imgEl.addEventListener('error', () => { imgEl.src = 'images/logo.jpg?v=2025110501'; });
-                        const readMoreBtn = document.createElement('a');
-                        readMoreBtn.href = `noticia.html?id=${articleId}`;
-                        readMoreBtn.className = 'btn';
-                        readMoreBtn.textContent = 'Leer más';
-                        card.querySelector('.card-content').appendChild(readMoreBtn);
-                        featuredNewsContainer.appendChild(card);
-                    });
-                };
-                if ('requestIdleCallback' in window) {
-                    requestIdleCallback(renderDeferred, { timeout: 1200 });
-                } else {
-                    setTimeout(renderDeferred, 0);
-                }
-            }
-            if (newsItems.length > 0) {
-                featuredSnapshotRendered = true;
-            }
-            // limpiar listener de progresivo
-            document.removeEventListener('feed:partial', handlePartial);
-        });
-    }
-    
-    // Función para formatear fechas
-    function formatDate(date) {
-        const options = { day: 'numeric', month: 'long', year: 'numeric' };
-        return date.toLocaleDateString('es-ES', options);
-    }
-    
-    // Cargar noticias destacadas
-    loadFeaturedNews();
-    
-    // Configurar actualización automática de noticias
-    function setupAutoRefresh() {
-        // Actualizar noticias cada 30 minutos (en milisegundos)
-        const refreshInterval = 30 * 60 * 1000;
-        
-        setInterval(() => {
-            console.log('Actualizando noticias automáticamente...');
-            
-            // Recargar noticias según la página actual
-            if (document.getElementById('featured-news')) {
-                loadFeaturedNews();
-            }
-            document.dispatchEvent(new CustomEvent('feed:refresh'));
-        }, refreshInterval);
-    }
-    
-    // Iniciar actualización automática
-    setupAutoRefresh();
-
-    // Forzar re-render si volvemos desde BFCache del navegador (para asegurar vista compacta y enlaces internos)
-    window.addEventListener('pageshow', (evt) => {
-        if (evt.persisted) {
-            try {
-                if (document.getElementById('featured-news')) {
-                    loadFeaturedNews();
-                }
-            } catch (e) {
-                console.warn('BFCache re-render failed:', e);
-            }
+            const imgEl = card.querySelector('img');
+            if (imgEl) {imgEl.addEventListener('error', () => { imgEl.src = 'images/logo.jpg?v=2025110501'; });}
+            const readMoreBtn = document.createElement('a');
+            readMoreBtn.href = `noticia.html?id=${articleId}`;
+            readMoreBtn.className = 'btn';
+            readMoreBtn.textContent = 'Leer más';
+            card.querySelector('.card-content').appendChild(readMoreBtn);
+            featuredNewsContainer.appendChild(card);
+          });
+        };
+        if ('requestIdleCallback' in window) {
+          requestIdleCallback(renderDeferred, { timeout: 1200 });
+        } else {
+          setTimeout(renderDeferred, 0);
         }
+      }
+      if (newsItems.length > 0) {
+        featuredSnapshotRendered = true;
+      }
+      // limpiar listener de progresivo
+      document.removeEventListener('feed:partial', handlePartial);
     });
+  }
+
+  // Función para formatear fechas
+  function formatDate(date) {
+    const options = { day: 'numeric', month: 'long', year: 'numeric' };
+    return date.toLocaleDateString('es-ES', options);
+  }
+
+  // Cargar noticias destacadas
+  loadFeaturedNews();
+
+  // Configurar actualización automática de noticias
+  function setupAutoRefresh() {
+    // Actualizar noticias cada 30 minutos (en milisegundos)
+    const refreshInterval = 30 * 60 * 1000;
+
+    setInterval(() => {
+      console.log('Actualizando noticias automáticamente...');
+
+      // Recargar noticias según la página actual
+      if (document.getElementById('featured-news')) {
+        loadFeaturedNews();
+      }
+      document.dispatchEvent(new CustomEvent('feed:refresh'));
+    }, refreshInterval);
+  }
+
+  // Iniciar actualización automática
+  setupAutoRefresh();
+
+  // Forzar re-render si volvemos desde BFCache del navegador (para asegurar vista compacta y enlaces internos)
+  window.addEventListener('pageshow', (evt) => {
+    if (evt.persisted) {
+      try {
+        if (document.getElementById('featured-news')) {
+          loadFeaturedNews();
+        }
+      } catch (e) {
+        console.warn('BFCache re-render failed:', e);
+      }
+    }
+  });
 });
 

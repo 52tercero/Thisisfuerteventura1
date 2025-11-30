@@ -55,7 +55,7 @@ app.options('*', (req, res) => {
   }
   res.setHeader('Access-Control-Allow-Methods', 'GET,POST,OPTIONS');
   const reqHeaders = req.headers['access-control-request-headers'];
-  if (reqHeaders) res.setHeader('Access-Control-Allow-Headers', reqHeaders);
+  if (reqHeaders) {res.setHeader('Access-Control-Allow-Headers', reqHeaders);}
   if (req.headers['access-control-request-private-network'] === 'true') {
     res.setHeader('Access-Control-Allow-Private-Network', 'true');
   }
@@ -119,7 +119,7 @@ if (!fetchImpl) {
 
 // función auxiliar para usar la implementación de fetch elegida
 async function fetchUrl(url, opts) {
-  if (!fetchImpl) throw new Error('No fetch implementation available');
+  if (!fetchImpl) {throw new Error('No fetch implementation available');}
   const hasSignal = opts && opts.signal;
   if (hasSignal) {
     return fetchImpl(url, opts);
@@ -141,7 +141,7 @@ const memoryCache = new Map(); // clave -> { value, expires }
 function cacheGet(key) {
   try {
     const entry = memoryCache.get(key);
-    if (!entry) return null;
+    if (!entry) {return null;}
     if (Date.now() > entry.expires) {
       memoryCache.delete(key);
       return null;
@@ -163,14 +163,14 @@ function cacheSet(key, value, ttl = CACHE_TTL_MS) {
 // Intentar descubrir URL de feed (RSS/Atom) a partir de una página HTML
 function discoverFeedFromHtml(html, baseUrl) {
   try {
-    if (!html) return null;
+    if (!html) {return null;}
     const linkTags = html.match(/<link[^>]+>/gi) || [];
     for (const tag of linkTags) {
       const hasAlternate = /rel=["']([^"']*\balternate\b[^"']*)["']/i.test(tag);
-      if (!hasAlternate) continue;
+      if (!hasAlternate) {continue;}
       const typeMatch = tag.match(/type=["']([^"']+)["']/i);
       const type = typeMatch ? typeMatch[1].toLowerCase() : '';
-      if (!(type.includes('rss+xml') || type.includes('atom+xml') || type.includes('xml'))) continue;
+      if (!(type.includes('rss+xml') || type.includes('atom+xml') || type.includes('xml'))) {continue;}
       const hrefMatch = tag.match(/href=["']([^"']+)["']/i);
       if (hrefMatch && hrefMatch[1]) {
         const abs = new URL(hrefMatch[1], baseUrl).href;
@@ -186,7 +186,7 @@ function discoverFeedFromHtml(html, baseUrl) {
 // Parseo con FeedParser (si está disponible). Devuelve items crudos del parser.
 function parseWithFeedParser(text) {
   return new Promise((resolve, reject) => {
-    if (!FeedParser || !Readable) return resolve(null);
+    if (!FeedParser || !Readable) {return resolve(null);}
     try {
       const feedparser = new FeedParser();
       const items = [];
@@ -227,114 +227,110 @@ async function fetchFeedItems(url, { bypassCache = false, _triedDiscovery = fals
       return [];
     }
 
-  const text = await upstream.text();
-  console.log(`[RSS PROXY] Fetched ${url} (${text.length} chars)`);
-  const ctype = (upstream.headers && upstream.headers.get && (upstream.headers.get('content-type') || '')) || '';
+    const text = await upstream.text();
+    console.log(`[RSS PROXY] Fetched ${url} (${text.length} chars)`);
+    const ctype = (upstream.headers && upstream.headers.get && (upstream.headers.get('content-type') || '')) || '';
 
-  let parsed;
-  try {
+    let parsed;
+    try {
     // Si parece HTML, intentar descubrir el feed real primero
-    if (ctype.includes('text/html') && !_triedDiscovery) {
-      const discovered = discoverFeedFromHtml(text, url);
-      if (discovered && discovered !== url) {
-        console.log(`[RSS PROXY] Discovered feed for ${url}: ${discovered}`);
-        const items = await fetchFeedItems(discovered, { bypassCache, _triedDiscovery: true });
-        // Alias de caché: cachear también bajo la clave original
-        cacheSet(cacheKey, items);
-        return items;
-      }
-    }
-
-    // Intentar primero con FeedParser si está disponible
-    const fpItems = await parseWithFeedParser(text);
-    if (Array.isArray(fpItems) && fpItems.length > 0) {
-      const normalizedFP = fpItems.map(it => {
-        const title = it.title || '';
-        const link = it.link || it.origlink || '';
-        const description = it.description || it.summary || it['content:encoded'] || '';
-        // FeedParser can return both 'pubdate' and 'pubDate', use explicit camelCase
-        const pubDate = it.pubDate || it.pubdate || it.date || '';
-        
-        // Extraer imagen de FeedParser (tiene mejor soporte de media)
-        let image = it.image?.url || it.enclosures?.[0]?.url || '';
-        
-        // Preservar solo campos necesarios para extracción en cliente (sin duplicar pubdate/pubDate)
-        const rawClean = {
-          title: it.title,
-          link: it.link,
-          description: it.description,
-          enclosure: it.enclosures?.[0],
-          'media:content': it['media:content'],
-          'media:thumbnail': it['media:thumbnail'],
-          'media:group': it['media:group']
-        };
-        
-        return { 
-          title, 
-          link, 
-          description, 
-          pubDate,  // Always camelCase
-          image,
-          raw: rawClean
-        };
-      });
-      if (normalizedFP.length === 0) {
-        console.warn(`[RSS PROXY] FeedParser parsed 0 items for ${url}`);
-      }
-      cacheSet(cacheKey, normalizedFP);
-      return normalizedFP;
-    }
-
-    // Fallback a xml2js
-    parsed = await parseStringPromise(text, { explicitArray: false, mergeAttrs: true });
-  } catch (e) {
-    // Si falló el parseo de XML, intentar descubrimiento si aún no se intentó
-    if (!_triedDiscovery) {
-      const discovered = discoverFeedFromHtml(text, url) || (url.endsWith('/') ? url + 'feed' : (url + '/feed'));
-      if (discovered && discovered !== url) {
-        try {
-          console.log(`[RSS PROXY] XML parse failed; trying discovered/conventional feed for ${url}: ${discovered}`);
+      if (ctype.includes('text/html') && !_triedDiscovery) {
+        const discovered = discoverFeedFromHtml(text, url);
+        if (discovered && discovered !== url) {
+          console.log(`[RSS PROXY] Discovered feed for ${url}: ${discovered}`);
           const items = await fetchFeedItems(discovered, { bypassCache, _triedDiscovery: true });
+          // Alias de caché: cachear también bajo la clave original
           cacheSet(cacheKey, items);
           return items;
-        } catch (e2) {
-          console.warn(`[RSS PROXY] Discovery fallback also failed for ${url}:`, e2 && e2.message);
         }
       }
+
+      // Intentar primero con FeedParser si está disponible
+      const fpItems = await parseWithFeedParser(text);
+      if (Array.isArray(fpItems) && fpItems.length > 0) {
+        const normalizedFP = fpItems.map(it => {
+          const title = it.title || '';
+          const link = it.link || it.origlink || '';
+          const description = it.description || it.summary || it['content:encoded'] || '';
+          // FeedParser can return both 'pubdate' and 'pubDate', use explicit camelCase
+          const pubDate = it.pubDate || it.pubdate || it.date || '';
+
+          // Extraer imagen de FeedParser (tiene mejor soporte de media)
+          const image = it.image?.url || it.enclosures?.[0]?.url || '';
+
+          // Preservar solo campos necesarios para extracción en cliente (sin duplicar pubdate/pubDate)
+          const rawClean = {
+            title: it.title,
+            link: it.link,
+            description: it.description,
+            enclosure: it.enclosures?.[0],
+            'media:content': it['media:content'],
+            'media:thumbnail': it['media:thumbnail'],
+            'media:group': it['media:group']
+          };
+
+          return {
+            title,
+            link,
+            description,
+            pubDate,  // Always camelCase
+            image,
+            raw: rawClean
+          };
+        });
+        if (normalizedFP.length === 0) {
+          console.warn(`[RSS PROXY] FeedParser parsed 0 items for ${url}`);
+        }
+        cacheSet(cacheKey, normalizedFP);
+        return normalizedFP;
+      }
+
+      // Fallback a xml2js
+      parsed = await parseStringPromise(text, { explicitArray: false, mergeAttrs: true });
+    } catch (e) {
+    // Si falló el parseo de XML, intentar descubrimiento si aún no se intentó
+      if (!_triedDiscovery) {
+        const discovered = discoverFeedFromHtml(text, url) || (url.endsWith('/') ? url + 'feed' : (url + '/feed'));
+        if (discovered && discovered !== url) {
+          try {
+            console.log(`[RSS PROXY] XML parse failed; trying discovered/conventional feed for ${url}: ${discovered}`);
+            const items = await fetchFeedItems(discovered, { bypassCache, _triedDiscovery: true });
+            cacheSet(cacheKey, items);
+            return items;
+          } catch (e2) {
+            console.warn(`[RSS PROXY] Discovery fallback also failed for ${url}:`, e2 && e2.message);
+          }
+        }
+      }
+      console.error(`[RSS PROXY] XML parse error for ${url}:`, e.message || e);
+      // Return empty array instead of throwing to prevent cascade failures
+      return [];
     }
-    console.error(`[RSS PROXY] XML parse error for ${url}:`, e.message || e);
-    // Return empty array instead of throwing to prevent cascade failures
-    return [];
-  }
 
-  let channel = parsed.rss && parsed.rss.channel ? parsed.rss.channel : parsed.feed || parsed;
-  let items = channel && (channel.item || channel.entry) ? (channel.item || channel.entry) : [];
-  if (!Array.isArray(items)) items = [items];
+    const channel = parsed.rss && parsed.rss.channel ? parsed.rss.channel : parsed.feed || parsed;
+    let items = channel && (channel.item || channel.entry) ? (channel.item || channel.entry) : [];
+    if (!Array.isArray(items)) {items = [items];}
 
-  console.log(`[RSS PROXY] ${url} -> ${items.length} items`);
+    console.log(`[RSS PROXY] ${url} -> ${items.length} items`);
 
-  const normalized = items.map(it => {
-    const title = it.title && (typeof it.title === 'object' ? (it.title._ || it.title) : it.title) || '';
-    const link = it.link && (typeof it.link === 'object' ? (it.link.href || it.link._ || it.link) : it.link) || '';
-    const description = it.description || it.summary || it.content || '';
-    const pubDate = it.pubDate || it.published || it.updated || '';
-    
-    // Intentar extraer imagen desde varios campos comunes
-    let image = '';
-    if (it.image && typeof it.image === 'string') image = it.image;
-    else if (it.image && it.image.url) image = it.image.url;
-    else if (it.enclosure && typeof it.enclosure === 'object' && it.enclosure.url) image = it.enclosure.url;
-    else if (it['media:content'] && it['media:content'].url) image = it['media:content'].url;
-    else if (it['media:thumbnail'] && it['media:thumbnail'].url) image = it['media:thumbnail'].url;
-    
-    return { title, link, description, pubDate, image, raw: it };
-  });
+    const normalized = items.map(it => {
+      const title = it.title && (typeof it.title === 'object' ? (it.title._ || it.title) : it.title) || '';
+      const link = it.link && (typeof it.link === 'object' ? (it.link.href || it.link._ || it.link) : it.link) || '';
+      const description = it.description || it.summary || it.content || '';
+      const pubDate = it.pubDate || it.published || it.updated || '';
 
-  if (normalized.length === 0) {
-    console.warn(`[RSS PROXY] xml2js parsed 0 items for ${url} (ctype='${ctype}')`);
-  }
-  cacheSet(cacheKey, normalized);
-  return normalized;
+      // Intentar extraer imagen desde varios campos comunes
+      let image = '';
+      if (it.image && typeof it.image === 'string') {image = it.image;} else if (it.image && it.image.url) {image = it.image.url;} else if (it.enclosure && typeof it.enclosure === 'object' && it.enclosure.url) {image = it.enclosure.url;} else if (it['media:content'] && it['media:content'].url) {image = it['media:content'].url;} else if (it['media:thumbnail'] && it['media:thumbnail'].url) {image = it['media:thumbnail'].url;}
+
+      return { title, link, description, pubDate, image, raw: it };
+    });
+
+    if (normalized.length === 0) {
+      console.warn(`[RSS PROXY] xml2js parsed 0 items for ${url} (ctype='${ctype}')`);
+    }
+    cacheSet(cacheKey, normalized);
+    return normalized;
   } catch (err) {
     console.error(`[RSS PROXY] Fatal error in fetchFeedItems for ${url}:`, err.message || err);
     return [];
@@ -344,7 +340,7 @@ async function fetchFeedItems(url, { bypassCache = false, _triedDiscovery = fals
 // Fuentes permitidas por prefijo (base de dominio). Más seguras para descubrimiento de feeds.
 // Se puede extender mediante la variable de entorno ALLOWED_SOURCES (URLs separadas por comas).
 const DEFAULT_ALLOWED = [
-  'https://rss.app',
+  'https://rss.app'
 ];
 
 let ALLOWED_SOURCES = DEFAULT_ALLOWED.slice();
@@ -358,7 +354,7 @@ if (process.env.ALLOWED_SOURCES) {
 }
 
 const ALLOW_ALL = process.env.ALLOW_ALL === '1' || process.env.ALLOW_ALL === 'true';
-if (ALLOW_ALL) console.warn('ALERTA: ALLOW_ALL está habilitado - el proxy aceptará cualquier URL. No habilitar en producción.');
+if (ALLOW_ALL) {console.warn('ALERTA: ALLOW_ALL está habilitado - el proxy aceptará cualquier URL. No habilitar en producción.');}
 
 const PORT = process.env.PORT || 3000;
 
@@ -377,13 +373,13 @@ app.get('/api/tides', (req, res) => {
     }
     const cacheKey = `tides:${lat.toFixed(3)}:${lon.toFixed(3)}`;
     const cached = cacheGet(cacheKey);
-    if (cached) return res.json(cached);
+    if (cached) {return res.json(cached);}
 
     // Generar horarios de mareas sintéticos basados en la fecha actual.
     // Patrón simple: cada ~6h alternando pleamar/bajamar.
     const now = new Date();
     const base = new Date(now);
-    base.setMinutes(0,0,0);
+    base.setMinutes(0, 0, 0);
     // Desfase pseudoaleatorio según coordenadas para que no coincida siempre a las en punto
     const offsetMin = Math.floor(((lat + lon) % 1) * 60);
     base.setMinutes(offsetMin);
@@ -415,7 +411,7 @@ app.get('/api/tides', (req, res) => {
 // Ejemplo: /api/rss?url=https%3A%2F%2Fwww.canarias7.es%2Frss%2F2.0%2Fportada
 app.get('/api/rss', async (req, res) => {
   const url = req.query.url;
-  
+
   // Validar que se proporcione una URL
   if (!url || typeof url !== 'string') {
     return res.status(400).json({ error: 'missing or invalid url query parameter' });
@@ -481,12 +477,12 @@ app.get('/api/aggregate', async (req, res) => {
 
     // Normalizar enlace (quitar parámetros de tracking, hash, trailing slash, variantes AMP)
     const normalizeLink = (u) => {
-      if (!u || typeof u !== 'string') return '';
+      if (!u || typeof u !== 'string') {return '';}
       try {
         const url = new URL(u);
         url.hash = '';
         const params = url.searchParams;
-        ['utm_source','utm_medium','utm_campaign','utm_term','utm_content','gclid','fbclid'].forEach(k => params.delete(k));
+        ['utm_source', 'utm_medium', 'utm_campaign', 'utm_term', 'utm_content', 'gclid', 'fbclid'].forEach(k => params.delete(k));
         url.search = params.toString();
         url.pathname = url.pathname
           .replace(/\/amp(\/)?$/i, '/')
@@ -504,17 +500,17 @@ app.get('/api/aggregate', async (req, res) => {
       const linkKey = normalizeLink(it.link || it.url || '');
       const titleRaw = (it.title || '').toString();
       const titleCanonical = titleRaw
-        .normalize('NFD').replace(/[\u0300-\u036f]/g,'') // quitar acentos
-        .toLowerCase().replace(/["'«»]/g,'')
-        .replace(/\s+/g,' ') // colapsar espacios
-        .replace(/\s+[-–|]\s+.*$/,'') // quitar sufijos de fuente tras guión / barra
+        .normalize('NFD').replace(/[\u0300-\u036f]/g, '') // quitar acentos
+        .toLowerCase().replace(/["'«»]/g, '')
+        .replace(/\s+/g, ' ') // colapsar espacios
+        .replace(/\s+[-–|]\s+.*$/, '') // quitar sufijos de fuente tras guión / barra
         .trim();
-      
+
       // Usar solo título canónico como clave si no hay link
       // NO usar fecha para permitir detectar duplicados con fechas ligeramente diferentes
       const key = linkKey || titleCanonical;
-      
-      if (!key) continue;
+
+      if (!key) {continue;}
       if (seen.has(key)) {
         console.log('[RSS PROXY] Skipping duplicate:', titleRaw.substring(0, 60));
         continue;
@@ -550,7 +546,7 @@ app.get('/api/aggregate', async (req, res) => {
 app.get('/api/image', async (req, res) => {
   try {
     const url = (req.query.url || '').toString();
-    if (!url) return res.status(400).json({ error: 'missing url' });
+    if (!url) {return res.status(400).json({ error: 'missing url' });}
     let target;
     try {
       target = new URL(url);

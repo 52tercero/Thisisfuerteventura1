@@ -32,10 +32,10 @@ exports.handler = async (event) => {
       return { statusCode: 403, headers, body: JSON.stringify({ error: 'source not allowed' }) };
     }
 
-  const items = await fetchFeed(url);
-  // Limit extreme feeds to first 60 items (ordered as received)
-  const limited = items.slice(0, 60);
-  return { statusCode: 200, headers, body: JSON.stringify({ items: normalize(limited) }) };
+    const items = await fetchFeed(url);
+    // Limit extreme feeds to first 60 items (ordered as received)
+    const limited = items.slice(0, 60);
+    return { statusCode: 200, headers, body: JSON.stringify({ items: normalize(limited) }) };
   } catch (e) {
     console.error('[RSS] Error:', e.message);
     return { statusCode: 500, headers, body: JSON.stringify({ error: 'rss_failed', details: e && e.message }) };

@@ -8,11 +8,11 @@ const LIGHT_THEME = 'light';
 
 // Obtener tema guardado o preferencia del sistema
 function getPreferredTheme() {
-    const savedTheme = localStorage.getItem(THEME_KEY);
-    if (savedTheme) {
-        return savedTheme;
-    }
-    return window.matchMedia('(prefers-color-scheme: dark)').matches ? DARK_THEME : LIGHT_THEME;
+  const savedTheme = localStorage.getItem(THEME_KEY);
+  if (savedTheme) {
+    return savedTheme;
+  }
+  return window.matchMedia('(prefers-color-scheme: dark)').matches ? DARK_THEME : LIGHT_THEME;
 }
 
 // Aplicar tema (remueve atributo en modo claro para respetar estilos base)
@@ -28,7 +28,7 @@ function applyTheme(theme) {
   const toggleBtn = document.getElementById('theme-toggle') || document.querySelector('.theme-toggle');
   if (toggleBtn) {
     const icon = toggleBtn.querySelector('i');
-    if (icon) icon.className = theme === DARK_THEME ? 'fas fa-sun' : 'fas fa-moon';
+    if (icon) {icon.className = theme === DARK_THEME ? 'fas fa-sun' : 'fas fa-moon';}
     toggleBtn.setAttribute('aria-label', theme === DARK_THEME ? 'Activar modo claro' : 'Activar modo oscuro');
     toggleBtn.setAttribute('aria-pressed', theme === DARK_THEME ? 'true' : 'false');
   }
@@ -36,9 +36,9 @@ function applyTheme(theme) {
 
 // Toggle entre temas
 function toggleTheme() {
-    const currentTheme = document.documentElement.getAttribute('data-theme');
-    const newTheme = currentTheme === DARK_THEME ? LIGHT_THEME : DARK_THEME;
-    applyTheme(newTheme);
+  const currentTheme = document.documentElement.getAttribute('data-theme');
+  const newTheme = currentTheme === DARK_THEME ? LIGHT_THEME : DARK_THEME;
+  applyTheme(newTheme);
 }
 
 // Inicializar al cargar la página
@@ -68,7 +68,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 // Detectar cambios en preferencia del sistema
 window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
-    if (!localStorage.getItem(THEME_KEY)) {
-        applyTheme(e.matches ? DARK_THEME : LIGHT_THEME);
-    }
+  if (!localStorage.getItem(THEME_KEY)) {
+    applyTheme(e.matches ? DARK_THEME : LIGHT_THEME);
+  }
 });
