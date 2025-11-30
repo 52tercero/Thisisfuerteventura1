@@ -58,40 +58,32 @@
     <a class="skip-link" href="#main">Saltar al contenido principal</a>
     <header class="header" role="banner">
         <div class="header-container">
-            <!-- Logo -->
+            <!-- Logo (Large, Centered) -->
             <div class="header-logo">
                 <a href="index.html" aria-label="This is Fuerteventura - Ir a inicio">
                     <picture>
                         <source srcset="images/logo.webp" type="image/webp">
-                        <img src="images/logo.jpg" alt="" loading="lazy" decoding="async" width="50" height="50">
+                        <img src="images/logo.jpg" alt="" loading="lazy" decoding="async" width="120" height="120">
                     </picture>
                     <span class="header-logo-text">This is Fuerteventura</span>
                 </a>
             </div>
 
-            <!-- Navigation Menu -->
-            <nav class="header-nav" aria-label="Navegación principal">
-                <ul class="header-nav-list">
-                    <li><a href="index.html" class="header-nav-link active">Inicio</a></li>
-                    <li><a href="noticias.html" class="header-nav-link">Noticias</a></li>
-                    <li><a href="turismo.html" class="header-nav-link">Turismo</a></li>
-                    <li><a href="alojamiento.html" class="header-nav-link">Alojamiento</a></li>
-                    <li><a href="playas.html" class="header-nav-link">Playas</a></li>
-                    <li><a href="senderos.html" class="header-nav-link">Senderos</a></li>
-                    <li><a href="blog.html" class="header-nav-link">Blog</a></li>
-                    <li><a href="contacto.html" class="header-nav-link">Contacto</a></li>
-                </ul>
-            </nav>
-
-            <!-- Right Section: Search + Social + CTA -->
-            <div class="header-right">
-                <!-- Search -->
-                <div class="header-search">
-                    <input type="search" class="header-search-input" placeholder="Buscar..." aria-label="Buscar en el sitio">
-                    <button type="button" class="header-search-btn" aria-label="Enviar búsqueda">
-                        <i class="fas fa-search" aria-hidden="true"></i>
-                    </button>
-                </div>
+            <!-- Navigation + Social Bottom Row -->
+            <div class="header-bottom">
+                <!-- Navigation Menu -->
+                <nav class="header-nav" aria-label="Navegación principal">
+                    <ul class="header-nav-list">
+                        <li><a href="index.html" class="header-nav-link active">Inicio</a></li>
+                        <li><a href="noticias.html" class="header-nav-link">Noticias</a></li>
+                        <li><a href="turismo.html" class="header-nav-link">Turismo</a></li>
+                        <li><a href="alojamiento.html" class="header-nav-link">Alojamiento</a></li>
+                        <li><a href="playas.html" class="header-nav-link">Playas</a></li>
+                        <li><a href="senderos.html" class="header-nav-link">Senderos</a></li>
+                        <li><a href="blog.html" class="header-nav-link">Blog</a></li>
+                        <li><a href="contacto.html" class="header-nav-link">Contacto</a></li>
+                    </ul>
+                </nav>
 
                 <!-- Social Icons -->
                 <div class="header-social">
@@ -105,9 +97,6 @@
                         <i class="fab fa-twitter" aria-hidden="true"></i>
                     </a>
                 </div>
-
-                <!-- CTA Button -->
-                <a href="contacto.html" class="header-cta">Contacto</a>
             </div>
 
             <!-- Mobile Hamburger Menu -->
@@ -116,13 +105,6 @@
                 <span></span>
                 <span></span>
             </button>
-
-            <!-- Accessibility toggles -->
-            <div class="header-toggles">
-                <button type="button" id="reduce-motion-toggle" class="header-toggle" aria-label="Reducir animaciones" title="Reducir animaciones">
-                    <i class="fas fa-universal-access" aria-hidden="true"></i>
-                </button>
-            </div>
         </div>
     </header>
     <main id="main">
@@ -217,6 +199,8 @@
         <p class="section-intro">Descubre los lugares más emblemáticos de la isla con nuestro mapa interactivo</p>
         <div id="map-aria-live" aria-live="polite" aria-atomic="true"></div>
         <div id="interactive-map"></div>
+
+        <div id="scene-mapa" data-chapter style="width:100%;height:360px"></div>
     </section>
 
     <!-- Quiz de gamificación -->
@@ -289,6 +273,7 @@
             <p>&copy; 2025 This is Fuerteventura. Todos los derechos reservados.</p>
         </div>
     </footer>
+
 
     <!-- Banner de consentimiento de cookies -->
     <div id="cookie-consent" class="cookie-consent">

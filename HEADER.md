@@ -75,21 +75,10 @@ El header es el primer punto de contacto con los usuarios. Nuestro diseño combi
     </nav>
 
     <!-- Sección Derecha -->
-    <div class="header-right">
-      <div class="header-search">
-        <input type="search" placeholder="Buscar..." />
-        <button type="button" aria-label="Buscar">
-          <i class="fas fa-search"></i>
-        </button>
-      </div>
-      
       <div class="header-social">
         <a href="facebook.com">Facebook</a>
         <!-- ... -->
       </div>
-
-      <a href="contacto" class="header-cta">Explora la Isla</a>
-    </div>
 
     <!-- Hamburguesa Mobile -->
     <button class="header-hamburger" aria-label="Menú">
