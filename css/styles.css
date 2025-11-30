@@ -3293,6 +3293,30 @@ html[data-theme="dark"] .theme-toggle { border-color: rgba(255,255,255,0.25); }
 }
 .widget-error i { font-size: 1.25rem; }
 
+/* Leaflet map keyboard navigation support */
+#interactive-map {
+    outline: none; /* Remove default outline when focused */
+}
+
+#interactive-map:focus-visible {
+    box-shadow: 0 0 0 3px rgba(255, 191, 0, 0.35);
+}
+
+/* Marker focus state for keyboard nav */
+.leaflet-marker-pane .focused {
+    filter: brightness(1.2);
+    z-index: 1000 !important;
+}
+
+/* Screen reader announcements */
+#map-aria-live {
+    position: absolute;
+    left: -10000px;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+}
+
 /* Quiz visual matched to widget cards */
 .quiz-card { position: relative; }
 .quiz-card h3 { margin-bottom: 14px; color: var(--primary-color); display:flex; align-items:center; gap:10px; font-size:1.15rem; }
