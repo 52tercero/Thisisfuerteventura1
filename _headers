@@ -15,8 +15,6 @@
 # HTML pages - no cache for fresh content
 /*.html
   Cache-Control: public, max-age=0, must-revalidate
-  # Note: CSP is enforced per-page via meta tag with JSON-LD hashes. Avoid conflicting header-level CSP.
-  # Content-Security-Policy removed here to let page-level policies apply.
 
 # CSS and JS - long cache with immutable (fingerprinted via ?v=)
 /css/*

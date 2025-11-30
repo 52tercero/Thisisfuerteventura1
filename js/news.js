@@ -27,6 +27,7 @@ document.addEventListener('DOMContentLoaded', function() {
             if (typeof window.__RSS_PROXY_URL === 'string' && window.__RSS_PROXY_URL) {
                 return `${window.__RSS_PROXY_URL}/api/image?url=${encodeURIComponent(u.toString())}`;
             }
+            // Fallback to direct URL when proxy not available
             return u.toString();
         } catch (_) {
             return url;

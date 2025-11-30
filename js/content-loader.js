@@ -51,7 +51,7 @@ document.addEventListener('DOMContentLoaded', async function() {
             if (typeof window.__RSS_PROXY_URL === 'string' && window.__RSS_PROXY_URL) {
                 return `${window.__RSS_PROXY_URL}/api/image?url=${encodeURIComponent(u.toString())}`;
             }
-            // Alternativa: dejar URL directa sin modificación
+            // Alternativa: dejar URL directa sin modificación (fallback)
             return u.toString();
         } catch (_) {
             return url;
@@ -273,7 +273,10 @@ document.addEventListener('DOMContentLoaded', async function() {
                             `;
                             const imgEl = card.querySelector('img');
                             if (imgEl) {
-                                imgEl.addEventListener('error', () => { imgEl.src = 'images/logo.jpg?v=2025110501'; });
+                                imgEl.addEventListener('error', () => {
+                                    // Si falla el proxy o la imagen externa, usar placeholder de noticias
+                                    imgEl.src = 'images/logo.jpg?v=2025110501';
+                                });
                             }
                             const readMoreBtn = document.createElement('a');
                             readMoreBtn.href = `noticia.html?id=${articleId}`;

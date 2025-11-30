@@ -1,4 +1,22 @@
-﻿# This is Fuerteventura
+﻿## Local Development
+
+- Static server: `python -m http.server 8000` in the project root.
+- RSS proxy: `npm start` in `server/` (health: `http://localhost:3000/health` or `3001`).
+- VS Code tasks: Use "Start RSS Proxy" and "Start Static Server (port 8000)".
+- Image proxying: External images are routed via discovered proxy or Netlify Functions; on failure, a local placeholder is shown.
+
+## Structure & Organization
+
+- Animations: GSAP hero/news effects in `js/gsap-animations.js`; Three.js hero background in `js/three-hero.js`.
+- Recommendation: Move animation logic to `js/animations/` for modularity (e.g., `animations/hero.js`, `animations/news.js`).
+- Next.js app: Keep code and build artifacts under `next/`; `.gitignore` excludes `next/.next/` and caches.
+
+## Accessibility & Performance notes
+
+- Ensure semantic headings (h1/h2) and `aria-current` on active nav links.
+- Use `loading="lazy"`, `decoding="async"`, and include `width`/`height` for images to reduce CLS.
+- Prefer AVIF/WEBP assets where possible with proper fallbacks.
+# This is Fuerteventura
 
 Small static site (HTML/CSS/JS) that aggregates news and presents content about Fuerteventura: tourism, beaches, accommodation, gastronomy, and more.
 
