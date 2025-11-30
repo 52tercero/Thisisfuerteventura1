@@ -16,6 +16,7 @@
     <link rel="canonical" href="https://thisisfuerteventura.es/turismo.html">
     <link rel="manifest" href="manifest.webmanifest">
     <link rel="stylesheet" href="css/styles.css?v=2025111803">
+    <link rel="preload" href="images/Fuerteventura.webp" as="image" fetchpriority="high">
     <link rel="preload" href="images/Fuerteventura.jpeg" as="image" fetchpriority="high">
     <!-- Google Fonts: Inter para texto, Playfair Display para títulos -->
     <link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@400;600;700&family=Yeseva+One&display=swap" rel="stylesheet">
@@ -50,7 +51,10 @@
     <a class="skip-link" href="#main">Saltar al contenido principal</a>
     <header>
         <div class="logo-container">
-            <img src="images/logo.jpg" alt="This is Fuerteventura Logo" class="logo" loading="lazy" decoding="async" width="70" height="70">
+            <picture>
+                <source srcset="images/logo.webp" type="image/webp">
+                <img src="images/logo.jpg" alt="This is Fuerteventura Logo" class="logo" loading="lazy" decoding="async" width="70" height="70">
+            </picture>
             <h1>This is Fuerteventura</h1>
         </div>
         <nav id="site-nav" aria-label="Navegación principal" role="navigation">
@@ -87,7 +91,10 @@
         <h2 class="sand-write" data-sand-write data-sand-step="0.045" data-sand-duration="0.8" data-sand-distribution="accelerate">Lugares de interés</h2>
         <div class="tourism-grid card-stagger">
             <article class="tourism-card">
-                <img src="images/turismo/corralejo-dunas.jpg?v=2" alt="Parque Natural de Corralejo" loading="lazy">
+                <picture>
+                    <source srcset="images/turismo/corralejo-dunas.webp" type="image/webp">
+                    <img src="images/turismo/corralejo-dunas.jpg?v=2" alt="Parque Natural de Corralejo" loading="lazy" width="400" height="300">
+                </picture>
                 <div class="tourism-info">
                     <h3>Parque Natural de Corralejo</h3>
                     <p>Explora las impresionantes dunas de arena dorada y el mar cristalino en uno de los parques más emblemáticos de la isla. Las Grandes Playas se extienden por kilómetros junto al turquesa del Atlántico. Aparcamientos señalizados en la FV-1; mejor al amanecer o atardecer y lleva agua y protección solar.</p>
@@ -101,7 +108,10 @@
             </article>
 
             <article class="tourism-card">
-                <img src="images/turismo/betancuria.jpg?v=2" alt="Betancuria" loading="lazy">
+                <picture>
+                    <source srcset="images/turismo/betancuria.webp" type="image/webp">
+                    <img src="images/turismo/betancuria.jpg?v=2" alt="Betancuria" loading="lazy" width="400" height="300">
+                </picture>
                 <div class="tourism-info">
                     <h3>Betancuria</h3>
                     <p>Antigua capital con encanto histórico, arquitectura tradicional y museos. Pasea por sus calles empedradas, visita la iglesia de Santa María y acércate a los miradores cercanos. Hay restaurantes con cocina local y aparcamiento municipal en el centro.</p>
@@ -115,7 +125,10 @@
             </article>
 
             <article class="tourism-card">
-                <img src="images/turismo/faro-morro-jable.jpg?v=2" alt="Faro de Morro Jable" loading="lazy">
+                <picture>
+                    <source srcset="images/turismo/faro-morro-jable.webp" type="image/webp">
+                    <img src="images/turismo/faro-morro-jable.jpg?v=2" alt="Faro de Morro Jable" loading="lazy" width="400" height="300">
+                </picture>
                 <div class="tourism-info">
                     <h3>Faro de Morro Jable</h3>
                     <p>Atardeceres memorables junto a la playa de Jandía y su paseo marítimo. Acceso cómodo y servicios cercanos para familias. Excelente zona para caminar, fotografiar y relajarse con la brisa marina.</p>

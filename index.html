@@ -58,7 +58,10 @@
     <a class="skip-link" href="#main">Saltar al contenido principal</a>
     <header>
         <div class="logo-container">
-            <img src="images/logo.jpg" alt="This is Fuerteventura Logo" class="logo" loading="lazy" decoding="async" width="70" height="70">
+            <picture>
+                <source srcset="images/logo.webp" type="image/webp">
+                <img src="images/logo.jpg" alt="This is Fuerteventura Logo" class="logo" loading="lazy" decoding="async" width="70" height="70">
+            </picture>
             <h1>This is Fuerteventura</h1>
         </div>
         <nav id="site-nav" aria-label="Navegación principal" role="navigation">
@@ -87,10 +90,6 @@
                     <label for="ambient-volume" class="visually-hidden">Volumen ambiente</label>
                     <input id="ambient-volume" type="range" min="0" max="100" value="30" aria-label="Volumen ambiente" style="width:100px" />
                 </div>
-        <!-- Reduce motion toggle for accessibility -->
-        <button type="button" id="reduce-motion-toggle" class="mobile-menu" aria-label="Reducir animaciones" title="Reducir animaciones">
-            <i class="fas fa-universal-access" aria-hidden="true"></i>
-        </button>
     </header>
     <main id="main">
         <section class="hero parallax reveal hero-video">
@@ -117,25 +116,34 @@
         <h2 class="sand-write" data-sand-write data-sand-step="0.04" data-sand-duration="0.75" data-sand-distribution="accelerate">Explora Fuerteventura</h2>
         <div class="category-grid">
             <article class="category-card">
-                <img src="images/playa_del_castillo_caleta_de_fuste.webp" alt="Noticias de Fuerteventura" loading="lazy">
+                <img src="images/playa_del_castillo_caleta_de_fuste.webp" alt="Noticias de Fuerteventura" loading="lazy" width="400" height="300">
                 <h3>Noticias</h3>
                 <p>Mantente al día con las últimas noticias de la isla.</p>
                 <a href="noticias.html" class="btn">Ver noticias</a>
             </article>
             <article class="category-card">
-                <img src="images/betancuria.webp" alt="Turismo en Fuerteventura" loading="lazy">
+                <picture>
+                    <source srcset="images/betancuria.webp" type="image/webp">
+                    <img src="images/betancuria.webp" alt="Turismo en Fuerteventura" loading="lazy" width="400" height="300">
+                </picture>
                 <h3>Turismo</h3>
                 <p>Descubre los mejores lugares para visitar.</p>
                 <a href="turismo.html" class="btn">Explorar</a>
             </article>
             <article class="category-card">
-                <img src="images/vistalobos.jpg" alt="Alojamiento en Fuerteventura" loading="lazy">
+                <picture>
+                    <source srcset="images/vistalobos.webp" type="image/webp">
+                    <img src="images/vistalobos.jpg" alt="Alojamiento en Fuerteventura" loading="lazy" width="400" height="300">
+                </picture>
                 <h3>Alojamiento</h3>
                 <p>Encuentra el lugar perfecto para hospedarte.</p>
                 <a href="alojamiento.html" class="btn">Ver opciones</a>
             </article>
             <article class="category-card">
-                <img src="images/playa-del-cotillo.jpg" alt="Playas de Fuerteventura" loading="lazy">
+                <picture>
+                    <source srcset="images/playa-del-cotillo.webp" type="image/webp">
+                    <img src="images/playa-del-cotillo.jpg" alt="Playas de Fuerteventura" loading="lazy" width="400" height="300">
+                </picture>
                 <h3>Playas</h3>
                 <p>Las mejores playas de arena blanca y aguas cristalinas.</p>
                 <a href="playas.html" class="btn">Descubrir</a>
@@ -223,7 +231,10 @@
     <footer>
         <div class="footer-content">
             <div class="footer-logo">
-                <img src="images/logo.jpg" alt="This is Fuerteventura Logo" class="logo" loading="lazy" decoding="async" width="40" height="40">
+                <picture>
+                    <source srcset="images/logo.webp" type="image/webp">
+                    <img src="images/logo.jpg" alt="This is Fuerteventura Logo" class="logo" loading="lazy" decoding="async" width="40" height="40">
+                </picture>
                 <h3>This is Fuerteventura</h3>
             </div>
             <div class="footer-links">
