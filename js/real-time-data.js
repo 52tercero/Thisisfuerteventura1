@@ -1,4 +1,4 @@
-﻿/* real-time-data.js - Integración de datos en tiempo real */
+﻿/* real-time-data.js - Integración de datos en tiempo real con retry */
 
 // API de clima y oleaje (Open-Meteo)
 const FUERTEVENTURA_COORDS = {
@@ -6,30 +6,50 @@ const FUERTEVENTURA_COORDS = {
     lon: -14.0537
 };
 
-// Fetch clima actual
+// Fetch clima actual con retry
 async function fetchWeatherData() {
+    const url = `https://api.open-meteo.com/v1/forecast?latitude=${FUERTEVENTURA_COORDS.lat}&longitude=${FUERTEVENTURA_COORDS.lon}&current_weather=true&daily=temperature_2m_max,temperature_2m_min,precipitation_probability_mean&timezone=Atlantic/Canary`;
+    const container = document.getElementById('weather-widget');
+    
+    // Use FetchWithRetry if available, otherwise fallback
+    if (window.FetchWithRetry) {
+        return await window.FetchWithRetry.fetchWithIndicator(url, container);
+    }
+    
+    // Fallback: basic fetch
     try {
-        const response = await fetch(
-            `https://api.open-meteo.com/v1/forecast?latitude=${FUERTEVENTURA_COORDS.lat}&longitude=${FUERTEVENTURA_COORDS.lon}&current_weather=true&daily=temperature_2m_max,temperature_2m_min,precipitation_probability_mean&timezone=Atlantic/Canary`
-        );
+        const response = await fetch(url);
         const data = await response.json();
         return data;
     } catch (error) {
         console.error('Error fetching weather:', error);
+        if (container) {
+            container.innerHTML = '<div class="widget-error"><i class="fas fa-exclamation-circle"></i> No hay conexión</div>';
+        }
         return null;
     }
 }
 
-// Fetch datos de oleaje (Marine API)
+// Fetch datos de oleaje (Marine API) con retry
 async function fetchWaveData() {
+    const url = `https://marine-api.open-meteo.com/v1/marine?latitude=${FUERTEVENTURA_COORDS.lat}&longitude=${FUERTEVENTURA_COORDS.lon}&current=wave_height,wave_direction,wave_period&timezone=Atlantic/Canary`;
+    const container = document.getElementById('wave-widget');
+    
+    // Use FetchWithRetry if available, otherwise fallback
+    if (window.FetchWithRetry) {
+        return await window.FetchWithRetry.fetchWithIndicator(url, container);
+    }
+    
+    // Fallback: basic fetch
     try {
-        const response = await fetch(
-            `https://marine-api.open-meteo.com/v1/marine?latitude=${FUERTEVENTURA_COORDS.lat}&longitude=${FUERTEVENTURA_COORDS.lon}&current=wave_height,wave_direction,wave_period&timezone=Atlantic/Canary`
-        );
+        const response = await fetch(url);
         const data = await response.json();
         return data;
     } catch (error) {
         console.error('Error fetching wave data:', error);
+        if (container) {
+            container.innerHTML = '<div class="widget-error"><i class="fas fa-exclamation-circle"></i> No hay conexión</div>';
+        }
         return null;
     }
 }

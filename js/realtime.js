@@ -33,9 +33,25 @@
     setLoading(body, 'Cargando tiempo...');
     try{
       const url = `https://api.open-meteo.com/v1/forecast?latitude=${LAT}&longitude=${LON}&current_weather=true&current=temperature_2m,wind_speed_10m,weather_code&hourly=temperature_2m,weather_code,wind_speed_10m&timezone=auto`;
-      const r = await fetch(url, { credentials: 'omit' });
-      if(!r.ok) throw new Error('HTTP '+r.status);
-      const data = await r.json();
+      let data;
+      
+      // Use FetchWithRetry if available
+      if (window.FetchWithRetry) {
+        data = await window.FetchWithRetry.fetchWithIndicator(url, body);
+        if (!data) return; // Error already rendered by fetchWithIndicator
+      } else {
+        // Fallback: basic fetch with timeout
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 8000);
+        try {
+          const r = await fetch(url, { credentials: 'omit', signal: controller.signal });
+          if(!r.ok) throw new Error('HTTP '+r.status);
+          data = await r.json();
+        } finally {
+          clearTimeout(timeoutId);
+        }
+      }
+      
       const cw = data.current_weather || {};
       const cur = data.current || {};
 
@@ -91,7 +107,24 @@
     setLoading(body, 'Cargando condiciones del mar...');
     try{
       const url = `https://marine-api.open-meteo.com/v1/marine?latitude=${LAT}&longitude=${LON}&hourly=wave_height,wave_direction,wave_period&timezone=auto`;
-      const r = await fetch(url, { credentials: 'omit' });
+      let data;
+      
+      // Use FetchWithRetry if available
+      if (window.FetchWithRetry) {
+        data = await window.FetchWithRetry.fetchWithIndicator(url, body);
+        if (!data) return; // Error already rendered by fetchWithIndicator
+      } else {
+        // Fallback: basic fetch with timeout
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 8000);
+        try {
+          const r = await fetch(url, { credentials: 'omit', signal: controller.signal });
+          if(!r.ok) throw new Error('HTTP '+r.status);
+          data = await r.json();
+        } finally {
+          clearTimeout(timeoutId);
+        }
+      }
       if(!r.ok) throw new Error('HTTP '+r.status);
       const data = await r.json();
       const h = data.hourly || {};
