@@ -20,7 +20,7 @@ function listHtmlFiles(dir) {
   const out = [];
   for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
     const full = path.join(dir, entry.name);
-    if (shouldExclude(full)) continue;
+    if (shouldExclude(full)) {continue;}
     if (entry.isDirectory()) {
       out.push(...listHtmlFiles(full));
     } else if (entry.isFile() && entry.name.toLowerCase().endsWith('.html')) {
@@ -36,6 +36,7 @@ function cleanContent(str) {
   const original = content;
 
   // Remove control characters except \n and \t
+  // eslint-disable-next-line no-control-regex
   content = content.replace(/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]/g, '');
 
   // Per-line cleanup
@@ -54,7 +55,7 @@ function cleanContent(str) {
   }
 
   let result = cleaned.join('\n');
-  if (!result.endsWith('\n')) result += '\n';
+  if (!result.endsWith('\n')) {result += '\n';}
 
   const changed = result !== original;
   return { result, changed, removedVLine };

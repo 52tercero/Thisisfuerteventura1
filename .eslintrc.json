@@ -18,8 +18,7 @@
       2
     ],
     "linebreak-style": [
-      "warn",
-      "unix"
+      "off"
     ],
     "quotes": [
       "warn",
@@ -47,6 +46,12 @@
           "error",
           "log"
         ]
+      }
+    ],
+    "no-empty": [
+      "warn",
+      {
+        "allowEmptyCatch": true
       }
     ],
     "eqeqeq": [
@@ -121,6 +126,32 @@
       ],
       "env": {
         "browser": true
+      }
+    },
+    {
+      "files": [
+        "**/*.test.js",
+        "**/tests/**/*.js",
+        "server/tests/**/*.js"
+      ],
+      "env": {
+        "jest": true,
+        "node": true
+      },
+      "globals": {
+        "describe": "readonly",
+        "it": "readonly",
+        "expect": "readonly",
+        "beforeEach": "readonly",
+        "afterEach": "readonly"
+      }
+    },
+    {
+      "files": [
+        "js/swiper-init.js"
+      ],
+      "globals": {
+        "Swiper": "readonly"
       }
     }
   ]

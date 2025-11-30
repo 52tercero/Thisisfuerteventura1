@@ -18,14 +18,14 @@ const ROOT = path.resolve(__dirname, '..');
 const ALLOW_HOSTS = new Set([
   'cdn.jsdelivr.net',
   'unpkg.com',
-  'cdnjs.cloudflare.com',
+  'cdnjs.cloudflare.com'
 ]);
 const SKIP_HOSTS = new Set([
   'fonts.googleapis.com',
   'fonts.gstatic.com',
   'www.googletagmanager.com',
   'analytics.google.com',
-  'www.google-analytics.com',
+  'www.google-analytics.com'
 ]);
 
 function parseUrlHost(u) {
@@ -61,7 +61,7 @@ function sha384Base64(buf) {
 
 function findHtmlFiles(dir) {
   const entries = fs.readdirSync(dir, { withFileTypes: true });
-  let files = [];
+  const files = [];
   for (const e of entries) {
     const p = path.join(dir, e.name);
     if (e.isDirectory()) {
@@ -84,17 +84,17 @@ async function processFile(filePath) {
 
   async function replaceTag(match, preAttrs, url, postAttrs, close) {
     const host = parseUrlHost(url);
-    if (SKIP_HOSTS.has(host)) return match;
-    if (!ALLOW_HOSTS.has(host)) return match;
-    if (/\bintegrity\s*=/.test(match)) return match; // already has SRI
+    if (SKIP_HOSTS.has(host)) {return match;}
+    if (!ALLOW_HOSTS.has(host)) {return match;}
+    if (/\bintegrity\s*=/.test(match)) {return match;} // already has SRI
 
     try {
       const buf = await fetchBuffer(url);
       const sri = 'sha384-' + sha384Base64(buf);
       // ensure crossorigin anonymous
       let newAttrs = `${preAttrs}src="${url}"${postAttrs}`;
-      if (!/\bcrossorigin\s*=/.test(newAttrs)) newAttrs += ' crossorigin="anonymous"';
-      if (!/\bintegrity\s*=/.test(newAttrs)) newAttrs += ` integrity="${sri}"`;
+      if (!/\bcrossorigin\s*=/.test(newAttrs)) {newAttrs += ' crossorigin="anonymous"';}
+      if (!/\bintegrity\s*=/.test(newAttrs)) {newAttrs += ` integrity="${sri}"`;}
       changed = true;
       return `<script${newAttrs}>${close || ''}`;
     } catch (e) {
@@ -105,17 +105,19 @@ async function processFile(filePath) {
 
   async function replaceLink(match, preAttrs, url, postAttrs) {
     const host = parseUrlHost(url);
-    if (SKIP_HOSTS.has(host)) return match;
-    if (!ALLOW_HOSTS.has(host)) return match;
-    if (!/\brel=\"stylesheet\"/.test(match)) return match;
-    if (/\bintegrity\s*=/.test(match)) return match; // already has SRI
+    if (SKIP_HOSTS.has(host)) {return match;}
+    if (!ALLOW_HOSTS.has(host)) {return match;}
+    // eslint-disable-next-line no-useless-escape
+    if (!/\brel=\"stylesheet\"/.test(match)) {return match;}
+    // eslint-disable-next-line no-useless-escape
+    if (/\bintegrity\s*=/.test(match)) {return match;} // already has SRI
 
     try {
       const buf = await fetchBuffer(url);
       const sri = 'sha384-' + sha384Base64(buf);
       let newAttrs = `${preAttrs}href="${url}"${postAttrs}`;
-      if (!/\bcrossorigin\s*=/.test(newAttrs)) newAttrs += ' crossorigin="anonymous"';
-      if (!/\bintegrity\s*=/.test(newAttrs)) newAttrs += ` integrity="${sri}"`;
+      if (!/\bcrossorigin\s*=/.test(newAttrs)) {newAttrs += ' crossorigin="anonymous"';}
+      if (!/\bintegrity\s*=/.test(newAttrs)) {newAttrs += ` integrity="${sri}"`;}
       changed = true;
       return `<link${newAttrs}>`;
     } catch (e) {
@@ -127,7 +129,7 @@ async function processFile(filePath) {
   // Replace sequentially (global async regex replacement)
   const scriptMatches = [];
   let sm;
-  while ((sm = scriptRegex.exec(html)) !== null) scriptMatches.push(sm);
+  while ((sm = scriptRegex.exec(html)) !== null) {scriptMatches.push(sm);}
   for (const m of scriptMatches.reverse()) {
     const replaced = await replaceTag(m[0], m[1] || ' ', m[2], m[3] || '', m[4] || '');
     html = html.slice(0, m.index) + replaced + html.slice(m.index + m[0].length);
@@ -135,13 +137,13 @@ async function processFile(filePath) {
 
   const linkMatches = [];
   let lm;
-  while ((lm = linkRegex.exec(html)) !== null) linkMatches.push(lm);
+  while ((lm = linkRegex.exec(html)) !== null) {linkMatches.push(lm);}
   for (const m of linkMatches.reverse()) {
     const replaced = await replaceLink(m[0], m[1] || ' ', m[2], m[3] || '');
     html = html.slice(0, m.index) + replaced + html.slice(m.index + m[0].length);
   }
 
-  if (changed) fs.writeFileSync(filePath, html, 'utf8');
+  if (changed) {fs.writeFileSync(filePath, html, 'utf8');}
   return changed;
 }
 
@@ -151,7 +153,7 @@ async function main() {
   for (const f of files) {
     const changed = await processFile(f);
     console.log(`[sri] ${path.basename(f)}: ${changed ? 'updated' : 'unchanged'}`);
-    if (changed) updated++;
+    if (changed) {updated++;}
   }
   console.log(`SRI injection complete. Files updated: ${updated}/${files.length}.`);
 }
