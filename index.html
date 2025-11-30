@@ -122,9 +122,6 @@
                 <button type="button" id="reduce-motion-toggle" class="header-toggle" aria-label="Reducir animaciones" title="Reducir animaciones">
                     <i class="fas fa-universal-access" aria-hidden="true"></i>
                 </button>
-                <button type="button" id="ambient-audio-toggle" class="header-toggle" aria-label="Sonido ambiental" title="Sonido ambiental">
-                    <i class="fas fa-volume-up" aria-hidden="true"></i>
-                </button>
             </div>
         </div>
     </header>
@@ -220,7 +217,7 @@
         <p class="section-intro">Descubre los lugares más emblemáticos de la isla con nuestro mapa interactivo</p>
         <div id="map-aria-live" aria-live="polite" aria-atomic="true"></div>
         <div id="interactive-map"></div>
-        <!-- Three.js stylized map scene container -->
+
         <div id="scene-mapa" data-chapter style="width:100%;height:360px"></div>
     </section>
 
@@ -422,10 +419,9 @@
     
     <!-- Scripts principales -->
     <script src="js/main.js?v=2025111706" defer></script>
-    <!-- GSAP + Three.js artistic narrative modules -->
+    <!-- GSAP animations -->
     <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js" defer crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js" defer crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js" defer crossorigin="anonymous"></script>
     <script src="js/components/Header.js?v=2025113001" defer></script>
     <script src="js/animations/gsap.js?v=2025113001" defer></script>
     <script src="js/scenes/mapa.js?v=2025113001" defer></script>
@@ -435,8 +431,6 @@
             // Wire accessibility toggles
             document.addEventListener('DOMContentLoaded', function() {
                 const reduceBtn = document.getElementById('reduce-motion-toggle');
-                const audioBtn = document.getElementById('ambient-audio-toggle');
-                                const volume = document.getElementById('ambient-volume');
                 if (reduceBtn && window.__ANIMATIONS__) {
                     const update = () => { reduceBtn.setAttribute('aria-pressed', window.__ANIMATIONS__.isReduced() ? 'true' : 'false'); };
                     update();
@@ -445,36 +439,6 @@
                         window.__ANIMATIONS__.setReduceMotion(next);
                         update();
                     });
-                }
-                                // Gate ambient audio by cookie consent if available
-                                function hasConsent() {
-                                    try {
-                                        if (window.Cookies && typeof window.Cookies.hasConsent === 'function') {
-                                            return window.Cookies.hasConsent('functional') || window.Cookies.hasConsent('analytics');
-                                        }
-                                    } catch(_) {}
-                                    return true;
-                                }
-
-                                if (audioBtn && window.AmbientSounds) {
-                    const updateAudio = () => { audioBtn.setAttribute('aria-pressed', window.AmbientSounds.isEnabled ? 'true' : 'false'); };
-                    updateAudio();
-                    audioBtn.addEventListener('click', () => {
-                        try {
-                                                        if (!window.AmbientSounds.isEnabled) {
-                                                            if (!hasConsent()) { return; }
-                                                            window.AmbientSounds.enable({ volume: (volume ? volume.value/100 : 0.3) });
-                                                        } else {
-                                                            window.AmbientSounds.disable();
-                                                        }
-                            updateAudio();
-                        } catch(_) {}
-                    });
-                                        if (volume) {
-                                            volume.addEventListener('input', () => {
-                                                try { if (window.AmbientSounds && typeof window.AmbientSounds.setVolume === 'function') { window.AmbientSounds.setVolume(volume.value/100); } } catch(_) {}
-                                            });
-                                        }
                 }
             });
         </script>
@@ -489,7 +453,6 @@
     <script src="js/blog.js?v=2025111508" defer></script>
     <script src="js/quiz.js?v=2025111602" defer></script>
     <script src="js/sand-write.js?v=2025111612" defer></script>
-    <script src="js/ambient-sounds.js?v=2025111508" defer></script>
     <script src="js/narrative-scroll.js?v=2025111508" defer></script>
     <script src="js/fetch-with-retry.js?v=2025113001" defer></script>
     <script src="js/realtime.js?v=2025111508" defer></script>

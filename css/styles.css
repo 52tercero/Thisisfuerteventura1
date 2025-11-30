@@ -2959,10 +2959,6 @@ header.scrolled { background: rgba(255,255,255,0.98); backdrop-filter: saturate(
     .footer-content { grid-template-columns: 1fr; }
 }
 
-/* Ambient canvas */
-#ambient-waves { position: fixed; left: 0; right: 0; bottom: 0; height: 120px; pointer-events: none; z-index: 1; opacity: .75; }
-
-
 .skeleton-card {
     background: #fff;
     border-radius: 10px;
@@ -3700,8 +3696,4 @@ select:focus-visible {
 .quiz-done-title { font-family: var(--font-display); color: var(--color-cielo); margin-bottom:1rem; }
 .quiz-score { font-size:3rem; font-weight:700; color: var(--color-mar); margin:1rem 0; }
 .quiz-message { font-size:1.2rem; color:#666; margin-bottom:2rem; }
-
-/* Particles canvas positioning (CSP-safe) */
-.hero.particle-scene { position: relative; }
-.particle-canvas { position:absolute; top:0; left:0; width:100%; height:100%; pointer-events:none; z-index:1; }
 
