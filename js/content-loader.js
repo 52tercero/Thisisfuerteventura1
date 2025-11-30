@@ -120,45 +120,9 @@ document.addEventListener('DOMContentLoaded', async function() {
                     if (currentAbort) { try { currentAbort.abort(); } catch(_){ } }
                     currentAbort = new AbortController();
                     console.log('[CONTENT-LOADER] Portada: usando fuentes exclusivas:', HOMEPAGE_NEWS_SOURCES);
-                    // Si tenemos justo dos fuentes de portada, obtener 10 por cada una
-                    if (Array.isArray(activeNewsSources) && activeNewsSources.length === 2) {
-                        const [srcA, srcB] = activeNewsSources;
-                        // Progressive: lanzar cada fuente y renderizar parcial al llegar
-                        const pA = FeedUtils.fetchRSSFeeds([srcA], { noCache: true, progressive: true, signal: currentAbort.signal });
-                        const pB = FeedUtils.fetchRSSFeeds([srcB], { noCache: true, progressive: true, signal: currentAbort.signal });
-                        const [itemsA, itemsB] = await Promise.all([pA, pB]);
-
-                        const sortByTimeDesc = (arr) => {
-                            const norm = (it) => {
-                                if (it && it.publishedAt) {
-                                    const dt = new Date(it.publishedAt);
-                                    if (!Number.isNaN(dt.getTime())) return dt.getTime();
-                                }
-                                if (it && it.raw) {
-                                    const rawDate = it.raw?.pubDate || it.raw?.published || it.raw?.updated || null;
-                                    if (rawDate) {
-                                        const dt = new Date(rawDate);
-                                        if (!Number.isNaN(dt.getTime())) return dt.getTime();
-                                    }
-                                }
-                                try {
-                                    const parts = (it?.date || '').split(' de ').reverse().join(' ');
-                                    const fallback = new Date(parts);
-                                    if (!Number.isNaN(fallback.getTime())) return fallback.getTime();
-                                } catch(_){}
-                                return 0;
-                            };
-                            return [...arr].sort((a,b)=> norm(b)-norm(a));
-                        };
-
-                        const topA = sortByTimeDesc(itemsA).slice(0, 10);
-                        const topB = sortByTimeDesc(itemsB).slice(0, 10);
-                        // Devolver combinación; el orden final será por fecha global (más reciente -> más antiguo)
-                        return topA.concat(topB);
-                    }
-
-                    // Bypass caché para portada para maximizar frescura (modo general)
-                    return await FeedUtils.fetchRSSFeeds(activeNewsSources, { noCache: true, progressive: true, signal: currentAbort.signal });
+                    // Usar progressive: true para renderizar items conforme llegan de cada fuente
+                    const itemsAll = await FeedUtils.fetchRSSFeeds(activeNewsSources, { noCache: true, progressive: true, signal: currentAbort.signal });
+                    return Array.isArray(itemsAll) ? itemsAll : [];
                 }
             } catch (e) {
                 console.warn('[CONTENT-LOADER] FeedUtils.fetchRSSFeeds failed:', e);
