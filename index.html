@@ -76,6 +76,10 @@
         <button type="button" class="mobile-menu" aria-label="Abrir menú" aria-controls="site-nav" aria-expanded="false">
             <i class="fas fa-bars" aria-hidden="true"></i>
         </button>
+        <!-- Reduce motion toggle for accessibility -->
+        <button type="button" id="reduce-motion-toggle" class="mobile-menu" aria-label="Reducir animaciones" title="Reducir animaciones">
+            <i class="fas fa-universal-access" aria-hidden="true"></i>
+        </button>
     </header>
     <main id="main">
         <section class="hero parallax reveal hero-video">
@@ -159,6 +163,8 @@
         <h2 class="sand-write" data-sand-write data-sand-step="0.04" data-sand-duration="0.75" data-sand-distribution="accelerate">Explora Fuerteventura</h2>
         <p class="section-intro">Descubre los lugares más emblemáticos de la isla con nuestro mapa interactivo</p>
         <div id="interactive-map"></div>
+        <!-- Three.js stylized map scene container -->
+        <div id="scene-mapa" data-chapter style="width:100%;height:360px"></div>
     </section>
 
     <!-- Quiz de gamificación -->
@@ -189,6 +195,16 @@
         <div class="timeline-container">
             <div id="news-timeline" class="timeline-swiper"></div>
         </div>
+    </section>
+
+    <!-- Additional stylized scenes -->
+    <section class="reveal playas-section" data-chapter>
+        <h2 data-wind>Playas — movimiento de olas</h2>
+        <div id="scene-playas" style="width:100%;height:320px"></div>
+    </section>
+    <section class="reveal volcan-section" data-chapter>
+        <h2 data-wind>Volcanes — latido de la tierra</h2>
+        <div id="scene-volcan" style="width:100%;height:300px"></div>
     </section>
 
     </main>
@@ -354,6 +370,20 @@
     <script src="js/scenes/mapa.js?v=2025113001" defer></script>
     <script src="js/scenes/playas.js?v=2025113001" defer></script>
     <script src="js/scenes/volcan.js?v=2025113001" defer></script>
+        <script defer>
+            // Wire reduce-motion toggle
+            document.addEventListener('DOMContentLoaded', function() {
+                const btn = document.getElementById('reduce-motion-toggle');
+                if (!btn || !window.__ANIMATIONS__) return;
+                const update = () => { btn.setAttribute('aria-pressed', window.__ANIMATIONS__.isReduced() ? 'true' : 'false'); };
+                update();
+                btn.addEventListener('click', () => {
+                    const next = !window.__ANIMATIONS__.isReduced();
+                    window.__ANIMATIONS__.setReduceMotion(next);
+                    update();
+                });
+            });
+        </script>
     <script src="js/content-loader.js?v=2025111902" defer></script>
     <script src="js/cookies.js?v=2025111508" defer></script>
     
