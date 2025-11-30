@@ -1,29 +1,41 @@
 /* No importar fuentes desde CSS, se cargan desde el HTML para mejor rendimiento */
 
-/* Variables de color estilo Pearson: profesional y moderno */
+/* Paleta de Colores: Inspirada en Fuerteventura */
 :root {
-    /* Colores principales - Paleta profesional */
-    --primary-color: #0077b6; /* Azul profesional */
-    --primary-light: #00b4d8; /* Azul más claro */
-    --primary-dark: #0052a3; /* Azul más oscuro */
-    --secondary-color: #1e88e5; /* Azul secundario */
-    --accent-color: #00bcd4; /* Cian */
+    /* PALETA PRINCIPAL - Inspirada en la Naturaleza de Fuerteventura */
+    --color-arena: #D4A574; /* Arena dorada de playas */
+    --color-mar: #00A8B5; /* Mar turquesa del Atlántico */
+    --color-cielo: #87CEEB; /* Cielo despejado */
+    --color-volcan: #2C2C2C; /* Roca volcánica oscura */
+    --color-sol: #F89B4B; /* Luz cálida del atardecer */
+    --color-vegetacion: #6B8E23; /* Vegetación árida */
+    --color-blanco: #FFFFFF; /* Blanco limpio */
     
-    /* Colores de texto - Grises profesionales */
-    --text-color: #1f2937; /* Gris oscuro */
-    --text-light: #6b7280; /* Gris medio */
-    --text-lighter: #9ca3af; /* Gris claro */
-    --text-white: #ffffff;
+    /* PALETA SECUNDARIA - Variantes */
+    --color-arena-dark: #A68860; /* Arena más oscura */
+    --color-arena-light: #E8D7C3; /* Arena más clara */
+    --color-mar-dark: #007A87; /* Mar profundo */
+    --color-cielo-dark: #5B9BBC; /* Cielo más oscuro */
+    --color-gris-neutro: #6B7280; /* Gris neutro */
     
-    /* Backgrounds - Minimalistas */
-    --bg-white: #ffffff;
-    --bg-light: #f9fafb; /* Gris muy claro */
-    --bg-lighter: #f3f4f6; /* Gris ultra claro */
-    --bg-dark: #111827;
+    /* COLORES DE ESTADO */
+    --color-exito: #10B981; /* Verde exitoso */
+    --color-advertencia: #F59E0B; /* Naranja advertencia */
+    --color-error: #EF4444; /* Rojo error */
     
-    /* Gradientes profesionales */
-    --gradient-primary: linear-gradient(135deg, #0077b6 0%, #00b4d8 100%);
-    --gradient-subtle: linear-gradient(135deg, #f9fafb 0%, #f3f4f6 100%);
+    /* COLORES SEMÁNTICOS */
+    --color-text-primary: var(--color-volcan); /* Texto principal */
+    --color-text-secondary: var(--color-gris-neutro); /* Texto secundario */
+    --color-bg-primary: var(--color-blanco); /* Fondo principal */
+    --color-bg-secondary: var(--color-arena-light); /* Fondo secundario */
+    --color-accent-primary: var(--color-mar); /* Acento primario */
+    --color-accent-secondary: var(--color-sol); /* Acento secundario */
+    
+    /* GRADIENTES TEMÁTICOS */
+    --gradient-mar-arena: linear-gradient(135deg, #00A8B5 0%, #D4A574 100%);
+    --gradient-cielo-sol: linear-gradient(135deg, #87CEEB 0%, #F89B4B 100%);
+    --gradient-volcan-arena: linear-gradient(to right, #2C2C2C 0%, #D4A574 100%);
+    --gradient-fondo-suave: linear-gradient(135deg, #FFFFFF 0%, #E8D7C3 100%);
     
     /* Tipografía */
     --font-display: 'Yeseva One', serif;
@@ -79,6 +91,29 @@
     --danger-color: #ef4444;
     --success-color: #10b981;
     --warning-color: #f59e0b;
+    
+    /* ALIASES PARA COMPATIBILIDAD CON NUEVA PALETA */
+    --primary-color: var(--color-mar); /* Mar Turquesa como primario */
+    --primary-light: var(--color-cielo); /* Cielo como variante clara */
+    --primary-dark: var(--color-mar-dark); /* Mar profundo como variante oscura */
+    --secondary-color: var(--color-sol); /* Sol como secundario */
+    --accent-color: var(--color-arena); /* Arena como acento */
+    
+    /* Text color aliases */
+    --text-color: var(--color-text-primary);
+    --text-light: var(--color-text-secondary);
+    --text-lighter: var(--color-gris-neutro);
+    --text-white: var(--color-blanco);
+    
+    /* Background aliases */
+    --bg-white: var(--color-blanco);
+    --bg-light: var(--color-arena-light);
+    --bg-lighter: #f3f4f6;
+    --bg-dark: var(--color-volcan);
+    
+    /* Gradient aliases */
+    --gradient-primary: var(--gradient-mar-arena);
+    --gradient-subtle: var(--gradient-fondo-suave);
 }
 
 /* Tema oscuro: sobreescritura de tokens a nivel de raíz */
@@ -95,7 +130,11 @@ html {
 }
 
 /* Evitar desplazamientos horizontales por desbordes accidentales */
-html, body { overflow-x: hidden; }
+html, body { 
+  overflow-x: hidden;
+  margin: 0;
+  padding: 0;
+}
 
 /* CSP-safe helpers for JS-generated markup */
 .ns-inline { display: inline-block; }
@@ -3086,6 +3125,8 @@ header.scrolled { background: rgba(255,255,255,0.98); backdrop-filter: saturate(
     object-fit: cover;
     z-index: 0;
     filter: brightness(0.6);
+    will-change: transform;
+    transform: translateZ(0); /* Enable GPU acceleration */
 }
 
 .hero-video .hero-overlay,
@@ -3194,6 +3235,15 @@ header.scrolled { background: rgba(255,255,255,0.98); backdrop-filter: saturate(
     background-color: var(--bg-light);
 }
 
+.map-section {
+    padding-bottom: 0;
+}
+
+.quiz-section {
+    padding-top: 0;
+    margin-top: -1px;
+}
+
 .widgets-section h2,
 .map-section h2,
 .quiz-section h2 {
@@ -3201,14 +3251,14 @@ header.scrolled { background: rgba(255,255,255,0.98); backdrop-filter: saturate(
     font-family: var(--font-display);
     color: var(--primary-color);
     font-size: clamp(1.6rem, 3vw, 2.2rem);
-    margin-bottom: var(--spacing-2xl);
+    margin-bottom: 0;
     font-weight: 700;
 }
 
 .section-intro {
     text-align: center;
     max-width: 720px;
-    margin: 0 auto var(--spacing-2xl);
+    margin: 0;
     color: var(--text-light);
     font-family: var(--font-body);
     font-weight: 500;

@@ -114,48 +114,20 @@ document.addEventListener('DOMContentLoaded', async function () {
     // Función para obtener y parsear feeds RSS (delegada a FeedUtils)
     let currentAbort = null;
     async function fetchLatestFeeds() {
-      try {
-        if (window.FeedUtils && typeof FeedUtils.fetchRSSFeeds === 'function') {
-          // Abort anterior si existe
-          if (currentAbort) { try { currentAbort.abort(); } catch (_) { } }
-          currentAbort = new AbortController();
-          console.log('[CONTENT-LOADER] Portada: usando fuentes exclusivas:', HOMEPAGE_NEWS_SOURCES);
-          // Usar progressive: true para renderizar items conforme llegan de cada fuente
-          const itemsAll = await FeedUtils.fetchRSSFeeds(activeNewsSources, { noCache: true, progressive: true, signal: currentAbort.signal });
-          return Array.isArray(itemsAll) ? itemsAll : [];
-        }
-      } catch (e) {
-        console.warn('[CONTENT-LOADER] FeedUtils.fetchRSSFeeds failed:', e);
-      }
-      // Fallback: intentar el proxy local/Netlify directamente
+      // Ir directamente al fallback (proxy local) para mayor velocidad
       try {
         // Usar proxy local confirmado (healthy) para asegurar datos
-        let proxyUrl = 'http://localhost:3000';
-        
-        // Si proxy discovery encontró un proxy, usarlo
-        if (typeof window.__RSS_PROXY_URL === 'string' && window.__RSS_PROXY_URL) {
-          proxyUrl = window.__RSS_PROXY_URL;
-          console.log('[CONTENT-LOADER] Usando proxy descubierto:', proxyUrl);
-        } else {
-          // Si no, intentar los puertos comunes (3000-3010)
-          for (let port = 3000; port <= 3010; port++) {
-            try {
-              const testUrl = `http://localhost:${port}/health`;
-              const testRes = await fetch(testUrl, { cache: 'no-store', signal: AbortSignal.timeout(800) }).catch(() => null);
-              if (testRes && testRes.ok) {
-                proxyUrl = `http://localhost:${port}`;
-                console.log('[CONTENT-LOADER] Proxy disponible en puerto:', port);
-                break;
-              }
-            } catch (_) { /* continuar al siguiente puerto */ }
-          }
-        }
+        let proxyUrl = 'http://localhost:3001';
+        console.log('[CONTENT-LOADER] Usando proxy directo:', proxyUrl);
         
         const url = proxyUrl + '/api/aggregate?sources=' + encodeURIComponent(activeNewsSources.join(','));
+        console.log('[CONTENT-LOADER] Solicitando:', url);
         const res = await fetch(url, { cache: 'no-store' });
+        console.log('[CONTENT-LOADER] Respuesta status:', res.status);
         if (res.ok) {
           const json = await res.json();
           const items = Array.isArray(json.items) ? json.items : [];
+          console.log('[CONTENT-LOADER] Items recibidos:', items.length);
           return items.map(it => ({
             title: it.title,
             image: it.image,
@@ -170,7 +142,9 @@ document.addEventListener('DOMContentLoaded', async function () {
             raw: it.raw || null
           }));
         }
-      } catch (_) {}
+      } catch (err) {
+        console.error('[CONTENT-LOADER] Error al cargar feeds:', err?.message);
+      }
       // Alternativa: si las utilidades no están cargadas, devolver arreglo vacío
       return [];
     }
@@ -368,47 +342,52 @@ document.addEventListener('DOMContentLoaded', async function () {
       const immediate = featured.slice(0, 6);
       const deferred = featured.slice(6);
       immediate.forEach((item, index) => {
-        console.log(`[CONTENT-LOADER] Renderizando artículo ${index + 1}:`, item.title, 'Image:', item.image);
-        const card = document.createElement('div');
-        card.className = 'content-card';
-
-        // Descripción en texto plano truncada a 150 caracteres
-        const fullText = toPlainText(item.description || item.summary || '');
-        const shortDescription = fullText.length > 150
-          ? fullText.slice(0, 150) + '...'
-          : fullText;
-
-        // Crear un ID único para el artículo basado en título y publishedAt/fecha
-        const idBase = `${item.title || ''}|${item.publishedAt || item.date || ''}`;
-        const articleId = (function () { try { return btoa(encodeURIComponent(idBase)).replace(/[^a-zA-Z0-9]/g, '').substring(0, 32); } catch (_) { return Math.random().toString(36).slice(2, 34); } })();
-
-        // Guardar el artículo completo en localStorage para acceso desde noticia.html
         try {
-          localStorage.setItem(`article_${articleId}`, JSON.stringify(item));
-        } catch (e) {
-          console.warn('Error guardando artículo en localStorage:', e);
+          console.log(`[CONTENT-LOADER] Renderizando artículo ${index + 1}:`, item.title, 'Image:', item.image);
+          const card = document.createElement('div');
+          card.className = 'content-card';
+
+          // Descripción en texto plano truncada a 150 caracteres
+          const fullText = toPlainText(item.description || item.summary || '');
+          const shortDescription = fullText.length > 150
+            ? fullText.slice(0, 150) + '...'
+            : fullText;
+
+          // Crear un ID único para el artículo basado en título y publishedAt/fecha
+          const idBase = `${item.title || ''}|${item.publishedAt || item.date || ''}`;
+          const articleId = (function () { try { return btoa(encodeURIComponent(idBase)).replace(/[^a-zA-Z0-9]/g, '').substring(0, 32); } catch (_) { return Math.random().toString(36).slice(2, 34); } })();
+
+          // Guardar el artículo completo en localStorage para acceso desde noticia.html
+          try {
+            localStorage.setItem(`article_${articleId}`, JSON.stringify(item));
+          } catch (e) {
+            console.warn('Error guardando artículo en localStorage:', e);
+          }
+
+          card.innerHTML = `
+                      <img src="${toImageSrc(item.image)}" alt="${escapeHTML(item.title)}" loading="lazy" referrerpolicy="no-referrer">
+                      <div class="card-content">
+                          <span class="date">${escapeHTML(item.date)}</span>
+                          <h3>${escapeHTML(item.title)}</h3>
+                          <p>${shortDescription}</p>
+                      </div>
+                  `;
+          const imgEl = card.querySelector('img');
+          if (imgEl) {
+            imgEl.addEventListener('error', () => { imgEl.src = 'images/logo.jpg?v=2025110501'; });
+          }
+
+          const readMoreBtn = document.createElement('a');
+          readMoreBtn.href = `noticia.html?id=${articleId}`;
+          readMoreBtn.className = 'btn';
+          readMoreBtn.textContent = 'Leer más';
+          card.querySelector('.card-content').appendChild(readMoreBtn);
+
+          featuredNewsContainer.appendChild(card);
+          console.log(`[CONTENT-LOADER] ✓ Artículo ${index + 1} renderizado`);
+        } catch (err) {
+          console.error(`[CONTENT-LOADER] Error renderizando artículo ${index + 1}:`, err?.message);
         }
-
-        card.innerHTML = `
-                    <img src="${toImageSrc(item.image)}" alt="${escapeHTML(item.title)}" loading="lazy" referrerpolicy="no-referrer">
-                    <div class="card-content">
-                        <span class="date">${escapeHTML(item.date)}</span>
-                        <h3>${escapeHTML(item.title)}</h3>
-                        <p>${shortDescription}</p>
-                    </div>
-                `;
-        const imgEl = card.querySelector('img');
-        if (imgEl) {
-          imgEl.addEventListener('error', () => { imgEl.src = 'images/logo.jpg?v=2025110501'; });
-        }
-
-        const readMoreBtn = document.createElement('a');
-        readMoreBtn.href = `noticia.html?id=${articleId}`;
-        readMoreBtn.className = 'btn';
-        readMoreBtn.textContent = 'Leer más';
-        card.querySelector('.card-content').appendChild(readMoreBtn);
-
-        featuredNewsContainer.appendChild(card);
       });
       if (deferred.length) {
         const renderDeferred = () => {
