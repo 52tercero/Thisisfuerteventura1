@@ -1,4 +1,16 @@
 ﻿User-agent: *
 Allow: /
+Disallow: /server/
+Disallow: /tools/
+Disallow: /test-*.html
+Disallow: /*.backup$
 
-Sitemap: /sitemap.xml
+# Explicit allowances for major bots
+User-agent: Googlebot
+Allow: /
+
+User-agent: Bingbot
+Allow: /
+
+# Sitemap (absolute URL recommended)
+Sitemap: https://thisisfuerteventura.es/sitemap.xml

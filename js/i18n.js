@@ -8,7 +8,7 @@
  * En JSON: { "nav": { "home": "Home" } }
  */
 
-const i18n = (function() {
+const i18n = (function () {
   let currentLang = 'es';
   let translations = {};
 
@@ -27,7 +27,7 @@ const i18n = (function() {
     document.querySelectorAll('[data-i18n]').forEach(el => {
       const key = el.getAttribute('data-i18n');
       const val = getNestedValue(translations, key);
-      if (val) el.textContent = val;
+      if (val) {el.textContent = val;}
     });
   }
 
@@ -43,7 +43,7 @@ const i18n = (function() {
 })();
 
 // Auto-detectar idioma del navegador al cargar (opcional)
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
   const browserLang = navigator.language.split('-')[0]; // 'es', 'en', 'de'
   const supportedLangs = ['es', 'en', 'de'];
   const lang = supportedLangs.includes(browserLang) ? browserLang : 'es';

@@ -14,8 +14,12 @@ npm start
 ```
 
 Usage
-- Endpoint: `GET /api/rss?url=<encoded_feed_url>`
+- Endpoint: `GET /api/rss?url=<encoded_feed_url>` — Proxy and normalize a single feed
+- Endpoint: `GET /api/aggregate?sources=url1,url2` — Fetch multiple feeds and dedupe items
+- Endpoint: `GET /api/image?url=<https_image_url>` — Proxy images to avoid CORB/hotlink issues
 - Example: `http://localhost:3000/api/rss?url=https%3A%2F%2Fwww.canarias7.es%2Frss%2F2.0%2Fportada`
+- Example (aggregate):
+	`http://localhost:3000/api/aggregate?sources=https://rss.app/feeds/jbwZ2Q9QAvgvI6G0.xml,https://rss.app/feeds/8SmCQL7GDZyu2xB4.xml`
 
 Security
 - The proxy restricts allowed sources to a short allowlist (see `index.js`). Update `ALLOWED_SOURCES` to add new feeds.
@@ -37,6 +41,19 @@ python -m http.server 8000
 ```
 
 Then open http://localhost:8000 in your browser. If the proxy is running and the feed URL is allowed, the client will fetch real feed items; otherwise the UI will show a 'No se pudieron cargar las noticias' or similar message indicating feeds are unavailable.
+
+Smoke test the aggregate endpoint directly (PowerShell):
+
+```powershell
+$url = 'http://localhost:3000/api/aggregate?sources=https://rss.app/feeds/jbwZ2Q9QAvgvI6G0.xml,https://rss.app/feeds/8SmCQL7GDZyu2xB4.xml'
+try {
+	$r = Invoke-WebRequest -Uri $url -UseBasicParsing -TimeoutSec 10
+	$json = $r.Content | ConvertFrom-Json
+	Write-Host ('Aggregate items: ' + $json.items.Count)
+} catch {
+	Write-Host ('Request failed: ' + $_.Exception.Message)
+}
+```
 
 Port notes
 - The proxy defaults to port 3000 (use `PORT` environment variable to override).
@@ -64,3 +81,7 @@ npm start
 $env:ALLOW_ALL = '1'
 npm start
 ```
+
+Workspace tasks
+- In VS Code, you can run `Dev: Start All` to start the RSS proxy, a static server on `http://localhost:8000`, and open the site automatically.
+- There is also a `Smoke test RSS aggregate` task that hits the aggregate endpoint and prints the item count.

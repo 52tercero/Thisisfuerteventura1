@@ -1,0 +1,31 @@
+﻿{
+  "posts": [
+    {
+      "title": "Rutas secretas en el norte de Fuerteventura",
+      "slug": "rutas-secretas-norte",
+      "date": "2025-11-15",
+      "category": "Rutas",
+      "image": "images/turismo/el-cotillo.avif",
+      "excerpt": "Descubre senderos poco conocidos entre volcanes, malpaís y calas escondidas cerca de El Cotillo y Corralejo.",
+      "content": "Desde El Cotillo hacia el norte encontrarás pistas de tierra que conectan calas de aguas turquesas y charcos tranquilos. Recomendación: madruga, lleva agua y protege el entorno. Cruza por el malpaís con respeto, evitando salir de las sendas marcadas. Cierra el día con una puesta de sol en el Faro del Tostón."
+    },
+    {
+      "title": "Entrevista a una guardaparques de Jandía",
+      "slug": "entrevista-guardaparques-jandia",
+      "date": "2025-11-10",
+      "category": "Entrevistas",
+      "image": "images/turismo/parque-natural-jandia.jpg",
+      "excerpt": "Conversamos sobre la conservación en Cofete, el impacto del turismo y cómo visitar el parque con responsabilidad.",
+      "content": "La guardaparques explica la riqueza natural de Jandía, la importancia de no dejar residuos y de respetar la fauna. Recomienda informarse del estado de pistas y mareas, y priorizar transporte compartido cuando sea posible."
+    },
+    {
+      "title": "Eventos en Fuerteventura: Diciembre 2025",
+      "slug": "eventos-diciembre-2025",
+      "date": "2025-11-05",
+      "category": "Agenda",
+      "image": "images/turismo/puerto-del-rosario-.jpg",
+      "excerpt": "Mercadillos navideños, conciertos al aire libre y rutas guiadas para despedir el año.",
+      "content": "Puerto del Rosario acoge el mercadillo navideño y actuaciones locales. En La Oliva, rutas guiadas por el casco histórico. Consulta horarios en los ayuntamientos y reserva con antelación."
+    }
+  ]
+}

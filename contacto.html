@@ -3,46 +3,85 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Contacto - This is Fuerteventura</title>
+    <title>Contacto - This is Fuerteventura | Información Turística</title>
+    <meta name="theme-color" content="#0f4c81">
+    <meta name="description" content="Contacta con This is Fuerteventura para consultas sobre turismo, alojamiento, playas y eventos en las Islas Canarias. Estamos aquí para ayudarte.">
+    <meta name="keywords" content="contacto Fuerteventura, información turística, consultas turismo Canarias">
+    <meta name="robots" content="index, follow">
+    
+    <!-- Preconexión a recursos externos para mejorar el rendimiento -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
+    <link rel="dns-prefetch" href="https://cdnjs.cloudflare.com">
+    
+    <link rel="canonical" href="https://thisisfuerteventura.es/contacto.html">
     <link rel="manifest" href="manifest.webmanifest">
-    <link rel="stylesheet" href="css/styles.css?v=2025110501">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <meta name="description" content="Contacta con This is Fuerteventura para cualquier consulta sobre turismo, alojamiento o información general sobre la isla.">
+    <link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@400;600;700&family=Yeseva+One&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/styles.css?v=2025111803">
+    <link rel="preload" href="images/Fuerteventura.jpeg" as="image" fetchpriority="high">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" crossorigin="anonymous" integrity="sha384-t1nt8BQoYMLFN5p42tRAtuAAFQaCQODekUVeKKZrEnEyp4H2R0RHFz0KWpmj7i8g">
+    
+    <!-- Metadatos Open Graph -->
+    <meta property="og:title" content="Contacto - This is Fuerteventura">
+    <meta property="og:description" content="Contacta con nosotros para consultas sobre turismo y servicios en Fuerteventura.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://thisisfuerteventura.es/contacto.html">
+    <meta property="og:image" content="https://thisisfuerteventura.es/images/logo.jpg">
+        <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://unpkg.com https://www.googletagmanager.com https://analytics.google.com https://www.google-analytics.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://unpkg.com; font-src 'self' data: https://fonts.gstatic.com https://cdnjs.cloudflare.com; img-src 'self' data: https: https://unpkg.com https://*.tile.openstreetmap.org; media-src 'self'; connect-src 'self' https://thisisfuerteventura.netlify.app https://www.googletagmanager.com https://www.google-analytics.com https://cdn.jsdelivr.net https://unpkg.com http://localhost:3000 http://localhost:3001 http://localhost:* http://127.0.0.1:* https://api.open-meteo.com https://marine-api.open-meteo.com https://ingesteer.services-prod.nsvcs.net; base-uri 'self'; object-src 'none'; frame-ancestors 'self';">
+    
+    <!-- Tarjetas de Twitter -->
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="Contacto - This is Fuerteventura">
+    <meta name="twitter:description" content="Contacta con nosotros para información turística sobre Fuerteventura.">
+    
+    <!-- Datos estructurados (archivo externo para cumplir la CSP) -->
+    <script type="application/ld+json" src="data/structured/contacto-contactpage.jsonld"></script>
 </head>
 <body>
+    <a class="skip-link" href="#main">Saltar al contenido principal</a>
     <header>
         <div class="logo-container">
-            <img src="images/logo.jpg" alt="This is Fuerteventura Logo" class="logo">
+            <picture>
+                <source srcset="images/logo.webp" type="image/webp">
+                <img src="images/logo.jpg" alt="This is Fuerteventura Logo" class="logo" loading="lazy" decoding="async" width="70" height="70">
+            </picture>
             <h1>This is Fuerteventura</h1>
         </div>
-        <nav>
+        <nav id="site-nav" aria-label="Navegación principal" role="navigation">
             <ul>
                 <li><a href="index.html">Inicio</a></li>
                 <li><a href="noticias.html">Noticias</a></li>
                 <li><a href="turismo.html">Turismo</a></li>
                 <li><a href="alojamiento.html">Alojamiento</a></li>
                 <li><a href="playas.html">Playas</a></li>
-                <li><a href="gastronomia.html">Gastronomía</a></li>
-                <li><a href="contacto.html">Contacto</a></li>
+                <li><a href="senderos.html">Senderos</a></li>
+                <li><a href="blog.html">Blog</a></li>
+                <li><a href="contacto.html" aria-current="page">Contacto</a></li>
             </ul>
         </nav>
-        <div class="mobile-menu">
-            <i class="fas fa-bars"></i>
-        </div>
+        <button type="button" class="mobile-menu" aria-label="Abrir menú" aria-controls="site-nav" aria-expanded="false">
+            <i class="fas fa-bars" aria-hidden="true"></i>
+        </button>
     </header>
 
     <main id="main">
-    <section class="hero contact-hero">
+    <section class="hero contact-hero parallax reveal hero-video">
+        <video autoplay muted loop playsinline preload="metadata" class="hero-bg">
+            <source src="images/VideoHeader.mp4" type="video/mp4" fetchpriority="high">
+            Tu navegador no soporta vídeo.
+        </video>
+        <div class="hero-overlay"></div>
         <div class="hero-content">
-            <h2>Contacto</h2>
+            <h2 class="sand-write" data-sand-write data-sand-step="0.08" data-sand-duration="0.95" data-sand-delay="0.12" data-sand-distribution="ease">Contacto</h2>
             <p>Estamos aquí para ayudarte</p>
         </div>
     </section>
 
-    <section class="contact-content">
+    <section class="contact-content reveal">
         <div class="contact-container">
             <div class="contact-info">
-                <h2>Información de contacto</h2>
+                <h2 class="sand-write" data-sand-write data-sand-step="0.05" data-sand-duration="0.85" data-sand-distribution="ease">Información de contacto</h2>
                 <div class="info-item">
                     <i class="fas fa-envelope"></i>
                     <div>
@@ -68,28 +107,43 @@
                 <div class="social-media">
                     <h3>Redes sociales</h3>
                     <div class="social-icons">
-                        <a href="#"><i class="fab fa-facebook"></i></a>
-                        <a href="#"><i class="fab fa-twitter"></i></a>
-                        <a href="#"><i class="fab fa-instagram"></i></a>
-                        <a href="#"><i class="fab fa-youtube"></i></a>
+                        <a href="https://www.facebook.com/profile.php?id=61583457788241" target="_blank" rel="noopener noreferrer" aria-label="Facebook"><i class="fab fa-facebook"></i></a>
+                        <a href="https://x.com/thisisfuerte_es" target="_blank" rel="noopener noreferrer" aria-label="X"><i class="fab fa-x-twitter"></i></a>
+                        <a href="https://www.instagram.com/thisisfuertevntura.es/" target="_blank" rel="noopener noreferrer" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                        <a href="https://www.youtube.com/@thisisfuerteventura" target="_blank" rel="noopener noreferrer" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
                     </div>
                 </div>
             </div>
 
             <div class="contact-form">
-                <h2>Envíanos un mensaje</h2>
+                <h2 class="sand-write" data-sand-write data-sand-step="0.05" data-sand-duration="0.85" data-sand-distribution="ease">Envíanos un mensaje</h2>
                 <form id="contact-form">
                     <div class="form-group">
-                        <label for="name">Nombre completo</label>
-                        <input type="text" id="name" name="name" required>
+                        <label for="name">Nombre</label>
+                        <input type="text" 
+                               id="name" 
+                               name="name" 
+                               autocomplete="name"
+                               aria-label="Tu nombre completo"
+                               required>
                     </div>
                     <div class="form-group">
                         <label for="email">Email</label>
-                        <input type="email" id="email" name="email" required>
+                        <input type="email" 
+                               id="email" 
+                               name="email" 
+                               autocomplete="email"
+                               aria-label="Tu dirección de correo electrónico"
+                               pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$"
+                               required>
                     </div>
                     <div class="form-group">
                         <label for="subject">Asunto</label>
-                        <input type="text" id="subject" name="subject" required>
+                        <input type="text" 
+                               id="subject" 
+                               name="subject"
+                               aria-label="Asunto del mensaje" 
+                               required>
                     </div>
                     <div class="form-group">
                         <label for="message">Mensaje</label>
@@ -101,26 +155,26 @@
         </div>
     </section>
 
-    <section class="about-project">
+    <section class="about-project reveal">
         <div class="container">
-            <h2>Sobre el proyecto</h2>
+            <h2 class="sand-write" data-sand-write data-sand-step="0.05" data-sand-duration="0.85" data-sand-distribution="ease">Sobre el proyecto</h2>
             <p>This is Fuerteventura es una guía independiente pensada para ayudarte a descubrir la isla: noticias, planes, gastronomía y consejos prácticos. Reunimos información útil y la presentamos de forma clara para que planifiques tu viaje o disfrutes si ya vives aquí.</p>
             <div class="about-grid">
                 <figure>
-                    <img src="https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?auto=format&fit=crop&w=1200&q=80" alt="Costa de Fuerteventura" onerror="this.onerror=null;this.src='images/Fuerteventura.jpeg';">
+                    <img src="https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?auto=format&fit=crop&w=1200&q=80" alt="Costa de Fuerteventura">
                     <figcaption>Costa y acantilados</figcaption>
                 </figure>
                 <figure>
-                    <img src="https://images.unsplash.com/photo-1544551763-7ef4200b50cb?auto=format&fit=crop&w=1200&q=80" alt="Playa y dunas" onerror="this.onerror=null;this.src='images/Fuerteventura.jpeg';">
+                    <img src="https://images.unsplash.com/photo-1544551763-7ef4200b50cb?auto=format&fit=crop&w=1200&q=80" alt="Playa y dunas">
                     <figcaption>Playas y dunas</figcaption>
                 </figure>
             </div>
         </div>
     </section>
 
-    <section class="press-support">
+    <section class="press-support reveal">
         <div class="container">
-            <h2>Prensa y soporte</h2>
+            <h2 class="sand-write" data-sand-write data-sand-step="0.05" data-sand-duration="0.85" data-sand-distribution="ease">Prensa y soporte</h2>
             <p>Para colaboraciones, notas de prensa o soporte técnico, indícanos el asunto en el formulario y te responderemos lo antes posible.</p>
             <ul>
                 <li>Colaboraciones y publicidad: selecciona “Colaboración” en Asunto.</li>
@@ -130,8 +184,8 @@
         </div>
     </section>
 
-    <section class="faq">
-        <h2>Preguntas frecuentes</h2>
+    <section class="faq reveal">
+        <h2 class="sand-write" data-sand-write data-sand-step="0.05" data-sand-duration="0.85" data-sand-distribution="ease">Preguntas frecuentes</h2>
         <div class="faq-container">
             <div class="faq-item">
                 <h3>¿Cómo puedo colaborar con This is Fuerteventura?</h3>
@@ -157,7 +211,10 @@
     <footer>
         <div class="footer-content">
             <div class="footer-logo">
-                <img src="images/logo.jpg" alt="This is Fuerteventura Logo" class="logo">
+                <picture>
+                    <source srcset="images/logo.webp" type="image/webp">
+                    <img src="images/logo.jpg" alt="This is Fuerteventura Logo" class="logo" loading="lazy" decoding="async" width="40" height="40">
+                </picture>
                 <h3>This is Fuerteventura</h3>
             </div>
             <div class="footer-links">
@@ -173,16 +230,16 @@
             <div class="footer-social">
                 <h4>Síguenos</h4>
                 <div class="social-icons">
-                    <a href="#"><i class="fab fa-facebook"></i></a>
-                    <a href="#"><i class="fab fa-twitter"></i></a>
-                    <a href="#"><i class="fab fa-instagram"></i></a>
-                    <a href="#"><i class="fab fa-youtube"></i></a>
+                    <a href="https://www.facebook.com/profile.php?id=61583457788241" target="_blank" rel="noopener noreferrer" aria-label="Facebook"><i class="fab fa-facebook"></i></a>
+                    <a href="https://x.com/thisisfuerte_es" target="_blank" rel="noopener noreferrer" aria-label="X"><i class="fab fa-x-twitter"></i></a>
+                    <a href="https://www.instagram.com/thisisfuertevntura.es/" target="_blank" rel="noopener noreferrer" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                    <a href="https://www.youtube.com/@thisisfuerteventura" target="_blank" rel="noopener noreferrer" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
                 </div>
             </div>
             <div class="footer-contact">
                 <h4>Contacto</h4>
                 <p><i class="fas fa-envelope"></i> info@thisisfuerteventura.es</p>
-                <p><i class="fas fa-phone"></i> +34 XXX XXX XXX</p>
+                <p><i class="fas fa-phone"></i> +34 633 938 539</p>
             </div>
         </div>
         <div class="footer-bottom">
@@ -190,6 +247,87 @@
         </div>
     </footer>
 
-    <script src="js/main.js?v=2025110501" defer></script>
+    <script src="js/main.js?v=2025111706" defer></script>
+    <script src="js/cookies.js?v=2025111508" defer></script>
+    <script src="js/scroll-animations.js?v=2025111602" defer></script>
+    <script src="js/dark-mode.js?v=2025111508" defer></script>
+    <script src="js/ux.js?v=2025111508" defer></script>
+    <script src="js/ambient-sounds.js?v=2025111508" defer></script>
+    <script src="js/sand-write.js?v=2025111611" defer></script>
+
+    <!-- Cookie Consent Banner -->
+    <div id="cookie-consent" class="cookie-consent">
+        <div class="cookie-consent-content">
+            <div class="cookie-consent-text">
+                <h3>🍪 Usamos cookies</h3>
+                <p>Utilizamos cookies propias y de terceros para mejorar tu experiencia de navegación y analizar el uso del sitio. 
+                <a href="politica-cookies.html">Más información</a></p>
+            </div>
+            <div class="cookie-consent-buttons">
+                <button id="cookie-accept" class="cookie-btn cookie-btn-accept">Aceptar todas</button>
+                <button id="cookie-reject" class="cookie-btn cookie-btn-reject">Solo necesarias</button>
+                <button id="cookie-settings" class="cookie-btn cookie-btn-settings">Configurar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Cookie Settings Modal -->
+    <div id="cookie-modal" class="cookie-modal">
+        <div class="cookie-modal-content">
+            <div class="cookie-modal-header">
+                <h2>Configuración de Cookies</h2>
+                <button id="cookie-modal-close" class="cookie-modal-close">&times;</button>
+            </div>
+            <div class="cookie-modal-body">
+                <p class="cookie-intro">
+                    Utilizamos diferentes tipos de cookies para mejorar tu experiencia en nuestro sitio web. 
+                    Puedes elegir qué categorías deseas permitir.
+                </p>
+                <div class="cookie-category">
+                    <div class="cookie-category-header">
+                        <h3>Cookies Necesarias</h3>
+                        <label class="cookie-toggle">
+                            <input type="checkbox" id="cookies-necessary" name="cookies-necessary" checked disabled>
+                            <span class="cookie-toggle-slider"></span>
+                        </label>
+                    </div>
+                    <p class="cookie-category-description">Estas cookies son esenciales para el funcionamiento del sitio web.</p>
+                </div>
+                <div class="cookie-category">
+                    <div class="cookie-category-header">
+                        <h3>Cookies Analíticas</h3>
+                        <label class="cookie-toggle">
+                            <input type="checkbox" id="analytics-toggle">
+                            <span class="cookie-toggle-slider"></span>
+                        </label>
+                    </div>
+                    <p class="cookie-category-description">Estas cookies nos permiten contar las visitas y fuentes de tráfico.</p>
+                </div>
+                <div class="cookie-category">
+                    <div class="cookie-category-header">
+                        <h3>Cookies de Marketing</h3>
+                        <label class="cookie-toggle">
+                            <input type="checkbox" id="marketing-toggle">
+                            <span class="cookie-toggle-slider"></span>
+                        </label>
+                    </div>
+                    <p class="cookie-category-description">Estas cookies pueden ser establecidas por nuestros socios publicitarios.</p>
+                </div>
+                <div class="cookie-category">
+                    <div class="cookie-category-header">
+                        <h3>Cookies Funcionales</h3>
+                        <label class="cookie-toggle">
+                            <input type="checkbox" id="functional-toggle">
+                            <span class="cookie-toggle-slider"></span>
+                        </label>
+                    </div>
+                    <p class="cookie-category-description">Estas cookies permiten funcionalidad mejorada y personalización.</p>
+                </div>
+            </div>
+            <div class="cookie-modal-footer">
+                <button id="save-cookie-preferences" class="cookie-btn cookie-btn-accept">Guardar preferencias</button>
+            </div>
+        </div>
+    </div>
 </body>
 </html>

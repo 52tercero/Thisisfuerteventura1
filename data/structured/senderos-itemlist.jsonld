@@ -1,0 +1,19 @@
+﻿{
+  "@context": "https://schema.org",
+  "@type": "ItemList",
+  "name": "Senderos de Fuerteventura",
+  "description": "Lista de rutas recomendadas para senderismo en Fuerteventura con información práctica básica.",
+  "itemListOrder": "http://schema.org/ItemListOrderDescending",
+  "numberOfItems": 9,
+  "itemListElement": [
+    { "@type": "ListItem", "position": 1, "name": "Calderón Hondo (Lajares) – Circular", "url": "https://thisisfuerteventura.es/senderos.html" },
+    { "@type": "ListItem", "position": 2, "name": "Pico de la Zarza (Jandía)", "url": "https://thisisfuerteventura.es/senderos.html" },
+    { "@type": "ListItem", "position": 3, "name": "Isla de Lobos – Circular", "url": "https://thisisfuerteventura.es/senderos.html" },
+    { "@type": "ListItem", "position": 4, "name": "Barranco de las Peñitas – Arco y Ermita", "url": "https://thisisfuerteventura.es/senderos.html" },
+    { "@type": "ListItem", "position": 5, "name": "Ajuy – Cuevas y acantilados", "url": "https://thisisfuerteventura.es/senderos.html" },
+    { "@type": "ListItem", "position": 6, "name": "Malpaís de la Arena – Circular", "url": "https://thisisfuerteventura.es/senderos.html" },
+    { "@type": "ListItem", "position": 7, "name": "GR‑131 Tramo Norte (Corralejo → La Oliva)", "url": "https://thisisfuerteventura.es/senderos.html" },
+    { "@type": "ListItem", "position": 8, "name": "Betancuria – Morro Velosa", "url": "https://thisisfuerteventura.es/senderos.html" },
+    { "@type": "ListItem", "position": 9, "name": "La Pared – Playa del Viejo Rey", "url": "https://thisisfuerteventura.es/senderos.html" }
+  ]
+}

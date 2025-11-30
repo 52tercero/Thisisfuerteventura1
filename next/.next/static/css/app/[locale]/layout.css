@@ -1,0 +1,72 @@
+/*!************************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** css ./node_modules/next/dist/build/webpack/loaders/css-loader/src/index.js??ruleSet[1].rules[14].oneOf[5].use[2]!./node_modules/next/dist/build/webpack/loaders/postcss-loader/src/index.js??ruleSet[1].rules[14].oneOf[5].use[3]!./src/components/ambient-sounds.module.css ***!
+  \************************************************************************************************************************************************************************************************************************************************************************************/
+.ambient-sounds_ambientWrap__ktZru {
+  position: fixed;
+  bottom: 1rem;
+  right: 1rem;
+  z-index: 50;
+  display: flex;
+  flex-direction: column;
+  gap: .5rem;
+  font-size: .875rem;
+  max-width: 260px;
+}
+.ambient-sounds_panel__vEEc0 {
+  background: var(--color-surface);
+  color: var(--color-text);
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  padding: .75rem .85rem .9rem;
+  box-shadow: var(--shadow-sm);
+  backdrop-filter: blur(6px);
+  transition: background-color .35s,color .35s,border-color .35s, box-shadow .35s;
+}
+.ambient-sounds_toggleBtn__SRhCo {
+  background: var(--primary-color);
+  color: #fff;
+  border: none;
+  cursor: pointer;
+  font-size: .875rem;
+  padding: .55rem .85rem;
+  border-radius: 6px;
+  box-shadow: var(--shadow-sm);
+  display: inline-flex;
+  align-items: center;
+  gap: .4rem;
+}
+.ambient-sounds_select__Gkg0y, .ambient-sounds_playBtn__Itt3K {
+  width: 100%;
+  margin-top: .5rem;
+  font-size: .8rem;
+}
+.ambient-sounds_playBtn__Itt3K {
+  background: var(--secondary-color);
+  color: #fff;
+  border: none;
+  padding: .5rem .75rem;
+  border-radius: 6px;
+  cursor: pointer;
+}
+.ambient-sounds_status__eBsDI { margin-top: .5rem; min-height: 1.1rem; font-size: .7rem; }
+[data-theme='dark'] .ambient-sounds_panel__vEEc0 { box-shadow: 0 2px 8px rgba(0,0,0,.6); }
+/*!*********************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** css ./node_modules/next/dist/build/webpack/loaders/css-loader/src/index.js??ruleSet[1].rules[14].oneOf[5].use[2]!./node_modules/next/dist/build/webpack/loaders/postcss-loader/src/index.js??ruleSet[1].rules[14].oneOf[5].use[3]!./src/components/site-header.module.css ***!
+  \*********************************************************************************************************************************************************************************************************************************************************************************/
+.site-header_siteHeader__U21NY {
+  position: sticky;
+  top: 0;
+  z-index: 40;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.75rem 1rem;
+  gap: 1rem;
+  background: var(--color-bg);
+  backdrop-filter: blur(8px);
+  border-bottom: 1px solid var(--color-border);
+  transition: background-color .35s, border-color .35s;
+}
+
+.site-header_siteHeader__U21NY nav a { transition: color .25s; }
+[data-theme='dark'] .site-header_siteHeader__U21NY { background: var(--color-bg); }

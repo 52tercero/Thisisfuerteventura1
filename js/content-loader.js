@@ -1,753 +1,464 @@
-document.addEventListener('DOMContentLoaded', async function() {
-    // Esperar a que la detección de proxy termine si está disponible
-    if (window.__RSS_PROXY_READY) {
-        try {
-            await window.__RSS_PROXY_READY;
-        } catch (e) {
-            console.warn('Error esperando detección de proxy:', e);
-        }
+document.addEventListener('DOMContentLoaded', async function () {
+  // Escapar texto y sanitizar HTML (delegar en FeedUtils si está disponible)
+  function escapeHTML(str) {
+    if (window.FeedUtils && typeof FeedUtils.escapeHTML === 'function') {
+      return FeedUtils.escapeHTML(str);
     }
-    
-    // Función para cargar noticias destacadas
-    function loadFeaturedNews() {
-        const featuredNewsContainer = document.getElementById('featured-news');
-        
-        if (!featuredNewsContainer) return;
+    try {
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+    } catch (_) {
+      return '';
+    }
+  }
+  function sanitizeHTML(html) {
+    if (window.FeedUtils && typeof FeedUtils.sanitize === 'function') {
+      return FeedUtils.sanitize(html);
+    }
+    try {
+      if (typeof DOMPurify !== 'undefined' && DOMPurify.sanitize) {
+        return DOMPurify.sanitize(html);
+      }
+    } catch (_) {}
+    try {
+      return String(html)
+        .replace(/<script[\s\S]*?>[\s\S]*?<\/script>/gi, '')
+        .replace(/on[a-z]+\s*=\s*"[^"]*"/gi, '')
+        .replace(/on[a-z]+\s*=\s*'[^']*'/gi, '')
+        .replace(/javascript:\s*/gi, '');
+    } catch (_) {
+      return '';
+    }
+  }
+  // Utilidad para enrutar imágenes externas a través del proxy cuando esté disponible
+  function toImageSrc(url) {
+    try {
+      if (!url || typeof url !== 'string') {return url;}
+      // Evitar proxificar imágenes locales
+      const u = new URL(url, location.href);
+      const isExternal = u.origin !== location.origin;
+      if (!isExternal) {return u.toString();}
 
-        // Helper: convertir HTML a texto plano para truncar sin romper etiquetas
-        function toPlainText(html) {
-            if (!html) return '';
-            try {
-                return String(html).replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim();
-            } catch (_) {
-                return String(html);
-            }
+      // Detectar si se está usando Netlify Functions (cadena vacía)
+      if (window.__RSS_PROXY_URL === '') {
+        return `/.netlify/functions/image?url=${encodeURIComponent(u.toString())}`;
+      }
+      // Si existe un proxy local descubierto
+      if (typeof window.__RSS_PROXY_URL === 'string' && window.__RSS_PROXY_URL) {
+        return `${window.__RSS_PROXY_URL}/api/image?url=${encodeURIComponent(u.toString())}`;
+      }
+      // Alternativa: dejar URL directa sin modificación (fallback)
+      return u.toString();
+    } catch (_) {
+      return url;
+    }
+  }
+  // Fuentes exclusivas de portada (Destacados)
+  const HOMEPAGE_NEWS_SOURCES = [
+    // Fuentes con respuesta verificada en local (smoke test)
+    'https://rss.app/feeds/jbwZ2Q9QAvgvI6G0.xml',
+    'https://rss.app/feeds/8SmCQL7GDZyu2xB4.xml'
+  ];
+    // En portada usaremos sólo estas fuentes, ignorando las globales
+  const activeNewsSources = HOMEPAGE_NEWS_SOURCES;
+  let featuredSnapshotRendered = false;
+  const ENABLE_SNAPSHOT = false; // Desactivar snapshot para forzar exclusividad de fuentes en portada
+  // Detectar proxy antes de cargar noticias
+  if (typeof window.discoverRSSProxy === 'function') {
+    try {
+      await window.discoverRSSProxy();
+    } catch (e) {
+      console.warn('Error detectando proxy:', e);
+    }
+  }
+
+  // Función para cargar noticias destacadas
+  function loadFeaturedNews() {
+    const featuredNewsContainer = document.getElementById('featured-news');
+
+    if (!featuredNewsContainer) {return;}
+
+    // Helper: convertir HTML a texto plano para truncar sin romper etiquetas
+    function toPlainText(html) {
+      if (!html) {return '';}
+      try {
+        return String(html).replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim();
+      } catch (_) {
+        return String(html);
+      }
+    }
+
+    // Mostrar mensaje de carga solo si no hay contenido SSR/SSG previo
+    if (!featuredNewsContainer.querySelector('.content-card')) {
+      featuredNewsContainer.innerHTML = `
+                <div class="loading-skeleton">
+                    ${Array(20).fill(0).map(() => `
+                        <div class="skeleton-card">
+                            <div class="skeleton-image"></div>
+                            <div class="skeleton-content">
+                                <div class="skeleton-date"></div>
+                                <div class="skeleton-title"></div>
+                                <div class="skeleton-text"></div>
+                                <div class="skeleton-text short"></div>
+                            </div>
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+    }
+
+    // Función para obtener y parsear feeds RSS (delegada a FeedUtils)
+    let currentAbort = null;
+    async function fetchLatestFeeds() {
+      try {
+        if (window.FeedUtils && typeof FeedUtils.fetchRSSFeeds === 'function') {
+          // Abort anterior si existe
+          if (currentAbort) { try { currentAbort.abort(); } catch (_) { } }
+          currentAbort = new AbortController();
+          console.log('[CONTENT-LOADER] Portada: usando fuentes exclusivas:', HOMEPAGE_NEWS_SOURCES);
+          // Usar progressive: true para renderizar items conforme llegan de cada fuente
+          const itemsAll = await FeedUtils.fetchRSSFeeds(activeNewsSources, { noCache: true, progressive: true, signal: currentAbort.signal });
+          return Array.isArray(itemsAll) ? itemsAll : [];
         }
-        
-        // Mostrar mensaje de carga
-        featuredNewsContainer.innerHTML = '<div class="loading">Cargando noticias...</div>';
-        
-        // Fuentes de noticias (RSS feeds de sitios de noticias sobre Fuerteventura/Canarias)
-        const newsSources = [
-            'https://www.canarias7.es/canarias/fuerteventura/',
-            'https://www.laprovincia.es/fuerteventura/',
-            'https://www.cabildofuer.es/cabildo/noticias/',
-            'https://www.radioinsular.es',
-            'https://www.fuerteventuradigital.com',
-            'https://ondafuerteventura.es',
-            // Añadir más fuentes según sea necesario
-            
-        ];
-        
-    // Función para obtener y parsear feeds RSS
-    // Intentar proxy local primero (configurable vía window.__RSS_PROXY_URL)
-        async function fetchRSSFeeds() {
-            // Intentar descubrimiento automático de un proxy local en ejecución (cacheado). Recurre a window.__RSS_PROXY_URL o puertos 3000/3001/3002.
-            async function discoverLocalProxy() {
-                if (window.__RSS_PROXY_URL) return window.__RSS_PROXY_URL;
-                try {
-                    if (window.discoverRSSProxy) {
-                        const u = await window.discoverRSSProxy();
-                        if (u) return u;
-                    }
-                } catch (_) {}
-                const candidates = ['http://localhost:3000', 'http://localhost:3001', 'http://localhost:3002'];
-                for (const base of candidates) {
-                    try {
-                        const r = await fetch(`${base}/health`, { method: 'GET', cache: 'no-store' });
-                        if (r.ok) return base;
-                    } catch (_) { /* siguiente candidato */ }
-                }
-                return 'http://localhost:3000';
-            }
-
-            const proxyBase = await discoverLocalProxy();
-
-            // Sin datos de fallback simulados: cuando no hay proxy o feeds disponibles retornamos un array vacío.
-            // Auxiliares: sanitizador básico, extracción de medios, caché
-            function sanitizeHTML(str) {
-                if (!str) return '';
-                // eliminar script/style
-                str = str.replace(/<script[\s\S]*?>[\s\S]*?<\/script>/gi, '');
-                str = str.replace(/<style[\s\S]*?>[\s\S]*?<\/style>/gi, '');
-                // eliminar atributos on*
-                str = str.replace(/\son\w+=\"[^\"]*\"/gi, '');
-                str = str.replace(/\son\w+='[^']*'/gi, '');
-                // neutralizar URIs javascript:
-                str = str.replace(/href=\"\s*javascript:[^\"]*\"/gi, 'href="#"');
-                return str;
-            }
-
-            // Preferir DOMPurify si está disponible para sanitización más fuerte
-            function sanitize(str) {
-                try {
-                    if (window.DOMPurify && typeof DOMPurify.sanitize === 'function') {
-                        return DOMPurify.sanitize(str);
-                    }
-                } catch (e) {
-                    // fallback
-                }
-                return sanitizeHTML(str);
-            }
-
-            // Usar el extractor robusto si está disponible (image-extractor.js)
-            async function extractImageFromRaw(it, sourceUrl = '') {
-                if (window.ImageExtractor && typeof window.ImageExtractor.extractImageFromItem === 'function') {
-                    const img = await window.ImageExtractor.extractImageFromItem(it, { validate: false, sourceUrl });
-                    if (img && typeof img === 'string' && img.trim() && !img.startsWith('data:')) return img;
-                }
-                // Fallback simple si el módulo no está cargado o no hay imagen válida
-                let candidate = null;
-                if (!it) candidate = null;
-                else if (it.image && typeof it.image === 'string') candidate = it.image;
-                else if (it.raw?.image_url) candidate = it.raw.image_url;
-                else {
-                    const raw = it.raw || {};
-                    if (raw.enclosure) {
-                        if (typeof raw.enclosure === 'string') candidate = raw.enclosure;
-                        else if (raw.enclosure.url) candidate = raw.enclosure.url;
-                    }
-                    if (!candidate) {
-                        const desc = it.description || it.summary || '';
-                        const descStr = typeof desc === 'object' ? (desc._ || '') : String(desc);
-                        if (descStr) {
-                            const match = descStr.match(/<img[^>]+src=["']([^"']+)["']/i);
-                            if (match && match[1]) candidate = match[1];
-                        }
-                    }
-                }
-                // Si la imagen es una URL absoluta http(s), pero falla CORS/mixed content, usar fallback local
-                if (!candidate || typeof candidate !== 'string' || !candidate.trim() || candidate.startsWith('data:')) {
-                    return 'images/Fuerteventura.jpeg?v=2025110501';
-                }
-                // Si la imagen es remota pero no es https, usar fallback local
-                if (/^http:/.test(candidate)) {
-                    return 'images/Fuerteventura.jpeg?v=2025110501';
-                }
-                // Si la imagen es remota https, dejarla, pero el onerror del <img> la reemplazará si falla
-                return candidate;
-            }
-
-            function cacheGet(key, ttl = 1000 * 60 * 15) {
-                try {
-                    const raw = localStorage.getItem(key);
-                    if (!raw) return null;
-                    const parsed = JSON.parse(raw);
-                    if (!parsed || !parsed.ts) return null;
-                    if (Date.now() - parsed.ts > ttl) { localStorage.removeItem(key); return null; }
-                    return parsed.items || null;
-                } catch (e) { return null; }
-            }
-
-            function cacheSet(key, items) {
-                try { localStorage.setItem(key, JSON.stringify({ ts: Date.now(), items })); } catch (e) { /* ignore */ }
-            }
-
-            try {
-                console.debug('Proxy base:', proxyBase);
-                // Intentar primero con el nuevo endpoint agregado de agregado (un solo request)
-                const aggKey = 'rss_cache_v2_media_AGG';
-                let items = cacheGet(aggKey);
-                if (!items) {
-                    const aggUrl = `${proxyBase}/api/aggregate?sources=${encodeURIComponent(newsSources.join(','))}&dedupe=0&noCache=1`;
-                    try {
-                        const r = await fetch(aggUrl, { cache: 'no-store' });
-                        if (!r.ok) throw new Error('bad response');
-                        const json = await r.json();
-                        items = Array.isArray(json.items) ? json.items : [];
-                        cacheSet(aggKey, items);
-                    } catch (e) {
-                        console.warn('Falló obtención agregada, fallback por fuente:', e && e.message);
-                        const fetches = newsSources.map(async (src) => {
-                            const cacheKey = 'rss_cache_v2_media_' + btoa(src);
-                            const cached = cacheGet(cacheKey);
-                            if (cached) return cached;
-                            try {
-                                const rr = await fetch(`${proxyBase}/api/rss?url=${encodeURIComponent(src)}&noCache=1`, { cache: 'no-store' });
-                                if (!rr.ok) throw new Error('bad response');
-                                const jj = await rr.json();
-                                const its = Array.isArray(jj.items) ? jj.items : [];
-                                cacheSet(cacheKey, its);
-                                return its;
-                            } catch (err) {
-                                console.warn('Falló obtención del proxy para', src, err && err.message);
-                                return [];
-                            }
-                        });
-                        const results = await Promise.all(fetches);
-                        items = results.flat();
-                    }
-                }
-
-                // Mezclar con newsdata.io si está disponible
-                try {
-                    const newsdataKey = 'newsdata_cache_v1';
-                    let newsdataItems = cacheGet(newsdataKey);
-                    if (!newsdataItems) {
-                        const newsdataUrl = `${proxyBase}/api/newsdata?q=fuerteventura&country=es&language=es&noCache=1`;
-                        const nr = await fetch(newsdataUrl, { cache: 'no-store' });
-                        if (nr.ok) {
-                            const nj = await nr.json();
-                            newsdataItems = Array.isArray(nj.items) ? nj.items : [];
-                            cacheSet(newsdataKey, newsdataItems);
-                            items = items.concat(newsdataItems);
-                        }
-                    } else {
-                        items = items.concat(newsdataItems);
-                    }
-                } catch (e) {
-                    console.warn('newsdata.io no disponible:', e && e.message);
-                }
-
-                // SIN FILTROS: se muestran todas las noticias tal como llegan del feed
-
-
-                if (items.length > 0) {
-                    // Normalizar a la forma usada por la UI
-                    const normalized = await Promise.all(items.map(async (it, idx) => {
-                        const title = (it.title && (typeof it.title === 'string' ? it.title : (it.title._ || ''))) || 'Sin título';
-                        const descriptionRaw = it.description || it.summary || '';
-                        const description = typeof descriptionRaw === 'object' ? (descriptionRaw._ || '') : descriptionRaw;
-                        const link = it.link || '';
-                        const pub = it.pubDate || it.published || it.updated || '';
-                        
-                        // Detectar si es de newsdata.io
-                        let source = '';
-                        const isNewsdata = it.raw && (it.raw.source_id || it.raw.country);
-                        if (isNewsdata) {
-                            source = 'newsdata.io';
-                        } else {
-                            try { source = link ? (new URL(link)).hostname.replace('www.', '') : (it.source || 'fuente'); } catch (e) { source = it.source || 'fuente'; }
-                        }
-
-                        const image = await extractImageFromRaw(it, link);
-
-                        const cleaned = sanitize(description);
-                        // Elegir el HTML más extenso posible: content:encoded > content > description > summary
-                        const pickRichHtml = () => {
-                            try {
-                                const raw = it.raw || {};
-                                const candidates = [
-                                    raw && raw['content:encoded'],
-                                    raw && raw.content,
-                                    it.description,
-                                    it.summary
-                                ].filter(Boolean);
-                                let best = '';
-                                for (const c of candidates) {
-                                    if (typeof c === 'string' && c.length > best.length) best = c;
-                                    else if (c && typeof c === 'object' && typeof c._ === 'string' && c._.length > best.length) best = c._;
-                                }
-                                return best || '';
-                            } catch (_) {
-                                return it.description || it.summary || '';
-                            }
-                        };
-                        const fullHtml = sanitize(pickRichHtml());
-                        return {
-                            title: title,
-                            image: image,
-                            description: cleaned,
-                            summary: cleaned,
-                            fullHtml,
-                            date: pub ? formatDate(new Date(pub)) : formatDate(new Date()),
-                            category: it.category || 'General',
-                            source,
-                            link,
-                            raw: it.raw
-                        };
-                    }));
-                    return normalized;
-                }
-            } catch (err) {
-                console.warn('Error fetching via proxy', err);
-            }
-            // If everything failed or no items found, return an empty array.
-            return [];
+      } catch (e) {
+        console.warn('[CONTENT-LOADER] FeedUtils.fetchRSSFeeds failed:', e);
+      }
+      // Fallback: intentar el proxy local/Netlify directamente
+      try {
+        // Usar proxy local confirmado (healthy) para asegurar datos
+        const url = 'http://localhost:3000/api/aggregate?sources=' + encodeURIComponent(activeNewsSources.join(','));
+        const res = await fetch(url, { cache: 'no-store' });
+        if (res.ok) {
+          const json = await res.json();
+          const items = Array.isArray(json.items) ? json.items : [];
+          return items.map(it => ({
+            title: it.title,
+            image: it.image,
+            summary: it.summary || it.description || '',
+            description: it.description || it.summary || '',
+            fullHtml: it.fullHtml || it.description || '',
+            date: it.date,
+            publishedAt: it.publishedAt || null,
+            category: it.category,
+            source: it.source,
+            link: it.link,
+            raw: it.raw || null
+          }));
         }
-        
-        // Obtener noticias y mostrarlas
-        fetchRSSFeeds().then(newsItems => {
-            console.log('[CONTENT-LOADER] Noticias recibidas:', newsItems.length);
-            
-            // Eliminar mensaje de carga
+      } catch (_) {}
+      // Alternativa: si las utilidades no están cargadas, devolver arreglo vacío
+      return [];
+    }
+
+    // Utilidad: normalizar fecha para ordenación descendente
+    const normalizeTime = (item) => {
+      if (item && item.publishedAt) {
+        const dt = new Date(item.publishedAt);
+        if (!Number.isNaN(dt.getTime())) {return dt.getTime();}
+      }
+      if (item && item.raw) {
+        const rawDate = item.raw?.pubDate || item.raw?.published || item.raw?.updated || null;
+        if (rawDate) {
+          const dt = new Date(rawDate);
+          if (!Number.isNaN(dt.getTime())) {return dt.getTime();}
+        }
+      }
+      try {
+        const parts = (item?.date || '').split(' de ').reverse().join(' ');
+        const fallback = new Date(parts);
+        if (!Number.isNaN(fallback.getTime())) {return fallback.getTime();}
+      } catch (_) {}
+      return 0;
+    };
+
+    // Intentar snapshot estático para primer render rápido
+    (async () => {
+      if (!ENABLE_SNAPSHOT) {return;}
+      try {
+        if (featuredSnapshotRendered) {return;}
+        const snapRes = await fetch('/data/feeds.json', { cache: 'no-store' });
+        if (snapRes.ok) {
+          const snap = await snapRes.json();
+          const items = Array.isArray(snap.items) ? snap.items : [];
+          if (items.length > 0) {
+            // Normalizar y renderizar hasta 12 elementos del snapshot (optimizado)
+            const normalized = await Promise.all(items.slice(0, 12).map(async (it) => {
+              const title = it.title || 'Sin título';
+              const descriptionRaw = it.description || '';
+              const description = typeof descriptionRaw === 'object' ? (descriptionRaw._ || '') : descriptionRaw;
+              const link = it.link || '';
+              const pub = it.pubDate || '';
+              let source = '';
+              try { source = link ? (new URL(link)).hostname.replace('www.', '') : 'fuente'; } catch (e) { source = 'fuente'; }
+              const image = await (async () => {
+                if (!it.image || typeof it.image !== 'string' || !it.image.trim()) {
+                  return 'images/logo.jpg?v=2025110501';
+                }
+                return it.image; // proxificado en render con toImageSrc()
+              })();
+              const cleaned = (window.DOMPurify && DOMPurify.sanitize) ? DOMPurify.sanitize(description) : description.replace(/<[^>]*>/g, ' ');
+              return {
+                title,
+                image,
+                description: cleaned,
+                summary: cleaned,
+                fullHtml: cleaned,
+                date: pub ? formatDate(new Date(pub)) : formatDate(new Date()),
+                publishedAt: pub ? new Date(pub).toISOString() : new Date().toISOString(),
+                category: 'General',
+                source,
+                link,
+                raw: {}
+              };
+            }));
+
+            // Ordenar por fecha descendente y mostrar hasta 12 elementos
             featuredNewsContainer.innerHTML = '';
-            
-            // Si no hay noticias
-            if (newsItems.length === 0) {
-                console.error('[CONTENT-LOADER] No hay noticias para mostrar');
-                featuredNewsContainer.innerHTML = '<div class="no-news">No se pudieron cargar las noticias. Inténtalo más tarde.</div>';
-                return;
-            }
-            
-            // Intentar mostrar artículos de newsdata.io primero
-            let newsdataItems = newsItems.filter(item => {
-                // Identificar artículos de newsdata.io por source o presencia de raw.source_id
-                return item.source === 'newsdata.io' || 
-                       (item.raw && item.raw.source_id) ||
-                       item.source === 'newsdata';
-            });
-            
-            console.log('[CONTENT-LOADER] Artículos de newsdata.io:', newsdataItems.length);
-            
-            // Si no hay artículos de newsdata.io, usar feeds RSS como fallback
-            let featured;
-            if (newsdataItems.length === 0) {
-                console.warn('[CONTENT-LOADER] No hay artículos de newsdata.io, usando RSS feeds como fallback');
-                // Agrupar por fuente y tomar 3 de cada una
-                const bySource = {};
-                newsItems.forEach(item => {
-                    const src = item.source || 'desconocido';
-                    if (!bySource[src]) bySource[src] = [];
-                    bySource[src].push(item);
+            const featured = normalized.sort((a, b) => normalizeTime(b) - normalizeTime(a)).slice(0, 12);
+            featured.forEach((item) => {
+              const card = document.createElement('div');
+              card.className = 'content-card';
+              const fullText = (item.description || item.summary || '').replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim();
+              const shortDescription = fullText.length > 150 ? fullText.slice(0, 150) + '...' : fullText;
+              const idBase = `${item.title || ''}|${item.publishedAt || item.date || ''}`;
+              const articleId = (function () { try { return btoa(encodeURIComponent(idBase)).replace(/[^a-zA-Z0-9]/g, '').substring(0, 32); } catch (_) { return Math.random().toString(36).slice(2, 34); } })();
+              try { localStorage.setItem(`article_${articleId}`, JSON.stringify(item)); } catch (_) {}
+              card.innerHTML = `
+                                <img src="${toImageSrc(item.image)}" alt="${escapeHTML(item.title)}" loading="lazy" referrerpolicy="no-referrer">
+                                <div class="card-content">
+                                    <span class="date">${escapeHTML(item.date)}</span>
+                                    <h3>${escapeHTML(item.title)}</h3>
+                                    <p>${shortDescription}</p>
+                                </div>
+                            `;
+              const imgEl = card.querySelector('img');
+              if (imgEl) {
+                imgEl.addEventListener('error', () => {
+                  // Si falla el proxy o la imagen externa, usar placeholder de noticias
+                  imgEl.src = 'images/logo.jpg?v=2025110501';
                 });
-                
-                // Mezclar: 3 de cada fuente hasta completar 18
-                featured = [];
-                const sources = Object.keys(bySource);
-                let round = 0;
-                while (featured.length < 18 && round < 10) {
-                    for (const src of sources) {
-                        if (bySource[src].length > 0 && featured.length < 18) {
-                            featured.push(bySource[src].shift());
-                        }
-                    }
-                    round++;
-                }
-            } else {
-                // Limitar a 18 items de newsdata.io
-                featured = newsdataItems.slice(0, 18);
-            }
-            console.log('[CONTENT-LOADER] Mostrando', featured.length, 'artículos destacados');
-            
-            // Mostrar las noticias (resumen compacto en portada)
-            featured.forEach((item, index) => {
-                console.log(`[CONTENT-LOADER] Renderizando artículo ${index + 1}:`, item.title, 'Image:', item.image);
-                const card = document.createElement('div');
-                card.className = 'content-card';
-                const categoryTag = (item.category && String(item.category).toLowerCase() !== 'general')
-                    ? `<span class="category-tag">${item.category}</span>`
-                    : '';
+              }
+              const readMoreBtn = document.createElement('a');
+              readMoreBtn.href = `noticia.html?id=${articleId}`;
+              readMoreBtn.className = 'btn';
+              readMoreBtn.textContent = 'Leer más';
+              card.querySelector('.card-content').appendChild(readMoreBtn);
+              featuredNewsContainer.appendChild(card);
+            });
+            featuredSnapshotRendered = true;
+          }
+        }
+      } catch (_) {
+        // snapshot no disponible; seguimos flujo normal
+      }
+    })();
 
-                // Descripción en texto plano truncada (150 caracteres)
-                const fullText = toPlainText(item.description || item.summary || '');
-                const shortDescription = fullText.length > 150 
-                    ? fullText.slice(0, 150) + '...' 
-                    : fullText;
-
-                // Crear ID único para el artículo basado en título y fecha
-                const articleId = btoa(encodeURIComponent(item.title + item.date)).replace(/[^a-zA-Z0-9]/g, '').substring(0, 32);
-                
-                // Guardar artículo completo en localStorage para acceso en noticia.html
-                try {
-                    localStorage.setItem(`article_${articleId}`, JSON.stringify(item));
-                } catch (e) {
-                    console.warn('Error guardando artículo en localStorage:', e);
-                }
-
-                card.innerHTML = `
-                    <img src="${item.image}" alt="${item.title}" onerror="this.onerror=null;this.src='images/Fuerteventura.jpeg?v=2025110501';">
+    // Obtener noticias y (re)mostrarlas con datos frescos
+    // Watchdog: si tras unos segundos sigue el skeleton, mostrar mensaje amistoso
+    (function () {
+      try {
+        const watchdogMs = 4000;
+        setTimeout(function () {
+          const hasSkeleton = !!featuredNewsContainer.querySelector('.loading-skeleton');
+          const hasCards = !!featuredNewsContainer.querySelector('.content-card');
+          if (hasSkeleton && !hasCards) {
+            featuredNewsContainer.innerHTML = '<div class="no-news">No se pudieron cargar las noticias. Inténtalo más tarde.</div>';
+          }
+        }, watchdogMs);
+      } catch (_) { /* noop */ }
+    })();
+    // Escuchar eventos progresivos y pintar incrementos si aún hay skeleton
+    const handlePartial = (evt) => {
+      const partItems = evt.detail.items || [];
+      if (!featuredNewsContainer || partItems.length === 0) {return;}
+      // Si aún hay skeleton, reemplazar gradualmente
+      const skeleton = featuredNewsContainer.querySelector('.loading-skeleton');
+      if (skeleton) {
+        // Limpiar skeleton al llegar primeros items
+        featuredNewsContainer.innerHTML = '';
+      }
+      // Renderizar sólo primeros 5 de cada parcial para no saturar
+      const limited = partItems.slice(0, 5);
+      limited.forEach((item) => {
+        const card = document.createElement('div');
+        card.className = 'content-card';
+        const fullText = (item.description || item.summary || '').replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim();
+        const shortDescription = fullText.length > 150 ? fullText.slice(0, 150) + '...' : fullText;
+        const idBase = `${item.title || ''}|${item.publishedAt || item.date || ''}`;
+        const articleId = (() => { try { return btoa(encodeURIComponent(idBase)).replace(/[^a-zA-Z0-9]/g, '').substring(0, 32);} catch (_) { return Math.random().toString(36).slice(2, 34);} })();
+        try { localStorage.setItem(`article_${articleId}`, JSON.stringify(item)); } catch (_) { }
+        card.innerHTML = `
+                    <img src="${toImageSrc(item.image)}" alt="${escapeHTML(item.title)}" loading="lazy" referrerpolicy="no-referrer">
                     <div class="card-content">
-                        <span class="date">${item.date}</span>
-                        <h3>${item.title}</h3>
+                        <span class="date">${escapeHTML(item.date)}</span>
+                        <h3>${escapeHTML(item.title)}</h3>
                         <p>${shortDescription}</p>
-                        ${categoryTag}
+                    </div>`;
+        const imgEl = card.querySelector('img');
+        if (imgEl) {imgEl.addEventListener('error', () => { imgEl.src = 'images/logo.jpg?v=2025110501'; });}
+        const readMoreBtn = document.createElement('a');
+        readMoreBtn.href = `noticia.html?id=${articleId}`;
+        readMoreBtn.className = 'btn';
+        readMoreBtn.textContent = 'Leer más';
+        card.querySelector('.card-content').appendChild(readMoreBtn);
+        featuredNewsContainer.appendChild(card);
+      });
+    };
+    document.addEventListener('feed:partial', handlePartial, { passive: true });
+    fetchLatestFeeds().then(newsItems => {
+      console.log('[CONTENT-LOADER] Noticias recibidas:', newsItems.length);
+
+      // Si no hay noticias frescas: conservar snapshot/SSR si existe
+      if (newsItems.length === 0) {
+        console.error('[CONTENT-LOADER] No hay noticias para mostrar');
+        const hasCards = !!featuredNewsContainer.querySelector('.content-card');
+        if (!hasCards) {
+          featuredNewsContainer.innerHTML = '<div class="no-news">No se pudieron cargar las noticias. Inténtalo más tarde.</div>';
+          // Renderizar una tarjeta placeholder para verificar layout
+          const ph = document.createElement('div');
+          ph.className = 'content-card';
+          ph.innerHTML = '<img src="images/logo.jpg?v=2025110501" alt="Placeholder" loading="lazy"><div class="card-content"><span class="date">' + escapeHTML(formatDate(new Date())) + '</span><h3>Sin datos disponibles</h3><p>Inténtalo más tarde.</p></div>';
+          featuredNewsContainer.appendChild(ph);
+        }
+        return;
+      }
+
+      // Limpiar el contenedor y preparar la selección (20 artículos: 10 por fuente)
+      featuredNewsContainer.innerHTML = '';
+      const featured = [...newsItems].sort((a, b) => normalizeTime(b) - normalizeTime(a)).slice(0, 20);
+      console.log('[CONTENT-LOADER] Mostrando', featured.length, 'artículos destacados');
+
+      // Mostrar las noticias (resumen compacto en la portada)
+      // Pintar primeros 6 inmediatamente, resto diferido para no bloquear el hilo principal
+      const immediate = featured.slice(0, 6);
+      const deferred = featured.slice(6);
+      immediate.forEach((item, index) => {
+        console.log(`[CONTENT-LOADER] Renderizando artículo ${index + 1}:`, item.title, 'Image:', item.image);
+        const card = document.createElement('div');
+        card.className = 'content-card';
+
+        // Descripción en texto plano truncada a 150 caracteres
+        const fullText = toPlainText(item.description || item.summary || '');
+        const shortDescription = fullText.length > 150
+          ? fullText.slice(0, 150) + '...'
+          : fullText;
+
+        // Crear un ID único para el artículo basado en título y publishedAt/fecha
+        const idBase = `${item.title || ''}|${item.publishedAt || item.date || ''}`;
+        const articleId = (function () { try { return btoa(encodeURIComponent(idBase)).replace(/[^a-zA-Z0-9]/g, '').substring(0, 32); } catch (_) { return Math.random().toString(36).slice(2, 34); } })();
+
+        // Guardar el artículo completo en localStorage para acceso desde noticia.html
+        try {
+          localStorage.setItem(`article_${articleId}`, JSON.stringify(item));
+        } catch (e) {
+          console.warn('Error guardando artículo en localStorage:', e);
+        }
+
+        card.innerHTML = `
+                    <img src="${toImageSrc(item.image)}" alt="${escapeHTML(item.title)}" loading="lazy" referrerpolicy="no-referrer">
+                    <div class="card-content">
+                        <span class="date">${escapeHTML(item.date)}</span>
+                        <h3>${escapeHTML(item.title)}</h3>
+                        <p>${shortDescription}</p>
                     </div>
                 `;
-                
-                const readMoreBtn = document.createElement('a');
-                readMoreBtn.href = `noticia.html?id=${articleId}`;
-                readMoreBtn.className = 'btn';
-                readMoreBtn.textContent = 'Leer más';
-                card.querySelector('.card-content').appendChild(readMoreBtn);
-                
-                featuredNewsContainer.appendChild(card);
-            });
-        });
-    }
-    
-    // Función para formatear fechas
-    function formatDate(date) {
-        const options = { day: 'numeric', month: 'long', year: 'numeric' };
-        return date.toLocaleDateString('es-ES', options);
-    }
-    
-    // Cargar noticias destacadas
-    loadFeaturedNews();
-    
-    // Función para cargar noticias completas
-    function loadFullNewsPage() {
-        const newsContainer = document.getElementById('news-container');
-        
-        if (!newsContainer) return;
-        
-        // Variables para paginación y filtrado
-        let currentPage = 1;
-        const itemsPerPage = 9;
-        let currentCategory = 'all';
-        let currentSort = 'newest';
-        let currentSearch = '';
-        
-        // Elementos de control
-    const prevPageBtns = [document.getElementById('prev-page'), document.getElementById('prev-page-top')].filter(Boolean);
-    const nextPageBtns = [document.getElementById('next-page'), document.getElementById('next-page-top')].filter(Boolean);
-    const pageInfos = [document.getElementById('page-info'), document.getElementById('page-info-top')].filter(Boolean);
-        const categoryFilter = document.getElementById('category-filter');
-        const dateFilter = document.getElementById('date-filter');
-        const applyFiltersBtn = document.getElementById('apply-filters');
-        const searchInput = document.getElementById('news-search');
-        const searchBtn = document.getElementById('search-btn');
-        
-        // Función para obtener noticias: use the shared RSS fetcher which queries the proxy
-        async function fetchNews() {
-            try {
-                const items = await fetchRSSFeeds();
-                // Map normalized items to the structure expected by the list UI
-                return items.map((it, idx) => ({
-                    id: idx + 1,
-                    title: it.title,
-                    image: it.image,
-                    summary: it.summary || it.description || '',
-                    content: it.description || '',
-                    date: it.date,
-                    category: it.category,
-                    source: it.source,
-                    tags: it.tags || []
-                }));
-            } catch (e) {
-                console.warn('Error fetching news for full page', e);
-                return [];
-            }
+        const imgEl = card.querySelector('img');
+        if (imgEl) {
+          imgEl.addEventListener('error', () => { imgEl.src = 'images/logo.jpg?v=2025110501'; });
         }
-        
-        // Función para filtrar noticias
-        function filterNews(news) {
-            return news.filter(item => {
-                // Filtrar por categoría
-                if (currentCategory !== 'all' && item.category.toLowerCase() !== currentCategory.toLowerCase()) {
-                    return false;
-                }
-                
-                // Filtrar por búsqueda
-                if (currentSearch && !item.title.toLowerCase().includes(currentSearch.toLowerCase()) && 
-                    !item.summary.toLowerCase().includes(currentSearch.toLowerCase())) {
-                    return false;
-                }
-                
-                return true;
-            });
-        }
-        
-        // Función para ordenar noticias
-        function sortNews(news) {
-            return news.sort((a, b) => {
-                const dateA = new Date(a.date.split(' de ').reverse().join(' '));
-                const dateB = new Date(b.date.split(' de ').reverse().join(' '));
-                
-                if (currentSort === 'newest') {
-                    return dateB - dateA;
-                } else {
-                    return dateA - dateB;
-                }
-            });
-        }
-        
-        // Función para paginar noticias
-        function paginateNews(news) {
-            const startIndex = (currentPage - 1) * itemsPerPage;
-            return news.slice(startIndex, startIndex + itemsPerPage);
-        }
-        
-        // Función para actualizar la información de paginación
-        function updatePaginationInfo(totalItems) {
-            const totalPages = Math.max(1, Math.ceil(totalItems / itemsPerPage));
-            pageInfos.forEach(el => { el.textContent = `Página ${currentPage} de ${totalPages}`; });
-            prevPageBtns.forEach(btn => { btn.disabled = currentPage === 1; });
-            nextPageBtns.forEach(btn => { btn.disabled = currentPage === totalPages; });
-        }
-        
-        // Función para cargar y mostrar noticias
-        async function loadAndDisplayNews() {
-            // Mostrar indicador de carga
-            newsContainer.innerHTML = '<div class="loading">Cargando noticias...</div>';
-            
-            try {
-                // Obtener todas las noticias
-                const allNews = await fetchNews();
-                
-                // Filtrar noticias
-                const filteredNews = filterNews(allNews);
-                
-                // Ordenar noticias
-                const sortedNews = sortNews(filteredNews);
-                
-                // Paginar noticias
-                const paginatedNews = paginateNews(sortedNews);
-                
-                // Actualizar información de paginación
-                updatePaginationInfo(filteredNews.length);
-                
-                // Limpiar contenedor
-                newsContainer.innerHTML = '';
-                
-                // Si no hay resultados
-                if (paginatedNews.length === 0) {
-                    newsContainer.innerHTML = '<div class="no-results">No se encontraron noticias que coincidan con tu búsqueda.</div>';
-                    return;
-                }
-                
-                // Mostrar noticias
-                paginatedNews.forEach(item => {
-                    const newsCard = document.createElement('div');
-                    newsCard.className = 'news-card';
-                    const categoryTag = (item.category && String(item.category).toLowerCase() !== 'general')
-                        ? `<span class="category-tag">${item.category}</span>`
-                        : '';
-                    
-                    newsCard.innerHTML = `
-                        <div class="news-image">
-                            <img src="${item.image}" alt="${item.title}" onerror="this.onerror=null;this.src='images/Fuerteventura.jpeg';">
-                            ${categoryTag}
-                        </div>
-                        <div class="news-content">
-                            <span class="news-date">${item.date}</span>
-                            <h3>${item.title}</h3>
-                            <p>${item.summary}</p>
-                        </div>
-                    `;
-                    
-                    const readMoreBtn = document.createElement('a');
-                    readMoreBtn.href = item.link || '#';
-                    readMoreBtn.target = '_blank';
-                    readMoreBtn.rel = 'noopener noreferrer';
-                    readMoreBtn.className = 'btn';
-                    readMoreBtn.textContent = 'Leer más';
-                    newsCard.querySelector('.news-content').appendChild(readMoreBtn);
-                    
-                    newsContainer.appendChild(newsCard);
-                });
-                
-            } catch (error) {
-                console.error('Error al cargar noticias:', error);
-                newsContainer.innerHTML = '<div class="error">Error al cargar las noticias. Por favor, inténtalo de nuevo más tarde.</div>';
-            }
-        }
-        
-        // Configurar eventos para controles de paginación y filtrado
-        prevPageBtns.forEach(btn => btn.addEventListener('click', () => {
-            if (currentPage > 1) {
-                currentPage--;
-                loadAndDisplayNews();
-            }
-        }));
-        
-        nextPageBtns.forEach(btn => btn.addEventListener('click', () => {
-            currentPage++;
-            loadAndDisplayNews();
-        }));
-        
-        if (applyFiltersBtn) {
-            applyFiltersBtn.addEventListener('click', () => {
-                currentPage = 1;
-                
-                if (categoryFilter) {
-                    currentCategory = categoryFilter.value;
-                }
-                
-                if (dateFilter) {
-                    currentSort = dateFilter.value;
-                }
-                
-                loadAndDisplayNews();
-            });
-        }
-        
-        if (searchBtn) {
-            searchBtn.addEventListener('click', () => {
-                currentPage = 1;
-                currentSearch = searchInput ? searchInput.value.trim() : '';
-                loadAndDisplayNews();
-            });
-        }
-        
-        if (searchInput) {
-            searchInput.addEventListener('keypress', (e) => {
-                if (e.key === 'Enter') {
-                    currentPage = 1;
-                    currentSearch = searchInput.value.trim();
-                    loadAndDisplayNews();
-                }
-            });
-        }
-        
-        // Cargar noticias inicialmente
-        loadAndDisplayNews();
-    }
-    
-    // Cargar página completa de noticias si estamos en esa página
-    if (window.location.pathname.includes('noticias.html')) {
-        loadFullNewsPage();
-    }
-    
-    // Función para cargar una noticia individual
-    function loadSingleNews() {
-        const articleContainer = document.getElementById('article-container');
-        
-        if (!articleContainer) return;
-        
-        // Obtener ID de la noticia de la URL
-        const urlParams = new URLSearchParams(window.location.search);
-        const newsId = urlParams.get('id');
-        const newsTitle = urlParams.get('title');
-        
-        if (!newsId && !newsTitle) {
-            articleContainer.innerHTML = '<div class="error">Noticia no encontrada</div>';
-            return;
-        }
-        
-        // Mostrar indicador de carga
-        articleContainer.innerHTML = '<div class="loading">Cargando noticia...</div>';
-        
-        // Try to fetch article data from the feeds (requires the proxy to be running)
-        (async () => {
-            try {
-                const items = await fetchRSSFeeds();
-                let article = null;
-                if (newsTitle) {
-                    article = items.find(it => it.title === newsTitle);
-                }
-                if (!article && newsId) {
-                    const idx = parseInt(newsId, 10) - 1;
-                    if (!Number.isNaN(idx) && items[idx]) article = items[idx];
-                }
 
-                if (!article) {
-                    articleContainer.innerHTML = '<div class="no-news">Noticia no disponible. Asegúrate de que el proxy esté en funcionamiento y que la fuente esté permitida.</div>';
-                    return;
-                }
+        const readMoreBtn = document.createElement('a');
+        readMoreBtn.href = `noticia.html?id=${articleId}`;
+        readMoreBtn.className = 'btn';
+        readMoreBtn.textContent = 'Leer más';
+        card.querySelector('.card-content').appendChild(readMoreBtn);
 
-                // Render the found article
-                const content = article.description || article.summary || '';
-                const categoryTag = (article.category && String(article.category).toLowerCase() !== 'general')
-                    ? `<span class="category-tag">${article.category}</span>`
-                    : '';
-                articleContainer.innerHTML = `
-                    <article class="news-article">
-                        <header class="article-header">
-                            <h1>${article.title}</h1>
-                            <div class="article-meta">
-                                <span class="article-date">${article.date}</span>
-                            </div>
-                        </header>
-
-                        <div class="article-featured-image">
-                            <img src="${article.image}" alt="${article.title}" onerror="this.onerror=null;this.src='images/Fuerteventura.jpeg?v=2025110501';">
-                            ${categoryTag}
-                        </div>
-
-                        <div class="article-content">
-                            ${content}
-                        </div>
-                    </article>
-                `;
-            } catch (e) {
-                console.error('Error loading article:', e);
-                articleContainer.innerHTML = '<div class="error">Error al cargar la noticia.</div>';
-            }
-        })();
-    }
-    
-    // Cargar noticia individual si estamos en esa página
-    if (window.location.pathname.includes('noticia.html')) {
-        loadSingleNews();
-    }
-    
-    // Función para cargar contenido específico de cada página
-    function loadPageSpecificContent() {
-        // Determinar la página actual basada en la URL
-        const currentPage = window.location.pathname.split('/').pop() || 'index.html';
-        
-        switch(currentPage) {
-            case 'turismo.html':
-                loadTourismContent();
-                break;
-            case 'alojamiento.html':
-                loadAccommodationContent();
-                break;
-            case 'playas.html':
-                loadBeachesContent();
-                break;
-            case 'gastronomia.html':
-                loadGastronomyContent();
-                break;
-            // Añadir más casos según sea necesario
+        featuredNewsContainer.appendChild(card);
+      });
+      if (deferred.length) {
+        const renderDeferred = () => {
+          deferred.forEach((item) => {
+            const card = document.createElement('div');
+            card.className = 'content-card';
+            const fullText = (item.description || item.summary || '').replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim();
+            const shortDescription = fullText.length > 150 ? fullText.slice(0, 150) + '...' : fullText;
+            const idBase = `${item.title || ''}|${item.publishedAt || item.date || ''}`;
+            const articleId = (() => { try { return btoa(encodeURIComponent(idBase)).replace(/[^a-zA-Z0-9]/g, '').substring(0, 32);} catch (_) { return Math.random().toString(36).slice(2, 34);} })();
+            try { localStorage.setItem(`article_${articleId}`, JSON.stringify(item)); } catch (_) { }
+            card.innerHTML = `
+                            <img src="${toImageSrc(item.image)}" alt="${escapeHTML(item.title)}" loading="lazy" referrerpolicy="no-referrer">
+                            <div class="card-content">
+                                <span class="date">${escapeHTML(item.date)}</span>
+                                <h3>${escapeHTML(item.title)}</h3>
+                                <p>${shortDescription}</p>
+                            </div>`;
+            const imgEl = card.querySelector('img');
+            if (imgEl) {imgEl.addEventListener('error', () => { imgEl.src = 'images/logo.jpg?v=2025110501'; });}
+            const readMoreBtn = document.createElement('a');
+            readMoreBtn.href = `noticia.html?id=${articleId}`;
+            readMoreBtn.className = 'btn';
+            readMoreBtn.textContent = 'Leer más';
+            card.querySelector('.card-content').appendChild(readMoreBtn);
+            featuredNewsContainer.appendChild(card);
+          });
+        };
+        if ('requestIdleCallback' in window) {
+          requestIdleCallback(renderDeferred, { timeout: 1200 });
+        } else {
+          setTimeout(renderDeferred, 0);
         }
-    }
-    
-    // Estas funciones se implementarían para cargar contenido específico
-    // En un sitio real, obtendrían datos de APIs o bases de datos
-    function loadTourismContent() {
-        console.log('Cargando contenido de turismo...');
-        // Implementación real aquí
-    }
-    
-    function loadAccommodationContent() {
-        console.log('Cargando contenido de alojamiento...');
-        // Implementación real aquí
-    }
-    
-    function loadBeachesContent() {
-        console.log('Cargando contenido de playas...');
-        // Implementación real aquí
-    }
-    
-    function loadGastronomyContent() {
-        console.log('Cargando contenido de gastronomía...');
-        // Implementación real aquí
-    }
-    
-    // Cargar contenido específico de la página
-    loadPageSpecificContent();
-    
-    // Configurar actualización automática de noticias
-    function setupAutoRefresh() {
-        // Actualizar noticias cada 30 minutos (en milisegundos)
-        const refreshInterval = 30 * 60 * 1000;
-        
-        setInterval(() => {
-            console.log('Actualizando noticias automáticamente...');
-            
-            // Recargar noticias según la página actual
-            if (document.getElementById('featured-news')) {
-                loadFeaturedNews();
-            }
-            
-            if (document.getElementById('news-container') && window.location.pathname.includes('noticias.html')) {
-                // Mantener los filtros y página actuales al actualizar
-                loadFullNewsPage();
-            }
-        }, refreshInterval);
-    }
-    
-    // Iniciar actualización automática
-    setupAutoRefresh();
-
-    // Forzar re-render si volvemos desde BFCache del navegador (para asegurar vista compacta y enlaces internos)
-    window.addEventListener('pageshow', (evt) => {
-        if (evt.persisted) {
-            try {
-                if (document.getElementById('featured-news')) {
-                    loadFeaturedNews();
-                }
-                if (document.getElementById('news-container') && window.location.pathname.includes('noticias.html')) {
-                    // Rehidratar listado con filtros actuales
-                    if (typeof loadFullNewsPage === 'function') {
-                        loadFullNewsPage();
-                    }
-                }
-            } catch (e) {
-                console.warn('BFCache re-render failed:', e);
-            }
-        }
+      }
+      if (newsItems.length > 0) {
+        featuredSnapshotRendered = true;
+      }
+      // limpiar listener de progresivo
+      document.removeEventListener('feed:partial', handlePartial);
     });
+  }
+
+  // Función para formatear fechas
+  function formatDate(date) {
+    const options = { day: 'numeric', month: 'long', year: 'numeric' };
+    return date.toLocaleDateString('es-ES', options);
+  }
+
+  // Cargar noticias destacadas
+  loadFeaturedNews();
+
+  // Configurar actualización automática de noticias
+  function setupAutoRefresh() {
+    // Actualizar noticias cada 30 minutos (en milisegundos)
+    const refreshInterval = 30 * 60 * 1000;
+
+    setInterval(() => {
+      console.log('Actualizando noticias automáticamente...');
+
+      // Recargar noticias según la página actual
+      if (document.getElementById('featured-news')) {
+        loadFeaturedNews();
+      }
+      document.dispatchEvent(new CustomEvent('feed:refresh'));
+    }, refreshInterval);
+  }
+
+  // Iniciar actualización automática
+  setupAutoRefresh();
+
+  // Forzar re-render si volvemos desde BFCache del navegador (para asegurar vista compacta y enlaces internos)
+  window.addEventListener('pageshow', (evt) => {
+    if (evt.persisted) {
+      try {
+        if (document.getElementById('featured-news')) {
+          loadFeaturedNews();
+        }
+      } catch (e) {
+        console.warn('BFCache re-render failed:', e);
+      }
+    }
+  });
 });
+

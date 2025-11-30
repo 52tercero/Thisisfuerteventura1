@@ -63,14 +63,14 @@ Este documento resume todas las mejoras técnicas y de calidad aplicadas al siti
 ---
 
 ### 6️⃣ Pruebas automatizadas
-- **Framework:** Jest + Supertest para pruebas unitarias e integración.
+- **Framework:** Jest 29 + Supertest para pruebas unitarias e integración.
 - **Test básico:** Valida el endpoint `/health` del servidor.
 - **Ejecución:**
   ```bash
   cd server
   npm test
   ```
-- **Resultado:** ✅ 1 test pasando (Health endpoint responds with ok).
+- **Resultado:** ✅ 1 test pasando (Health endpoint responds with ok). El script usa `cross-env CI=true` para desactivar el modo watch por defecto.
 - **Expansión futura:** Añadir tests para `/api/rss`, `/api/aggregate`, funciones de caché, límites de tasa, etc.
 
 ---
@@ -120,6 +120,13 @@ Este documento resume todas las mejoras técnicas y de calidad aplicadas al siti
   - Revisar contraste de colores con herramientas como Lighthouse o axe-core.
   - Mejorar textos alternativos de imágenes (usar descripciones reales en lugar de placeholders).
   - Añadir `aria-live` en zonas de carga dinámica si es necesario.
+
+### 🔟 Motor de noticias unificado
+- **Qué:** `content-loader.js` delega la vista completa a `news.js`, evitando `fetchRSSFeeds` indefinidos y eliminando duplicación.
+- **Datos enriquecidos:** `FeedUtils.fetchRSSFeeds` expone `publishedAt` (ISO) para ordenar y compartir fechas reales en todas las vistas.
+- **Snapshot controlado:** El listado usa `/data/feeds.json` sólo en el primer render y fuerza una actualización silenciosa sin resetear filtros ni página.
+- **Auto-refresh coordinado:** `content-loader.js` emite eventos `feed:refresh` y `news.js` escucha para refrescar manteniendo estado.
+- **UX:** Nuevos controles evitan skeletons innecesarios y mejoran la persistencia de búsqueda/paginación incluso tras intervalos y BFCache.
 
 ---
 
@@ -211,4 +218,4 @@ npm test
 
 ---
 
-**Última actualización:** 2025-11-01
+**Última actualización:** 2025-11-17

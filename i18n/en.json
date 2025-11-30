@@ -11,5 +11,43 @@
   "hero": {
     "welcome": "Welcome to Fuerteventura",
     "subtitle": "Discover the paradise of the Canary Islands"
+  },
+  "news": {
+    "searchLabel": "Search",
+    "searchPlaceholder": "Search title...",
+    "filter": "Filter",
+    "page": "Page",
+    "of": "of",
+    "items": "news",
+    "noResults": "No results",
+    "prev": "← Previous",
+    "next": "Next →",
+    "showing": "Showing"
+  }
+  ,
+  "blog": {
+    "title": "Blog",
+    "readMore": "Read more",
+    "noPosts": "No posts"
+  },
+  "contact": {
+    "title": "Contact",
+    "name": "Name",
+    "email": "Email",
+    "message": "Message",
+    "send": "Send"
+  },
+  "quiz": {
+    "title": "Quiz",
+    "start": "Start",
+    "next": "Next",
+    "finish": "Finish",
+    "score": "Your score"
+  },
+  "cookies": {
+    "title": "Cookies",
+    "accept": "Accept",
+    "reject": "Reject",
+    "manage": "Manage preferences"
   }
 }

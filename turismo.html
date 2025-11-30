@@ -3,104 +3,332 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Turismo en Fuerteventura - Lugares que visitar</title>
+    <title>Turismo en Fuerteventura 2025 - Guía de Lugares y Atracciones | This is Fuerteventura</title>
+    <meta name="theme-color" content="#0f4c81">
+    
+    <!-- Preconexión a recursos externos para mejorar el rendimiento -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
+    <link rel="dns-prefetch" href="https://cdnjs.cloudflare.com">
+    <link rel="dns-prefetch" href="https://unpkg.com">
+    
+    <link rel="canonical" href="https://thisisfuerteventura.es/turismo.html">
     <link rel="manifest" href="manifest.webmanifest">
-    <link rel="stylesheet" href="css/styles.css?v=2025110501">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <meta name="description" content="Descubre los mejores lugares turísticos de Fuerteventura: parques naturales, pueblos históricos, museos y mucho más.">
+    <link rel="stylesheet" href="css/styles.css?v=2025111803">
+    <link rel="preload" href="images/Fuerteventura.webp" as="image" fetchpriority="high">
+    <link rel="preload" href="images/Fuerteventura.jpeg" as="image" fetchpriority="high">
+    <!-- Google Fonts: Inter para texto, Playfair Display para títulos -->
+    <link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@400;600;700&family=Yeseva+One&display=swap" rel="stylesheet">
+    <!-- Leaflet CSS para mapas interactivos -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+    <!-- Swiper para galerías / timeline -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@9/swiper-bundle.min.css" / crossorigin="anonymous" integrity="sha384-tOPXDsn4moKzmRcYpDt8mOcJWxzy89N8dK0oEkxTx90DZYjDdznDQ4IEiH1pcZH5">
+    <!-- Font Awesome 6 (iconos) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" crossorigin="anonymous" integrity="sha384-t1nt8BQoYMLFN5p42tRAtuAAFQaCQODekUVeKKZrEnEyp4H2R0RHFz0KWpmj7i8g">
+    <meta name="description" content="Guía turística de Fuerteventura 2025: descubre parques naturales, pueblos con encanto, museos, miradores y los mejores lugares que visitar en la isla.">
+    <meta name="keywords" content="turismo Fuerteventura, qué ver en Fuerteventura, lugares turísticos Fuerteventura, excursiones Fuerteventura, parques naturales, pueblos Fuerteventura, atracciones Canarias">
+    <meta name="robots" content="index, follow">
+    
+    <!-- Metadatos Open Graph -->
+    <meta property="og:title" content="Turismo en Fuerteventura - Guía de Lugares y Atracciones">
+    <meta property="og:description" content="Descubre los mejores lugares turísticos de Fuerteventura: parques naturales, pueblos históricos y atracciones.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://thisisfuerteventura.es/turismo.html">
+    <meta property="og:image" content="https://thisisfuerteventura.es/images/logo.jpg">
+    
+    <!-- Metadatos Twitter Cards -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Turismo en Fuerteventura - Guía Completa">
+    <meta name="twitter:description" content="Los mejores lugares turísticos de Fuerteventura: parques, pueblos y atracciones.">
+    <meta name="twitter:image" content="https://thisisfuerteventura.es/images/logo.jpg">
+        <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://unpkg.com https://www.googletagmanager.com https://analytics.google.com https://www.google-analytics.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://unpkg.com; font-src 'self' data: https://fonts.gstatic.com https://cdnjs.cloudflare.com; img-src 'self' data: https: https://unpkg.com https://*.tile.openstreetmap.org; media-src 'self'; connect-src 'self' https://thisisfuerteventura.es https://www.googletagmanager.com https://www.google-analytics.com https://cdn.jsdelivr.net https://unpkg.com http://localhost:3000 http://localhost:3001 http://localhost:* http://127.0.0.1:* https://api.open-meteo.com https://marine-api.open-meteo.com https://ingesteer.services-prod.nsvcs.net; base-uri 'self'; object-src 'none';">
+    
+    <!-- Datos estructurados externos (cumplir CSP) -->
+    <script type="application/ld+json" src="data/structured/turismo-destination.jsonld"></script>
 </head>
-<body>
+<body class="dark-header">
+    <a class="skip-link" href="#main">Saltar al contenido principal</a>
     <header>
         <div class="logo-container">
-            <img src="images/logo.jpg" alt="This is Fuerteventura Logo" class="logo">
+            <picture>
+                <source srcset="images/logo.webp" type="image/webp">
+                <img src="images/logo.jpg" alt="This is Fuerteventura Logo" class="logo" loading="lazy" decoding="async" width="70" height="70">
+            </picture>
             <h1>This is Fuerteventura</h1>
         </div>
-        <nav>
+        <nav id="site-nav" aria-label="Navegación principal" role="navigation">
             <ul>
                 <li><a href="index.html">Inicio</a></li>
                 <li><a href="noticias.html">Noticias</a></li>
-                <li><a href="turismo.html">Turismo</a></li>
+                <li><a href="turismo.html" aria-current="page">Turismo</a></li>
                 <li><a href="alojamiento.html">Alojamiento</a></li>
                 <li><a href="playas.html">Playas</a></li>
-                <li><a href="gastronomia.html">Gastronomía</a></li>
+                <li><a href="senderos.html">Senderos</a></li>
+                <li><a href="blog.html">Blog</a></li>
                 <li><a href="contacto.html">Contacto</a></li>
             </ul>
         </nav>
-        <div class="mobile-menu">
-            <i class="fas fa-bars"></i>
-        </div>
+        <button type="button" class="mobile-menu" aria-label="Abrir menú" aria-controls="site-nav" aria-expanded="false">
+            <i class="fas fa-bars" aria-hidden="true"></i>
+        </button>
     </header>
 
     <main id="main">
-    <section class="hero tourism-hero">
+    <section class="hero tourism-hero parallax reveal hero-video">
+        <video autoplay muted loop playsinline preload="metadata" class="hero-bg">
+            <source src="images/VideoHeader.mp4" type="video/mp4" fetchpriority="high">
+            Tu navegador no soporta vídeo.
+        </video>
+        <div class="hero-overlay"></div>
         <div class="hero-content">
-            <h2>Descubre Fuerteventura</h2>
+            <h2 class="sand-write" data-sand-write data-sand-step="0.08" data-sand-duration="0.95" data-sand-delay="0.12" data-sand-distribution="ease">Descubre Fuerteventura</h2>
             <p>Una isla llena de historia, cultura y belleza natural</p>
         </div>
     </section>
 
-    <section class="tourism-content">
-        <h2>Lugares de interés</h2>
-        <div class="tourism-grid">
+    <section class="tourism-content reveal">
+        <h2 class="sand-write" data-sand-write data-sand-step="0.045" data-sand-duration="0.8" data-sand-distribution="accelerate">Lugares de interés</h2>
+        <div class="tourism-grid card-stagger">
             <article class="tourism-card">
-                <img src="images/turismo/corralejo-dunas.jpg" alt="Parque Natural de Corralejo" loading="lazy" onerror="this.onerror=null;this.src='images/Fuerteventura.jpeg';">
+                <picture>
+                    <source srcset="images/turismo/corralejo-dunas.webp" type="image/webp">
+                    <img src="images/turismo/corralejo-dunas.jpg?v=2" alt="Parque Natural de Corralejo" loading="lazy" width="400" height="300">
+                </picture>
                 <div class="tourism-info">
                     <h3>Parque Natural de Corralejo</h3>
-                    <p>Explora las impresionantes dunas de arena dorada y las vistas al mar cristalino en uno de los parques naturales más emblemáticos de la isla. Las Grandes Playas se extienden por kilómetros junto al azul turquesa del Atlántico: madruga para evitar el viento y disfruta de un paseo entre dunas.</p>
+                    <p>Explora las impresionantes dunas de arena dorada y el mar cristalino en uno de los parques más emblemáticos de la isla. Las Grandes Playas se extienden por kilómetros junto al turquesa del Atlántico. Aparcamientos señalizados en la FV-1; mejor al amanecer o atardecer y lleva agua y protección solar.</p>
                     <div class="features">
                         <span><i class="fas fa-leaf"></i> Naturaleza</span>
                         <span><i class="fas fa-mountain"></i> Dunas</span>
                         <span><i class="fas fa-road"></i> Fácil acceso</span>
                     </div>
-                    <a href="#" class="btn">Más información</a>
+                    <a href="turismo-detalle.html?id=parque-natural-de-corralejo" class="btn">Más información</a>
                 </div>
             </article>
 
             <article class="tourism-card">
-                <img src="images/turismo/betancuria.jpg" alt="Betancuria" loading="lazy" onerror="this.onerror=null;this.src='images/Fuerteventura.jpeg';">
+                <picture>
+                    <source srcset="images/turismo/betancuria.webp" type="image/webp">
+                    <img src="images/turismo/betancuria.jpg?v=2" alt="Betancuria" loading="lazy" width="400" height="300">
+                </picture>
                 <div class="tourism-info">
                     <h3>Betancuria</h3>
-                    <p>Visita la antigua capital de Fuerteventura, un pueblo histórico con arquitectura colonial y museos fascinantes. Recorre sus calles empedradas, entra a la iglesia de Santa María y toma un café con vistas al barranco.</p>
+                    <p>Antigua capital con encanto histórico, arquitectura tradicional y museos. Pasea por sus calles empedradas, visita la iglesia de Santa María y acércate a los miradores cercanos. Hay restaurantes con cocina local y aparcamiento municipal en el centro.</p>
                     <div class="features">
                         <span><i class="fas fa-landmark"></i> Historia</span>
-                        <span><i class="fas fa-university"></i> Museo</span>
+                        <span><i class="fas fa-building-columns"></i> Museo</span>
                         <span><i class="fas fa-binoculars"></i> Mirador</span>
                     </div>
-                    <a href="#" class="btn">Más información</a>
+                    <a href="turismo-detalle.html?id=betancuria" class="btn">Más información</a>
                 </div>
             </article>
 
             <article class="tourism-card">
-                <img src="images/turismo/faro-morro-jable.jpg" alt="Faro de Morro Jable" loading="lazy" onerror="this.onerror=null;this.src='images/Fuerteventura.jpeg';">
+                <picture>
+                    <source srcset="images/turismo/faro-morro-jable.webp" type="image/webp">
+                    <img src="images/turismo/faro-morro-jable.jpg?v=2" alt="Faro de Morro Jable" loading="lazy" width="400" height="300">
+                </picture>
                 <div class="tourism-info">
                     <h3>Faro de Morro Jable</h3>
-                    <p>Contempla las mejores puestas de sol de la isla desde este emblemático faro en el sur de Fuerteventura. Al atardecer, el cielo se tiñe de tonos dorados y rosados sobre la playa de Jandía.</p>
+                    <p>Atardeceres memorables junto a la playa de Jandía y su paseo marítimo. Acceso cómodo y servicios cercanos para familias. Excelente zona para caminar, fotografiar y relajarse con la brisa marina.</p>
                     <div class="features">
                         <span><i class="fas fa-sun"></i> Atardecer</span>
                         <span><i class="fas fa-compass"></i> Faro</span>
-                        <span><i class="fas fa-walking"></i> Paseo marítimo</span>
+                        <span><i class="fas fa-person-walking"></i> Paseo marítimo</span>
                     </div>
-                    <a href="#" class="btn">Más información</a>
+                    <a href="turismo-detalle.html?id=faro-de-morro-jable" class="btn">Más información</a>
                 </div>
             </article>
 
             <article class="tourism-card">
-                <img src="images/turismo/isla-de-lobos.jpg" alt="Isla de Lobos" loading="lazy" onerror="this.onerror=null;this.src='images/Fuerteventura.jpeg';">
+                <img src="images/turismo/isla-de-lobos.jpg?v=2" alt="Isla de Lobos" loading="lazy">
                 <div class="tourism-info">
                     <h3>Isla de Lobos</h3>
-                    <p>Descubre este paraíso natural a solo 15 minutos en barco desde Corralejo, perfecto para senderismo y snorkel. Reserva con tiempo el permiso de visita y sigue el sendero hasta el Puertito para un baño inolvidable.</p>
+                    <p>Reserva natural a 15 minutos en barco desde Corralejo, ideal para senderismo y snorkel. Es imprescindible reservar permiso con antelación. Recorre senderos volcánicos señalizados, lleva agua y respeto por el entorno.</p>
                     <div class="features">
-                        <span><i class="fas fa-hiking"></i> Senderismo</span>
+                        <span><i class="fas fa-person-hiking"></i> Senderismo</span>
                         <span><i class="fas fa-water"></i> Snorkel</span>
-                        <span><i class="fas fa-ticket-alt"></i> Reserva</span>
+                        <span><i class="fas fa-ticket-simple"></i> Reserva</span>
                     </div>
-                    <a href="#" class="btn">Más información</a>
+                    <a href="turismo-detalle.html?id=isla-de-lobos" class="btn">Más información</a>
+                </div></article>
+
+            <article class="tourism-card">
+                <img src="images/turismo/el-cotillo.avif" alt="El Cotillo" loading="lazy">
+                <div class="tourism-info">
+                    <h3>El Cotillo</h3>
+                    <p>Pueblo pesquero con lagunas de aguas turquesas y puestas de sol espectaculares. Perfecto para familias por sus calas protegidas. Gastronomía local con excelente pescado fresco frente al mar.</p>
+                    <div class="features">
+                        <span><i class="fas fa-fish"></i> Pescado fresco</span>
+                    </div>
+                    <a href="turismo-detalle.html?id=el-cotillo" class="btn">Más información</a>
+                </div></article>
+
+            <article class="tourism-card">
+                <img src="images/turismo/cofete.jpg" alt="Playa de Cofete" loading="lazy">
+                <div class="tourism-info">
+                    <h3>Playa de Cofete</h3>
+                    <p>Una de las playas más vírgenes de Canarias, con arena dorada y montañas imponentes. Acceso por pista de tierra: conduce con precaución. No hay servicios; lleva agua, comida y evita los días de viento fuerte.</p>
+                    <div class="features">
+                        <span><i class="fas fa-mountain"></i> Naturaleza salvaje</span>
+                        <span><i class="fas fa-camera-retro"></i> Fotografía</span>
+                        <span><i class="fas fa-car"></i> 4x4 recomendado</span>
+                    </div>
+                    <a href="turismo-detalle.html?id=playa-de-cofete" class="btn">Más información</a>
+                </div>
+            </article>
+
+            <article class="tourism-card">
+                <img src="images/turismo/ajuy.webp" alt="Cuevas de Ajuy" loading="lazy">
+                <div class="tourism-info">
+                    <h3>Cuevas de Ajuy</h3>
+                    <p>Formaciones geológicas milenarias con cuevas marinas y acantilados volcánicos. Sendero costero señalizado con barandillas y miradores; usa calzado cómodo. En el pueblo encontrarás restaurantes y aparcamiento.</p>
+                    <div class="features">
+                        <span><i class="fas fa-mountain"></i> Geología</span>
+                        <span><i class="fas fa-water"></i> Cuevas marinas</span>
+                        <span><i class="fas fa-person-walking"></i> Sendero</span>
+                    </div>
+                    <a href="turismo-detalle.html?id=cuevas-de-ajuy" class="btn">Más información</a>
+                </div>
+            </article>
+
+            <article class="tourism-card">
+                <img src="images/turismo/la-oliva.avif" alt="La Oliva" loading="lazy">
+                <div class="tourism-info">
+                    <h3>La Oliva</h3>
+                    <p>Villa histórica con la iglesia de Nuestra Señora de la Candelaria y la Casa de los Coroneles. Patrimonio majorero en un entorno tranquilo. Aparcamiento en calles adyacentes y centro de arte cercano.</p>
+                    <div class="features">
+                        <span><i class="fas fa-church"></i> Patrimonio</span>
+                        <span><i class="fas fa-home"></i> Arquitectura</span>
+                        <span><i class="fas fa-palette"></i> Centro de arte</span>
+                    </div>
+                    <a href="turismo-detalle.html?id=la-oliva" class="btn">Más información</a>
+                </div></article>
+
+            <article class="tourism-card">
+                <img src="images/turismo/mirador-morro-velosa.jpg" alt="Mirador de Morro Velosa" loading="lazy">
+                <div class="tourism-info">
+                    <h3>Mirador de Morro Velosa</h3>
+                    <p>Mirador icónico con panorámicas del interior de la isla. En días despejados verás gran parte de Fuerteventura. Acceso por carretera de montaña con curvas; conduce con precaución.</p>
+                    <div class="features">
+                        <span><i class="fas fa-eye"></i> Vistas panorámicas</span>
+                    </div>
+                    <a href="turismo-detalle.html?id=mirador-de-morro-velosa" class="btn">Más información</a>
+                </div>
+            </article>
+
+            <article class="tourism-card">
+                <img src="images/turismo/caleta-de-Fuste.jpg" alt="Caleta de Fuste" loading="lazy">
+                <div class="tourism-info">
+                    <h3>Caleta de Fuste</h3>
+                    <p>Destino familiar con playa protegida de oleaje, paseo marítimo y puerto deportivo. Actividades suaves y servicios a pie. Amplia oferta de restauración y fácil aparcamiento.</p>
+                    <div class="features">
+                        <span><i class="fas fa-child"></i> Familiar</span>
+                    </div>
+                    <a href="turismo-detalle.html?id=caleta-de-fuste" class="btn">Más información</a>
+                </div>
+            </article>
+
+            <article class="tourism-card">
+                <img src="images/turismo/puerto-del-rosario-.jpg" alt="Puerto del Rosario" loading="lazy">
+                <div class="tourism-info">
+                    <h3>Puerto del Rosario</h3>
+                    <p>Capital con arte urbano, museos y comercio local. Recorre la avenida marítima y las esculturas de la ciudad. Buenas conexiones de transporte público y servicios.</p>
+                    <div class="features">
+                        <span><i class="fas fa-paintbrush"></i> Arte urbano</span>
+                    </div>
+                    <a href="turismo-detalle.html?id=puerto-del-rosario" class="btn">Más información</a>
+                </div>
+            </article>
+
+            <article class="tourism-card">
+                <img src="images/turismo/tindaya.webp" alt="Montaña de Tindaya" loading="lazy">
+                <div class="tourism-info">
+                    <h3>Montaña de Tindaya</h3>
+                    <p>Montaña sagrada con gran simbolismo aborigen y entorno arqueológico. Respeta las normas de protección y consulta posibles restricciones de acceso antes de tu visita.</p>
+                    <div class="features">
+                        <span><i class="fas fa-history"></i> Arqueología</span>
+                    </div>
+                    <a href="turismo-detalle.html?id=montana-de-tindaya" class="btn">Más información</a>
+                </div>
+            </article>
+
+            <article class="tourism-card">
+                <img src="images/turismo/parque-natural-jandia.jpg" alt="Parque Natural de Jandía" loading="lazy">
+                <div class="tourism-info">
+                    <h3>Parque Natural de Jandía</h3>
+                    <p>Espacio protegido en el sur con playas casi infinitas, dunas y fauna endémica. Rutas de senderismo señalizadas y excelentes puntos para observar aves. Lleva agua y protección solar.</p>
+                    <div class="features">
+                        <span><i class="fas fa-leaf"></i> Naturaleza</span>
+                    </div>
+                    <a href="turismo-detalle.html?id=parque-natural-de-jandia" class="btn">Más información</a>
+                </div>
+            </article>
+
+            <article class="tourism-card">
+                <img src="images/turismo/ecomuseo-la-alcogida.jpg" alt="Ecomuseo La Alcogida" loading="lazy">
+                <div class="tourism-info">
+                    <h3>Ecomuseo La Alcogida</h3>
+                    <p>Conjunto de casas tradicionales restauradas que recrean la vida rural majorera. Museo etnográfico al aire libre ideal para familias. Consulta horarios y actividades antes de ir.</p>
+                    <div class="features">
+                        <span><i class="fas fa-home"></i> Arquitectura tradicional</span>
+                    </div>
+                    <a href="turismo-detalle.html?id=ecomuseo-la-alcogida" class="btn">Más información</a>
+                </div>
+            </article>
+
+            <article class="tourism-card">
+                <img src="images/turismo/molino-antigua.jpg" alt="Molino de Antigua" loading="lazy">
+                <div class="tourism-info">
+                    <h3>Molino de Antigua</h3>
+                    <p>Molino de viento restaurado con museo del gofio y artesanía. Patrimonio industrial de la isla con fácil acceso y aparcamiento cercano. Visita combinable con La Alcogida.</p>
+                    <div class="features">
+                        <span><i class="fas fa-wind"></i> Molino</span>
+                    </div>
+                    <a href="turismo-detalle.html?id=molino-de-antigua" class="btn">Más información</a>
+                </div>
+            </article>
+
+            <article class="tourism-card">
+                <img src="images/turismo/popcorn-beach.jpg" alt="Playa de las Palomitas" loading="lazy">
+                <div class="tourism-info">
+                    <h3>Playa de las Palomitas</h3>
+                    <p>Cala singular con rodolitos blancos que parecen palomitas. Respeta el entorno: está prohibido llevarse los rodolitos. Acceso por pista corta y aparcamiento limitado.</p>
+                    <div class="features">
+                        <span><i class="fas fa-star"></i> Fenómeno natural</span>
+                    </div>
+                    <a href="turismo-detalle.html?id=playa-de-las-palomitas" class="btn">Más información</a>
+                </div>
+            </article>
+
+            <article class="tourism-card">
+                <img src="images/turismo/Salinas-carmen.webp" alt="Salinas del Carmen" loading="lazy">
+                <div class="tourism-info">
+                    <h3>Salinas del Carmen</h3>
+                    <p>Salinas artesanales del siglo XVIII con museo de la sal junto al mar. Recorrido interpretativo sobre la obtención de sal y paseo por las salinas. Aparcamiento junto al museo.</p>
+                    <div class="features">
+                        <span><i class="fas fa-water"></i> Salinas</span>
+                    </div>
+                    <a href="turismo-detalle.html?id=salinas-del-carmen" class="btn">Más información</a>
+                </div>
+            </article>
+
+            <article class="tourism-card">
+                <img src="images/turismo/punta-pesebre.jpg" alt="Punta de Pesebre" loading="lazy">
+                <div class="tourism-info">
+                    <h3>Punta de Pesebre</h3>
+                    <p>Extremo occidental con paisajes volcánicos y vistas al Atlántico. Acceso por pistas sin asfaltar; evita con mal tiempo. Zona ventosa: lleva ropa adecuada y precaución.</p>
+                    <div class="features">
+                        <span><i class="fas fa-compass"></i> Extremo norte</span>
+                    </div>
+                    <a href="turismo-detalle.html?id=punta-de-pesebre" class="btn">Más información</a>
                 </div>
             </article>
         </div>
     </section>
 
-    <section class="itineraries">
+    <section class="itineraries reveal">
         <h2>Itinerarios sugeridos</h2>
         <div class="itinerary-grid">
             <div class="itinerary">
@@ -122,25 +350,25 @@
         </div>
     </section>
 
-    <section class="image-gallery">
+    <section class="image-gallery reveal">
         <h2>Galería de inspiración</h2>
         <div class="gallery-grid">
             <figure>
-                <img src="images/turismo/dunas-mar.jpg" alt="Dunas y mar" loading="lazy" onerror="this.onerror=null;this.src='images/Fuerteventura.jpeg';">
+                <img src="images/turismo/dunas-mar.jpg" alt="Dunas y mar" loading="lazy">
                 <figcaption>Dunas y mar</figcaption>
             </figure>
             <figure>
-                <img src="images/turismo/olas-costa.jpg" alt="Olas y costa" loading="lazy" onerror="this.onerror=null;this.src='images/Fuerteventura.jpeg';">
+                <img src="images/turismo/olas-costa.jpg" alt="Olas y costa" loading="lazy">
                 <figcaption>Olas del Atlántico</figcaption>
             </figure>
             <figure>
-                <img src="images/turismo/atardecer.jpg" alt="Atardecer" loading="lazy" onerror="this.onerror=null;this.src='images/Fuerteventura.jpeg';">
+                <img src="images/turismo/atardecer.jpg" alt="Atardecer" loading="lazy">
                 <figcaption>Atardeceres únicos</figcaption>
             </figure>
         </div>
     </section>
 
-    <section class="activities">
+    <section class="activities reveal">
         <h2>Actividades recomendadas</h2>
         <div class="activities-grid">
             <div class="activity-card">
@@ -149,7 +377,7 @@
                 <p>Practica deportes acuáticos en las mejores playas para el viento.</p>
             </div>
             <div class="activity-card">
-                <i class="fas fa-hiking"></i>
+                <i class="fas fa-person-hiking"></i>
                 <h3>Senderismo</h3>
                 <p>Explora rutas y senderos con vistas espectaculares.</p>
             </div>
@@ -166,7 +394,7 @@
         </div>
     </section>
 
-    <section class="tips">
+    <section class="tips reveal">
         <h2>Consejos para tu visita</h2>
         <div class="tips-container">
             <div class="tip">
@@ -187,12 +415,27 @@
         </div>
     </section>
 
+    <!-- Mapa interactivo -->
+    <section class="reveal interactive-map-section" aria-label="Mapa interactivo de Fuerteventura">
+        <h2>Mapa interactivo</h2>
+        <div id="map"></div>
+    </section>
+
+    <!-- Noticias en timeline (derivadas de destacadas) -->
+    <section class="news-timeline reveal" aria-label="Timeline de noticias">
+        <div class="timeline-container">
+            <div id="news-timeline" class="timeline-swiper"></div>
+        </div>
+    </section>
+    <!-- Contenedor oculto de noticias que alimenta el timeline -->
+    <div id="featured-news" class="hidden" aria-hidden="true"></div>
+
     </main>
 
     <footer>
         <div class="footer-content">
             <div class="footer-logo">
-                <img src="images/logo.jpg" alt="This is Fuerteventura Logo" class="logo">
+                <img src="images/logo.jpg" alt="This is Fuerteventura Logo" class="logo" loading="lazy" decoding="async" width="40" height="40">
                 <h3>This is Fuerteventura</h3>
             </div>
             <div class="footer-links">
@@ -208,16 +451,16 @@
             <div class="footer-social">
                 <h4>Síguenos</h4>
                 <div class="social-icons">
-                    <a href="#"><i class="fab fa-facebook"></i></a>
-                    <a href="#"><i class="fab fa-twitter"></i></a>
-                    <a href="#"><i class="fab fa-instagram"></i></a>
-                    <a href="#"><i class="fab fa-youtube"></i></a>
+                    <a href="https://www.facebook.com/profile.php?id=61583457788241" target="_blank" rel="noopener noreferrer" aria-label="Facebook"><i class="fab fa-facebook"></i></a>
+                    <a href="https://x.com/thisisfuerte_es" target="_blank" rel="noopener noreferrer" aria-label="X"><i class="fab fa-x-twitter"></i></a>
+                    <a href="https://www.instagram.com/thisisfuertevntura.es/" target="_blank" rel="noopener noreferrer" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                    <a href="https://www.youtube.com/@thisisfuerteventura" target="_blank" rel="noopener noreferrer" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
                 </div>
             </div>
             <div class="footer-contact">
                 <h4>Contacto</h4>
                 <p><i class="fas fa-envelope"></i> info@thisisfuerteventura.es</p>
-                <p><i class="fas fa-phone"></i> +34 XXX XXX XXX</p>
+                <p><i class="fas fa-phone"></i> +34 633 938 539</p>
             </div>
         </div>
         <div class="footer-bottom">
@@ -225,6 +468,120 @@
         </div>
     </footer>
 
-    <script src="js/main.js?v=2025110501" defer></script>
+    <script src="js/main.js?v=2025111706" defer></script>
+    <script src="js/proxy-discovery.js?v=2025111508" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/dompurify@2.4.0/dist/purify.min.js" defer crossorigin="anonymous" integrity="sha384-Tsl3d5pUAO7a13enIvSsL3O0/95nsthPJiPto5NtLuY8w3+LbZOpr3Fl2MNmrh1E"></script>
+    <script src="js/feed-utils.js?v=2025111508" defer></script>
+    <script src="js/image-extractor.js?v=2025111508" defer></script>
+    <script src="js/content-loader.js?v=2025111508" defer></script>
+    <script src="js/cookies.js?v=2025111508" defer></script>
+    <!-- Three.js para sistema de partículas -->
+    <script src="https://cdn.jsdelivr.net/npm/three@0.152.0/build/three.min.js" defer crossorigin="anonymous" integrity="sha384-X9Z4JPIA98tyn9ayVMe0cM9j3zfE7CliV/xrpqv2t757y/UFj/awObaY8PUT6rh7"></script>
+    <!-- GSAP + ScrollTrigger para animaciones narrativas -->
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js" defer crossorigin="anonymous" integrity="sha384-g4NTh/Iv5PPU4xPyhEWqPcwtNXOvdaDI8LLnyYfyNZOjKJeYQyjzQ9X5275eBjpt"></script>
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js" defer crossorigin="anonymous" integrity="sha384-Z3REaz79l2IaAZqJsSABtTbhjgOUYyV3p90XNnAPCSHg3EMTz1fouunq9WZRtj3d"></script>
+    <script src="https://cdn.jsdelivr.net/npm/swiper@9/swiper-bundle.min.js" defer crossorigin="anonymous" integrity="sha384-hPkhOzAEx2ZcJuDkANAhjXmtEnqjkADleTxUbwTTJLmwmhV2F4/u6BOcnVL3xxqs"></script>
+    <script src="js/scroll-animations.js?v=2025111602" defer></script>
+    <script src="js/dark-mode.js?v=2025111508" defer></script>
+    <script src="js/ux.js?v=2025111508" defer></script>
+    <script src="js/particles.js?v=2025111508" defer></script>
+    <script src="js/narrative-scroll.js?v=2025111508" defer></script>
+    <script src="js/sand-write.js?v=2025111611" defer></script>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin="" defer></script>
+    <script src="js/map.js?v=2025111508" defer></script>
+    <script src="js/ambient-sounds.js?v=2025111508" defer></script>
+
+    <!-- Banner de consentimiento de cookies -->
+    <div id="cookie-consent" class="cookie-consent">
+        <div class="cookie-consent-content">
+            <div class="cookie-consent-text">
+                <h3>🍪 Usamos cookies</h3>
+                <p>Utilizamos cookies propias y de terceros para mejorar tu experiencia de navegación y analizar el uso del sitio. 
+                <a href="politica-cookies.html">Más información</a></p>
+            </div>
+            <div class="cookie-consent-buttons">
+                <button id="cookie-accept" class="cookie-btn cookie-btn-accept">Aceptar todas</button>
+                <button id="cookie-reject" class="cookie-btn cookie-btn-reject">Solo necesarias</button>
+                <button id="cookie-settings" class="cookie-btn cookie-btn-settings">Configurar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de configuración de cookies -->
+    <div id="cookie-modal" class="cookie-modal">
+        <div class="cookie-modal-content">
+            <div class="cookie-modal-header">
+                <h2>Configuración de Cookies</h2>
+                <button id="cookie-modal-close" class="cookie-modal-close">&times;</button>
+            </div>
+            <div class="cookie-modal-body">
+                <p class="cookie-intro">
+                    Utilizamos diferentes tipos de cookies para mejorar tu experiencia en nuestro sitio web. 
+                    Puedes elegir qué categorías deseas permitir.
+                </p>
+                <div class="cookie-category">
+                    <div class="cookie-category-header">
+                        <h3>Cookies Necesarias</h3>
+                        <label class="cookie-toggle">
+                            <input type="checkbox" id="cookies-necessary" name="cookies-necessary" checked disabled>
+                            <span class="cookie-toggle-slider"></span>
+                        </label>
+                    </div>
+                    <p class="cookie-category-description">Estas cookies son esenciales para el funcionamiento del sitio web.</p>
+                </div>
+                <div class="cookie-category">
+                    <div class="cookie-category-header">
+                        <h3>Cookies Analíticas</h3>
+                        <label class="cookie-toggle">
+                            <input type="checkbox" id="analytics-toggle">
+                            <span class="cookie-toggle-slider"></span>
+                        </label>
+                    </div>
+                    <p class="cookie-category-description">Estas cookies nos permiten contar las visitas y fuentes de tráfico.</p>
+                </div>
+                <div class="cookie-category">
+                    <div class="cookie-category-header">
+                        <h3>Cookies de Marketing</h3>
+                        <label class="cookie-toggle">
+                            <input type="checkbox" id="marketing-toggle">
+                            <span class="cookie-toggle-slider"></span>
+                        </label>
+                    </div>
+                    <p class="cookie-category-description">Estas cookies pueden ser establecidas por nuestros socios publicitarios.</p>
+                </div>
+                <div class="cookie-category">
+                    <div class="cookie-category-header">
+                        <h3>Cookies Funcionales</h3>
+                        <label class="cookie-toggle">
+                            <input type="checkbox" id="functional-toggle">
+                            <span class="cookie-toggle-slider"></span>
+                        </label>
+                    </div>
+                    <p class="cookie-category-description">Estas cookies permiten funcionalidad mejorada y personalización.</p>
+                </div>
+            </div>
+            <div class="cookie-modal-footer">
+                <button id="save-cookie-preferences" class="cookie-btn cookie-btn-accept">Guardar preferencias</button>
+            </div>
+        </div>
+    </div>
 </body>
 </html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

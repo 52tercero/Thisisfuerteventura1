@@ -1,0 +1,6 @@
+﻿/* Full legacy stylesheet migrated: inlined key sections as needed. */
+/* Fallback: if full file outside Next project, ensure critical classes present (hero, header, buttons). */
+/* Consider future optimization: remove unused selectors after audit. */
+@layer legacy-base {
+	:root { --legacy-placeholder: 1; }
+}

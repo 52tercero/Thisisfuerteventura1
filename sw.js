@@ -1,5 +1,5 @@
 ﻿// Service Worker con estrategia segura (network-first para documentos) para evitar contenido obsoleto
-const SW_VERSION = 'v3';
+const SW_VERSION = 'v10-feed-freshness';
 const APP_CACHE = `app-${SW_VERSION}`;
 
 const PRECACHE = [
@@ -7,7 +7,13 @@ const PRECACHE = [
   '/index.html',
   '/noticias.html',
   '/css/styles.css',
-  '/images/logo.jpg'
+  '/images/logo.jpg',
+  '/js/main.js',
+  '/js/scroll-animations.js',
+  '/js/dark-mode.js',
+  '/js/interactive-map.js',
+  '/js/gamification.js',
+  '/js/real-time-data.js'
 ];
 
 self.addEventListener('install', (event) => {
@@ -35,57 +41,112 @@ self.addEventListener('fetch', (event) => {
   const req = event.request;
   const url = new URL(req.url);
 
-  if (req.method !== 'GET') return;
+  if (req.method !== 'GET') {return;}
 
-  // Nunca cachear /api
+  // Nunca cachear Netlify Functions
+  if (url.pathname.startsWith('/.netlify/functions/')) {
+    event.respondWith((async () => {
+      try {
+        return await fetch(req);
+      } catch (e) {
+        const isImage = req.destination === 'image';
+        if (isImage) {
+          return (await caches.match('/images/logo.jpg')) || new Response('', { status: 503 });
+        }
+        return new Response(JSON.stringify({ error: 'offline' }), {
+          status: 503,
+          headers: { 'Content-Type': 'application/json' }
+        });
+      }
+    })());
+    return;
+  }
+
+  // Nunca cachear /api – si la red falla, responder JSON de error (evita promesas rechazadas)
   if (url.pathname.startsWith('/api/')) {
+    event.respondWith((async () => {
+      try {
+        return await fetch(req);
+      } catch (e) {
+        return new Response(JSON.stringify({ error: 'offline' }), {
+          status: 503,
+          headers: { 'Content-Type': 'application/json' }
+        });
+      }
+    })());
+    return;
+  }
+
+  // Documentos/navegación: primero red con alternativas válidas
+  if (req.mode === 'navigate' || req.destination === 'document') {
+    event.respondWith((async () => {
+      try {
+        const res = await fetch(req);
+        const copy = res.clone();
+        const c = await caches.open(APP_CACHE);
+        c.put(req, copy);
+        return res;
+      } catch (e) {
+        return (await caches.match(req))
+            || (await caches.match('/'))
+            || new Response('<h1>Offline</h1>', { status: 503, headers: { 'Content-Type': 'text/html' } });
+      }
+    })());
+    return;
+  }
+
+  // JS: Nunca cachear archivos JavaScript - siempre ir a la red
+  if (req.destination === 'script') {
     event.respondWith(fetch(req));
     return;
   }
 
-  // Documentos/navegación: network-first
-  if (req.mode === 'navigate' || req.destination === 'document') {
-    event.respondWith(
-      fetch(req).then((res) => {
-        const copy = res.clone();
-        caches.open(APP_CACHE).then(c => c.put(req, copy));
+  // CSS: primero red para estilos
+  if (req.destination === 'style') {
+    event.respondWith((async () => {
+      try {
+        const res = await fetch(req);
+        if (res.ok) {
+          const copy = res.clone();
+          const c = await caches.open(APP_CACHE);
+          c.put(req, copy);
+        }
         return res;
-      }).catch(() => caches.match(req))
-    );
+      } catch (e) {
+        const cached = await caches.match(req);
+        return cached || new Response('', { status: 504 });
+      }
+    })());
     return;
   }
 
-  // JS/CSS: stale-while-revalidate
-  if (req.destination === 'script' || req.destination === 'style') {
-    event.respondWith(
-      caches.match(req).then((cached) => {
-        const fetchPromise = fetch(req).then((res) => {
-          const copy = res.clone();
-          caches.open(APP_CACHE).then(c => c.put(req, copy));
-          return res;
-        }).catch(() => cached);
-        return cached || fetchPromise;
-      })
-    );
-    return;
-  }
-
-  // Imágenes: cache-first, fallback a logo
+  // Imágenes: primero caché, alternativa al logo (también para 404 del origen)
   if (req.destination === 'image') {
-    event.respondWith(
-      caches.match(req).then((cached) => (
-        cached || fetch(req).then((res) => {
-          const copy = res.clone();
-          caches.open(APP_CACHE).then(c => c.put(req, copy));
-          return res;
-        }).catch(() => caches.match('/images/logo.jpg'))
-      ))
-    );
+    event.respondWith((async () => {
+      const cached = await caches.match(req);
+      if (cached) {return cached;}
+      try {
+        const res = await fetch(req);
+        if (!res.ok) {return (await caches.match('/images/logo.jpg')) || new Response('', { status: 404 });}
+        const copy = res.clone();
+        const c = await caches.open(APP_CACHE);
+        c.put(req, copy);
+        return res;
+      } catch (e) {
+        return (await caches.match('/images/logo.jpg')) || new Response('', { status: 504 });
+      }
+    })());
     return;
   }
 
-  // Otros: cache, luego red
-  event.respondWith(
-    caches.match(req).then((cached) => cached || fetch(req))
-  );
+  // Otros: caché, luego red; si todo falla, 504 vacío (siempre respuesta válida)
+  event.respondWith((async () => {
+    const cached = await caches.match(req);
+    if (cached) {return cached;}
+    try {
+      return await fetch(req);
+    } catch (e) {
+      return new Response('', { status: 504 });
+    }
+  })());
 });

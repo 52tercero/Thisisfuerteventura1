@@ -15,18 +15,18 @@
  *   });
  */
 
-const analytics = (function() {
+const analytics = (function () {
   const listeners = [];
 
   return {
-    on: function(eventName, handler) {
+    on: function (eventName, handler) {
       listeners.push({ eventName, handler });
     },
-    off: function(handler) {
+    off: function (handler) {
       const idx = listeners.findIndex(l => l.handler === handler);
-      if (idx >= 0) listeners.splice(idx, 1);
+      if (idx >= 0) {listeners.splice(idx, 1);}
     },
-    track: function(eventName, data = {}) {
+    track: function (eventName, data = {}) {
       listeners.forEach(l => {
         if (l.eventName === '*' || l.eventName === eventName) {
           try {
@@ -41,7 +41,7 @@ const analytics = (function() {
 })();
 
 // Ejemplo: rastrear vistas de página en DOMContentLoaded
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
   analytics.track('page_view', {
     page: window.location.pathname,
     referrer: document.referrer

@@ -1,0 +1,122 @@
+﻿[
+  {
+    "slug": "calderon-hondo",
+    "name": "Calderón Hondo (Lajares) – Circular",
+    "summary": "Ruta volcánica con mirador al cráter. Ideal para familias.",
+    "difficulty": "facil",
+    "distanceKm": 4.7,
+    "ascentM": 150,
+    "durationMin": 90,
+    "start": { "lat": 28.6761, "lon": -13.9072 },
+    "gpx": "data/gpx/calderon-hondo.gpx",
+    "mapsQuery": "Calderon Hondo Lajares"
+  },
+  {
+    "slug": "pico-de-la-zarza",
+    "name": "Pico de la Zarza (Jandía)",
+    "summary": "Techo de Fuerteventura con vistas espectaculares a Cofete.",
+    "difficulty": "dificil",
+    "distanceKm": 13,
+    "ascentM": 800,
+    "durationMin": 330,
+    "start": { "lat": 28.0608, "lon": -14.3566 },
+    "gpx": "data/gpx/pico-de-la-zarza.gpx",
+    "mapsQuery": "Pico de la Zarza trailhead"
+  },
+  {
+    "slug": "isla-de-lobos-circular",
+    "name": "Isla de Lobos – Circular",
+    "summary": "Ruta costera por la reserva natural. Necesita permiso de acceso.",
+    "difficulty": "facil",
+    "distanceKm": 7.5,
+    "ascentM": 100,
+    "durationMin": 150,
+    "start": { "lat": 28.7437, "lon": -13.8128 },
+    "gpx": null,
+    "mapsQuery": "Isla de Lobos muelle"
+  },
+  {
+    "slug": "barranco-de-las-penitas",
+    "name": "Barranco de las Peñitas – Arco y Ermita",
+    "summary": "Paisaje granítico con arco natural y la ermita de la Peña.",
+    "difficulty": "moderada",
+    "distanceKm": 6,
+    "ascentM": 200,
+    "durationMin": 150,
+    "start": { "lat": 28.4098, "lon": -14.0502 },
+    "gpx": null,
+    "mapsQuery": "Barranco de las Peñitas Aloh"
+  },
+  {
+    "slug": "ajuy-cuevas",
+    "name": "Ajuy – Cuevas y acantilados",
+    "summary": "Paseo costero por depósitos fósiles y cuevas marinas.",
+    "difficulty": "facil",
+    "distanceKm": 4,
+    "ascentM": 100,
+    "durationMin": 90,
+    "start": { "lat": 28.3966, "lon": -14.1558 },
+    "gpx": null,
+    "mapsQuery": "Ajuy cuevas aparcamiento"
+  },
+  {
+    "slug": "malpais-de-la-arena",
+    "name": "Malpaís de la Arena – Circular",
+    "summary": "Campos de lava y coladas volcánicas en el norte.",
+    "difficulty": "moderada",
+    "distanceKm": 10,
+    "ascentM": 200,
+    "durationMin": 210,
+    "start": { "lat": 28.6469, "lon": -13.9349 },
+    "gpx": null,
+    "mapsQuery": "Malpaís de la Arena Lajares"
+  },
+  {
+    "slug": "gr131-norte",
+    "name": "GR‑131 Tramo Norte (Corralejo → La Oliva)",
+    "summary": "Etapa del sendero insular por malpaís y llanos del norte.",
+    "difficulty": "moderada",
+    "distanceKm": 27,
+    "ascentM": 500,
+    "durationMin": 390,
+    "start": { "lat": 28.7310, "lon": -13.8677 },
+    "gpx": null,
+    "mapsQuery": "Corralejo estación bus"
+  },
+  {
+    "slug": "betancuria-morro-velosa",
+    "name": "Betancuria – Morro Velosa",
+    "summary": "Crestas y miradores del macizo central.",
+    "difficulty": "moderada",
+    "distanceKm": 9,
+    "ascentM": 400,
+    "durationMin": 210,
+    "start": { "lat": 28.4238, "lon": -14.0564 },
+    "gpx": null,
+    "mapsQuery": "Betancuria aparcamiento senderos"
+  },
+  {
+    "slug": "la-pared-viejo-rey",
+    "name": "La Pared – Playa del Viejo Rey",
+    "summary": "Tramo costero con dunas fósiles y acantilados.",
+    "difficulty": "moderada",
+    "distanceKm": 7,
+    "ascentM": 120,
+    "durationMin": 150,
+    "start": { "lat": 28.2148, "lon": -14.0868 },
+    "gpx": null,
+    "mapsQuery": "La Pared Fuerteventura aparcamiento"
+  },
+  {
+    "slug": "cofete-roque-del-moro",
+    "name": "Cofete – Roque del Moro",
+    "summary": "Litoral salvaje del sur. Ruta exigente por arena y viento.",
+    "difficulty": "moderada",
+    "distanceKm": 11,
+    "ascentM": 200,
+    "durationMin": 210,
+    "start": { "lat": 28.1024, "lon": -14.3734 },
+    "gpx": null,
+    "mapsQuery": "Cofete aparcamiento"
+  }
+]

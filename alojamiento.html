@@ -3,45 +3,90 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Alojamiento en Fuerteventura - Hoteles y Apartamentos</title>
+    <title>Alojamiento en Fuerteventura 2025 - Hoteles, Apartamentos y Villas | This is Fuerteventura</title>
+    <meta name="theme-color" content="#0f4c81">
+    
+    <!-- Preconexión a recursos externos para mejorar el rendimiento -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
+    <link rel="dns-prefetch" href="https://cdnjs.cloudflare.com">
+    <link rel="dns-prefetch" href="https://unpkg.com">
+    
+    <link rel="canonical" href="https://thisisfuerteventura.es/alojamiento.html">
     <link rel="manifest" href="manifest.webmanifest">
-    <link rel="stylesheet" href="css/styles.css?v=2025110501">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <meta name="description" content="Encuentra el mejor alojamiento en Fuerteventura: hoteles, apartamentos, villas y casas rurales en las mejores zonas de la isla.">
+    <link rel="stylesheet" href="css/styles.css?v=2025111803">
+    <link rel="preload" href="images/Fuerteventura.jpeg" as="image" fetchpriority="high">
+    <!-- Google Fonts: Inter para texto, Playfair Display para títulos -->
+    <link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@400;600;700&family=Yeseva+One&display=swap" rel="stylesheet">
+    <!-- Swiper para galerías y timeline -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@9/swiper-bundle.min.css" / crossorigin="anonymous" integrity="sha384-tOPXDsn4moKzmRcYpDt8mOcJWxzy89N8dK0oEkxTx90DZYjDdznDQ4IEiH1pcZH5">
+    <!-- Font Awesome 6 (iconos) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" crossorigin="anonymous" integrity="sha384-t1nt8BQoYMLFN5p42tRAtuAAFQaCQODekUVeKKZrEnEyp4H2R0RHFz0KWpmj7i8g">
+    <meta name="description" content="Encuentra el mejor alojamiento en Fuerteventura 2025: hoteles todo incluido, apartamentos vacacionales, villas de lujo y casas rurales. Corralejo, Caleta de Fuste, Jandía y más.">
+    <meta name="keywords" content="hoteles Fuerteventura, apartamentos Fuerteventura, alojamiento Corralejo, hoteles Caleta de Fuste, villas Fuerteventura, todo incluido Canarias, donde alojarse Fuerteventura">
+    <meta name="robots" content="index, follow">
+    
+    <!-- Open Graph -->
+    <meta property="og:title" content="Alojamiento en Fuerteventura - Hoteles, Apartamentos y Villas">
+    <meta property="og:description" content="Encuentra tu alojamiento perfecto en Fuerteventura: hoteles, apartamentos y villas en las mejores zonas.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://thisisfuerteventura.es/alojamiento.html">
+    <meta property="og:image" content="https://thisisfuerteventura.es/images/logo.jpg">
+    
+    <!-- Twitter Cards -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Alojamiento en Fuerteventura">
+    <meta name="twitter:description" content="Hoteles, apartamentos y villas en Fuerteventura. Encuentra tu alojamiento ideal.">
+    <meta name="twitter:image" content="https://thisisfuerteventura.es/images/logo.jpg">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://unpkg.com https://www.googletagmanager.com https://analytics.google.com https://www.google-analytics.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://unpkg.com; font-src 'self' data: https://fonts.gstatic.com https://cdnjs.cloudflare.com; img-src 'self' data: https: https://unpkg.com https://*.tile.openstreetmap.org; media-src 'self'; connect-src 'self' https://thisisfuerteventura.es https://www.googletagmanager.com https://www.google-analytics.com https://cdn.jsdelivr.net https://unpkg.com http://localhost:3000 http://localhost:3001 http://localhost:* http://127.0.0.1:* https://api.open-meteo.com https://marine-api.open-meteo.com https://ingesteer.services-prod.nsvcs.net; base-uri 'self'; object-src 'none'; frame-ancestors 'self';">
+    
+    <!-- Datos estructurados (archivo externo para cumplir la CSP) -->
+    <script type="application/ld+json" src="data/structured/alojamiento-itemlist.jsonld"></script>
 </head>
-<body>
+<body class="dark-header">
+    <a class="skip-link" href="#main">Saltar al contenido principal</a>
     <header>
         <div class="logo-container">
-            <img src="images/logo.jpg" alt="This is Fuerteventura Logo" class="logo">
+            <picture>
+                <source srcset="images/logo.webp" type="image/webp">
+                <img src="images/logo.jpg" alt="This is Fuerteventura Logo" class="logo" loading="lazy" decoding="async" width="70" height="70">
+            </picture>
             <h1>This is Fuerteventura</h1>
         </div>
-        <nav>
+        <nav id="site-nav" aria-label="Navegación principal" role="navigation">
             <ul>
                 <li><a href="index.html">Inicio</a></li>
                 <li><a href="noticias.html">Noticias</a></li>
                 <li><a href="turismo.html">Turismo</a></li>
-                <li><a href="alojamiento.html">Alojamiento</a></li>
+                <li><a href="alojamiento.html" aria-current="page">Alojamiento</a></li>
                 <li><a href="playas.html">Playas</a></li>
-                <li><a href="gastronomia.html">Gastronomía</a></li>
+                <li><a href="senderos.html">Senderos</a></li>
+                <li><a href="blog.html">Blog</a></li>
                 <li><a href="contacto.html">Contacto</a></li>
             </ul>
         </nav>
-        <div class="mobile-menu">
-            <i class="fas fa-bars"></i>
-        </div>
+        <button type="button" class="mobile-menu" aria-label="Abrir menú" aria-controls="site-nav" aria-expanded="false">
+            <i class="fas fa-bars" aria-hidden="true"></i>
+        </button>
     </header>
 
     <main id="main">
-    <section class="hero accommodation-hero">
+    <section class="hero accommodation-hero parallax reveal hero-video">
+        <video autoplay muted loop playsinline preload="metadata" class="hero-bg">
+            <source src="images/VideoHeader.mp4" type="video/mp4" fetchpriority="high">
+            Tu navegador no soporta vídeo.
+        </video>
+        <div class="hero-overlay"></div>
         <div class="hero-content">
-            <h2>Alojamiento en Fuerteventura</h2>
+            <h2 class="sand-write" data-sand-write data-sand-step="0.08" data-sand-duration="0.95" data-sand-delay="0.12" data-sand-distribution="ease">Alojamiento en Fuerteventura</h2>
             <p>Encuentra tu hogar perfecto en la isla</p>
         </div>
     </section>
 
-    <section class="accommodation-search">
-        <h2>Busca tu alojamiento ideal</h2>
-        <form class="search-form">
+    <section class="accommodation-search reveal">
+        <h2 class="sand-write" data-sand-write data-sand-step="0.05" data-sand-duration="0.85" data-sand-distribution="ease">Busca tu alojamiento ideal</h2>
+        <form class="search-form" role="search" aria-label="Buscar alojamiento" id="booking-search">
             <div class="form-group">
                 <label for="location">Zona</label>
                 <select id="location" name="location">
@@ -72,81 +117,718 @@
                     <option value="300">Hasta 300€/noche</option>
                 </select>
             </div>
+            <div class="form-group">
+                <label for="checkin">Entrada</label>
+                <input type="date" id="checkin" name="checkin" required>
+            </div>
+            <div class="form-group">
+                <label for="checkout">Salida</label>
+                <input type="date" id="checkout" name="checkout" required>
+            </div>
+            <div class="form-group">
+                <label for="guests">Huéspedes</label>
+                <input type="number" id="guests" name="guests" min="1" max="12" value="2" required>
+            </div>
             <button type="submit" class="btn">Buscar alojamiento</button>
+            <button type="button" class="btn" id="booking-direct">Reserva directa</button>
         </form>
+        <p id="booking-summary" class="meta" aria-live="polite"></p>
     </section>
 
-    <section class="featured-accommodations">
-        <h2>Alojamientos destacados</h2>
-        <div class="accommodations-grid">
-            <article class="accommodation-card">
-                <img src="images/alojamiento/hotel-corralejo.jpg" alt="Hotel en Corralejo" loading="lazy" onerror="this.onerror=null;this.src='images/Fuerteventura.jpeg';">
-                <div class="accommodation-info">
-                    <h3>Gran Hotel Corralejo</h3>
-                    <p class="location"><i class="fas fa-map-marker-alt"></i> Corralejo</p>
-                    <p>Hotel de lujo con vistas al mar y acceso directo a la playa.</p>
+    <!-- CORRALEJO (Norte) -->
+    <section class="tourism-content reveal">
+        <div class="container">
+            <h2><i class="fas fa-location-dot"></i> <span class="sand-write" data-sand-write data-sand-step="0.045" data-sand-duration="0.8" data-sand-distribution="accelerate">Corralejo - Norte de Fuerteventura</span></h2>
+            <p class="zone-intro">Zona animada con dunas, playas espectaculares y excursiones a Isla de Lobos. Ideal para familias, deportes acuáticos y vida nocturna.</p>
+            <div class="tourism-grid">
+                <article class="tourism-card">
+                <img src="images/alojamiento/hotel-corralejo.jpg" alt="Riu Palace Tres Islas" loading="lazy">
+                <div class="tourism-info">
+                    <h3>Riu Palace Tres Islas</h3>
+                    <p>Resort Todo Incluido de 5 estrellas frente a la playa, con spa, 4 piscinas y actividades para toda la familia.</p>
                     <div class="features">
-                        <span><i class="fas fa-wifi"></i> WiFi</span>
-                        <span><i class="fas fa-swimming-pool"></i> Piscina</span>
-                        <span><i class="fas fa-utensils"></i> Restaurante</span>
+                        <span><i class="fas fa-swimming-pool"></i> 4 Piscinas</span>
+                        <span><i class="fas fa-spa"></i> Spa</span>
+                        <span><i class="fas fa-utensils"></i> 4 Restaurantes</span>
+                        <span><i class="fas fa-wifi"></i> WiFi gratis</span>
                     </div>
-                    <a class="btn btn-small" target="_blank" rel="noopener" href="https://www.google.com/maps/search/?api=1&query=Gran+Hotel+Corralejo+Corralejo"><i class="fas fa-map-marked-alt"></i> Ver en Maps</a>
-                    <a href="#" class="btn">Ver disponibilidad</a>
+                    <a class="btn" target="_blank" rel="noopener noreferrer" href="https://www.google.com/maps/search/?api=1&query=Riu+Palace+Tres+Islas+Corralejo+Fuerteventura"><i class="fas fa-map-location-dot"></i> Ver en Maps</a>
                 </div>
             </article>
 
-            <article class="accommodation-card">
-                <img src="images/alojamiento/apartamentos-caleta.jpg" alt="Apartamentos en Caleta" loading="lazy" onerror="this.onerror=null;this.src='images/Fuerteventura.jpeg';">
-                <div class="accommodation-info">
-                    <h3>Apartamentos Vista Mar</h3>
-                    <p class="location"><i class="fas fa-map-marker-alt"></i> Caleta de Fuste</p>
-                    <p>Modernos apartamentos con terraza y todas las comodidades.</p>
+            <article class="tourism-card">
+                <img src="images/alojamiento/apartamentos-caleta.jpg" alt="Aparthotel Miraflor Suites" loading="lazy">
+                <div class="tourism-info">
+                    <h3>Miraflor Suites</h3>
+                    <p>Aparthotel moderno con suites amplias, piscina climatizada y ubicación céntrica cerca del puerto.</p>
                     <div class="features">
+                        <span><i class="fas fa-swimming-pool"></i> Piscina climatizada</span>
+                        <span><i class="fas fa-utensils"></i> Cocina</span>
                         <span><i class="fas fa-parking"></i> Parking</span>
-                        <span><i class="fas fa-tv"></i> TV</span>
-                        <span><i class="fas fa-wind"></i> A/C</span>
+                        <span><i class="fas fa-umbrella-beach"></i> 300m playa</span>
                     </div>
-                    <a class="btn btn-small" target="_blank" rel="noopener" href="https://www.google.com/maps/search/?api=1&query=Apartamentos+Vista+Mar+Caleta+de+Fuste"><i class="fas fa-map-marked-alt"></i> Ver en Maps</a>
-                    <a href="#" class="btn">Ver disponibilidad</a>
+                    <a class="btn" target="_blank" rel="noopener noreferrer" href="https://www.google.com/maps/search/?api=1&query=Miraflor+Suites+Corralejo+Fuerteventura"><i class="fas fa-map-location-dot"></i> Ver en Maps</a>
                 </div>
             </article>
 
-            <article class="accommodation-card">
-                <img src="images/alojamiento/villa-el-cotillo.jpg" alt="Villa en El Cotillo" loading="lazy" onerror="this.onerror=null;this.src='images/Fuerteventura.jpeg';">
-                <div class="accommodation-info">
-                    <h3>Villa El Cotillo</h3>
-                    <p class="location"><i class="fas fa-map-marker-alt"></i> El Cotillo</p>
-                    <p>Villa privada con piscina y espectaculares vistas al océano.</p>
+            <article class="tourism-card">
+                <img src="images/alojamiento/hotel-corralejo.jpg" alt="Corralejo Beach" loading="lazy">
+                <div class="tourism-info">
+                    <h3>Corralejo Beach Resort</h3>
+                    <p>Hotel familiar frente al mar con vistas al Parque Natural de las Dunas y servicio de playa incluido.</p>
                     <div class="features">
+                        <span><i class="fas fa-umbrella-beach"></i> Primera línea</span>
+                        <span><i class="fas fa-child"></i> Kids club</span>
+                        <span><i class="fas fa-dumbbell"></i> Gimnasio</span>
+                        <span><i class="fas fa-cocktail"></i> Bar piscina</span>
+                    </div>
+                    <a class="btn" target="_blank" rel="noopener noreferrer" href="https://www.google.com/maps/search/?api=1&query=Corralejo+Beach+Resort+Fuerteventura"><i class="fas fa-map-location-dot"></i> Ver en Maps</a>
+                </div>
+            </article>
+
+            <article class="tourism-card">
+                <img src="images/alojamiento/apartamentos-caleta.jpg" alt="Apartamentos Bahía de Lobos" loading="lazy">
+                <div class="tourism-info">
+                    <h3>Bahía de Lobos Apartamentos</h3>
+                    <p>Apartamentos económicos a 5 minutos andando del centro y la playa, con terraza privada y kitchenette.</p>
+                    <div class="features">
+                        <span><i class="fas fa-euro-sign"></i> Económico</span>
+                        <span><i class="fas fa-utensils"></i> Cocina</span>
+                        <span><i class="fas fa-wifi"></i> WiFi</span>
+                        <span><i class="fas fa-person-walking"></i> Centro 5 min</span>
+                    </div>
+                    <a class="btn" target="_blank" rel="noopener noreferrer" href="https://www.google.com/maps/search/?api=1&query=Bahia+de+Lobos+Apartamentos+Corralejo"><i class="fas fa-map-location-dot"></i> Ver en Maps</a>
+                </div>
+            </article>
+
+            <article class="tourism-card">
+                <img src="images/alojamiento/hotel-corralejo.jpg" alt="H10 Ocean Dreams" loading="lazy">
+                <div class="tourism-info">
+                    <h3>H10 Ocean Dreams</h3>
+                    <p>Hotel adultos (+18) con diseño boutique, piscina infinity, rooftop bar y gastronomía gourmet frente al mar.</p>
+                    <div class="features">
+                        <span><i class="fas fa-user-plus"></i> Solo adultos</span>
+                        <span><i class="fas fa-infinity"></i> Piscina infinity</span>
+                        <span><i class="fas fa-cocktail"></i> Rooftop bar</span>
+                        <span><i class="fas fa-utensils"></i> Gourmet</span>
+                    </div>
+                    <a class="btn" target="_blank" rel="noopener noreferrer" href="https://www.google.com/maps/search/?api=1&query=H10+Ocean+Dreams+Corralejo"><i class="fas fa-map-location-dot"></i> Ver en Maps</a>
+                </div>
+            </article>
+
+            <article class="tourism-card">
+                <img src="images/alojamiento/apartamentos-caleta.jpg" alt="Villas Oasis Papagayo" loading="lazy">
+                <div class="tourism-info">
+                    <h3>Villas Oasis Papagayo</h3>
+                    <p>Complejo de villas independientes con piscina privada, jardín tropical y zona chill-out junto a las dunas.</p>
+                    <div class="features">
+                        <span><i class="fas fa-home"></i> Villas privadas</span>
                         <span><i class="fas fa-swimming-pool"></i> Piscina privada</span>
-                        <span><i class="fas fa-car"></i> Garage</span>
-                        <span><i class="fas fa-hot-tub"></i> Jacuzzi</span>
+                        <span><i class="fas fa-tree"></i> Jardín tropical</span>
+                        <span><i class="fas fa-mountain"></i> Junto a dunas</span>
                     </div>
-                    <a class="btn btn-small" target="_blank" rel="noopener" href="https://www.google.com/maps/search/?api=1&query=Villa+El+Cotillo+El+Cotillo"><i class="fas fa-map-marked-alt"></i> Ver en Maps</a>
-                    <a href="#" class="btn">Ver disponibilidad</a>
+                    <a class="btn" target="_blank" rel="noopener noreferrer" href="https://www.google.com/maps/search/?api=1&query=Villas+Oasis+Papagayo+Corralejo"><i class="fas fa-map-location-dot"></i> Ver en Maps</a>
+                </div>
+            </article>
+            </div>
+        </div>
+    </section>
+
+    <!-- CALETA DE FUSTE (Centro-Este) -->
+    <section class="tourism-content reveal">
+        <div class="container">
+            <h2><i class="fas fa-location-dot"></i> <span class="sand-write" data-sand-write data-sand-step="0.045" data-sand-duration="0.8" data-sand-distribution="accelerate">Caleta de Fuste - Centro-Este</span></h2>
+            <p class="zone-intro">Perfecta base para recorrer la isla, cerca del aeropuerto, playa resguardada ideal para familias y campo de golf.</p>
+            <div class="tourism-grid">
+            <article class="tourism-card">
+                <img src="images/alojamiento/apartamentos-caleta.jpg" alt="Sheraton Fuerteventura" loading="lazy">
+                <div class="tourism-info">
+                    <h3>Sheraton Fuerteventura Golf & Spa Resort</h3>
+                    <p>Resort de lujo de 5 estrellas con campo de golf de 18 hoyos, spa Thalasso y playa privada.</p>
+                    <div class="features">
+                        <span><i class="fas fa-golf-ball"></i> Golf 18 hoyos</span>
+                        <span><i class="fas fa-spa"></i> Thalasso Spa</span>
+                        <span><i class="fas fa-swimming-pool"></i> 3 Piscinas</span>
+                        <span><i class="fas fa-star"></i> 5 estrellas</span>
+                    </div>
+                    <a class="btn" target="_blank" rel="noopener noreferrer" href="https://www.google.com/maps/search/?api=1&query=Sheraton+Fuerteventura+Golf+Spa+Resort"><i class="fas fa-map-location-dot"></i> Ver en Maps</a>
                 </div>
             </article>
 
-            <article class="accommodation-card">
-                <img src="images/alojamiento/casa-rural-betancuria.jpg" alt="Casa Rural en Betancuria" loading="lazy" onerror="this.onerror=null;this.src='images/Fuerteventura.jpeg';">
-                <div class="accommodation-info">
-                    <h3>Casa Rural La Montaña</h3>
-                    <p class="location"><i class="fas fa-map-marker-alt"></i> Betancuria</p>
-                    <p>Tradicional casa canaria restaurada en entorno rural.</p>
+            <article class="tourism-card">
+                <img src="images/alojamiento/hotel-corralejo.jpg" alt="Elba Sara Beach" loading="lazy">
+                <div class="tourism-info">
+                    <h3>Elba Sara Beach & Golf Resort</h3>
+                    <p>Hotel 4 estrellas frente al mar con acceso directo a la playa, piscinas climatizadas y animación diaria.</p>
                     <div class="features">
-                        <span><i class="fas fa-mountain"></i> Vistas</span>
-                        <span><i class="fas fa-fire"></i> Barbacoa</span>
-                        <span><i class="fas fa-tree"></i> Jardín</span>
+                        <span><i class="fas fa-umbrella-beach"></i> Primera línea</span>
+                        <span><i class="fas fa-swimming-pool"></i> Piscinas climatizadas</span>
+                        <span><i class="fas fa-utensils"></i> Todo incluido</span>
+                        <span><i class="fas fa-music"></i> Animación</span>
                     </div>
-                    <a class="btn btn-small" target="_blank" rel="noopener" href="https://www.google.com/maps/search/?api=1&query=Casa+Rural+La+Monta%C3%B1a+Betancuria"><i class="fas fa-map-marked-alt"></i> Ver en Maps</a>
-                    <a href="#" class="btn">Ver disponibilidad</a>
+                    <a class="btn" target="_blank" rel="noopener noreferrer" href="https://www.google.com/maps/search/?api=1&query=Elba+Sara+Beach+Golf+Resort+Caleta+de+Fuste"><i class="fas fa-map-location-dot"></i> Ver en Maps</a>
+                </div>
+            </article>
+
+            <article class="tourism-card">
+                <img src="images/alojamiento/apartamentos-caleta.jpg" alt="Apartamentos Morasol" loading="lazy">
+                <div class="tourism-info">
+                    <h3>Morasol Suites</h3>
+                    <p>Apartamentos con cocina completa, terraza con vistas al mar y piscina comunitaria a 100m de la playa.</p>
+                    <div class="features">
+                        <span><i class="fas fa-utensils"></i> Cocina completa</span>
+                        <span><i class="fas fa-swimming-pool"></i> Piscina</span>
+                        <span><i class="fas fa-balcony"></i> Terraza</span>
+                        <span><i class="fas fa-plane"></i> 10km aeropuerto</span>
+                    </div>
+                    <a class="btn" target="_blank" rel="noopener noreferrer" href="https://www.google.com/maps/search/?api=1&query=Morasol+Suites+Caleta+de+Fuste"><i class="fas fa-map-location-dot"></i> Ver en Maps</a>
+                </div>
+            </article>
+
+            <article class="tourism-card">
+                <img src="images/alojamiento/hotel-corralejo.jpg" alt="Barceló Castillo Beach Resort" loading="lazy">
+                <div class="tourism-info">
+                    <h3>Barceló Castillo Beach Resort</h3>
+                    <p>Complejo Todo Incluido de 4 estrellas superior con castillo emblemático, mini club y amplios jardines.</p>
+                    <div class="features">
+                        <span><i class="fas fa-utensils"></i> Todo incluido</span>
+                        <span><i class="fas fa-child"></i> Mini club</span>
+                        <span><i class="fas fa-tree"></i> Amplios jardines</span>
+                        <span><i class="fas fa-swimmer"></i> 4 piscinas</span>
+                    </div>
+                    <a class="btn" target="_blank" rel="noopener noreferrer" href="https://www.google.com/maps/search/?api=1&query=Barcelo+Castillo+Beach+Resort+Caleta+de+Fuste"><i class="fas fa-map-location-dot"></i> Ver en Maps</a>
+                </div>
+            </article>
+
+            <article class="tourism-card">
+                <img src="images/alojamiento/apartamentos-caleta.jpg" alt="Hesperia Bristol Playa" loading="lazy">
+                <div class="tourism-info">
+                    <h3>Hesperia Bristol Playa</h3>
+                    <p>Hotel 3 estrellas superior con ubicación privilegiada en la bahía, piscina climatizada y restaurante buffet.</p>
+                    <div class="features">
+                        <span><i class="fas fa-umbrella-beach"></i> Junto a la bahía</span>
+                        <span><i class="fas fa-swimming-pool"></i> Piscina climatizada</span>
+                        <span><i class="fas fa-wifi"></i> WiFi gratis</span>
+                        <span><i class="fas fa-utensils"></i> Media pensión</span>
+                    </div>
+                    <a class="btn" target="_blank" rel="noopener noreferrer" href="https://www.google.com/maps/search/?api=1&query=Hesperia+Bristol+Playa+Caleta+de+Fuste"><i class="fas fa-map-location-dot"></i> Ver en Maps</a>
+                </div>
+            </article>
+
+            <article class="tourism-card">
+                <img src="images/alojamiento/hotel-corralejo.jpg" alt="Globales Costa Tropical" loading="lazy">
+                <div class="tourism-info">
+                    <h3>Globales Costa Tropical</h3>
+                    <p>Aparthotel familiar con estudios y apartamentos, 2 piscinas, supermercado cercano y a 200m de la playa.</p>
+                    <div class="features">
+                        <span><i class="fas fa-child"></i> Familiar</span>
+                        <span><i class="fas fa-utensils"></i> Cocina</span>
+                        <span><i class="fas fa-swimming-pool"></i> 2 Piscinas</span>
+                        <span><i class="fas fa-shopping-cart"></i> Súper cercano</span>
+                    </div>
+                    <a class="btn" target="_blank" rel="noopener noreferrer" href="https://www.google.com/maps/search/?api=1&query=Globales+Costa+Tropical+Caleta+de+Fuste"><i class="fas fa-map-location-dot"></i> Ver en Maps</a>
                 </div>
             </article>
         </div>
     </section>
 
-    <section class="stay-zones">
-        <h2>Zonas recomendadas para alojarse</h2>
+    <!-- COSTA CALMA -->
+    <section class="tourism-content reveal">
+        <div class="container">
+            <h2><i class="fas fa-location-dot"></i> <span class="sand-write" data-sand-write data-sand-step="0.045" data-sand-duration="0.8" data-sand-distribution="accelerate">Costa Calma - Sur</span></h2>
+            <p class="zone-intro">Famosa por la Playa de Sotavento, paraíso del windsurf y kitesurf. Ambiente tranquilo ideal para relajarse.</p>
+            <div class="tourism-grid">
+            <article class="tourism-card">
+                <img src="images/alojamiento/hotel-corralejo.jpg" alt="H10 Tindaya" loading="lazy">
+                <div class="tourism-info">
+                    <h3>H10 Tindaya</h3>
+                    <p>Hotel 4 estrellas superior frente a Sotavento, con piscina infinity, spa y actividades náuticas.</p>
+                    <div class="features">
+                        <span><i class="fas fa-infinity"></i> Piscina infinity</span>
+                        <span><i class="fas fa-wind"></i> Windsurf/Kite</span>
+                        <span><i class="fas fa-spa"></i> Spa</span>
+                        <span><i class="fas fa-umbrella-beach"></i> Playa Sotavento</span>
+                    </div>
+                    <a class="btn" target="_blank" rel="noopener noreferrer" href="https://www.google.com/maps/search/?api=1&query=H10+Tindaya+Costa+Calma+Fuerteventura"><i class="fas fa-map-location-dot"></i> Ver en Maps</a>
+                </div>
+            </article>
+
+            <article class="tourism-card">
+                <img src="images/alojamiento/apartamentos-caleta.jpg" alt="Apartamentos Sotavento Beach Club" loading="lazy">
+                <div class="tourism-info">
+                    <h3>Sotavento Beach Club</h3>
+                    <p>Apartamentos modernos a pie de playa con piscina, gimnasio y alquiler de equipos de windsurf.</p>
+                    <div class="features">
+                        <span><i class="fas fa-umbrella-beach"></i> Pie de playa</span>
+                        <span><i class="fas fa-dumbbell"></i> Gimnasio</span>
+                        <span><i class="fas fa-wind"></i> Alquiler windsurf</span>
+                        <span><i class="fas fa-wifi"></i> WiFi gratis</span>
+                    </div>
+                    <a class="btn" target="_blank" rel="noopener noreferrer" href="https://www.google.com/maps/search/?api=1&query=Sotavento+Beach+Club+Costa+Calma"><i class="fas fa-map-location-dot"></i> Ver en Maps</a>
+                </div>
+            </article>
+
+            <article class="tourism-card">
+                <img src="images/alojamiento/hotel-corralejo.jpg" alt="R2 Río Calma Hotel & Spa" loading="lazy">
+                <div class="tourism-info">
+                    <h3>R2 Río Calma Hotel & Spa</h3>
+                    <p>Resort adultos (+16) de 4 estrellas superior con spa, gastronomía gourmet y ambiente relajado.</p>
+                    <div class="features">
+                        <span><i class="fas fa-user-plus"></i> Solo adultos</span>
+                        <span><i class="fas fa-spa"></i> Spa & wellness</span>
+                        <span><i class="fas fa-utensils"></i> Gourmet</span>
+                        <span><i class="fas fa-swimming-pool"></i> 3 Piscinas</span>
+                    </div>
+                    <a class="btn" target="_blank" rel="noopener noreferrer" href="https://www.google.com/maps/search/?api=1&query=R2+Rio+Calma+Hotel+Spa+Costa+Calma"><i class="fas fa-map-location-dot"></i> Ver en Maps</a>
+                </div>
+            </article>
+
+            <article class="tourism-card">
+                <img src="images/alojamiento/apartamentos-caleta.jpg" alt="Meliá Fuerteventura" loading="lazy">
+                <div class="tourism-info">
+                    <h3>Meliá Fuerteventura</h3>
+                    <p>Resort familiar de 4 estrellas con miniclub, deportes acuáticos y situado en primera línea de Sotavento.</p>
+                    <div class="features">
+                        <span><i class="fas fa-child"></i> Miniclub</span>
+                        <span><i class="fas fa-wind"></i> Deportes acuáticos</span>
+                        <span><i class="fas fa-umbrella-beach"></i> Primera línea</span>
+                        <span><i class="fas fa-utensils"></i> Buffet</span>
+                    </div>
+                    <a class="btn" target="_blank" rel="noopener noreferrer" href="https://www.google.com/maps/search/?api=1&query=Melia+Fuerteventura+Costa+Calma"><i class="fas fa-map-location-dot"></i> Ver en Maps</a>
+                </div>
+            </article>
+
+            <article class="tourism-card">
+                <img src="images/alojamiento/hotel-corralejo.jpg" alt="Risco del Gato Suites" loading="lazy">
+                <div class="tourism-info">
+                    <h3>Risco del Gato Suites</h3>
+                    <p>Complejo de suites y apartamentos con vistas a la laguna de Sotavento, piscina y zona relax.</p>
+                    <div class="features">
+                        <span><i class="fas fa-water"></i> Vistas laguna</span>
+                        <span><i class="fas fa-swimming-pool"></i> Piscina</span>
+                        <span><i class="fas fa-utensils"></i> Cocina</span>
+                        <span><i class="fas fa-spa"></i> Zona relax</span>
+                    </div>
+                    <a class="btn" target="_blank" rel="noopener noreferrer" href="https://www.google.com/maps/search/?api=1&query=Risco+del+Gato+Suites+Costa+Calma"><i class="fas fa-map-location-dot"></i> Ver en Maps</a>
+                </div>
+            </article>
+
+            <article class="tourism-card">
+                <img src="images/alojamiento/apartamentos-caleta.jpg" alt="Esmeralda Maris" loading="lazy">
+                <div class="tourism-info">
+                    <h3>Esmeralda Maris</h3>
+                    <p>Apartamentos con vistas al mar, cocina completamente equipada y acceso directo a la playa de Sotavento.</p>
+                    <div class="features">
+                        <span><i class="fas fa-utensils"></i> Cocina completa</span>
+                        <span><i class="fas fa-umbrella-beach"></i> Acceso playa</span>
+                        <span><i class="fas fa-parking"></i> Parking</span>
+                        <span><i class="fas fa-wind"></i> Zona windsurf</span>
+                    </div>
+                    <a class="btn" target="_blank" rel="noopener noreferrer" href="https://www.google.com/maps/search/?api=1&query=Esmeralda+Maris+Costa+Calma"><i class="fas fa-map-location-dot"></i> Ver en Maps</a>
+                </div>
+            </article>
+            </div>
+        </div>
+    </section>
+
+    <!-- JANDÍA / MORRO JABLE (Sur) -->
+    <section class="tourism-content reveal">
+        <div class="container">
+            <h2><i class="fas fa-location-dot"></i> <span class="sand-write" data-sand-write data-sand-step="0.045" data-sand-duration="0.8" data-sand-distribution="accelerate">Jandía / Morro Jable - Sur</span></h2>
+            <p class="zone-intro">Playas infinitas, paseo marítimo animado y faro de Jandía. Zona con más horas de sol de la isla.</p>
+            <div class="tourism-grid">
+            <article class="tourism-card">
+                <img src="images/alojamiento/hotel-corralejo.jpg" alt="Iberostar Selection Fuerteventura Palace" loading="lazy">
+                <div class="tourism-info">
+                    <h3>Iberostar Selection Fuerteventura Palace</h3>
+                    <p>Resort de 5 estrellas Todo Incluido frente a la playa de Jandía con Star Prestige, spa y deportes.</p>
+                    <div class="features">
+                        <span><i class="fas fa-star"></i> 5 estrellas</span>
+                        <span><i class="fas fa-utensils"></i> Todo incluido</span>
+                        <span><i class="fas fa-spa"></i> SPA Sensations</span>
+                        <span><i class="fas fa-swimmer"></i> 5 piscinas</span>
+                    </div>
+                    <a class="btn" target="_blank" rel="noopener noreferrer" href="https://www.google.com/maps/search/?api=1&query=Iberostar+Selection+Fuerteventura+Palace+Jandia"><i class="fas fa-map-location-dot"></i> Ver en Maps</a>
+                </div>
+            </article>
+
+            <article class="tourism-card">
+                <img src="images/alojamiento/apartamentos-caleta.jpg" alt="TUI BLUE Orquidea" loading="lazy">
+                <div class="tourism-info">
+                    <h3>TUI BLUE Orquidea</h3>
+                    <p>Hotel 4 estrellas con concepto Blue Experience, deportes, fitness y música en vivo en pleno paseo marítimo.</p>
+                    <div class="features">
+                        <span><i class="fas fa-dumbbell"></i> Fitness premium</span>
+                        <span><i class="fas fa-music"></i> Música vivo</span>
+                        <span><i class="fas fa-bicycle"></i> Bike center</span>
+                        <span><i class="fas fa-person-walking"></i> Paseo marítimo</span>
+                    </div>
+                    <a class="btn" target="_blank" rel="noopener noreferrer" href="https://www.google.com/maps/search/?api=1&query=TUI+BLUE+Orquidea+Morro+Jable"><i class="fas fa-map-location-dot"></i> Ver en Maps</a>
+                </div>
+            </article>
+
+            <article class="tourism-card">
+                <img src="images/alojamiento/hotel-corralejo.jpg" alt="Robinson Club Jandía Playa" loading="lazy">
+                <div class="tourism-info">
+                    <h3>Robinson Club Jandía Playa</h3>
+                    <p>Club vacacional Todo Incluido premium con deportes ilimitados, programa WellFit y entretenimiento.</p>
+                    <div class="features">
+                        <span><i class="fas fa-utensils"></i> Todo incluido</span>
+                        <span><i class="fas fa-person-running"></i> Deportes ilimitados</span>
+                        <span><i class="fas fa-dumbbell"></i> WellFit</span>
+                        <span><i class="fas fa-users"></i> Animación</span>
+                    </div>
+                    <a class="btn" target="_blank" rel="noopener noreferrer" href="https://www.google.com/maps/search/?api=1&query=Robinson+Club+Jandia+Playa+Fuerteventura"><i class="fas fa-map-location-dot"></i> Ver en Maps</a>
+                </div>
+            </article>
+
+            <article class="tourism-card">
+                <img src="images/alojamiento/apartamentos-caleta.jpg" alt="Apartamentos Maxorata Beach" loading="lazy">
+                <div class="tourism-info">
+                    <h3>Maxorata Beach</h3>
+                    <p>Apartamentos espaciosos con cocina, terraza y piscina, en primera línea del paseo marítimo de Morro Jable.</p>
+                    <div class="features">
+                        <span><i class="fas fa-utensils"></i> Cocina completa</span>
+                        <span><i class="fas fa-umbrella-beach"></i> Primera línea</span>
+                        <span><i class="fas fa-swimming-pool"></i> Piscina</span>
+                        <span><i class="fas fa-shopping-cart"></i> Súper cercano</span>
+                    </div>
+                    <a class="btn" target="_blank" rel="noopener noreferrer" href="https://www.google.com/maps/search/?api=1&query=Maxorata+Beach+Morro+Jable"><i class="fas fa-map-location-dot"></i> Ver en Maps</a>
+                </div>
+            </article>
+
+            <article class="tourism-card">
+                <img src="images/alojamiento/hotel-corralejo.jpg" alt="Secrets Bahía Real Resort" loading="lazy">
+                <div class="tourism-info">
+                    <h3>Secrets Bahía Real Resort</h3>
+                    <p>Resort de lujo 5GL solo adultos con gastronomía de autor, spa de clase mundial y servicio Unlimited Luxury.</p>
+                    <div class="features">
+                        <span><i class="fas fa-gem"></i> Gran Lujo</span>
+                        <span><i class="fas fa-user-plus"></i> Solo adultos</span>
+                        <span><i class="fas fa-spa"></i> Spa premium</span>
+                        <span><i class="fas fa-utensils"></i> Gourmet</span>
+                    </div>
+                    <a class="btn" target="_blank" rel="noopener noreferrer" href="https://www.google.com/maps/search/?api=1&query=Secrets+Bahia+Real+Resort+Fuerteventura"><i class="fas fa-map-location-dot"></i> Ver en Maps</a>
+                </div>
+            </article>
+
+            <article class="tourism-card">
+                <img src="images/alojamiento/apartamentos-caleta.jpg" alt="SunConnect Fuerteventura Princess" loading="lazy">
+                <div class="tourism-info">
+                    <h3>SunConnect Fuerteventura Princess</h3>
+                    <p>Hotel 4 estrellas familiar con miniclub, toboganes acuáticos y animación todo el día en playa de Esquinzo.</p>
+                    <div class="features">
+                        <span><i class="fas fa-child"></i> Kids Club</span>
+                        <span><i class="fas fa-water"></i> Toboganes</span>
+                        <span><i class="fas fa-utensils"></i> Todo incluido</span>
+                        <span><i class="fas fa-umbrella-beach"></i> Playa Esquinzo</span>
+                    </div>
+                    <a class="btn" target="_blank" rel="noopener noreferrer" href="https://www.google.com/maps/search/?api=1&query=SunConnect+Fuerteventura+Princess+Esquinzo"><i class="fas fa-map-location-dot"></i> Ver en Maps</a>
+                </div>
+            </article>
+            </div>
+        </div>
+    </section>
+
+    <!-- EL COTILLO (Noroeste) -->
+    <section class="tourism-content">
+        <div class="container">
+            <h2><i class="fas fa-location-dot"></i> <span class="sand-write" data-sand-write data-sand-step="0.045" data-sand-duration="0.8" data-sand-distribution="accelerate">El Cotillo - Noroeste</span></h2>
+            <p class="zone-intro">Pueblo pesquero auténtico con lagunas de aguas cristalinas, ambiente tranquilo y puestas de sol espectaculares.</p>
+            <div class="tourism-grid">
+            <article class="tourism-card">
+                <img src="images/alojamiento/villa-el-cotillo.jpg" alt="Cotillo Beach" loading="lazy">
+                <div class="tourism-info">
+                    <h3>Cotillo Beach Hotel</h3>
+                    <p>Hotel boutique frente a las lagunas, con diseño canario moderno, piscina infinity y restaurante gourmet.</p>
+                    <div class="features">
+                        <span><i class="fas fa-infinity"></i> Piscina infinity</span>
+                        <span><i class="fas fa-umbrella-beach"></i> Lagunas 50m</span>
+                        <span><i class="fas fa-utensils"></i> Restaurante gourmet</span>
+                        <span><i class="fas fa-sunset"></i> Vistas atardecer</span>
+                    </div>
+                    <a class="btn" target="_blank" rel="noopener noreferrer" href="https://www.google.com/maps/search/?api=1&query=Cotillo+Beach+Hotel+El+Cotillo"><i class="fas fa-map-location-dot"></i> Ver en Maps</a>
+                </div>
+            </article>
+
+            <article class="tourism-card">
+                <img src="images/alojamiento/apartamentos-caleta.jpg" alt="Villas Los Alisios" loading="lazy">
+                <div class="tourism-info">
+                    <h3>Villas Los Alisios</h3>
+                    <p>Villas privadas con piscina, jardín y barbacoa. Perfectas para familias o grupos que buscan tranquilidad.</p>
+                    <div class="features">
+                        <span><i class="fas fa-home"></i> Villa privada</span>
+                        <span><i class="fas fa-swimming-pool"></i> Piscina privada</span>
+                        <span><i class="fas fa-fire"></i> Barbacoa</span>
+                        <span><i class="fas fa-tree"></i> Jardín</span>
+                    </div>
+                    <a class="btn" target="_blank" rel="noopener noreferrer" href="https://www.google.com/maps/search/?api=1&query=Villas+Los+Alisios+El+Cotillo"><i class="fas fa-map-location-dot"></i> Ver en Maps</a>
+                </div>
+            </article>
+
+            <article class="tourism-card">
+                <img src="images/alojamiento/apartamentos-caleta.jpg" alt="Apartamentos Marazul" loading="lazy">
+                <div class="tourism-info">
+                    <h3>Marazul Apartamentos</h3>
+                    <p>Apartamentos sencillos y económicos a 200m de las lagunas, ideales para surfistas y viajeros independientes.</p>
+                    <div class="features">
+                        <span><i class="fas fa-euro-sign"></i> Económico</span>
+                        <span><i class="fas fa-utensils"></i> Cocina</span>
+                        <span><i class="fas fa-wifi"></i> WiFi</span>
+                        <span><i class="fas fa-swimmer"></i> Lagunas 200m</span>
+                    </div>
+                    <a class="btn" target="_blank" rel="noopener noreferrer" href="https://www.google.com/maps/search/?api=1&query=Marazul+Apartamentos+El+Cotillo"><i class="fas fa-map-location-dot"></i> Ver en Maps</a>
+                </div>
+            </article>
+
+            <article class="tourism-card">
+                <img src="images/alojamiento/villa-el-cotillo.jpg" alt="Villas Brisas del Mar" loading="lazy">
+                <div class="tourism-info">
+                    <h3>Villas Brisas del Mar</h3>
+                    <p>Villas modernas con vistas al océano, terraza amplia y a pasos del puerto pesquero y las playas.</p>
+                    <div class="features">
+                        <span><i class="fas fa-water"></i> Vistas océano</span>
+                        <span><i class="fas fa-home"></i> Villa completa</span>
+                        <span><i class="fas fa-fish"></i> Puerto cercano</span>
+                        <span><i class="fas fa-parking"></i> Parking</span>
+                    </div>
+                    <a class="btn" target="_blank" rel="noopener noreferrer" href="https://www.google.com/maps/search/?api=1&query=Villas+Brisas+del+Mar+El+Cotillo"><i class="fas fa-map-location-dot"></i> Ver en Maps</a>
+                </div>
+            </article>
+
+            <article class="tourism-card">
+                <img src="images/alojamiento/apartamentos-caleta.jpg" alt="Casa Estrella" loading="lazy">
+                <div class="tourism-info">
+                    <h3>Casa Estrella</h3>
+                    <p>Casa rural canaria renovada con patio interior, cocina tradicional y decoración local auténtica.</p>
+                    <div class="features">
+                        <span><i class="fas fa-home-heart"></i> Casa canaria</span>
+                        <span><i class="fas fa-tree"></i> Patio interior</span>
+                        <span><i class="fas fa-utensils"></i> Cocina equipada</span>
+                        <span><i class="fas fa-umbrella-beach"></i> Playa 5 min</span>
+                    </div>
+                    <a class="btn" target="_blank" rel="noopener noreferrer" href="https://www.google.com/maps/search/?api=1&query=Casa+Estrella+El+Cotillo+Fuerteventura"><i class="fas fa-map-location-dot"></i> Ver en Maps</a>
+                </div>
+            </article>
+
+            <article class="tourism-card">
+                <img src="images/alojamiento/villa-el-cotillo.jpg" alt="Cotillo Sunset Apartments" loading="lazy">
+                <div class="tourism-info">
+                    <h3>Cotillo Sunset Apartments</h3>
+                    <p>Apartamentos modernos con terraza panorámica para ver atardeceres, piscina compartida y WiFi de alta velocidad.</p>
+                    <div class="features">
+                        <span><i class="fas fa-sunset"></i> Atardeceres</span>
+                        <span><i class="fas fa-swimming-pool"></i> Piscina</span>
+                        <span><i class="fas fa-wifi"></i> WiFi rápido</span>
+                        <span><i class="fas fa-coffee"></i> Terraza amplia</span>
+                    </div>
+                    <a class="btn" target="_blank" rel="noopener noreferrer" href="https://www.google.com/maps/search/?api=1&query=Cotillo+Sunset+Apartments+El+Cotillo"><i class="fas fa-map-location-dot"></i> Ver en Maps</a>
+                </div>
+            </article>
+            </div>
+        </div>
+    </section>
+
+    <!-- PUERTO DEL ROSARIO (Capital) -->
+    <section class="tourism-content">
+        <div class="container">
+            <h2><i class="fas fa-location-dot"></i> <span class="sand-write" data-sand-write data-sand-step="0.045" data-sand-duration="0.8" data-sand-distribution="accelerate">Puerto del Rosario - Capital</span></h2>
+            <p class="zone-intro">Capital de la isla, ideal para viajes de negocios o estancias cortas. Centro administrativo y cultural con ambiente local.</p>
+            <div class="tourism-grid">
+            <article class="tourism-card">
+                <img src="images/alojamiento/hotel-corralejo.jpg" alt="JM Puerto del Rosario" loading="lazy">
+                <div class="tourism-info">
+                    <h3>JM Puerto del Rosario</h3>
+                    <p>Hotel 4 estrellas en el paseo marítimo de la capital, con rooftop pool, restaurante y conexión WiFi de alta velocidad.</p>
+                    <div class="features">
+                        <span><i class="fas fa-building"></i> Céntrico</span>
+                        <span><i class="fas fa-swimming-pool"></i> Rooftop pool</span>
+                        <span><i class="fas fa-wifi"></i> WiFi premium</span>
+                        <span><i class="fas fa-plane"></i> 5km aeropuerto</span>
+                    </div>
+                    <a class="btn" target="_blank" rel="noopener noreferrer" href="https://www.google.com/maps/search/?api=1&query=JM+Puerto+del+Rosario+Hotel"><i class="fas fa-map-location-dot"></i> Ver en Maps</a>
+                </div>
+            </article>
+
+            <article class="tourism-card">
+                <img src="images/alojamiento/apartamentos-caleta.jpg" alt="Apartamentos Playa Blanca" loading="lazy">
+                <div class="tourism-info">
+                    <h3>Playa Blanca Apartamentos</h3>
+                    <p>Apartamentos funcionales cerca de la playa de Playa Blanca y el centro comercial. Opción económica y práctica.</p>
+                    <div class="features">
+                        <span><i class="fas fa-euro-sign"></i> Precio ajustado</span>
+                        <span><i class="fas fa-utensils"></i> Cocina</span>
+                        <span><i class="fas fa-shopping-bag"></i> Centro comercial</span>
+                        <span><i class="fas fa-parking"></i> Parking gratis</span>
+                    </div>
+                    <a class="btn" target="_blank" rel="noopener noreferrer" href="https://www.google.com/maps/search/?api=1&query=Playa+Blanca+Apartamentos+Puerto+del+Rosario"><i class="fas fa-map-location-dot"></i> Ver en Maps</a>
+                </div>
+            </article>
+
+            <article class="tourism-card">
+                <img src="images/alojamiento/hotel-corralejo.jpg" alt="Hotel Rural Mahoh" loading="lazy">
+                <div class="tourism-info">
+                    <h3>Hotel Rural Mahoh</h3>
+                    <p>Hotel rural con encanto cerca de la capital, rodeado de naturaleza y con museo de queso artesanal.</p>
+                    <div class="features">
+                        <span><i class="fas fa-home-heart"></i> Rural</span>
+                        <span><i class="fas fa-cheese"></i> Museo queso</span>
+                        <span><i class="fas fa-tree"></i> Jardines</span>
+                        <span><i class="fas fa-mountain"></i> Senderismo</span>
+                    </div>
+                    <a class="btn" target="_blank" rel="noopener noreferrer" href="https://www.google.com/maps/search/?api=1&query=Hotel+Rural+Mahoh+Fuerteventura"><i class="fas fa-map-location-dot"></i> Ver en Maps</a>
+                </div>
+            </article>
+
+            <article class="tourism-card">
+                <img src="images/alojamiento/apartamentos-caleta.jpg" alt="Fuerteventura Beach Hotel" loading="lazy">
+                <div class="tourism-info">
+                    <h3>Fuerteventura Beach Hotel</h3>
+                    <p>Hotel frente a Playa Chica con vistas al mar, piscina y restaurante. Perfecto para combinación trabajo-ocio.</p>
+                    <div class="features">
+                        <span><i class="fas fa-umbrella-beach"></i> Playa Chica</span>
+                        <span><i class="fas fa-water"></i> Vistas mar</span>
+                        <span><i class="fas fa-swimming-pool"></i> Piscina</span>
+                        <span><i class="fas fa-briefcase"></i> Business friendly</span>
+                    </div>
+                    <a class="btn" target="_blank" rel="noopener noreferrer" href="https://www.google.com/maps/search/?api=1&query=Fuerteventura+Beach+Hotel+Puerto+Rosario"><i class="fas fa-map-location-dot"></i> Ver en Maps</a>
+                </div>
+            </article>
+
+            <article class="tourism-card">
+                <img src="images/alojamiento/hotel-corralejo.jpg" alt="Apartamentos Las Palmas" loading="lazy">
+                <div class="tourism-info">
+                    <h3>Apartamentos Las Palmas</h3>
+                    <p>Apartamentos en pleno centro comercial de Puerto del Rosario, ideal para compras y exploradores urbanos.</p>
+                    <div class="features">
+                        <span><i class="fas fa-city"></i> Centro ciudad</span>
+                        <span><i class="fas fa-shopping-bag"></i> Tiendas abajo</span>
+                        <span><i class="fas fa-utensils"></i> Restaurantes</span>
+                        <span><i class="fas fa-wifi"></i> WiFi</span>
+                    </div>
+                    <a class="btn" target="_blank" rel="noopener noreferrer" href="https://www.google.com/maps/search/?api=1&query=Apartamentos+Las+Palmas+Puerto+Rosario"><i class="fas fa-map-location-dot"></i> Ver en Maps</a>
+                </div>
+            </article>
+
+            <article class="tourism-card">
+                <img src="images/alojamiento/apartamentos-caleta.jpg" alt="Lajas Palace" loading="lazy">
+                <div class="tourism-info">
+                    <h3>Lajas Palace</h3>
+                    <p>Aparthotel moderno con cocina americana, terraza amplia y cerca del aeropuerto. Ideal para primera o última noche.</p>
+                    <div class="features">
+                        <span><i class="fas fa-plane"></i> Cerca aeropuerto</span>
+                        <span><i class="fas fa-utensils"></i> Cocina</span>
+                        <span><i class="fas fa-parking"></i> Parking</span>
+                        <span><i class="fas fa-coffee"></i> Terraza</span>
+                    </div>
+                    <a class="btn" target="_blank" rel="noopener noreferrer" href="https://www.google.com/maps/search/?api=1&query=Lajas+Palace+Puerto+Rosario+Fuerteventura"><i class="fas fa-map-location-dot"></i> Ver en Maps</a>
+                </div>
+            </article>
+            </div>
+        </div>
+    </section>
+
+    <!-- BETANCURIA Y ZONAS RURALES -->
+    <section class="tourism-content">
+        <div class="container">
+            <h2><i class="fas fa-location-dot"></i> <span class="sand-write" data-sand-write data-sand-step="0.045" data-sand-duration="0.8" data-sand-distribution="accelerate">Betancuria y Zonas Rurales - Interior</span></h2>
+            <p class="zone-intro">Para quienes buscan autenticidad, tranquilidad y naturaleza. Casas rurales canarias en entornos únicos lejos del turismo de playa.</p>
+            <div class="tourism-grid">
+            <article class="tourism-card">
+                <img src="images/alojamiento/casa-rural-betancuria.jpg" alt="Casa Princess Arminda" loading="lazy">
+                <div class="tourism-info">
+                    <h3>Casa Princess Arminda</h3>
+                    <p>Casa rural de lujo en antigua villa canaria restaurada. Piscina privada, jardines y vistas al valle de Betancuria.</p>
+                    <div class="features">
+                        <span><i class="fas fa-mountain"></i> Valle Betancuria</span>
+                        <span><i class="fas fa-swimming-pool"></i> Piscina privada</span>
+                        <span><i class="fas fa-tree"></i> Jardines amplios</span>
+                        <span><i class="fas fa-star"></i> Lujo rural</span>
+                    </div>
+                    <a class="btn" target="_blank" rel="noopener noreferrer" href="https://www.google.com/maps/search/?api=1&query=Casa+Princess+Arminda+Betancuria"><i class="fas fa-map-location-dot"></i> Ver en Maps</a>
+                </div>
+            </article>
+
+            <article class="tourism-card">
+                <img src="images/alojamiento/casa-rural-betancuria.jpg" alt="Casa Isaítas" loading="lazy">
+                <div class="tourism-info">
+                    <h3>Casa Isaítas</h3>
+                    <p>Casa rural tradicional canaria con arquitectura típica, barbacoa, huerto ecológico y paz absoluta.</p>
+                    <div class="features">
+                        <span><i class="fas fa-leaf"></i> Ecológico</span>
+                        <span><i class="fas fa-fire"></i> Barbacoa</span>
+                        <span><i class="fas fa-seedling"></i> Huerto</span>
+                        <span><i class="fas fa-spa"></i> Desconexión total</span>
+                    </div>
+                    <a class="btn" target="_blank" rel="noopener noreferrer" href="https://www.google.com/maps/search/?api=1&query=Casa+Isaitas+Pajara+Fuerteventura"><i class="fas fa-map-location-dot"></i> Ver en Maps</a>
+                </div>
+            </article>
+
+            <article class="tourism-card">
+                <img src="images/alojamiento/casa-rural-betancuria.jpg" alt="Era de la Corte" loading="lazy">
+                <div class="tourism-info">
+                    <h3>Era de la Corte</h3>
+                    <p>Complejo de casas rurales restauradas con piscina compartida, ideal para parejas que buscan romanticismo y tranquilidad.</p>
+                    <div class="features">
+                        <span><i class="fas fa-heart"></i> Romántico</span>
+                        <span><i class="fas fa-swimming-pool"></i> Piscina</span>
+                        <span><i class="fas fa-wine-glass"></i> Bodega</span>
+                        <span><i class="fas fa-mountain"></i> Entorno natural</span>
+                    </div>
+                    <a class="btn" target="_blank" rel="noopener noreferrer" href="https://www.google.com/maps/search/?api=1&query=Era+de+la+Corte+Antigua+Fuerteventura"><i class="fas fa-map-location-dot"></i> Ver en Maps</a>
+                </div>
+            </article>
+
+            <article class="tourism-card">
+                <img src="images/alojamiento/casa-rural-betancuria.jpg" alt="Casa Santa María" loading="lazy">
+                <div class="tourism-info">
+                    <h3>Casa Santa María</h3>
+                    <p>Casa rural en pleno casco histórico de Betancuria, con patio canario, chimenea y decoración artesanal tradicional.</p>
+                    <div class="features">
+                        <span><i class="fas fa-landmark"></i> Casco histórico</span>
+                        <span><i class="fas fa-fire"></i> Chimenea</span>
+                        <span><i class="fas fa-tree"></i> Patio canario</span>
+                        <span><i class="fas fa-palette"></i> Artesanía</span>
+                    </div>
+                    <a class="btn" target="_blank" rel="noopener noreferrer" href="https://www.google.com/maps/search/?api=1&query=Casa+Santa+Maria+Betancuria+Fuerteventura"><i class="fas fa-map-location-dot"></i> Ver en Maps</a>
+                </div>
+            </article>
+
+            <article class="tourism-card">
+                <img src="images/alojamiento/casa-rural-betancuria.jpg" alt="Vega de Rio Palmas Hotel" loading="lazy">
+                <div class="tourism-info">
+                    <h3>Vega de Rio Palmas</h3>
+                    <p>Hotel rural en paraje natural con ermita histórica, restaurante de cocina majorera y rutas de senderismo.</p>
+                    <div class="features">
+                        <span><i class="fas fa-church"></i> Ermita cercana</span>
+                        <span><i class="fas fa-utensils"></i> Cocina majorera</span>
+                        <span><i class="fas fa-hiking"></i> Senderismo</span>
+                        <span><i class="fas fa-mountain"></i> Paraje natural</span>
+                    </div>
+                    <a class="btn" target="_blank" rel="noopener noreferrer" href="https://www.google.com/maps/search/?api=1&query=Vega+de+Rio+Palmas+Hotel+Fuerteventura"><i class="fas fa-map-location-dot"></i> Ver en Maps</a>
+                </div>
+            </article>
+
+            <article class="tourism-card">
+                <img src="images/alojamiento/casa-rural-betancuria.jpg" alt="Rural Ampuyenta" loading="lazy">
+                <div class="tourism-info">
+                    <h3>Rural Ampuyenta</h3>
+                    <p>Casa cueva rehabilitada en entorno volcánico, con piscina natural, observatorio astronómico y silencio total.</p>
+                    <div class="features">
+                        <span><i class="fas fa-star"></i> Observatorio</span>
+                        <span><i class="fas fa-mountain"></i> Casa cueva</span>
+                        <span><i class="fas fa-water"></i> Piscina natural</span>
+                        <span><i class="fas fa-moon"></i> Cielo estrellado</span>
+                    </div>
+                    <a class="btn" target="_blank" rel="noopener noreferrer" href="https://www.google.com/maps/search/?api=1&query=Rural+Ampuyenta+Fuerteventura"><i class="fas fa-map-location-dot"></i> Ver en Maps</a>
+                </div>
+            </article>
+            </div>
+        </div>
+    </section>
+
+    <section class="stay-zones reveal">
+        <h2 class="sand-write" data-sand-write data-sand-step="0.05" data-sand-duration="0.85" data-sand-distribution="ease">Zonas recomendadas para alojarse</h2>
         <div class="zones-grid">
             <div class="zone">
                 <h3>Corralejo (norte)</h3>
@@ -163,8 +845,8 @@
         </div>
     </section>
 
-    <section class="saving-tips">
-        <h2>Consejos para ahorrar</h2>
+    <section class="saving-tips reveal">
+        <h2 class="sand-write" data-sand-write data-sand-step="0.05" data-sand-duration="0.85" data-sand-distribution="ease">Consejos para ahorrar</h2>
         <ul>
             <li>Reserva con antelación en temporada alta (verano y Navidades).</li>
             <li>Valora apartamentos si viajas en familia o estancias largas.</li>
@@ -172,8 +854,8 @@
         </ul>
     </section>
 
-    <section class="accommodation-tips">
-        <h2>Consejos para elegir alojamiento</h2>
+    <section class="accommodation-tips reveal">
+        <h2 class="sand-write" data-sand-write data-sand-step="0.05" data-sand-duration="0.85" data-sand-distribution="ease">Consejos para elegir alojamiento</h2>
         <div class="tips-container">
             <div class="tip">
                 <i class="fas fa-map-marked-alt"></i>
@@ -198,12 +880,24 @@
         </div>
     </section>
 
+    <!-- Noticias en timeline (auto de featured) -->
+    <section class="news-timeline reveal" aria-label="Timeline de noticias">
+        <div class="timeline-container">
+            <div id="news-timeline" class="timeline-swiper"></div>
+        </div>
+    </section>
+    <!-- Contenedor oculto de noticias para alimentar el timeline -->
+    <div id="featured-news" class="hidden" aria-hidden="true"></div>
+
     </main>
 
     <footer>
         <div class="footer-content">
             <div class="footer-logo">
-                <img src="images/logo.jpg" alt="This is Fuerteventura Logo" class="logo">
+                <picture>
+                    <source srcset="images/logo.webp" type="image/webp">
+                    <img src="images/logo.jpg" alt="This is Fuerteventura Logo" class="logo" loading="lazy" decoding="async" width="40" height="40">
+                </picture>
                 <h3>This is Fuerteventura</h3>
             </div>
             <div class="footer-links">
@@ -219,16 +913,16 @@
             <div class="footer-social">
                 <h4>Síguenos</h4>
                 <div class="social-icons">
-                    <a href="#"><i class="fab fa-facebook"></i></a>
-                    <a href="#"><i class="fab fa-twitter"></i></a>
-                    <a href="#"><i class="fab fa-instagram"></i></a>
-                    <a href="#"><i class="fab fa-youtube"></i></a>
+                    <a href="https://www.facebook.com/profile.php?id=61583457788241" target="_blank" rel="noopener noreferrer" aria-label="Facebook"><i class="fab fa-facebook"></i></a>
+                    <a href="https://x.com/thisisfuerte_es" target="_blank" rel="noopener noreferrer" aria-label="X"><i class="fab fa-x-twitter"></i></a>
+                    <a href="https://www.instagram.com/thisisfuertevntura.es/" target="_blank" rel="noopener noreferrer" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                    <a href="https://www.youtube.com/@thisisfuerteventura" target="_blank" rel="noopener noreferrer" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
                 </div>
             </div>
             <div class="footer-contact">
                 <h4>Contacto</h4>
                 <p><i class="fas fa-envelope"></i> info@thisisfuerteventura.es</p>
-                <p><i class="fas fa-phone"></i> +34 XXX XXX XXX</p>
+                <p><i class="fas fa-phone"></i> +34 633 938 539</p>
             </div>
         </div>
         <div class="footer-bottom">
@@ -236,6 +930,101 @@
         </div>
     </footer>
 
-    <script src="js/main.js?v=2025110501" defer></script>
+    <script src="js/main.js?v=2025111706" defer></script>
+    <script src="js/proxy-discovery.js?v=2025111508" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/dompurify@2.4.0/dist/purify.min.js" defer crossorigin="anonymous" integrity="sha384-Tsl3d5pUAO7a13enIvSsL3O0/95nsthPJiPto5NtLuY8w3+LbZOpr3Fl2MNmrh1E"></script>
+    <script src="js/feed-utils.js?v=2025111508" defer></script>
+    <script src="js/image-extractor.js?v=2025111508" defer></script>
+    <script src="js/content-loader.js?v=2025111508" defer></script>
+    <script src="js/cookies.js?v=2025111508" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/swiper@9/swiper-bundle.min.js" defer crossorigin="anonymous" integrity="sha384-hPkhOzAEx2ZcJuDkANAhjXmtEnqjkADleTxUbwTTJLmwmhV2F4/u6BOcnVL3xxqs"></script>
+    <script src="js/scroll-animations.js?v=2025111602" defer></script>
+    <script src="js/dark-mode.js?v=2025111508" defer></script>
+    <script src="js/ux.js?v=2025111508" defer></script>
+    <!-- Three.js para sistema de partículas -->
+    <script src="https://cdn.jsdelivr.net/npm/three@0.152.0/build/three.min.js" defer crossorigin="anonymous" integrity="sha384-X9Z4JPIA98tyn9ayVMe0cM9j3zfE7CliV/xrpqv2t757y/UFj/awObaY8PUT6rh7"></script>
+    <!-- GSAP + ScrollTrigger para animaciones narrativas -->
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js" defer crossorigin="anonymous" integrity="sha384-g4NTh/Iv5PPU4xPyhEWqPcwtNXOvdaDI8LLnyYfyNZOjKJeYQyjzQ9X5275eBjpt"></script>
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js" defer crossorigin="anonymous" integrity="sha384-Z3REaz79l2IaAZqJsSABtTbhjgOUYyV3p90XNnAPCSHg3EMTz1fouunq9WZRtj3d"></script>
+    <script src="js/particles.js?v=2025111508" defer></script>
+    <script src="js/narrative-scroll.js?v=2025111508" defer></script>
+    <script src="js/ambient-sounds.js?v=2025111508" defer></script>
+    <script src="js/booking.js?v=2025111508" defer></script>
+    <script src="js/sand-write.js?v=2025111611" defer></script>
+
+    <!-- Banner de consentimiento de cookies -->
+    <div id="cookie-consent" class="cookie-consent">
+        <div class="cookie-consent-content">
+            <div class="cookie-consent-text">
+                <h3>🍪 Usamos cookies</h3>
+                <p>Utilizamos cookies propias y de terceros para mejorar tu experiencia de navegación y analizar el uso del sitio. 
+                <a href="politica-cookies.html">Más información</a></p>
+            </div>
+            <div class="cookie-consent-buttons">
+                <button id="cookie-accept" class="cookie-btn cookie-btn-accept">Aceptar todas</button>
+                <button id="cookie-reject" class="cookie-btn cookie-btn-reject">Solo necesarias</button>
+                <button id="cookie-settings" class="cookie-btn cookie-btn-settings">Configurar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de configuración de cookies -->
+    <div id="cookie-modal" class="cookie-modal">
+        <div class="cookie-modal-content">
+            <div class="cookie-modal-header">
+                <h2>Configuración de Cookies</h2>
+                <button id="cookie-modal-close" class="cookie-modal-close">&times;</button>
+            </div>
+            <div class="cookie-modal-body">
+                <p class="cookie-intro">
+                    Utilizamos diferentes tipos de cookies para mejorar tu experiencia en nuestro sitio web. 
+                    Puedes elegir qué categorías deseas permitir.
+                </p>
+                <div class="cookie-category">
+                    <div class="cookie-category-header">
+                        <h3>Cookies Necesarias</h3>
+                        <label class="cookie-toggle">
+                            <input type="checkbox" id="cookies-necessary" name="cookies-necessary" checked disabled>
+                            <span class="cookie-toggle-slider"></span>
+                        </label>
+                    </div>
+                    <p class="cookie-category-description">Estas cookies son esenciales para el funcionamiento del sitio web.</p>
+                </div>
+                <div class="cookie-category">
+                    <div class="cookie-category-header">
+                        <h3>Cookies Analíticas</h3>
+                        <label class="cookie-toggle">
+                            <input type="checkbox" id="analytics-toggle">
+                            <span class="cookie-toggle-slider"></span>
+                        </label>
+                    </div>
+                    <p class="cookie-category-description">Estas cookies nos permiten contar las visitas y fuentes de tráfico.</p>
+                </div>
+                <div class="cookie-category">
+                    <div class="cookie-category-header">
+                        <h3>Cookies de Marketing</h3>
+                        <label class="cookie-toggle">
+                            <input type="checkbox" id="marketing-toggle">
+                            <span class="cookie-toggle-slider"></span>
+                        </label>
+                    </div>
+                    <p class="cookie-category-description">Estas cookies pueden ser establecidas por nuestros socios publicitarios.</p>
+                </div>
+                <div class="cookie-category">
+                    <div class="cookie-category-header">
+                        <h3>Cookies Funcionales</h3>
+                        <label class="cookie-toggle">
+                            <input type="checkbox" id="functional-toggle">
+                            <span class="cookie-toggle-slider"></span>
+                        </label>
+                    </div>
+                    <p class="cookie-category-description">Estas cookies permiten funcionalidad mejorada y personalización.</p>
+                </div>
+            </div>
+            <div class="cookie-modal-footer">
+                <button id="save-cookie-preferences" class="cookie-btn cookie-btn-accept">Guardar preferencias</button>
+            </div>
+        </div>
+    </div>
 </body>
 </html>

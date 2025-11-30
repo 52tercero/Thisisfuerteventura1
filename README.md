@@ -1,4 +1,22 @@
-﻿# This is Fuerteventura
+﻿## Local Development
+
+- Static server: `python -m http.server 8000` in the project root.
+- RSS proxy: `npm start` in `server/` (health: `http://localhost:3000/health` or `3001`).
+- VS Code tasks: Use "Start RSS Proxy" and "Start Static Server (port 8000)".
+- Image proxying: External images are routed via discovered proxy or Netlify Functions; on failure, a local placeholder is shown.
+
+## Structure & Organization
+
+- Animations: GSAP hero/news effects in `js/gsap-animations.js`; Three.js hero background in `js/three-hero.js`.
+- Recommendation: Move animation logic to `js/animations/` for modularity (e.g., `animations/hero.js`, `animations/news.js`).
+- Next.js app: Keep code and build artifacts under `next/`; `.gitignore` excludes `next/.next/` and caches.
+
+## Accessibility & Performance notes
+
+- Ensure semantic headings (h1/h2) and `aria-current` on active nav links.
+- Use `loading="lazy"`, `decoding="async"`, and include `width`/`height` for images to reduce CLS.
+- Prefer AVIF/WEBP assets where possible with proper fallbacks.
+# This is Fuerteventura
 
 Small static site (HTML/CSS/JS) that aggregates news and presents content about Fuerteventura: tourism, beaches, accommodation, gastronomy, and more.
 
@@ -22,19 +40,22 @@ Open http://localhost:8000 in your browser.
 Notes:
 - The client auto-discovers the proxy on ports 3000..3010 via `js/proxy-discovery.js` using `/health`.
 - If feeds are blocked by the proxy allowlist or the proxy is down, the UI shows friendly messages and still renders the controls.
+ - On Netlify deploys, the client falls back automatically to Netlify Functions (`/.netlify/functions/rss` and `/.netlify/functions/aggregate`).
 
 ## Pages
 - `index.html` – hero + featured news
 - `noticias.html` – full news list with filters, search, and pagination (top & bottom toolbars)
 - `noticia.html` – single article view (requires `?id=` or `?title=`)
-- `turismo.html`, `alojamiento.html`, `playas.html`, `gastronomia.html`, `contacto.html` – informational pages
+- `turismo.html`, `alojamiento.html`, `playas.html`, `senderos.html`, `contacto.html` – informational pages
 
-## RSS proxy (server)
+## RSS proxy (server / local) & Netlify Functions
 Located in `/server`. Requires Node 18+.
 
 - Default port: 3000 (auto-increments to next ports if busy)
 - Health: `GET /health`
-- Feed proxy: `GET /api/rss?url=<encoded_feed_url>`
+- Feed proxy (local): `GET /api/rss?url=<encoded_feed_url>`
+- Feed proxy (Netlify): `GET /.netlify/functions/rss?url=<encoded_feed_url>`
+- Mock tides: `GET /api/tides?lat=<lat>&lon=<lon>` (dev)
 - Allowed sources: small allowlist by default; extend with env vars:
 
 ```powershell
@@ -47,6 +68,27 @@ $env:ALLOWED_SOURCES = 'https://www.radioinsular.es/feed/,https://www.fuertevent
 npm start
 ```
 
+### Tides (mock) integration
+- The beaches page (`playas.html`) calls `/api/tides?lat=<lat>&lon=<lon>` to render upcoming high/low tides as a placeholder.
+- This is a synthetic mock meant for UI; replace it later with a real provider (e.g., Puertos del Estado or WorldTides) through the server and keep client logic unchanged.
+
+## Netlify Functions setup
+If deploying on Netlify, ensure `netlify/functions/` exists (already added) and `netlify.toml` contains redirects:
+
+```
+[[redirects]]
+from = "/api/rss"
+to = "/.netlify/functions/rss"
+status = 200
+
+[[redirects]]
+from = "/api/aggregate"
+to = "/.netlify/functions/aggregate"
+status = 200
+```
+
+Client logic in `js/content-loader.js` will probe these automatically when not on localhost. Extend allowed sources using environment variable `ALLOWED_SOURCES` in Netlify site settings.
+
 ## Troubleshooting
 - Navigation disappears on desktop: fixed by applying collapse logic only on mobile widths (see `js/main.js`). Hard refresh with Ctrl+F5 if needed.
 - News buttons not visible: CSS adds styles for `.news-filters` and `.pagination`. Pagination appears above and below the grid.
@@ -55,4 +97,30 @@ npm start
 ## Security & data hygiene
 - External feed content is sanitized (DOMPurify is used when available; fallback sanitizer is in JS).
 - Do not deploy the proxy with `ALLOW_ALL` in production.
+
+### Sanitization Guide (client templates)
+- Use `FeedUtils.escapeHTML(str)` for any text you interpolate into `innerHTML` or HTML attributes.
+- Use `FeedUtils.sanitize(html)` only for rich HTML coming from trusted feeds before inserting as `innerHTML`.
+- Prefer `textContent` when you don't need markup; it avoids sanitization entirely.
+- Never interpolate raw strings into `innerHTML` without escaping/sanitizing first.
+
+Examples
+
+```js
+// Text values → escape
+titleEl.innerHTML = FeedUtils.escapeHTML(item.title);
+
+// Rich HTML from feed → sanitize
+contentEl.innerHTML = FeedUtils.sanitize(item.fullHtml);
+
+// Attributes → escape
+imgEl.alt = FeedUtils.escapeHTML(item.title);
+
+// Safer alternative: textContent when no markup is needed
+descEl.textContent = item.summaryPlain;
+```
+
+Where the helpers live
+- `js/feed-utils.js` exports `FeedUtils.escapeHTML`, `FeedUtils.sanitize`, and `FeedUtils.toPlainText`.
+- Pages load DOMPurify from a CDN; when present, `FeedUtils.sanitize` delegates to it.
 

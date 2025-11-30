@@ -1,0 +1,329 @@
+﻿/**
+ * Sistema de gestión de cookies conforme a GDPR/LOPD
+ * This is Fuerteventura
+ */
+
+const CookieConsent = {
+  // Configuración
+  cookieName: 'thisisfuerteventura_cookie_consent',
+  cookieExpireDays: 365,
+
+  // Estado de las cookies
+  preferences: {
+    necessary: true,    // Siempre activas (no se pueden desactivar)
+    analytics: false,   // Google Analytics, etc.
+    marketing: false,   // Publicidad, redes sociales
+    functional: false   // Preferencias de usuario, idioma, etc.
+  },
+
+  /**
+     * Inicializar el sistema de cookies
+     */
+  init() {
+    // Dev helpers via query params: ?cookies=reset | ?cookies=show
+    try {
+      const params = new URLSearchParams(location.search || '');
+      const action = (params.get('cookies') || '').toLowerCase();
+      if (action === 'reset') {
+        this.clearConsent();
+      } else if (action === 'show') {
+        this.clearConsent();
+      }
+    } catch (_) { /* ignore */ }
+    // Verificar si ya existe consentimiento
+    const consent = this.getConsent();
+
+    if (!consent) {
+      // Mostrar banner si no hay consentimiento previo
+      this.showBanner();
+    } else {
+      // Aplicar preferencias guardadas
+      this.preferences = consent;
+      this.applyPreferences();
+    }
+
+    // Event listeners
+    this.attachEventListeners();
+  },
+
+  /**
+     * Mostrar el banner de cookies
+     */
+  showBanner() {
+    const banner = document.getElementById('cookie-consent');
+    if (banner) {
+      setTimeout(() => {
+        banner.classList.add('show');
+      }, 1000); // Mostrar después de 1 segundo
+    }
+  },
+
+  /**
+     * Ocultar el banner
+     */
+  hideBanner() {
+    const banner = document.getElementById('cookie-consent');
+    if (banner) {
+      banner.classList.remove('show');
+    }
+  },
+
+  /**
+     * Aceptar todas las cookies
+     */
+  acceptAll() {
+    this.preferences = {
+      necessary: true,
+      analytics: true,
+      marketing: true,
+      functional: true
+    };
+    this.saveConsent();
+    this.applyPreferences();
+    this.hideBanner();
+  },
+
+  /**
+     * Rechazar cookies opcionales
+     */
+  rejectAll() {
+    this.preferences = {
+      necessary: true,
+      analytics: false,
+      marketing: false,
+      functional: false
+    };
+    this.saveConsent();
+    this.applyPreferences();
+    this.hideBanner();
+  },
+
+  /**
+     * Mostrar modal de configuración
+     */
+  showSettings() {
+    const modal = document.getElementById('cookie-modal');
+    if (modal) {
+      modal.classList.add('show');
+
+      // Cargar preferencias actuales en los toggles
+      const consent = this.getConsent();
+      if (consent) {
+        document.getElementById('analytics-toggle').checked = consent.analytics;
+        document.getElementById('marketing-toggle').checked = consent.marketing;
+        document.getElementById('functional-toggle').checked = consent.functional;
+      }
+    }
+  },
+
+  /**
+     * Cerrar modal de configuración
+     */
+  closeSettings() {
+    const modal = document.getElementById('cookie-modal');
+    if (modal) {
+      modal.classList.remove('show');
+    }
+  },
+
+  /**
+     * Guardar preferencias personalizadas
+     */
+  saveCustomPreferences() {
+    this.preferences = {
+      necessary: true, // Siempre true
+      analytics: document.getElementById('analytics-toggle').checked,
+      marketing: document.getElementById('marketing-toggle').checked,
+      functional: document.getElementById('functional-toggle').checked
+    };
+    this.saveConsent();
+    this.applyPreferences();
+    this.closeSettings();
+    this.hideBanner();
+  },
+
+  /**
+     * Guardar consentimiento en cookie
+     */
+  saveConsent() {
+    const consent = JSON.stringify(this.preferences);
+    const expires = new Date();
+    expires.setDate(expires.getDate() + this.cookieExpireDays);
+
+    document.cookie = `${this.cookieName}=${consent}; expires=${expires.toUTCString()}; path=/; SameSite=Lax`;
+  },
+
+  /**
+     * Borrar consentimiento guardado
+     */
+  clearConsent() {
+    try {
+      document.cookie = `${this.cookieName}=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/; SameSite=Lax`;
+    } catch (_) { /* ignore */ }
+  },
+
+  /**
+     * Obtener consentimiento guardado
+     */
+  getConsent() {
+    const name = this.cookieName + '=';
+    const decodedCookie = decodeURIComponent(document.cookie);
+    const cookies = decodedCookie.split(';');
+
+    for (let cookie of cookies) {
+      cookie = cookie.trim();
+      if (cookie.indexOf(name) === 0) {
+        try {
+          return JSON.parse(cookie.substring(name.length));
+        } catch (e) {
+          return null;
+        }
+      }
+    }
+    return null;
+  },
+
+  /**
+     * Aplicar preferencias de cookies
+     */
+  applyPreferences() {
+    // Analytics
+    if (this.preferences.analytics) {
+      this.enableAnalytics();
+    } else {
+      this.disableAnalytics();
+    }
+
+    // Marketing
+    if (this.preferences.marketing) {
+      this.enableMarketing();
+    } else {
+      this.disableMarketing();
+    }
+
+    // Functional
+    if (this.preferences.functional) {
+      this.enableFunctional();
+    } else {
+      this.disableFunctional();
+    }
+  },
+
+  /**
+     * Activar Google Analytics
+     */
+  enableAnalytics() {
+    if (window.__analyticsLoaded) {return;}
+    const GA_ID = window.__GA_ID || 'G-XXXXXXXXXX'; // Reemplazar con ID real en producción
+    // Inyectar script de GA4 solo si hay ID configurado diferente al placeholder
+    if (GA_ID && GA_ID !== 'G-XXXXXXXXXX') {
+      window.dataLayer = window.dataLayer || [];
+      function gtag() { dataLayer.push(arguments); }
+      const gaScript = document.createElement('script');
+      gaScript.async = true;
+      gaScript.src = 'https://www.googletagmanager.com/gtag/js?id=' + encodeURIComponent(GA_ID);
+      gaScript.onload = () => {
+        gtag('js', new Date());
+        gtag('config', GA_ID, { anonymize_ip: true });
+      };
+      document.head.appendChild(gaScript);
+      window.__analyticsLoaded = true;
+      console.log('GA4 script injected');
+    } else {
+      console.log('Analytics enabled (no GA ID configured)');
+    }
+  },
+
+  /**
+     * Desactivar Analytics
+     */
+  disableAnalytics() {
+    // Desactivar analytics
+    console.log('Analytics disabled');
+  },
+
+  /**
+     * Activar cookies de marketing
+     */
+  enableMarketing() {
+    console.log('Marketing cookies enabled');
+  },
+
+  /**
+     * Desactivar cookies de marketing
+     */
+  disableMarketing() {
+    console.log('Marketing cookies disabled');
+  },
+
+  /**
+     * Activar cookies funcionales
+     */
+  enableFunctional() {
+    console.log('Functional cookies enabled');
+  },
+
+  /**
+     * Desactivar cookies funcionales
+     */
+  disableFunctional() {
+    console.log('Functional cookies disabled');
+  },
+
+  /**
+     * Adjuntar event listeners
+     */
+  attachEventListeners() {
+    // Botones del banner
+    const acceptBtn = document.getElementById('cookie-accept');
+    const rejectBtn = document.getElementById('cookie-reject');
+    const settingsBtn = document.getElementById('cookie-settings');
+
+    if (acceptBtn) {acceptBtn.addEventListener('click', () => this.acceptAll());}
+    if (rejectBtn) {rejectBtn.addEventListener('click', () => this.rejectAll());}
+    if (settingsBtn) {settingsBtn.addEventListener('click', () => this.showSettings());}
+
+    // Modal
+    const closeModalBtn = document.getElementById('cookie-modal-close');
+    const savePrefsBtn = document.getElementById('save-cookie-preferences');
+    const modal = document.getElementById('cookie-modal');
+
+    if (closeModalBtn) {closeModalBtn.addEventListener('click', () => this.closeSettings());}
+    if (savePrefsBtn) {savePrefsBtn.addEventListener('click', () => this.saveCustomPreferences());}
+
+    // Cerrar modal al hacer click fuera
+    if (modal) {
+      modal.addEventListener('click', (e) => {
+        if (e.target === modal) {
+          this.closeSettings();
+        }
+      });
+    }
+  }
+};
+
+// Inicializar cuando el DOM esté listo
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', () => CookieConsent.init());
+} else {
+  CookieConsent.init();
+}
+
+// Expose minimal cookie consent helpers for other modules (audio, etc.)
+(function () {
+  try {
+    window.Cookies = window.Cookies || {};
+    window.Cookies.hasConsent = function (kind) {
+      try {
+        const k = String(kind || '').toLowerCase();
+        const prefs = CookieConsent.preferences || {};
+        if (k === 'necessary') {return true;}
+        if (k in prefs) {return !!prefs[k];}
+        return false;
+      } catch (_) { return false; }
+    };
+    window.Cookies.getPreferences = function () {
+      try { return Object.assign({}, CookieConsent.preferences); } catch (_) { return {}; }
+    };
+  } catch (_) {}
+})();

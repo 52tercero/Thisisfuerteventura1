@@ -1,0 +1,17 @@
+﻿.siteHeader {
+  position: sticky;
+  top: 0;
+  z-index: 40;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.75rem 1rem;
+  gap: 1rem;
+  background: var(--color-bg);
+  backdrop-filter: blur(8px);
+  border-bottom: 1px solid var(--color-border);
+  transition: background-color .35s, border-color .35s;
+}
+
+.siteHeader nav a { transition: color .25s; }
+[data-theme='dark'] .siteHeader { background: var(--color-bg); }

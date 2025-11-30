@@ -1,0 +1,397 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>E2E Smoke Tests — This is Fuerteventura</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: #f5f5f5;
+      color: #333;
+      padding: 20px;
+    }
+    .container { max-width: 900px; margin: 0 auto; }
+    h1 { font-size: 28px; margin-bottom: 10px; }
+    .subtitle { color: #666; margin-bottom: 30px; }
+    
+    .test-suite {
+      background: white;
+      border-radius: 8px;
+      padding: 20px;
+      margin-bottom: 20px;
+      border-left: 4px solid #007bff;
+    }
+    .test-suite h2 {
+      font-size: 18px;
+      margin-bottom: 15px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .test-suite.pass { border-left-color: #28a745; }
+    .test-suite.fail { border-left-color: #dc3545; }
+    .test-suite.pending { border-left-color: #ffc107; }
+    
+    .test-item {
+      padding: 12px;
+      margin-bottom: 10px;
+      border-radius: 4px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 14px;
+    }
+    .test-item.pass { background: #d4edda; color: #155724; }
+    .test-item.fail { background: #f8d7da; color: #721c24; }
+    .test-item.pending { background: #fff3cd; color: #856404; }
+    .test-item.running { background: #e2e3e5; color: #383d41; }
+    
+    .test-icon {
+      font-size: 16px;
+      font-weight: bold;
+    }
+    .test-item.pass .test-icon::before { content: "✓"; }
+    .test-item.fail .test-icon::before { content: "✗"; }
+    .test-item.pending .test-icon::before { content: "○"; }
+    .test-item.running .test-icon::before { content: "⟳"; }
+    
+    .test-message {
+      flex: 1;
+    }
+    .test-details {
+      font-size: 12px;
+      color: #666;
+      margin-top: 4px;
+    }
+    
+    .controls {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+    button {
+      padding: 10px 20px;
+      border: none;
+      border-radius: 4px;
+      background: #007bff;
+      color: white;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 600;
+    }
+    button:hover { background: #0056b3; }
+    button:disabled { background: #ccc; cursor: not-allowed; }
+    
+    .summary {
+      background: #e7f3ff;
+      border-radius: 8px;
+      padding: 15px;
+      margin-top: 20px;
+      border: 1px solid #b3d9ff;
+    }
+    .summary p { margin-bottom: 8px; }
+    .summary strong { color: #004085; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>🧪 E2E Smoke Tests</h1>
+    <p class="subtitle">Validación de flujos críticos — This is Fuerteventura</p>
+    
+    <div class="controls">
+      <button id="run-all">▶ Ejecutar todos los tests</button>
+      <button id="clear-tests">🔄 Limpiar resultados</button>
+    </div>
+    
+    <!-- Navigation & Consent -->
+    <div class="test-suite" id="suite-navigation">
+      <h2>1️⃣ Navigation & Consent Flow</h2>
+      <div id="tests-navigation"></div>
+    </div>
+    
+    <!-- Map Keyboard Nav -->
+    <div class="test-suite" id="suite-map">
+      <h2>2️⃣ Interactive Map Keyboard Navigation</h2>
+      <div id="tests-map"></div>
+    </div>
+    
+    <!-- Quiz Restart Safety -->
+    <div class="test-suite" id="suite-quiz">
+      <h2>3️⃣ Quiz Restart Safety & Score Persistence</h2>
+      <div id="tests-quiz"></div>
+    </div>
+    
+    <!-- FetchWithRetry -->
+    <div class="test-suite" id="suite-fetch">
+      <h2>4️⃣ FetchWithRetry Reliability</h2>
+      <div id="tests-fetch"></div>
+    </div>
+    
+    <!-- Performance -->
+    <div class="test-suite" id="suite-perf">
+      <h2>5️⃣ Performance & Assets</h2>
+      <div id="tests-perf"></div>
+    </div>
+    
+    <div class="summary" id="summary" style="display: none;"></div>
+  </div>
+
+  <script>
+    const TestRunner = {
+      tests: {},
+      results: { pass: 0, fail: 0, pending: 0 },
+      
+      addTest(suite, name, fn) {
+        if (!this.tests[suite]) this.tests[suite] = [];
+        this.tests[suite].push({ name, fn, status: 'pending' });
+      },
+      
+      async runTests() {
+        this.results = { pass: 0, fail: 0, pending: 0 };
+        const suites = Object.keys(this.tests);
+        
+        for (const suite of suites) {
+          const container = document.getElementById(`tests-${suite}`);
+          container.innerHTML = '';
+          
+          for (const test of this.tests[suite]) {
+            const item = this.createTestItem(test.name, 'running');
+            container.appendChild(item);
+            
+            try {
+              await test.fn();
+              this.setTestStatus(item, 'pass');
+              this.results.pass++;
+            } catch (err) {
+              this.setTestStatus(item, 'fail', err.message);
+              this.results.fail++;
+            }
+          }
+        }
+        
+        this.showSummary();
+      },
+      
+      createTestItem(name, status = 'pending') {
+        const div = document.createElement('div');
+        div.className = `test-item ${status}`;
+        div.innerHTML = `<div class="test-icon"></div><div class="test-message">${name}</div>`;
+        return div;
+      },
+      
+      setTestStatus(element, status, details = '') {
+        element.className = `test-item ${status}`;
+        if (details) {
+          const msg = element.querySelector('.test-message');
+          msg.innerHTML += `<div class="test-details">${details}</div>`;
+        }
+      },
+      
+      showSummary() {
+        const total = this.results.pass + this.results.fail;
+        const pct = total > 0 ? Math.round((this.results.pass / total) * 100) : 0;
+        
+        document.getElementById('summary').innerHTML = `
+          <p><strong>Resultados:</strong> ${this.results.pass}/${total} tests pasaron (${pct}%)</p>
+          <p><strong>Pasaron:</strong> ${this.results.pass} ✓</p>
+          <p><strong>Fallaron:</strong> ${this.results.fail} ✗</p>
+          <p><strong>Status:</strong> ${this.results.fail === 0 ? '✓ LISTO PARA PRODUCCIÓN' : '⚠ Revisar fallos'}</p>
+        `;
+        document.getElementById('summary').style.display = 'block';
+        
+        // Update suite colors
+        document.querySelectorAll('.test-suite').forEach(suite => {
+          const items = suite.querySelectorAll('.test-item');
+          const fails = Array.from(items).filter(i => i.classList.contains('fail')).length;
+          suite.classList.toggle('fail', fails > 0);
+          suite.classList.toggle('pass', fails === 0 && items.length > 0);
+        });
+      }
+    };
+
+    // ======================
+    // TEST SUITE 1: Navigation & Consent
+    // ======================
+    TestRunner.addTest('navigation', 'index.html es accesible', async () => {
+      const res = await fetch('index.html');
+      if (res.status !== 200) throw new Error(`Status ${res.status}`);
+    });
+    
+    TestRunner.addTest('navigation', 'noticias.html es accesible', async () => {
+      const res = await fetch('noticias.html');
+      if (res.status !== 200) throw new Error(`Status ${res.status}`);
+    });
+    
+    TestRunner.addTest('navigation', 'turismo.html es accesible', async () => {
+      const res = await fetch('turismo.html');
+      if (res.status !== 200) throw new Error(`Status ${res.status}`);
+    });
+    
+    TestRunner.addTest('navigation', 'quiz.html es accesible', async () => {
+      const res = await fetch('quiz.html');
+      if (res.status !== 200) throw new Error(`Status ${res.status}`);
+    });
+    
+    TestRunner.addTest('navigation', 'Cookie banner script cargado', async () => {
+      const res = await fetch('js/cookies.js');
+      if (res.status !== 200) throw new Error('Script no encontrado');
+    });
+
+    // ======================
+    // TEST SUITE 2: Map Keyboard Nav
+    // ======================
+    TestRunner.addTest('map', 'MapKeyboard módulo existe', async () => {
+      const res = await fetch('js/map-keyboard.js');
+      if (res.status !== 200) throw new Error('js/map-keyboard.js no encontrado');
+      const code = await res.text();
+      if (!code.includes('class MapKeyboard')) throw new Error('MapKeyboard class no definida');
+    });
+    
+    TestRunner.addTest('map', 'MapKeyboard exportado a window', async () => {
+      if (typeof window.MapKeyboard === 'undefined') {
+        throw new Error('window.MapKeyboard no definido');
+      }
+    });
+    
+    TestRunner.addTest('map', 'aria-live region existe en index.html', async () => {
+      const res = await fetch('index.html');
+      const html = await res.text();
+      if (!html.includes('id="map-aria-live"')) throw new Error('aria-live region no encontrada');
+    });
+    
+    TestRunner.addTest('map', 'Leaflet CSS cargado', async () => {
+      const res = await fetch('https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css', { mode: 'no-cors' });
+      if (res.status === 0) return; // no-cors mode
+      if (res.status !== 200) throw new Error('Leaflet CSS no accesible');
+    });
+
+    // ======================
+    // TEST SUITE 3: Quiz Restart Safety
+    // ======================
+    TestRunner.addTest('quiz', 'quiz.js cargado correctamente', async () => {
+      const res = await fetch('js/quiz.js');
+      if (res.status !== 200) throw new Error('js/quiz.js no encontrado');
+      const code = await res.text();
+      if (!code.includes('cleanup()')) throw new Error('cleanup() function no encontrada');
+    });
+    
+    TestRunner.addTest('quiz', 'Score persistence en localStorage definida', async () => {
+      const res = await fetch('js/quiz.js');
+      const code = await res.text();
+      if (!code.includes('loadScore()')) throw new Error('loadScore() function no encontrada');
+      if (!code.includes('SCORE_KEY')) throw new Error('SCORE_KEY no definida');
+    });
+    
+    TestRunner.addTest('quiz', 'Event listener tracking array presente', async () => {
+      const res = await fetch('js/quiz.js');
+      const code = await res.text();
+      if (!code.includes('listeners = []')) throw new Error('listeners array no encontrada');
+      if (!code.includes('_quizRestartHandler')) throw new Error('Handler reuse mechanism no encontrada');
+    });
+    
+    TestRunner.addTest('quiz', 'Quiz HTML accesible', async () => {
+      const res = await fetch('quiz.html');
+      const html = await res.text();
+      if (!html.includes('quiz-container')) throw new Error('quiz-container no encontrado');
+    });
+
+    // ======================
+    // TEST SUITE 4: FetchWithRetry
+    // ======================
+    TestRunner.addTest('fetch', 'FetchWithRetry módulo existe', async () => {
+      const res = await fetch('js/fetch-with-retry.js');
+      if (res.status !== 200) throw new Error('js/fetch-with-retry.js no encontrado');
+      const code = await res.text();
+      if (!code.includes('class FetchWithRetry')) throw new Error('FetchWithRetry class no definida');
+    });
+    
+    TestRunner.addTest('fetch', 'FetchWithRetry exportado a window', async () => {
+      if (typeof window.FetchWithRetry === 'undefined') {
+        throw new Error('window.FetchWithRetry no definido (cargar desde index.html)');
+      }
+    });
+    
+    TestRunner.addTest('fetch', 'Retry config definida (maxRetries, backoff)', async () => {
+      const res = await fetch('js/fetch-with-retry.js');
+      const code = await res.text();
+      if (!code.includes('maxRetries')) throw new Error('maxRetries config no encontrada');
+      if (!code.includes('initialDelayMs') || !code.includes('maxDelayMs')) {
+        throw new Error('Backoff config no encontrada');
+      }
+    });
+    
+    TestRunner.addTest('fetch', 'widget-error CSS definida', async () => {
+      const res = await fetch('css/styles.css');
+      const css = await res.text();
+      if (!css.includes('widget-error')) throw new Error('.widget-error CSS no encontrada');
+    });
+    
+    TestRunner.addTest('fetch', 'real-time-data.js integración presente', async () => {
+      const res = await fetch('js/real-time-data.js');
+      const code = await res.text();
+      if (!code.includes('FetchWithRetry')) throw new Error('FetchWithRetry no integrado en real-time-data.js');
+    });
+
+    // ======================
+    // TEST SUITE 5: Performance & Assets
+    // ======================
+    TestRunner.addTest('perf', 'WEBP images existen (logo)', async () => {
+      const res = await fetch('images/logo.webp');
+      if (res.status !== 200) throw new Error('logo.webp no encontrada');
+    });
+    
+    TestRunner.addTest('perf', 'WEBP images existen (Fuerteventura)', async () => {
+      const res = await fetch('images/Fuerteventura.webp');
+      if (res.status !== 200) throw new Error('Fuerteventura.webp no encontrada');
+    });
+    
+    TestRunner.addTest('perf', 'Picture elements en index.html', async () => {
+      const res = await fetch('index.html');
+      const html = await res.text();
+      const pictureCount = (html.match(/<picture>/g) || []).length;
+      if (pictureCount < 2) throw new Error(`Solo ${pictureCount} picture elements encontrados (esperado >= 2)`);
+    });
+    
+    TestRunner.addTest('perf', 'Width/height atributos en cards', async () => {
+      const res = await fetch('index.html');
+      const html = await res.text();
+      if (!html.includes('width="400"') || !html.includes('height="300"')) {
+        throw new Error('Width/height attributes para CLS no encontrados');
+      }
+    });
+    
+    TestRunner.addTest('perf', 'ESLint config existe', async () => {
+      const res = await fetch('.eslintrc.json');
+      if (res.status !== 200) throw new Error('.eslintrc.json no encontrado');
+    });
+    
+    TestRunner.addTest('perf', 'Prettier config existe', async () => {
+      const res = await fetch('.prettierrc.json');
+      if (res.status !== 200) throw new Error('.prettierrc.json no encontrado');
+    });
+
+    // ======================
+    // UI Controls
+    // ======================
+    document.getElementById('run-all').addEventListener('click', () => {
+      document.getElementById('run-all').disabled = true;
+      TestRunner.runTests().finally(() => {
+        document.getElementById('run-all').disabled = false;
+      });
+    });
+    
+    document.getElementById('clear-tests').addEventListener('click', () => {
+      document.querySelectorAll('[id^="tests-"]').forEach(el => el.innerHTML = '');
+      document.getElementById('summary').style.display = 'none';
+      TestRunner.results = { pass: 0, fail: 0, pending: 0 };
+    });
+    
+    // Auto-run on load
+    window.addEventListener('load', () => {
+      console.log('E2E Smoke Tests loaded. Click "Ejecutar todos los tests" to begin.');
+    });
+  </script>
+</body>
+</html>
