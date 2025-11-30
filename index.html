@@ -17,6 +17,7 @@
     <link rel="canonical" href="https://thisisfuerteventura.es/">
     <link rel="manifest" href="manifest.webmanifest">
     <link rel="stylesheet" href="css/styles.css?v=2025111803">
+    <link rel="stylesheet" href="css/header.css?v=2025113001">
     <!-- Google Fonts: Inter para texto, Playfair Display para títulos -->
     <link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@400;600;700&family=Yeseva+One&display=swap" rel="stylesheet">
     <!-- Leaflet CSS para mapa interactivo -->
@@ -56,40 +57,79 @@
 </head>
 <body class="dark-header">
     <a class="skip-link" href="#main">Saltar al contenido principal</a>
-    <header>
-        <div class="logo-container">
-            <picture>
-                <source srcset="images/logo.webp" type="image/webp">
-                <img src="images/logo.jpg" alt="This is Fuerteventura Logo" class="logo" loading="lazy" decoding="async" width="70" height="70">
-            </picture>
-            <h1>This is Fuerteventura</h1>
-        </div>
-        <nav id="site-nav" aria-label="Navegación principal" role="navigation">
-            <ul>
-                <li><a href="index.html" aria-current="page">Inicio</a></li>
-                <li><a href="noticias.html">Noticias</a></li>
-                <li><a href="turismo.html">Turismo</a></li>
-                <li><a href="alojamiento.html">Alojamiento</a></li>
-                <li><a href="playas.html">Playas</a></li>
-                <li><a href="senderos.html">Senderos</a></li>
-                <li><a href="blog.html">Blog</a></li>
-                <li><a href="contacto.html">Contacto</a></li>
-            </ul>
-        </nav>
-        <button type="button" class="mobile-menu" aria-label="Abrir menú" aria-controls="site-nav" aria-expanded="false">
-            <i class="fas fa-bars" aria-hidden="true"></i>
-        </button>
-                <!-- Accessibility toggles -->
-                <div class="header-toggles" style="display:flex;gap:8px;align-items:center">
-                    <button type="button" id="reduce-motion-toggle" class="mobile-menu" aria-label="Reducir animaciones" title="Reducir animaciones">
-                        <i class="fas fa-universal-access" aria-hidden="true"></i>
+    <header class="header" role="banner">
+        <div class="header-container">
+            <!-- Logo -->
+            <div class="header-logo">
+                <a href="index.html" aria-label="This is Fuerteventura - Ir a inicio">
+                    <picture>
+                        <source srcset="images/logo.webp" type="image/webp">
+                        <img src="images/logo.jpg" alt="" loading="lazy" decoding="async" width="50" height="50">
+                    </picture>
+                    <span class="header-logo-text">This is Fuerteventura</span>
+                </a>
+            </div>
+
+            <!-- Navigation Menu -->
+            <nav class="header-nav" aria-label="Navegación principal">
+                <ul class="header-nav-list">
+                    <li><a href="index.html" class="header-nav-link active">Inicio</a></li>
+                    <li><a href="noticias.html" class="header-nav-link">Noticias</a></li>
+                    <li><a href="turismo.html" class="header-nav-link">Turismo</a></li>
+                    <li><a href="alojamiento.html" class="header-nav-link">Alojamiento</a></li>
+                    <li><a href="playas.html" class="header-nav-link">Playas</a></li>
+                    <li><a href="senderos.html" class="header-nav-link">Senderos</a></li>
+                    <li><a href="blog.html" class="header-nav-link">Blog</a></li>
+                    <li><a href="contacto.html" class="header-nav-link">Contacto</a></li>
+                </ul>
+            </nav>
+
+            <!-- Right Section: Search + Social + CTA -->
+            <div class="header-right">
+                <!-- Search -->
+                <div class="header-search">
+                    <input type="search" class="header-search-input" placeholder="Buscar..." aria-label="Buscar en el sitio">
+                    <button type="button" class="header-search-btn" aria-label="Enviar búsqueda">
+                        <i class="fas fa-search" aria-hidden="true"></i>
                     </button>
-                    <button type="button" id="ambient-audio-toggle" class="mobile-menu" aria-label="Sonido ambiental" title="Sonido ambiental">
-                        <i class="fas fa-volume-up" aria-hidden="true"></i>
-                    </button>
-                    <label for="ambient-volume" class="visually-hidden">Volumen ambiente</label>
-                    <input id="ambient-volume" type="range" min="0" max="100" value="30" aria-label="Volumen ambiente" style="width:100px" />
                 </div>
+
+                <!-- Social Icons -->
+                <div class="header-social">
+                    <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" aria-label="Facebook">
+                        <i class="fab fa-facebook-f" aria-hidden="true"></i>
+                    </a>
+                    <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
+                        <i class="fab fa-instagram" aria-hidden="true"></i>
+                    </a>
+                    <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" aria-label="Twitter">
+                        <i class="fab fa-twitter" aria-hidden="true"></i>
+                    </a>
+                </div>
+
+                <!-- CTA Button -->
+                <a href="contacto.html" class="header-cta">Contacto</a>
+            </div>
+
+            <!-- Mobile Hamburger Menu -->
+            <button type="button" class="header-hamburger" aria-label="Abrir menú" aria-expanded="false">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+
+            <!-- Accessibility toggles -->
+            <div class="header-toggles">
+                <button type="button" id="reduce-motion-toggle" class="header-toggle" aria-label="Reducir animaciones" title="Reducir animaciones">
+                    <i class="fas fa-universal-access" aria-hidden="true"></i>
+                </button>
+                <button type="button" id="ambient-audio-toggle" class="header-toggle" aria-label="Sonido ambiental" title="Sonido ambiental">
+                    <i class="fas fa-volume-up" aria-hidden="true"></i>
+                </button>
+                <label for="ambient-volume" class="visually-hidden">Volumen ambiente</label>
+                <input id="ambient-volume" type="range" min="0" max="100" value="30" aria-label="Volumen ambiente" class="header-volume" />
+            </div>
+        </div>
     </header>
     <main id="main">
         <section class="hero parallax reveal hero-video">
@@ -389,6 +429,7 @@
     <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js" defer crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js" defer crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js" defer crossorigin="anonymous"></script>
+    <script src="js/components/Header.js?v=2025113001" defer></script>
     <script src="js/animations/gsap.js?v=2025113001" defer></script>
     <script src="js/scenes/mapa.js?v=2025113001" defer></script>
     <script src="js/scenes/playas.js?v=2025113001" defer></script>

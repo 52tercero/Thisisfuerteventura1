@@ -20,6 +20,7 @@
     <link rel="manifest" href="manifest.webmanifest">
     <link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@400;600;700&family=Yeseva+One&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/styles.css?v=2025111803">
+    <link rel="stylesheet" href="css/header.css?v=2025113001">
     <link rel="preload" href="images/Fuerteventura.jpeg" as="image" fetchpriority="high">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@9/swiper-bundle.min.css" / crossorigin="anonymous" integrity="sha384-tOPXDsn4moKzmRcYpDt8mOcJWxzy89N8dK0oEkxTx90DZYjDdznDQ4IEiH1pcZH5">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" crossorigin="anonymous" integrity="sha384-t1nt8BQoYMLFN5p42tRAtuAAFQaCQODekUVeKKZrEnEyp4H2R0RHFz0KWpmj7i8g">
@@ -44,29 +45,67 @@
 </head>
 <body>
     <a class="skip-link" href="#main">Saltar al contenido principal</a>
-    <header>
-        <div class="logo-container">
-            <picture>
-                <source srcset="images/logo.webp" type="image/webp">
-                <img src="images/logo.jpg" alt="This is Fuerteventura Logo" class="logo" loading="lazy" decoding="async" width="70" height="70">
-            </picture>
-            <h1>This is Fuerteventura</h1>
+    <header class="header" role="banner">
+        <div class="header-container">
+            <!-- Logo -->
+            <div class="header-logo">
+                <a href="index.html" aria-label="This is Fuerteventura - Ir a inicio">
+                    <picture>
+                        <source srcset="images/logo.webp" type="image/webp">
+                        <img src="images/logo.jpg" alt="" loading="lazy" decoding="async" width="50" height="50">
+                    </picture>
+                    <span class="header-logo-text">This is Fuerteventura</span>
+                </a>
+            </div>
+
+            <!-- Navigation Menu -->
+            <nav class="header-nav" aria-label="Navegación principal">
+                <ul class="header-nav-list">
+                    <li><a href="index.html" class="header-nav-link">Inicio</a></li>
+                    <li><a href="noticias.html" class="header-nav-link active">Noticias</a></li>
+                    <li><a href="turismo.html" class="header-nav-link">Turismo</a></li>
+                    <li><a href="alojamiento.html" class="header-nav-link">Alojamiento</a></li>
+                    <li><a href="playas.html" class="header-nav-link">Playas</a></li>
+                    <li><a href="senderos.html" class="header-nav-link">Senderos</a></li>
+                    <li><a href="blog.html" class="header-nav-link">Blog</a></li>
+                    <li><a href="contacto.html" class="header-nav-link">Contacto</a></li>
+                </ul>
+            </nav>
+
+            <!-- Right Section: Search + Social + CTA -->
+            <div class="header-right">
+                <!-- Search -->
+                <div class="header-search">
+                    <input type="search" class="header-search-input" placeholder="Buscar..." aria-label="Buscar en el sitio">
+                    <button type="button" class="header-search-btn" aria-label="Enviar búsqueda">
+                        <i class="fas fa-search" aria-hidden="true"></i>
+                    </button>
+                </div>
+
+                <!-- Social Icons -->
+                <div class="header-social">
+                    <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" aria-label="Facebook">
+                        <i class="fab fa-facebook-f" aria-hidden="true"></i>
+                    </a>
+                    <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
+                        <i class="fab fa-instagram" aria-hidden="true"></i>
+                    </a>
+                    <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" aria-label="Twitter">
+                        <i class="fab fa-twitter" aria-hidden="true"></i>
+                    </a>
+                </div>
+
+                <!-- CTA Button -->
+                <a href="contacto.html" class="header-cta">Contacto</a>
+            </div>
+
+            <!-- Mobile Hamburger Menu -->
+            <button type="button" class="header-hamburger" aria-label="Abrir menú" aria-expanded="false">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
         </div>
-        <nav id="site-nav" aria-label="Navegación principal" role="navigation">
-            <ul>
-                <li><a href="index.html">Inicio</a></li>
-                <li><a href="noticias.html" aria-current="page">Noticias</a></li>
-                <li><a href="turismo.html">Turismo</a></li>
-                <li><a href="alojamiento.html">Alojamiento</a></li>
-                <li><a href="playas.html">Playas</a></li>
-                <li><a href="senderos.html">Senderos</a></li>
-                <li><a href="blog.html">Blog</a></li>
-                <li><a href="contacto.html">Contacto</a></li>
-            </ul>
-        </nav>
-        <button type="button" class="mobile-menu" aria-label="Abrir menú" aria-controls="site-nav" aria-expanded="false">
-            <i class="fas fa-bars" aria-hidden="true"></i>
-        </button>
     </header>
 
     <main id="main">
