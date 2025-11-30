@@ -1,0 +1,40 @@
+﻿# Dependencies
+node_modules/
+package-lock.json
+package.json
+
+# Build outputs
+dist/
+build/
+.next/
+
+# Version control
+.git/
+.github/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Dotfiles
+.env*
+.netlify/
+
+# Static assets
+images/
+sonidos/
+
+# External libraries
+fontawesome/
+css/fontawesome/
+
+# Generated/compiled
+*.webp
+*.min.js
+*.min.css

@@ -10,7 +10,11 @@
     "security:csp": "node tools/inject-jsonld-csp-hashes.js",
     "security:sri": "node tools/inject-sri.js",
     "security:validate": "node tools/validate-html.js",
-    "security:all": "node tools/inject-jsonld-csp-hashes.js && node tools/inject-sri.js && node tools/validate-html.js"
+    "security:all": "node tools/inject-jsonld-csp-hashes.js && node tools/inject-sri.js && node tools/validate-html.js",
+    "lint": "eslint . --max-warnings 10",
+    "lint:fix": "eslint . --fix",
+    "format": "prettier --write .",
+    "format:check": "prettier --check ."
   },
   "engines": {
     "node": ">=18"
@@ -19,5 +23,8 @@
     "xml2js": "^0.6.2",
     "node-fetch": "^2.6.7"
   },
-  "devDependencies": {}
+  "devDependencies": {
+    "eslint": "^8.56.0",
+    "prettier": "^3.1.1"
+  }
 }
