@@ -98,7 +98,28 @@ document.addEventListener('DOMContentLoaded', function () {
     }
     // Fallback directo al proxy local/Netlify
     try {
-      const url = 'http://localhost:3000/api/aggregate?sources=' + encodeURIComponent(activeNewsSources.join(','));
+      let proxyUrl = 'http://localhost:3000';
+      
+      // Si proxy discovery encontró un proxy, usarlo
+      if (typeof window.__RSS_PROXY_URL === 'string' && window.__RSS_PROXY_URL) {
+        proxyUrl = window.__RSS_PROXY_URL;
+        console.log('[NEWS] Usando proxy descubierto:', proxyUrl);
+      } else {
+        // Si no, intentar los puertos comunes (3000-3010)
+        for (let port = 3000; port <= 3010; port++) {
+          try {
+            const testUrl = `http://localhost:${port}/health`;
+            const testRes = await fetch(testUrl, { cache: 'no-store', signal: AbortSignal.timeout(800) }).catch(() => null);
+            if (testRes && testRes.ok) {
+              proxyUrl = `http://localhost:${port}`;
+              console.log('[NEWS] Proxy disponible en puerto:', port);
+              break;
+            }
+          } catch (_) { /* continuar al siguiente puerto */ }
+        }
+      }
+      
+      const url = proxyUrl + '/api/aggregate?sources=' + encodeURIComponent(activeNewsSources.join(','));
       const res = await fetch(url, { cache: forceRefresh ? 'no-store' : 'default' });
       if (res.ok) {
         const json = await res.json();

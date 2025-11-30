@@ -129,7 +129,28 @@ document.addEventListener('DOMContentLoaded', async function () {
       // Fallback: intentar el proxy local/Netlify directamente
       try {
         // Usar proxy local confirmado (healthy) para asegurar datos
-        const url = 'http://localhost:3000/api/aggregate?sources=' + encodeURIComponent(activeNewsSources.join(','));
+        let proxyUrl = 'http://localhost:3000';
+        
+        // Si proxy discovery encontró un proxy, usarlo
+        if (typeof window.__RSS_PROXY_URL === 'string' && window.__RSS_PROXY_URL) {
+          proxyUrl = window.__RSS_PROXY_URL;
+          console.log('[CONTENT-LOADER] Usando proxy descubierto:', proxyUrl);
+        } else {
+          // Si no, intentar los puertos comunes (3000-3010)
+          for (let port = 3000; port <= 3010; port++) {
+            try {
+              const testUrl = `http://localhost:${port}/health`;
+              const testRes = await fetch(testUrl, { cache: 'no-store', signal: AbortSignal.timeout(800) }).catch(() => null);
+              if (testRes && testRes.ok) {
+                proxyUrl = `http://localhost:${port}`;
+                console.log('[CONTENT-LOADER] Proxy disponible en puerto:', port);
+                break;
+              }
+            } catch (_) { /* continuar al siguiente puerto */ }
+          }
+        }
+        
+        const url = proxyUrl + '/api/aggregate?sources=' + encodeURIComponent(activeNewsSources.join(','));
         const res = await fetch(url, { cache: 'no-store' });
         if (res.ok) {
           const json = await res.json();
@@ -260,7 +281,7 @@ document.addEventListener('DOMContentLoaded', async function () {
     // Watchdog: si tras unos segundos sigue el skeleton, mostrar mensaje amistoso
     (function () {
       try {
-        const watchdogMs = 4000;
+        const watchdogMs = 5000;
         setTimeout(function () {
           const hasSkeleton = !!featuredNewsContainer.querySelector('.loading-skeleton');
           const hasCards = !!featuredNewsContainer.querySelector('.content-card');
@@ -308,6 +329,16 @@ document.addEventListener('DOMContentLoaded', async function () {
       });
     };
     document.addEventListener('feed:partial', handlePartial, { passive: true });
+    
+    // Esperar a que proxy discovery esté listo antes de intentar fetch
+    (async () => {
+      try {
+        if (window.__RSS_PROXY_READY instanceof Promise) {
+          await window.__RSS_PROXY_READY;
+        }
+      } catch (_) { /* noop */ }
+    })();
+    
     fetchLatestFeeds().then(newsItems => {
       console.log('[CONTENT-LOADER] Noticias recibidas:', newsItems.length);
 
