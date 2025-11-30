@@ -308,3 +308,22 @@ if (document.readyState === 'loading') {
 } else {
     CookieConsent.init();
 }
+
+// Expose minimal cookie consent helpers for other modules (audio, etc.)
+(function(){
+    try {
+        window.Cookies = window.Cookies || {};
+        window.Cookies.hasConsent = function(kind) {
+            try {
+                const k = String(kind||'').toLowerCase();
+                const prefs = CookieConsent.preferences || {};
+                if (k === 'necessary') return true;
+                if (k in prefs) return !!prefs[k];
+                return false;
+            } catch(_) { return false; }
+        };
+        window.Cookies.getPreferences = function(){
+            try { return Object.assign({}, CookieConsent.preferences); } catch(_) { return {}; }
+        };
+    } catch(_) {}
+})();
