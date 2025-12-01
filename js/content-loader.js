@@ -117,7 +117,7 @@ document.addEventListener('DOMContentLoaded', async function () {
       // Ir directamente al fallback (proxy local) para mayor velocidad
       try {
         // Usar proxy local confirmado (healthy) para asegurar datos
-        let proxyUrl = 'http://localhost:3001';
+        let proxyUrl = 'http://localhost:3000';
         console.log('[CONTENT-LOADER] Usando proxy directo:', proxyUrl);
         
         const url = proxyUrl + '/api/aggregate?sources=' + encodeURIComponent(activeNewsSources.join(','));
