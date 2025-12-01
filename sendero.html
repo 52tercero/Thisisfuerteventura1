@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sendero | This is Fuerteventura</title>
-    <meta name="theme-color" content="#0f4c81">
+    <meta name="theme-color" content="#00A8B5">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
@@ -32,29 +32,37 @@
 </head>
 <body class="dark-header">
 <a class="skip-link" href="#main">Saltar al contenido principal</a>
-<header>
-  <div class="logo-container">
-    <picture>
-                <source srcset="images/logo.webp" type="image/webp">
-                <img src="images/logo.jpg" alt="This is Fuerteventura Logo" class="logo" loading="lazy" decoding="async" width="70" height="70">
-            </picture>
-    <h1>This is Fuerteventura</h1>
+<header class="header" role="banner">
+  <!-- Header Image Section with Overlay Text and Navigation -->
+  <div class="header-image-section">
+    <img src="images/header_image.png" alt="This is Fuerteventura - Playa Tropical" class="header-hero-image" loading="lazy" decoding="async">
+    <div class="header-overlay-text">
+      <div class="header-content">
+        <h1>This is Fuerteventura</h1>
+        
+        <!-- Navigation Buttons -->
+        <nav class="header-nav" aria-label="Navegación principal">
+          <ul class="header-nav-list">
+            <li><a href="index.html" class="header-nav-link">Inicio</a></li>
+            <li><a href="noticias.html" class="header-nav-link">Noticias</a></li>
+            <li><a href="turismo.html" class="header-nav-link">Turismo</a></li>
+            <li><a href="alojamiento.html" class="header-nav-link">Alojamiento</a></li>
+            <li><a href="playas.html" class="header-nav-link">Playas</a></li>
+            <li><a href="senderos.html" class="header-nav-link active">Senderos</a></li>
+            <li><a href="blog.html" class="header-nav-link">Blog</a></li>
+            <li><a href="contacto.html" class="header-nav-link">Contacto</a></li>
+          </ul>
+        </nav>
+      </div>
+    </div>
+
+    <!-- Mobile Hamburger Menu -->
+    <button type="button" class="header-hamburger" aria-label="Abrir menú" aria-expanded="false">
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
   </div>
-  <nav id="site-nav" aria-label="Navegación principal" role="navigation">
-    <ul>
-      <li><a href="index.html">Inicio</a></li>
-      <li><a href="noticias.html">Noticias</a></li>
-      <li><a href="turismo.html">Turismo</a></li>
-      <li><a href="alojamiento.html">Alojamiento</a></li>
-      <li><a href="playas.html">Playas</a></li>
-      <li><a href="senderos.html">Senderos</a></li>
-      <li><a href="blog.html">Blog</a></li>
-      <li><a href="contacto.html">Contacto</a></li>
-    </ul>
-  </nav>
-  <button type="button" class="mobile-menu" aria-label="Abrir menú" aria-controls="site-nav" aria-expanded="false">
-    <i class="fas fa-bars" aria-hidden="true"></i>
-  </button>
 </header>
 
 <main id="main">

@@ -50,11 +50,11 @@
       try {
         const raw = localStorage.getItem(STORAGE_KEY);
         if (!raw) {return;}
-        const data = JSON.parse(raw);
-        if (!data || !Array.isArray(data.answers) || data.answers.length !== QUESTIONS.length) {return;}
-        state.answers = data.answers.map(v => (v === null || v === undefined) ? null : Number(v));
-        state.idx = Math.min(Math.max(Number(data.idx) || 0, 0), QUESTIONS.length - 1);
-        state.completed = !!data.completed;
+        const savedState = JSON.parse(raw);
+        if (!savedState || !Array.isArray(savedState.answers) || savedState.answers.length !== QUESTIONS.length) {return;}
+        state.answers = savedState.answers.map(v => (v === null || v === undefined) ? null : Number(v));
+        state.idx = Math.min(Math.max(Number(savedState.idx) || 0, 0), QUESTIONS.length - 1);
+        state.completed = !!savedState.completed;
       } catch (e) {}
     }
 

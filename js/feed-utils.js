@@ -282,7 +282,7 @@
     const candidates = Array.from({ length: 11 }, (_, i) => `http://localhost:${3000 + i}`);
     for (const base of candidates) {
       try {
-        const r = await fetch(`${base}/health`, { method: 'GET', cache: 'no-store', targetAddressSpace: 'local' });
+        const r = await fetch(`${base}/health`, { method: 'GET', cache: 'no-store' });
         if (r.ok) {return base;}
       } catch (_) { /* siguiente candidato */ }
     }
@@ -367,8 +367,7 @@
         console.log('[FEED-UTILS] Fetching aggregate from:', aggUrl);
 
         try {
-          const isLocal = /^http:\/\/(localhost|127\.0\.0\.1)(:\d+)?/i.test(proxyBase);
-          const r = await fetch(aggUrl, { cache: 'no-store', ...(isLocal ? { targetAddressSpace: 'local' } : {}), ...(signal ? { signal } : {}) });
+          const r = await fetch(aggUrl, { cache: 'no-store', ...(signal ? { signal } : {}) });
           console.log('[FEED-UTILS] Aggregate response status:', r.status);
 
           if (!r.ok) {throw new Error('bad response');}
@@ -390,8 +389,7 @@
               const rssPath = proxyBase === ''
                 ? '/.netlify/functions/rss'
                 : (proxyBase.endsWith('/.netlify/functions') ? '/rss' : '/api/rss');
-              const isLocal = /^http:\/\/(localhost|127\.0\.0\.1)(:\d+)?/i.test(proxyBase);
-              const rr = await fetch(`${proxyBase}${rssPath}?url=${encodeURIComponent(src)}${noCache ? `&t=${Date.now()}` : ''}`, { cache: 'no-store', ...(isLocal ? { targetAddressSpace: 'local' } : {}), ...(signal ? { signal } : {}) });
+              const rr = await fetch(`${proxyBase}${rssPath}?url=${encodeURIComponent(src)}${noCache ? `&t=${Date.now()}` : ''}`, { cache: 'no-store', ...(signal ? { signal } : {}) });
 
               if (!rr.ok) {throw new Error('bad response');}
 
@@ -436,8 +434,7 @@
             ? '/.netlify/functions/aggregate'
             : (proxyBase.endsWith('/.netlify/functions') ? '/aggregate' : '/api/aggregate');
           const aggUrl2 = `${proxyBase}${aggPath2}?sources=${encodeURIComponent(sources.join(','))}&dedupe=1${noCache ? `&t=${Date.now()}` : ''}`;
-          const isLocal2 = /^http:\/\/(localhost|127\.0\.0\.1)(:\\d+)?/i.test(proxyBase);
-          const r2 = await fetch(aggUrl2, { cache: 'no-store', ...(isLocal2 ? { targetAddressSpace: 'local' } : {}) });
+          const r2 = await fetch(aggUrl2, { cache: 'no-store' });
           if (r2.ok) {
             const json2 = await r2.json();
             const items2 = Array.isArray(json2.items) ? json2.items : [];

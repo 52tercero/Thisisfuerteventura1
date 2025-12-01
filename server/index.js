@@ -587,7 +587,7 @@ app.get('/api/image', async (req, res) => {
 
 // Intentar escuchar en el puerto configurado, pero si está en uso probar puertos superiores hasta un límite
 function startServerOnPort(port, attemptsLeft = 10) {
-  const serverInstance = app.listen(port, () => {
+  const serverInstance = app.listen(port, '0.0.0.0', () => {
     console.log(`RSS proxy listening on http://localhost:${port}`);
     console.log('[SERVER] Server is ready to accept connections');
   });

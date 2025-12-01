@@ -63,41 +63,15 @@ document.addEventListener('DOMContentLoaded', function () {
   const searchInput = document.getElementById('news-search');
   const searchBtn = document.getElementById('search-btn');
 
-  // Obtener noticias delegando a FeedUtils para evitar duplicación
+  // Obtener noticias - usar directamente el proxy local para mayor velocidad
   let currentAbort = null;
   async function fetchNews(forceRefresh = false) {
+    console.log('[NEWS] fetchNews llamado. forceRefresh:', forceRefresh, 'cached:', cachedNewsItems.length);
     if (!forceRefresh && cachedNewsItems.length > 0 && !isSnapshotCache) {
       return cachedNewsItems;
     }
     try {
-      if (window.FeedUtils && typeof FeedUtils.fetchRSSFeeds === 'function') {
-        if (currentAbort) { try { currentAbort.abort(); } catch (_) { } }
-        currentAbort = new AbortController();
-        // Usar noCache sólo si forceRefresh; permitir caché corta para mejorar tiempo de respuesta
-        const items = await FeedUtils.fetchRSSFeeds(activeNewsSources, { noCache: forceRefresh, progressive: true, signal: currentAbort.signal });
-        cachedNewsItems = items.map((it, idx) => ({
-          id: idx + 1,
-          title: it.title,
-          image: it.image,
-          summary: it.summary || it.description || '',
-          content: it.fullHtml || it.description || '',
-          date: it.date,
-          publishedAt: it.publishedAt || null,
-          category: it.category,
-          tags: Array.isArray(it.tags) ? it.tags : [],
-          source: it.source,
-          link: it.link,
-          raw: it.raw || null
-        }));
-        isSnapshotCache = false;
-        return cachedNewsItems;
-      }
-      console.warn('[NEWS] FeedUtils.fetchRSSFeeds no está disponible');
-    } catch (e) {
-      console.warn('[NEWS] FeedUtils.fetchRSSFeeds failed:', e);
-    }
-    // Fallback directo al proxy local/Netlify
-    try {
+      // Usar directamente el proxy local para noticias.html
       let proxyUrl = 'http://localhost:3000';
       
       // Si proxy discovery encontró un proxy, usarlo
@@ -109,7 +83,7 @@ document.addEventListener('DOMContentLoaded', function () {
         for (let port = 3000; port <= 3010; port++) {
           try {
             const testUrl = `http://localhost:${port}/health`;
-            const testRes = await fetch(testUrl, { cache: 'no-store', signal: AbortSignal.timeout(800) }).catch(() => null);
+            const testRes = await fetch(testUrl, { cache: 'no-store' }).catch(() => null);
             if (testRes && testRes.ok) {
               proxyUrl = `http://localhost:${port}`;
               console.log('[NEWS] Proxy disponible en puerto:', port);
@@ -120,10 +94,13 @@ document.addEventListener('DOMContentLoaded', function () {
       }
       
       const url = proxyUrl + '/api/aggregate?sources=' + encodeURIComponent(activeNewsSources.join(','));
+      console.log('[NEWS] Solicitando proxy:', url);
       const res = await fetch(url, { cache: forceRefresh ? 'no-store' : 'default' });
+      console.log('[NEWS] Respuesta status:', res.status);
       if (res.ok) {
         const json = await res.json();
         const items = Array.isArray(json.items) ? json.items : [];
+        console.log('[NEWS] Items recibidos del proxy:', items.length);
         cachedNewsItems = items.map((it, idx) => ({
           id: idx + 1,
           title: it.title,
@@ -141,7 +118,9 @@ document.addEventListener('DOMContentLoaded', function () {
         isSnapshotCache = false;
         return cachedNewsItems;
       }
-    } catch (_) {}
+    } catch (err) {
+      console.error('[NEWS] Error fetching news:', err);
+    }
     if (cachedNewsItems.length === 0) {
       cachedNewsItems = [];
     }

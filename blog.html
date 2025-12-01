@@ -4,14 +4,14 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Blog de Fuerteventura 2025 - Rutas, Entrevistas y Eventos | This is Fuerteventura</title>
-  <meta name="theme-color" content="#0f4c81">
+  <meta name="theme-color" content="#00A8B5">
   <meta name="description" content="Blog de Fuerteventura 2025: rutas secretas, entrevistas y agenda de eventos en la isla. Consejos prácticos para viajar y disfrutar.">
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="https://thisisfuerteventura.es/blog.html">
   <link rel="manifest" href="manifest.webmanifest">
   <link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@400;600;700&family=Yeseva+One&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/styles.css?v=2025111803">
-  <link rel="stylesheet" href="css/header.css?v=2025113001">">
+    <link rel="stylesheet" href="css/styles.css?v=2025111803">
+    <link rel="stylesheet" href="css/header.css?v=2025113001">
   <link rel="preload" href="images/logo.jpg" as="image" fetchpriority="high">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" crossorigin="anonymous" integrity="sha384-t1nt8BQoYMLFN5p42tRAtuAAFQaCQODekUVeKKZrEnEyp4H2R0RHFz0KWpmj7i8g">
   <meta property="og:title" content="Blog de Fuerteventura - Rutas, Entrevistas y Eventos">
@@ -21,69 +21,39 @@
   <meta property="og:image" content="https://thisisfuerteventura.es/images/logo.jpg">
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://unpkg.com https://www.googletagmanager.com https://analytics.google.com https://www.google-analytics.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://unpkg.com; font-src 'self' data: https://fonts.gstatic.com https://cdnjs.cloudflare.com; img-src 'self' data: https: https://unpkg.com https://*.tile.openstreetmap.org; media-src 'self'; connect-src 'self' https://thisisfuerteventura.es https://www.googletagmanager.com https://www.google-analytics.com https://cdn.jsdelivr.net https://unpkg.com https://hooks.zapier.com http://localhost:3000 http://localhost:3001 http://localhost:* http://127.0.0.1:* https://api.open-meteo.com https://marine-api.open-meteo.com https://ingesteer.services-prod.nsvcs.net; base-uri 'self'; object-src 'none';">
 </head>
-<body>
+<body class="dark-header">
   <a class="skip-link" href="#main">Saltar al contenido principal</a>
   <header class="header" role="banner">
-    <div class="header-container">
-      <!-- Logo -->
-      <div class="header-logo">
-        <a href="index.html" aria-label="This is Fuerteventura - Ir a inicio">
-          <picture>
-            <source srcset="images/logo.webp" type="image/webp">
-            <img src="images/logo.jpg" alt="" loading="lazy" decoding="async" width="50" height="50">
-          </picture>
-          <span class="header-logo-text">This is Fuerteventura</span>
-        </a>
-      </div>
+      <!-- Header Image Section with Overlay Text and Navigation -->
+      <div class="header-image-section">
+          <img src="images/header_image.png" alt="This is Fuerteventura - Playa Tropical" class="header-hero-image" loading="lazy" decoding="async">
+          <div class="header-overlay-text">
+              <div class="header-content">
+                  <h1>This is Fuerteventura</h1>
+                  
+                  <!-- Navigation Buttons -->
+                  <nav class="header-nav" aria-label="Navegación principal">
+                      <ul class="header-nav-list">
+                          <li><a href="index.html" class="header-nav-link">Inicio</a></li>
+                          <li><a href="noticias.html" class="header-nav-link">Noticias</a></li>
+                          <li><a href="turismo.html" class="header-nav-link">Turismo</a></li>
+                          <li><a href="alojamiento.html" class="header-nav-link">Alojamiento</a></li>
+                          <li><a href="playas.html" class="header-nav-link">Playas</a></li>
+                          <li><a href="senderos.html" class="header-nav-link">Senderos</a></li>
+                          <li><a href="blog.html" class="header-nav-link active">Blog</a></li>
+                          <li><a href="contacto.html" class="header-nav-link">Contacto</a></li>
+                      </ul>
+                  </nav>
+              </div>
+          </div>
 
-      <!-- Navigation Menu -->
-      <nav class="header-nav" aria-label="Navegación principal">
-        <ul class="header-nav-list">
-          <li><a href="index.html" class="header-nav-link">Inicio</a></li>
-          <li><a href="noticias.html" class="header-nav-link">Noticias</a></li>
-          <li><a href="turismo.html" class="header-nav-link">Turismo</a></li>
-          <li><a href="alojamiento.html" class="header-nav-link">Alojamiento</a></li>
-          <li><a href="playas.html" class="header-nav-link">Playas</a></li>
-          <li><a href="senderos.html" class="header-nav-link">Senderos</a></li>
-          <li><a href="blog.html" class="header-nav-link active">Blog</a></li>
-          <li><a href="contacto.html" class="header-nav-link">Contacto</a></li>
-        </ul>
-      </nav>
-
-      <!-- Right Section: Search + Social + CTA -->
-      <div class="header-right">
-        <!-- Search -->
-        <div class="header-search">
-          <input type="search" class="header-search-input" placeholder="Buscar..." aria-label="Buscar en el sitio">
-          <button type="button" class="header-search-btn" aria-label="Enviar búsqueda">
-            <i class="fas fa-search" aria-hidden="true"></i>
+          <!-- Mobile Hamburger Menu -->
+          <button type="button" class="header-hamburger" aria-label="Abrir menú" aria-expanded="false">
+              <span></span>
+              <span></span>
+              <span></span>
           </button>
-        </div>
-
-        <!-- Social Icons -->
-        <div class="header-social">
-          <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" aria-label="Facebook">
-            <i class="fab fa-facebook-f" aria-hidden="true"></i>
-          </a>
-          <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
-            <i class="fab fa-instagram" aria-hidden="true"></i>
-          </a>
-          <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" aria-label="Twitter">
-            <i class="fab fa-twitter" aria-hidden="true"></i>
-          </a>
-        </div>
-
-        <!-- CTA Button -->
-        <a href="contacto.html" class="header-cta">Contacto</a>
       </div>
-
-      <!-- Mobile Hamburger Menu -->
-      <button type="button" class="header-hamburger" aria-label="Abrir menú" aria-expanded="false">
-        <span></span>
-        <span></span>
-        <span></span>
-      </button>
-    </div>
   </header>
   
 

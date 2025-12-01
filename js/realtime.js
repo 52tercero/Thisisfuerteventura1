@@ -125,8 +125,6 @@
           clearTimeout(timeoutId);
         }
       }
-      if(!r.ok) throw new Error('HTTP '+r.status);
-      const data = await r.json();
       const h = data.hourly || {};
       const times = h.time || [];
       const idx = (()=>{
