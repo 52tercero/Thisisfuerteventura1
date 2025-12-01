@@ -1,4 +1,4 @@
-﻿/* ux.js: scroll reveal, sticky header, dark mode, galleries, timeline */
+/* ux.js: scroll reveal, sticky header, dark mode, galleries, timeline */
 (function () {
   const d = document;
   // Sticky header shrink
@@ -6,11 +6,11 @@
   function onScroll() { if (!header) {return;} const s = window.scrollY || d.documentElement.scrollTop; header.classList.toggle('scrolled', s > 10); }
   window.addEventListener('scroll', onScroll, { passive: true }); onScroll();
 
-  // Scroll reveal
+  // Scroll reveal (exclude #featured-news and .featured-content to keep them always visible)
   const io = ('IntersectionObserver' in window) ? new IntersectionObserver((entries) => {
     entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('show'); io.unobserve(e.target); } });
   }, { rootMargin:'0px 0px -10% 0px' }) : null;
-  if (io) { d.querySelectorAll('.reveal').forEach(el => io.observe(el)); }
+  if (io) { d.querySelectorAll('.reveal:not(.featured-content):not(#featured-news)').forEach(el => io.observe(el)); }
 
 
 
@@ -75,3 +75,4 @@
     mo.observe(featured, { childList: true });
   }
 })();
+
