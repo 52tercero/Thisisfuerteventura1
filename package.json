@@ -1,0 +1,26 @@
+{
+  "name": "thisisfuerteventura",
+  "version": "1.0.0",
+  "description": "News and tourism site for Fuerteventura",
+  "type": "module",
+  "main": "index.html",
+  "scripts": {
+    "start": "node server/index.js",
+    "dev": "node server/index.js",
+    "test": "jest --passWithNoTests",
+    "snapshot": "node tools/generate-snapshot.js",
+    "validate": "node tools/validate-html.js"
+  },
+  "dependencies": {
+    "xml2js": "^0.6.2",
+    "express": "^4.18.2",
+    "cors": "^2.8.5",
+    "dotenv": "^16.3.1"
+  },
+  "devDependencies": {
+    "jest": "^29.7.0"
+  },
+  "engines": {
+    "node": "18.x"
+  }
+}
