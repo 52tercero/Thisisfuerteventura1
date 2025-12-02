@@ -8,18 +8,18 @@
   'use strict';
 
   function loadVideos() {
-    const container = document.getElementById('news-container');
+    var container = document.getElementById('news-container');
     if (!container) {
       console.warn('[VIDEOS.JS] No #news-container found');
       return;
     }
 
-    container.innerHTML = '<div class="loading">Cargando vídeos...</div>';
+    container.innerHTML = '<div class=\"loading\">Cargando vídeos...</div>';
 
     // Detect environment (development vs production)
-    const isProduction = window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1';
-    const videosSource = 'https://rss.app/feeds/0I3TKDpm3S7TZQdB.xml';
-    let apiUrl;
+    var isProduction = window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1';
+    var videosSource = 'https://rss.app/feeds/0I3TKDpm3S7TZQdB.xml';
+    var apiUrl;
 
     if (isProduction) {
       // Netlify Functions endpoint
@@ -41,10 +41,10 @@
       .then(function(data) {
         console.log('[VIDEOS.JS] Received data:', data);
 
-        const items = Array.isArray(data.items) ? data.items : [];
+        var items = Array.isArray(data.items) ? data.items : [];
 
         if (items.length === 0) {
-          container.innerHTML = '<div class="no-results">No hay vídeos disponibles</div>';
+          container.innerHTML = '<div class=\"no-results\">No hay vídeos disponibles</div>';
           return;
         }
 
@@ -52,43 +52,50 @@
         container.innerHTML = '';
 
         items.slice(0, 9).forEach(function(item) {
-          const card = document.createElement('div');
+          var card = document.createElement('div');
           card.className = 'content-card';
 
           // Extract data
-          const title = item.title || 'Sin título';
-          const date = item.date || '';
-          const description = (item.summary || item.description || '').replace(/<[^>]*>/g, ' ').trim();
-          const shortDescription = description.length > 150 ? description.substring(0, 150) + '...' : description;
-          const image = item.image || 'images/logo.jpg';
+          var title = item.title || 'Sin título';
+          var date = item.date || '';
+          var description = (item.summary || item.description || '').replace(/<[^>]*>/g, ' ').trim();
+          var shortDescription = description.length > 150 ? description.substring(0, 150) + '...' : description;
+          var image = item.image || 'images/logo.jpg';
 
-          // Build card HTML
-          const cardHTML = 
-            <img src="$"'image" alt="$"'title.replace(/"/g, '&quot;')" loading="lazy" referrerpolicy="no-referrer">
-            <div class="card-content">
-              <span class="date">$"'date"</span>
-              <h3>$"'title"</h3>
-              <p>$"'shortDescription"</p>
-            </div>
-          ;
+          // Build card HTML using DOM methods for safety
+          var img = document.createElement('img');
+          img.src = image;
+          img.alt = title;
+          img.loading = 'lazy';
+          img.referrerPolicy = 'no-referrer';
+          img.addEventListener('error', function() {
+            this.src = 'images/logo.jpg';
+          });
 
-          card.innerHTML = cardHTML;
+          var dateSpan = document.createElement('span');
+          dateSpan.className = 'date';
+          dateSpan.textContent = date;
 
-          // Add error handler for broken images
-          const img = card.querySelector('img');
-          if (img) {
-            img.addEventListener('error', function() {
-              this.src = 'images/logo.jpg';
-            });
-          }
+          var h3 = document.createElement('h3');
+          h3.textContent = title;
 
-          // Add "View more" button
-          const button = document.createElement('a');
+          var p = document.createElement('p');
+          p.textContent = shortDescription;
+
+          var cardContent = document.createElement('div');
+          cardContent.className = 'card-content';
+          cardContent.appendChild(dateSpan);
+          cardContent.appendChild(h3);
+          cardContent.appendChild(p);
+
+          var button = document.createElement('a');
           button.href = 'noticia.html?title=' + encodeURIComponent(title);
           button.className = 'btn';
           button.textContent = 'Ver más';
+          cardContent.appendChild(button);
 
-          card.querySelector('.card-content').appendChild(button);
+          card.appendChild(img);
+          card.appendChild(cardContent);
           container.appendChild(card);
         });
 
@@ -96,7 +103,7 @@
       })
       .catch(function(error) {
         console.error('[VIDEOS.JS] Error:', error);
-        container.innerHTML = '<div class="error">Error al cargar vídeos: ' + error.message + '</div>';
+        container.innerHTML = '<div class=\"error\">Error al cargar vídeos: ' + error.message + '</div>';
       });
   }
 
@@ -104,7 +111,7 @@
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', loadVideos);
   } else {
-    // DOM already loaded (e.g., script loaded dynamically)
+    // DOM already loaded
     loadVideos();
   }
 })();
