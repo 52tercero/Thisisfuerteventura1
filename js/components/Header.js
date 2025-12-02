@@ -1,4 +1,4 @@
-﻿/**
+/**
  * Header Component - Modern, Responsive & Animated
  * 
  * Features:
@@ -73,7 +73,7 @@
   function cacheElements() {
     els.header = document.querySelector('header');
     els.mobileMenuBtn = document.querySelector('.header-hamburger');
-    els.mobileMenu = document.querySelector('.header-nav-mobile');
+    els.mobileMenu = document.querySelector('.header-nav.top-nav');
     els.navLinks = document.querySelectorAll('.header-nav a');
     els.searchInput = document.querySelector('.header-search-input');
     els.searchBtn = document.querySelector('.header-search-btn');
@@ -158,38 +158,7 @@
     state.isMenuOpen = true;
     els.mobileMenuBtn.setAttribute('aria-expanded', 'true');
     els.mobileMenuBtn.classList.add('active');
-
-    if (typeof gsap !== 'undefined') {
-      // Animate menu slide-down
-      gsap.to(els.mobileMenu, {
-        duration: CONFIG.menuAnimDuration,
-        height: 'auto',
-        opacity: 1,
-        pointerEvents: 'auto',
-        ease: 'power2.out',
-      });
-
-      // Stagger menu items
-      gsap.from(els.navLinks, {
-        duration: 0.3,
-        y: -20,
-        opacity: 0,
-        stagger: CONFIG.staggerDelay,
-        ease: 'back.out',
-        delay: CONFIG.menuAnimDuration * 0.5,
-      });
-
-      // Pulse hamburger icon
-      gsap.to(els.mobileMenuBtn.querySelector('i'), {
-        duration: 0.6,
-        scale: 1.1,
-        repeat: 1,
-        yoyo: true,
-        ease: 'elastic.out(1, 0.5)',
-      });
-    } else {
-      els.mobileMenu.classList.add('active');
-    }
+    els.mobileMenu.classList.add('active');
   }
 
   /**
@@ -201,18 +170,7 @@
     state.isMenuOpen = false;
     els.mobileMenuBtn.setAttribute('aria-expanded', 'false');
     els.mobileMenuBtn.classList.remove('active');
-
-    if (typeof gsap !== 'undefined') {
-      gsap.to(els.mobileMenu, {
-        duration: CONFIG.menuAnimDuration * 0.8,
-        height: 0,
-        opacity: 0,
-        pointerEvents: 'none',
-        ease: 'power2.in',
-      });
-    } else {
-      els.mobileMenu.classList.remove('active');
-    }
+    els.mobileMenu.classList.remove('active');
   }
 
   /**
@@ -538,3 +496,6 @@
   // Expose API globally
   window.HeaderComponent = HeaderAPI;
 })();
+
+
+
