@@ -1,4 +1,4 @@
-﻿/**
+/**
  * animations.js
  * Professional scroll and interaction animations (Pearson-inspired)
  * - Smooth reveal on scroll
@@ -37,7 +37,7 @@
    * Smooth reveal on scroll for sections with .reveal class
    */
   function setupScrollReveal() {
-    const revealElements = document.querySelectorAll('.reveal');
+    const revealElements = document.querySelectorAll('.reveal:not(.featured-content):not(#featured-news)');
     if (!revealElements.length) return;
 
     revealElements.forEach((el) => {
@@ -176,3 +176,4 @@
 
   console.log('✅ Professional animations loaded');
 })();
+
