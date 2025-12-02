@@ -1,4 +1,4 @@
-﻿// Interactive map with Leaflet (preferred). Falls back to hotspot overlay if Leaflet is unavailable.
+// Interactive map with Leaflet (preferred). Falls back to hotspot overlay if Leaflet is unavailable.
 (() => {
   if (typeof window === 'undefined') {return;}
   const container = document.getElementById('interactive-map');
@@ -27,7 +27,7 @@
     { slug: 'pajara', lat: 28.3500, lon: -14.1080, title: 'Pájara', desc: 'Municipio con iglesia emblemática.', img: 'images/Fuerteventura.jpeg', url: 'turismo.html' },
     { slug: 'antigua', lat: 28.4220, lon: -13.9270, title: 'Antigua', desc: 'Molinos y tradición majorera.', img: 'images/Fuerteventura.jpeg', url: 'turismo.html' },
     // Alojamiento (zonas)
-    { slug: 'caleta', lat: 28.3920, lon: -13.8600, title: 'Caleta de Fuste', desc: 'Zona céntrica con resorts y golf.', img: 'images/playa_del_castillo_caleta_de_fuste.webp', url: 'alojamiento.html' },
+    { slug: 'caleta', lat: 28.3920, lon: -13.8600, title: 'Caleta de Fuste', desc: 'Zona céntrica con resorts y golf.', img: 'images/playa_del_castillo_caleta_de_fuste.webp', url: 'videos.html' },
     // Gastronomía
     { slug: 'la-oliva', lat: 28.6100, lon: -13.9260, title: 'La Oliva', desc: 'Cocina local y productos de km 0.', img: 'images/turismo/la-oliva.avif', url: 'senderos.html' }
   ];
@@ -97,3 +97,4 @@
     buildOverlay();
   }
 })();
+
