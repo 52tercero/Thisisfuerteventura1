@@ -174,39 +174,45 @@
     <script src="js/ux.js"></script>
     
     <script>
-        document.addEventListener('DOMContentLoaded', async () => {
-            const container = document.getElementById('news-container');
+        function loadVideos() {
+            var container = document.getElementById('news-container');
             if (!container) return;
-            container.innerHTML = '<div class="loading">Cargando vídeos...</div>';
-            try {
-                let proxy = 'http://localhost:3000';
-                if (typeof window.__RSS_PROXY_URL === 'string') proxy = window.__RSS_PROXY_URL;
-                const url = proxy + '/api/aggregate?sources=' + encodeURIComponent('https://rss.app/feeds/0I3TKDpm3S7TZQdB.xml');
-                const res = await fetch(url, { cache: 'no-store' });
-                if (!res.ok) throw new Error('No response');
-                const data = await res.json();
-                const items = data.items || [];
-                if (!items.length) { container.innerHTML = '<div class="no-results">Sin vídeos</div>'; return; }
-                container.innerHTML = '';
-                items.forEach(item => {
-                    const card = document.createElement('div');
-                    card.className = 'content-card';
-                    card.innerHTML = `<img src="${item.image || 'images/logo.jpg'}" alt="${(item.title || '').replace(/"/g, '&quot;')}" loading="lazy"><div class="card-content"><span class="date">${item.date || ''}</span><h3>${item.title || ''}</h3><p>${(item.summary || '').substring(0, 150)}</p></div>`;
-                    const link = document.createElement('a');
-                    link.href = 'noticia.html?title=' + encodeURIComponent(item.title || '');
-                    link.className = 'btn';
-                    link.textContent = 'Ver más';
-                    card.querySelector('.card-content').appendChild(link);
-                    container.appendChild(card);
+            container.innerHTML = '<div class=\"loading\">Cargando videos...</div>';
+            
+            fetch('http://localhost:3000/api/aggregate?sources=https%3A%2F%2Frss.app%2Ffeeds%2F0I3TKDpm3S7TZQdB.xml', {cache: 'no-store'})
+                .then(function(r) { return r.json(); })
+                .then(function(data) {
+                    var items = (data.items || []).slice(0, 9);
+                    if (!items.length) {
+                        container.innerHTML = '<div class=\"no-results\">Sin videos</div>';
+                        return;
+                    }
+                    container.innerHTML = '';
+                    items.forEach(function(item) {
+                        var card = document.createElement('div');
+                        card.className = 'content-card';
+                        card.innerHTML = '<img src=\"' + (item.image || 'images/logo.jpg') + '\" alt=\"' + (item.title || 'Video') + '\" loading=\"lazy\"><div class=\"card-content\"><span class=\"date\">' + (item.date || '') + '</span><h3>' + (item.title || '') + '</h3><p>' + ((item.summary || '').substring(0, 150)) + '</p></div>';
+                        var btn = document.createElement('a');
+                        btn.href = 'noticia.html?title=' + encodeURIComponent(item.title || '');
+                        btn.className = 'btn';
+                        btn.textContent = 'Ver mas';
+                        card.querySelector('.card-content').appendChild(btn);
+                        container.appendChild(card);
+                    });
+                })
+                .catch(function(e) {
+                    container.innerHTML = '<div class=\"error\">Error: ' + e.message + '</div>';
                 });
-            } catch (e) {
-                console.error(e);
-                container.innerHTML = '<div class="error">Error al cargar vídeos</div>';
-            }
-        });
+        }
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', loadVideos);
+        } else {
+            loadVideos();
+        }
     </script>
 </body>
 </html>
+
 
 
 
