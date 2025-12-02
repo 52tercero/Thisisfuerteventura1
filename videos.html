@@ -174,13 +174,40 @@
     <script src="js/ux.js"></script>
     
     <script>
-        // Cargar vídeos con la URL específica del feed
-        document.addEventListener('DOMContentLoaded', () => {
-            loadFullNewsPage('https://rss.app/feeds/0I3TKDpm3S7TZQdB.xml');
+        document.addEventListener('DOMContentLoaded', async () => {
+            const container = document.getElementById('news-container');
+            if (!container) return;
+            container.innerHTML = '<div class="loading">Cargando vídeos...</div>';
+            try {
+                let proxy = 'http://localhost:3000';
+                if (typeof window.__RSS_PROXY_URL === 'string') proxy = window.__RSS_PROXY_URL;
+                const url = proxy + '/api/aggregate?sources=' + encodeURIComponent('https://rss.app/feeds/0I3TKDpm3S7TZQdB.xml');
+                const res = await fetch(url, { cache: 'no-store' });
+                if (!res.ok) throw new Error('No response');
+                const data = await res.json();
+                const items = data.items || [];
+                if (!items.length) { container.innerHTML = '<div class="no-results">Sin vídeos</div>'; return; }
+                container.innerHTML = '';
+                items.forEach(item => {
+                    const card = document.createElement('div');
+                    card.className = 'content-card';
+                    card.innerHTML = `<img src="${item.image || 'images/logo.jpg'}" alt="${(item.title || '').replace(/"/g, '&quot;')}" loading="lazy"><div class="card-content"><span class="date">${item.date || ''}</span><h3>${item.title || ''}</h3><p>${(item.summary || '').substring(0, 150)}</p></div>`;
+                    const link = document.createElement('a');
+                    link.href = 'noticia.html?title=' + encodeURIComponent(item.title || '');
+                    link.className = 'btn';
+                    link.textContent = 'Ver más';
+                    card.querySelector('.card-content').appendChild(link);
+                    container.appendChild(card);
+                });
+            } catch (e) {
+                console.error(e);
+                container.innerHTML = '<div class="error">Error al cargar vídeos</div>';
+            }
         });
     </script>
 </body>
 </html>
+
 
 
 
