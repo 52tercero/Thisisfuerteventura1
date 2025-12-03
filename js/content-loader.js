@@ -114,13 +114,31 @@ document.addEventListener('DOMContentLoaded', async function () {
     // Función para obtener y parsear feeds RSS (delegada a FeedUtils)
     let currentAbort = null;
     async function fetchLatestFeeds() {
-      // Ir directamente al fallback (proxy local) para mayor velocidad
+      // Selección de endpoint según entorno: Functions en remoto, proxy en localhost
       try {
-        // Usar proxy local confirmado (healthy) para asegurar datos
-        let proxyUrl = 'http://localhost:3000';
-        console.log('[CONTENT-LOADER] Usando proxy directo:', proxyUrl);
-        
-        const url = proxyUrl + '/api/aggregate?sources=' + encodeURIComponent(activeNewsSources.join(','));
+        const hostname = (location && location.hostname || '').toLowerCase();
+        const isLocalHost = hostname === 'localhost' || hostname === '127.0.0.1';
+        let base = '';
+        // Si proxy-discovery ha marcado Functions, __RSS_PROXY_URL = ''
+        if (window.__RSS_PROXY_URL === '') {
+          base = '/.netlify/functions';
+          console.log('[CONTENT-LOADER] Usando Netlify Functions base:', base);
+        } else if (isLocalHost && typeof window.__RSS_PROXY_URL === 'string' && window.__RSS_PROXY_URL) {
+          base = window.__RSS_PROXY_URL;
+          console.log('[CONTENT-LOADER] Usando proxy local:', base);
+        } else if (!isLocalHost) {
+          // En host remoto, nunca intentar localhost por CORS/IP space; usar Functions
+          base = '/.netlify/functions';
+          console.log('[CONTENT-LOADER] Forzando Functions en entorno remoto:', base);
+        } else {
+          // Último recurso en local: intentar localhost:3000
+          base = 'http://localhost:3000';
+          console.log('[CONTENT-LOADER] Fallback proxy local:', base);
+        }
+
+        const url = (base.includes('/.netlify/functions')
+          ? `${base}/aggregate?sources=${encodeURIComponent(activeNewsSources.join(','))}`
+          : `${base}/api/aggregate?sources=${encodeURIComponent(activeNewsSources.join(','))}`);
         console.log('[CONTENT-LOADER] Solicitando:', url);
         const res = await fetch(url, { cache: 'no-store' });
         console.log('[CONTENT-LOADER] Respuesta status:', res.status);
