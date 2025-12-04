@@ -173,6 +173,8 @@
     els.mobileMenuBtn.classList.add('active');
     els.mobileMenu.classList.add('active');
     document.body.classList.add('nav-open');
+    // Hard fallback to ensure container itself is visible
+    els.mobileMenu.style.display = 'block';
     const list = els.mobileMenu.querySelector('.header-nav-list');
     if (list) {
       list.setAttribute('aria-hidden', 'false');
@@ -192,6 +194,7 @@
     els.mobileMenuBtn.classList.remove('active');
     els.mobileMenu.classList.remove('active');
     document.body.classList.remove('nav-open');
+    els.mobileMenu.style.display = '';
     const list = els.mobileMenu.querySelector('.header-nav-list');
     if (list) {
       list.setAttribute('aria-hidden', 'true');
