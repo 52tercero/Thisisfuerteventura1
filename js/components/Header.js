@@ -87,7 +87,9 @@
   function setupEventListeners() {
     // Mobile menu toggle
     if (els.mobileMenuBtn) {
-      els.mobileMenuBtn.addEventListener('click', toggleMobileMenu);
+      els.mobileMenuBtn.addEventListener('click', (e) => { e.preventDefault(); e.stopPropagation(); toggleMobileMenu(); });
+      // Ensure mobile devices register taps
+      els.mobileMenuBtn.addEventListener('touchstart', (e) => { e.preventDefault(); e.stopPropagation(); toggleMobileMenu(); }, { passive: false });
       els.mobileMenuBtn.addEventListener('keydown', (e) => {
         if (e.key === 'Enter' || e.key === ' ') {
           e.preventDefault();
