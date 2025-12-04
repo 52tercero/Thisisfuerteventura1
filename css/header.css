@@ -55,6 +55,11 @@ header.hero-header {
   margin-right: -50vw;
 }
 
+/* When mobile nav is open, ensure header sits above everything */
+body.nav-open header.hero-header {
+  z-index: 2000;
+}
+
 /* Video Background */
 
 header.hero-header .hero-bg {
@@ -80,6 +85,12 @@ header.hero-header .hero-overlay {
   height: 100%;
   background: linear-gradient(135deg, rgba(0, 0, 0, 0.4) 0%, rgba(0, 0, 0, 0.3) 100%);
   z-index: 0;
+  pointer-events: none;
+}
+
+/* Disable interactions on hero content while drawer is open */
+body.nav-open .hero-overlay,
+body.nav-open .hero-content {
   pointer-events: none;
 }
 
