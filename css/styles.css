@@ -15,6 +15,13 @@
 
 /* Responsive heading unification: reduce global h2 size */
 h2 { font-size: clamp(1.5rem, 2.4vw, 2rem); line-height: 1.2; letter-spacing: -0.005em; }
+/* Extra reduction for non-index pages on small screens */
+@media (max-width: 768px) {
+    body:not(.dark-header) h2 { font-size: clamp(1.25rem, 2.6vw, 1.6rem); }
+}
+@media (max-width: 640px) {
+    body:not(.dark-header) h2 { font-size: clamp(1.15rem, 3vw, 1.5rem); }
+}
 /* No importar fuentes desde CSS, se cargan desde el HTML para mejor rendimiento *//* Paleta de Colores: Inspirada en Fuerteventura */:root {    /* PALETA PRINCIPAL - Inspirada en la Naturaleza de Fuerteventura */    --color-arena: #D4A574; /* Arena dorada de playas */    --color-mar: #00A8B5; /* Mar turquesa del Atlántico */    --color-cielo: #87CEEB; /* Cielo despejado */    --color-volcan: #2C2C2C; /* Roca volcánica oscura */    --color-sol: #F89B4B; /* Luz cálida del atardecer */    --color-vegetacion: #6B8E23; /* Vegetación árida */    --color-blanco: #FFFFFF; /* Blanco limpio */        /* PALETA SECUNDARIA - Variantes */    --color-arena-dark: #A68860; /* Arena más oscura */    --color-arena-light: #E8D7C3; /* Arena más clara */    --color-mar-dark: #007A87; /* Mar profundo */    --color-cielo-dark: #5B9BBC; /* Cielo más oscuro */    --color-gris-neutro: #6B7280; /* Gris neutro */        /* COLORES DE ESTADO */    --color-exito: #10B981; /* Verde exitoso */    --color-advertencia: #F59E0B; /* Naranja advertencia */    --color-error: #EF4444; /* Rojo error */        /* COLORES SEMÁNTICOS */    --color-text-primary: var(--color-volcan); /* Texto principal */    --color-text-secondary: var(--color-gris-neutro); /* Texto secundario */    --color-bg-primary: var(--color-blanco); /* Fondo principal */    --color-bg-secondary: var(--color-arena-light); /* Fondo secundario */    --color-accent-primary: var(--color-mar); /* Acento primario */    --color-accent-secondary: var(--color-sol); /* Acento secundario */        /* GRADIENTES TEMÁTICOS */    --gradient-mar-arena: linear-gradient(135deg, #00A8B5 0%, #D4A574 100%);    --gradient-cielo-sol: linear-gradient(135deg, #87CEEB 0%, #F89B4B 100%);    --gradient-volcan-arena: linear-gradient(to right, #2C2C2C 0%, #D4A574 100%);    --gradient-fondo-suave: linear-gradient(135deg, #FFFFFF 0%, #E8D7C3 100%);        /* Tipografía */    --font-display: 'Yeseva One', serif;    --font-body: 'Nunito Sans', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;        /* Espaciado - Generoso */
     --spacing-xs: 0.25rem;
     --spacing-sm: 0.5rem;

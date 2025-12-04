@@ -46,29 +46,19 @@ document.addEventListener('DOMContentLoaded', () => {
   const theme = getPreferredTheme();
   applyTheme(theme);
 
-  let toggleBtn = document.getElementById('theme-toggle') || document.querySelector('.theme-toggle');
-  if (!toggleBtn) {
-    const header = document.querySelector('header');
-    if (header) {
-      toggleBtn = document.createElement('button');
-      toggleBtn.id = 'theme-toggle';
-      toggleBtn.className = 'theme-toggle';
-      toggleBtn.type = 'button';
-      toggleBtn.setAttribute('aria-label', theme === DARK_THEME ? 'Activar modo claro' : 'Activar modo oscuro');
-      toggleBtn.setAttribute('aria-pressed', theme === DARK_THEME ? 'true' : 'false');
-      toggleBtn.innerHTML = `<i class="${theme === DARK_THEME ? 'fas fa-sun' : 'fas fa-moon'}"></i>`;
-      header.appendChild(toggleBtn);
-    }
+  // Remove any existing dark mode toggle and prevent creation
+  const existingToggle = document.getElementById('theme-toggle') || document.querySelector('.theme-toggle');
+  if (existingToggle && existingToggle.parentElement) {
+    try { existingToggle.remove(); } catch (_) { existingToggle.style.display = 'none'; }
   }
-  if (toggleBtn && !toggleBtn.__themeBound) {
-    toggleBtn.addEventListener('click', toggleTheme);
-    toggleBtn.__themeBound = true; // marca para evitar doble binding en páginas con scripts múltiples
-  }
+  // Do not create or bind a new toggle button
 });
 
 // Detectar cambios en preferencia del sistema
-window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
-  if (!localStorage.getItem(THEME_KEY)) {
-    applyTheme(e.matches ? DARK_THEME : LIGHT_THEME);
+// Disable auto reacting to system theme changes since toggle is removed
+try {
+  const mq = window.matchMedia('(prefers-color-scheme: dark)');
+  if (mq && typeof mq.removeEventListener === 'function') {
+    // no-op: ensure no listener is attached
   }
-});
+} catch (_) {}

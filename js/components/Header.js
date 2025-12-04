@@ -96,6 +96,17 @@
       });
     }
 
+    // Defensive: delegate clicks to ensure toggle works even if button is re-rendered
+    document.addEventListener('click', (e) => {
+      const btn = e.target.closest('.header-hamburger');
+      if (btn) {
+        e.stopPropagation();
+        // Refresh cached elements in case of dynamic changes
+        if (!els.mobileMenuBtn || !els.mobileMenu) cacheElements();
+        toggleMobileMenu();
+      }
+    });
+
     // Close mobile menu when clicking on a link
     if (els.navLinks) {
       els.navLinks.forEach(link => {

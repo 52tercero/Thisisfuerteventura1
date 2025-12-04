@@ -10,7 +10,6 @@
  */
 document.addEventListener('DOMContentLoaded', function () {
   // Alternador de menú móvil
-  // Prefer modern header hamburger class if present; fallback to legacy
   const mobileMenuBtn = document.querySelector('.header-hamburger') || document.querySelector('.mobile-menu');
   const nav = document.querySelector('nav');
 
