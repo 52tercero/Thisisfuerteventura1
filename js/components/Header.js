@@ -170,6 +170,12 @@
     els.mobileMenuBtn.setAttribute('aria-expanded', 'true');
     els.mobileMenuBtn.classList.add('active');
     els.mobileMenu.classList.add('active');
+    const list = els.mobileMenu.querySelector('.header-nav-list');
+    if (list) {
+      list.setAttribute('aria-hidden', 'false');
+      // Fallback to ensure visibility on strict mobile CSS
+      list.style.display = 'flex';
+    }
   }
 
   /**
@@ -182,6 +188,12 @@
     els.mobileMenuBtn.setAttribute('aria-expanded', 'false');
     els.mobileMenuBtn.classList.remove('active');
     els.mobileMenu.classList.remove('active');
+    const list = els.mobileMenu.querySelector('.header-nav-list');
+    if (list) {
+      list.setAttribute('aria-hidden', 'true');
+      // Reset inline fallback so CSS media queries remain authoritative
+      list.style.display = '';
+    }
   }
 
   /**
