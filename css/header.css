@@ -219,7 +219,7 @@ header.hero-header .btn:focus-visible {
   position: absolute;
   top: 2rem;
   right: 2rem;
-  z-index: 51;
+  z-index: 1001;
   background: transparent;
   border: none;
   cursor: pointer;
@@ -227,6 +227,8 @@ header.hero-header .btn:focus-visible {
   display: none;
   flex-direction: column;
   gap: 0.4rem;
+  pointer-events: auto;
+  touch-action: manipulation;
 }
 
 .header-hamburger span {
@@ -273,26 +275,28 @@ header.hero-header .btn:focus-visible {
     z-index: 1000; /* Above overlay/content */
   }
 
+  /* Offcanvas drawer */
   .header-nav.top-nav .header-nav-list {
-    display: none;
-    position: absolute;
-    top: 100%;
-    left: 0;
+    position: fixed;
+    top: 0;
     right: 0;
+    height: 100vh;
+    width: 80vw;
+    max-width: 360px;
+    transform: translateX(100%);
+    transition: transform var(--transition-base);
+    display: flex;
     flex-direction: column;
     gap: 0;
     background: rgba(0, 0, 0, 0.95);
     padding: 1rem 0;
     border-radius: 0;
+    z-index: 1000;
   }
 
-  .header-nav.top-nav.active .header-nav-list {
-    display: flex !important;
-  }
-
-  /* Global safety hook in case other styles interfere */
+  .header-nav.top-nav.active .header-nav-list,
   body.nav-open .header-nav.top-nav .header-nav-list {
-    display: flex !important;
+    transform: translateX(0);
   }
 
   .header-nav.top-nav .header-nav-link {
@@ -324,6 +328,22 @@ header.hero-header .btn:focus-visible {
     padding: 3rem 1rem;
     gap: 1rem;
   }
+}
+
+/* Backdrop for offcanvas */
+.mobile-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.4);
+  z-index: 999;
+  opacity: 0;
+  transition: opacity var(--transition-base);
+  pointer-events: none;
+}
+
+.mobile-backdrop.active {
+  opacity: 1;
+  pointer-events: auto;
 }
 
 @media (max-width: 480px) {

@@ -51,18 +51,19 @@
       return;
     }
 
-    // Wait for GSAP before setting up animations
+    // Always set up core interactions
+    setupEventListeners();
+    setupScrollDetection();
+    setupKeyboardNavigation();
+    setupAccessibility();
+
+    // Use GSAP when available, otherwise keep CSS-only behavior
     if (typeof gsap === 'undefined') {
       console.warn('[Header] GSAP not loaded, using CSS-only fallback');
       setupFallbackEvents();
-      return;
+    } else {
+      setupAnimations();
     }
-
-    setupEventListeners();
-    setupScrollDetection();
-    setupAnimations();
-    setupKeyboardNavigation();
-    setupAccessibility();
 
     console.log('[Header] Component initialized successfully');
   }
@@ -98,16 +99,7 @@
       });
     }
 
-    // Defensive: delegate clicks to ensure toggle works even if button is re-rendered
-    document.addEventListener('click', (e) => {
-      const btn = e.target.closest('.header-hamburger');
-      if (btn) {
-        e.stopPropagation();
-        // Refresh cached elements in case of dynamic changes
-        if (!els.mobileMenuBtn || !els.mobileMenu) cacheElements();
-        toggleMobileMenu();
-      }
-    });
+    // Note: avoid global delegation on document for hamburger to prevent double toggles
 
     // Close mobile menu when clicking on a link
     if (els.navLinks) {
@@ -173,14 +165,20 @@
     els.mobileMenuBtn.classList.add('active');
     els.mobileMenu.classList.add('active');
     document.body.classList.add('nav-open');
-    // Hard fallback to ensure container itself is visible
-    els.mobileMenu.style.display = 'block';
     const list = els.mobileMenu.querySelector('.header-nav-list');
     if (list) {
       list.setAttribute('aria-hidden', 'false');
-      // Fallback to ensure visibility on strict mobile CSS
-      list.style.display = 'flex';
     }
+
+    // Create and activate backdrop
+    let backdrop = document.querySelector('.mobile-backdrop');
+    if (!backdrop) {
+      backdrop = document.createElement('div');
+      backdrop.className = 'mobile-backdrop';
+      document.body.appendChild(backdrop);
+    }
+    backdrop.classList.add('active');
+    backdrop.addEventListener('click', closeMobileMenu, { once: true });
   }
 
   /**
@@ -194,12 +192,19 @@
     els.mobileMenuBtn.classList.remove('active');
     els.mobileMenu.classList.remove('active');
     document.body.classList.remove('nav-open');
-    els.mobileMenu.style.display = '';
     const list = els.mobileMenu.querySelector('.header-nav-list');
     if (list) {
       list.setAttribute('aria-hidden', 'true');
-      // Reset inline fallback so CSS media queries remain authoritative
-      list.style.display = '';
+    }
+
+    // Deactivate backdrop
+    const backdrop = document.querySelector('.mobile-backdrop');
+    if (backdrop) {
+      backdrop.classList.remove('active');
+      // Remove after transition for cleanliness
+      setTimeout(() => {
+        if (backdrop && !state.isMenuOpen) backdrop.remove();
+      }, 300);
     }
   }
 
