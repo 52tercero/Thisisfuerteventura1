@@ -454,6 +454,99 @@ document.addEventListener('DOMContentLoaded', async function () {
     return date.toLocaleDateString('es-ES', options);
   }
 
+  // Utilidad mínima para limpiar texto
+  function sanitizeText(str) {
+    try { return escapeHTML(str || ''); } catch (_) { return ''; }
+  }
+  function sanitizeImageUrl(url) {
+    try {
+      const src = url && typeof url === 'string' && url.trim() ? url : 'images/logo.jpg?v=2025110501';
+      return toImageSrc(src);
+    } catch (_) {
+      return 'images/logo.jpg?v=2025110501';
+    }
+  }
+
+  // Pequeño agregador para secciones globales de feeds
+  async function loadGlobalFeeds(selector = '#global-news', limit = 6) {
+    try {
+      const container = document.querySelector(selector);
+      if (!container) return;
+      container.innerHTML = '<div class="loading">Cargando noticias...</div>';
+
+      // Reutilizar la lógica de featured: pedir a Functions/proxy las fuentes activas
+      const items = await (async () => {
+        try {
+          const hostname = (location && location.hostname || '').toLowerCase();
+          const isLocalHost = hostname === 'localhost' || hostname === '127.0.0.1';
+          let base = '';
+          if (window.__RSS_PROXY_URL === '') {
+            base = '/.netlify/functions';
+          } else if (isLocalHost && typeof window.__RSS_PROXY_URL === 'string' && window.__RSS_PROXY_URL) {
+            base = window.__RSS_PROXY_URL;
+          } else if (!isLocalHost) {
+            base = '/.netlify/functions';
+          } else {
+            base = 'http://localhost:3000';
+          }
+          const url = (base.includes('/.netlify/functions')
+            ? `${base}/aggregate?sources=${encodeURIComponent(activeNewsSources.join(','))}`
+            : `${base}/api/aggregate?sources=${encodeURIComponent(activeNewsSources.join(','))}`);
+          const res = await fetch(url, { cache: 'no-store' });
+          if (!res.ok) return [];
+          const json = await res.json();
+          return Array.isArray(json.items) ? json.items : [];
+        } catch (_) {
+          return [];
+        }
+      })();
+
+      const sliced = (items || []).slice(0, limit);
+      if (!sliced.length) {
+        container.innerHTML = '<div class="no-results">No se pudieron cargar las noticias</div>';
+        return;
+      }
+
+      const cards = sliced.map(item => {
+        const dateStr = sanitizeText(formatDate(new Date(item.pubDate || item.publishedAt || item.date || Date.now())));
+        const imageUrl = sanitizeImageUrl(item.image || (item.enclosure && item.enclosure.url) || item.thumbnail || item.media || '');
+        const safeTitle = sanitizeText(item.title || 'Noticia');
+        const safeSource = sanitizeText(item.source || (item.link ? (new URL(item.link)).hostname.replace('www.','') : 'Fuente'));
+        const href = item.link || item.url || '#';
+        return `
+          <article class="news-card">
+            <a href="${href}" rel="noopener noreferrer" target="_blank">
+              <img src="${imageUrl}" alt="${safeTitle}" class="news-image" loading="lazy" width="400" height="250">
+              <div class="news-content">
+                <h3>${safeTitle}</h3>
+                <p class="news-meta">${dateStr} · ${safeSource}</p>
+              </div>
+            </a>
+          </article>
+        `;
+      }).join('');
+
+      container.innerHTML = `<div class="content-grid">${cards}</div>`;
+
+      if (typeof gsap !== 'undefined') {
+        const cardEls = container.querySelectorAll('.news-card');
+        gsap.from(cardEls, {
+          opacity: 0,
+          y: 16,
+          duration: 0.4,
+          stagger: 0.06,
+          ease: 'power2.out'
+        });
+      }
+    } catch (err) {
+      console.error('Error al cargar feeds globales', err);
+      const container = document.querySelector(selector);
+      if (container) {
+        container.innerHTML = '<div class="no-results">Error al cargar las noticias</div>';
+      }
+    }
+  }
+
   // Cargar noticias destacadas
   loadFeaturedNews();
 
@@ -488,5 +581,13 @@ document.addEventListener('DOMContentLoaded', async function () {
       }
     }
   });
+
+  // Inicializar bloque global si existe en la página
+  try {
+    const globalEl = document.querySelector('#global-news');
+    if (globalEl) {
+      loadGlobalFeeds('#global-news');
+    }
+  } catch (_) {}
 });
 
