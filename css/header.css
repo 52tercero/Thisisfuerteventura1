@@ -266,6 +266,11 @@ header.hero-header .btn:focus-visible {
 
   .header-nav.top-nav {
     padding: 1rem 1rem;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000; /* Above overlay/content */
   }
 
   .header-nav.top-nav .header-nav-list {
@@ -301,6 +306,10 @@ header.hero-header .btn:focus-visible {
 
   .header-hamburger {
     display: flex;
+    position: fixed;
+    top: 1rem;
+    right: 1rem;
+    z-index: 1001; /* Above nav */
   }
 
   header.hero-header .hero-content h1 {
