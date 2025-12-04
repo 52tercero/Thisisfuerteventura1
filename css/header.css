@@ -285,6 +285,11 @@ header.hero-header .btn:focus-visible {
     display: flex !important;
   }
 
+  /* Global safety hook in case other styles interfere */
+  body.nav-open .header-nav.top-nav .header-nav-list {
+    display: flex !important;
+  }
+
   .header-nav.top-nav .header-nav-link {
     width: 100%;
     text-align: center;

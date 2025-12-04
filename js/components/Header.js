@@ -172,6 +172,7 @@
     els.mobileMenuBtn.setAttribute('aria-expanded', 'true');
     els.mobileMenuBtn.classList.add('active');
     els.mobileMenu.classList.add('active');
+    document.body.classList.add('nav-open');
     const list = els.mobileMenu.querySelector('.header-nav-list');
     if (list) {
       list.setAttribute('aria-hidden', 'false');
@@ -190,6 +191,7 @@
     els.mobileMenuBtn.setAttribute('aria-expanded', 'false');
     els.mobileMenuBtn.classList.remove('active');
     els.mobileMenu.classList.remove('active');
+    document.body.classList.remove('nav-open');
     const list = els.mobileMenu.querySelector('.header-nav-list');
     if (list) {
       list.setAttribute('aria-hidden', 'true');
