@@ -104,7 +104,10 @@
     // Close mobile menu when clicking on a link
     if (els.navLinks) {
       els.navLinks.forEach(link => {
-        link.addEventListener('click', closeMobileMenu);
+        // Do not interfere with navigation; close after click
+        link.addEventListener('click', () => {
+          setTimeout(() => closeMobileMenu(), 0);
+        });
       });
     }
 
