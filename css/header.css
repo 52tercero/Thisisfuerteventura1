@@ -282,7 +282,7 @@ header.hero-header .btn:focus-visible {
   }
 
   .header-nav.top-nav.active .header-nav-list {
-    display: flex;
+    display: flex !important;
   }
 
   .header-nav.top-nav .header-nav-link {
