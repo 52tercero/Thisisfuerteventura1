@@ -1,0 +1,17 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<gpx version="1.1" creator="ThisIsFuerteventura" xmlns="http://www.topografix.com/GPX/1/1">
+  <metadata>
+    <name>Calderón Hondo - Circular</name>
+    <time>2025-11-19T00:00:00Z</time>
+  </metadata>
+  <trk>
+    <name>Calderón Hondo</name>
+    <trkseg>
+      <trkpt lat="28.67610" lon="-13.90720"></trkpt>
+      <trkpt lat="28.67700" lon="-13.90550"></trkpt>
+      <trkpt lat="28.67650" lon="-13.90390"></trkpt>
+      <trkpt lat="28.67530" lon="-13.90470"></trkpt>
+      <trkpt lat="28.67610" lon="-13.90720"></trkpt>
+    </trkseg>
+  </trk>
+</gpx>

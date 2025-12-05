@@ -1,0 +1,17 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<gpx version="1.1" creator="ThisIsFuerteventura" xmlns="http://www.topografix.com/GPX/1/1">
+  <metadata>
+    <name>Pico de la Zarza (Jandía)</name>
+    <time>2025-11-19T00:00:00Z</time>
+  </metadata>
+  <trk>
+    <name>Pico de la Zarza</name>
+    <trkseg>
+      <trkpt lat="28.06080" lon="-14.35660"></trkpt>
+      <trkpt lat="28.05500" lon="-14.35100"></trkpt>
+      <trkpt lat="28.05150" lon="-14.34400"></trkpt>
+      <trkpt lat="28.04900" lon="-14.33800"></trkpt>
+      <trkpt lat="28.04600" lon="-14.33200"></trkpt>
+    </trkseg>
+  </trk>
+</gpx>
