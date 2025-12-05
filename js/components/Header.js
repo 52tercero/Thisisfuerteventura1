@@ -1,20 +1,20 @@
 /**
- * Header Component - Modern, Responsive & Animated
+ * Componente Header - Moderno, Responsivo y Animado
  * 
- * Features:
- * - Mobile hamburger menu with GSAP animations
- * - Smooth transitions and hover effects
- * - Keyboard navigation support
- * - Accessibility-first design (ARIA labels, semantic HTML)
- * - Dynamic search with auto-focus on mobile
- * - Social icons with tooltip hints
- * - Scroll detection for sticky behavior
+ * Características:
+ * - Menú móvil (hamburguesa) con animaciones GSAP
+ * - Transiciones suaves y efectos hover
+ * - Soporte de navegación por teclado
+ * - Diseño con foco en accesibilidad (ARIA, HTML semántico)
+ * - Búsqueda dinámica con auto-focus en móvil
+ * - Iconos sociales con pistas/tooltip
+ * - Detección de scroll para comportamiento sticky
  * 
- * Dependencies: GSAP (for animations)
+ * Dependencias: GSAP (para animaciones)
  */
 
 (function HeaderComponent() {
-  // Configuration
+  // Configuración
   const CONFIG = {
     mobileBreakpoint: 768,
     menuAnimDuration: 0.4,
@@ -22,14 +22,14 @@
     scrollThreshold: 50,
   };
 
-  // State
+  // Estado
   let state = {
     isMenuOpen: false,
     isSearchActive: false,
     hasScrolled: false,
   };
 
-  // DOM Elements (lazy-loaded)
+  // Elementos del DOM (carga diferida)
   let els = {
     header: null,
     mobileMenuBtn: null,
@@ -42,7 +42,7 @@
   };
 
   /**
-   * Initialize Header Component
+   * Inicializar el componente Header
    */
   function init() {
     cacheElements();

@@ -1,12 +1,12 @@
 ﻿/* ==========================================
-   HEADER COMPONENT - HERO WITH VIDEO
+  COMPONENTE HEADER - HERO CON VÍDEO
    
-   Design Philosophy:
-   - Full-screen hero with video background
-   - Navigation positioned at the top
-   - Content centered
-   - Parallax scroll effects
-   ========================================== */
+  Filosofía de diseño:
+  - Hero a pantalla completa con vídeo de fondo
+  - Navegación posicionada en la parte superior
+  - Contenido centrado
+  - Efectos de desplazamiento (parallax)
+  ========================================== */
 
 :root {
   /* Paleta Fuerteventura */
@@ -60,7 +60,7 @@ body.nav-open header.hero-header {
   z-index: 2000;
 }
 
-/* Video Background */
+/* Vídeo de fondo */
 
 header.hero-header .hero-bg {
   position: absolute;
@@ -75,7 +75,7 @@ header.hero-header .hero-bg {
   transform: translateZ(0);
 }
 
-/* Hero Overlay */
+/* Capa/overlay del hero */
 
 header.hero-header .hero-overlay {
   position: absolute;
@@ -94,7 +94,7 @@ body.nav-open .hero-content {
   pointer-events: none;
 }
 
-/* Top Navigation Bar */
+/* Barra de navegación superior */
 
 .header-nav.top-nav {
   position: absolute;
@@ -157,7 +157,7 @@ body.nav-open .hero-content {
   outline-offset: 2px;
 }
 
-/* Hero Content - Centered */
+/* Contenido del Hero - Centrado */
 
 header.hero-header .hero-content {
   position: relative;
@@ -224,7 +224,7 @@ header.hero-header .btn:focus-visible {
   outline-offset: 2px;
 }
 
-/* Hamburger Menu */
+/* Menú Hamburguesa */
 
 .header-hamburger {
   position: absolute;
@@ -255,7 +255,7 @@ header.hero-header .btn:focus-visible {
   background-color: var(--color-accent);
 }
 
-/* ========== RESPONSIVE ========== */
+/* ========== RESPONSIVO ========== */
 
 @media (max-width: 1024px) {
   .header-nav.top-nav .header-nav-list {
@@ -385,7 +385,7 @@ header.hero-header .btn:focus-visible {
   }
 }
 
-/* Accessibility */
+/* Accesibilidad */
 
 @media (prefers-reduced-motion: reduce) {
   .header-nav.top-nav .header-nav-link,
