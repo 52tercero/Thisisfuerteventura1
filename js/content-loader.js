@@ -82,7 +82,7 @@ document.addEventListener('DOMContentLoaded', async function () {
 
     if (!featuredNewsContainer) {return;}
 
-    // Helper: convertir HTML a texto plano para truncar sin romper etiquetas
+    // Ayuda: convertir HTML a texto plano para truncar sin romper etiquetas
     function toPlainText(html) {
       if (!html) {return '';}
       try {
@@ -92,7 +92,7 @@ document.addEventListener('DOMContentLoaded', async function () {
       }
     }
 
-    // Mostrar mensaje de carga solo si no hay contenido SSR/SSG previo
+    // Mostrar mensaje de carga solo si no hay contenido previo (SSR/SSG)
     if (!featuredNewsContainer.querySelector('.content-card')) {
       featuredNewsContainer.innerHTML = `
                 <div class="loading-skeleton">
@@ -127,11 +127,11 @@ document.addEventListener('DOMContentLoaded', async function () {
           base = window.__RSS_PROXY_URL;
           console.log('[CONTENT-LOADER] Usando proxy local:', base);
         } else if (!isLocalHost) {
-          // En host remoto, nunca intentar localhost por CORS/IP space; usar Functions
+          // En host remoto: nunca intentar localhost por CORS/IP; usar Functions
           base = '/.netlify/functions';
           console.log('[CONTENT-LOADER] Forzando Functions en entorno remoto:', base);
         } else {
-          // Último recurso en local: intentar localhost:3000
+          // Último recurso en local: intentar `localhost:3000`
           base = 'http://localhost:3000';
           console.log('[CONTENT-LOADER] Fallback proxy local:', base);
         }
@@ -266,12 +266,12 @@ document.addEventListener('DOMContentLoaded', async function () {
           }
         }
       } catch (_) {
-        // snapshot no disponible; seguimos flujo normal
+        // Snapshot no disponible; seguimos flujo normal
       }
     })();
 
     // Obtener noticias y (re)mostrarlas con datos frescos
-    // Watchdog: si tras unos segundos sigue el skeleton, mostrar mensaje amistoso
+    // Vigilancia (watchdog): si tras unos segundos sigue el skeleton, mostrar mensaje amistoso
     (function () {
       try {
         const watchdogMs = 5000;
@@ -294,7 +294,7 @@ document.addEventListener('DOMContentLoaded', async function () {
         // Limpiar skeleton al llegar primeros items
         featuredNewsContainer.innerHTML = '';
       }
-      // Renderizar sólo primeros 5 de cada parcial para no saturar
+      // Renderizar sólo los 5 primeros de cada parcial para no saturar
       const limited = partItems.slice(0, 5);
       limited.forEach((item) => {
         const card = document.createElement('div');
@@ -341,7 +341,7 @@ document.addEventListener('DOMContentLoaded', async function () {
         const hasCards = !!featuredNewsContainer.querySelector('.content-card');
         if (!hasCards) {
           featuredNewsContainer.innerHTML = '<div class="no-news">No se pudieron cargar las noticias. Inténtalo más tarde.</div>';
-          // Renderizar una tarjeta placeholder para verificar layout
+          // Renderizar una tarjeta de placeholder para verificar el layout
           const ph = document.createElement('div');
           ph.className = 'content-card';
           ph.innerHTML = '<img src="images/logo.jpg?v=2025110501" alt="Placeholder" loading="lazy"><div class="card-content"><span class="date">' + escapeHTML(formatDate(new Date())) + '</span><h3>Sin datos disponibles</h3><p>Inténtalo más tarde.</p></div>';
@@ -356,7 +356,7 @@ document.addEventListener('DOMContentLoaded', async function () {
       console.log('[CONTENT-LOADER] Mostrando', featured.length, 'artículos destacados');
 
       // Mostrar las noticias (resumen compacto en la portada)
-      // Pintar primeros 6 inmediatamente, resto diferido para no bloquear el hilo principal
+      // Pintar primeros 6 inmediatamente; resto diferido para no bloquear el hilo principal
       const immediate = featured.slice(0, 6);
       const deferred = featured.slice(6);
       immediate.forEach((item, index) => {

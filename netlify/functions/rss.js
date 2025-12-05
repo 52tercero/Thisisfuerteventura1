@@ -1,17 +1,17 @@
 ﻿const { fetchFeed, normalize, buildAllowed } = require('./utils');
 
 exports.handler = async (event) => {
-  // CORS headers for browser requests
+  // Cabeceras CORS para solicitudes del navegador
   const headers = {
     'Content-Type': 'application/json',
     'Access-Control-Allow-Origin': '*',
     'Access-Control-Allow-Headers': 'Content-Type',
     'Access-Control-Allow-Methods': 'GET, OPTIONS',
-    // Short CDN cache + SWR window (30s fresh, up to 60s stale while revalidating)
+    // Caché corto en CDN + ventana SWR (30s fresco, hasta 60s obsoleto mientras se revalida)
     'Cache-Control': 'public, max-age=30, stale-while-revalidate=60'
   };
 
-  // Handle preflight
+  // Manejar preflight
   if (event.httpMethod === 'OPTIONS') {
     return { statusCode: 204, headers, body: '' };
   }
@@ -33,7 +33,7 @@ exports.handler = async (event) => {
     }
 
     const items = await fetchFeed(url);
-    // Limit extreme feeds to first 60 items (ordered as received)
+    // Limitar feeds extensos a los primeros 60 elementos (en el orden recibido)
     const limited = items.slice(0, 60);
     return { statusCode: 200, headers, body: JSON.stringify({ items: normalize(limited) }) };
   } catch (e) {

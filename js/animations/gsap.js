@@ -1,5 +1,7 @@
 ﻿// animations/gsap.js
-// Central GSAP orchestration: ScrollTrigger, chapters, microinteractions, 3D sync, and accessibility
+// Orquestación central de GSAP: ScrollTrigger, capítulos, microinteracciones,
+// sincronización con 3D y accesibilidad. Diseñado para fallar en silencio si
+// GSAP/ScrollTrigger no están disponibles.
 (function () {
   if (!window.gsap) {
     return;
@@ -9,7 +11,7 @@
     gsap.registerPlugin(window.ScrollTrigger);
   } catch (_) {}
 
-  // === STATE MANAGEMENT ===
+  // === GESTIÓN DE ESTADO ===
   const state = {
     reduceMotion: false,
     activeChapter: null,
@@ -17,7 +19,7 @@
     scrollProgress: 0,
   };
 
-  // === ACCESSIBILITY: REDUCE-MOTION ===
+  // === ACCESIBILIDAD: REDUCCIÓN DE MOVIMIENTO ===
   const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)');
   state.reduceMotion = prefersReduced.matches || localStorage.getItem('reduce-motion') === '1';
   prefersReduced.addEventListener?.('change', (e) => {
@@ -29,7 +31,7 @@
     }
   });
 
-  // === PUBLIC API ===
+  // === API PÚBLICA ===
   window.__ANIMATIONS__ = window.__ANIMATIONS__ || {};
   window.__ANIMATIONS__.setReduceMotion = (enabled) => {
     state.reduceMotion = !!enabled;
@@ -44,7 +46,7 @@
   window.__ANIMATIONS__.getActiveChapter = () => state.activeChapter;
   window.__ANIMATIONS__.getScrollProgress = () => state.scrollProgress;
 
-  // === CHAPTER SYSTEM: Scroll-driven narrative ===
+  // === SISTEMA DE CAPÍTULOS: Narrativa impulsada por scroll ===
   function initChapters() {
     const chapters = document.querySelectorAll('[data-chapter]');
     if (chapters.length === 0) {
@@ -56,11 +58,11 @@
       const chapterObj = { element: ch, name, timeline: null };
       state.chapters.push(chapterObj);
 
-      // Create timeline for chapter reveal
+      // Crear timeline para revelar el capítulo
       const tl = gsap.timeline({ paused: true });
       chapterObj.timeline = tl;
 
-      // Main chapter fade + slide in
+      // Entrada principal del capítulo (fade + desplazamiento)
       tl.fromTo(
         ch,
         { opacity: 0, y: 40 },
@@ -68,7 +70,7 @@
         0
       );
 
-      // Staggered sub-elements
+      // Sub-elementos escalonados
       const heading = ch.querySelector('h2, h3');
       if (heading) {
         tl.fromTo(
@@ -99,7 +101,7 @@
         );
       }
 
-      // ScrollTrigger for chapter
+      // ScrollTrigger para el capítulo
       if (!state.reduceMotion && window.ScrollTrigger) {
         window.ScrollTrigger.create({
           trigger: ch,
@@ -130,7 +132,7 @@
     });
   }
 
-  // === MICROINTERACTIONS ===
+  // === MICROINTERACCIONES ===
   function initMicroInteractions() {
     // Sand vibration on button hover
     const buttons = document.querySelectorAll('button, .btn, [role="button"]');
@@ -139,7 +141,7 @@
         if (state.reduceMotion) {
           return;
         }
-        // Sand vibration effect: small rotation + scale pulse
+        // Efecto de vibración: pequeña rotación + pulso de escala
         gsap.to(btn, {
           rotation: 0.8,
           scale: 1.02,
@@ -150,7 +152,7 @@
         });
       });
 
-      // Keyboard accessibility: focus + enter
+      // Accesibilidad de teclado: focus + enter
       btn.addEventListener('focus', () => {
         if (state.reduceMotion) {
           return;
@@ -166,7 +168,7 @@
       });
     });
 
-    // Wind-emerge text effect
+    // Efecto de aparición con viento para textos
     const windyTexts = document.querySelectorAll('[data-wind]');
     windyTexts.forEach((el) => {
       if (state.reduceMotion) {
@@ -191,7 +193,7 @@
       );
     });
 
-    // Sand-grain particles on scroll (optional accent)
+    // Partículas tipo arena durante el scroll (acento opcional)
     const particleElements = document.querySelectorAll('[data-particles]');
     particleElements.forEach((el) => {
       if (state.reduceMotion) {
@@ -213,7 +215,7 @@
     });
   }
 
-  // === SCROLL PROGRESS TRACKER ===
+  // === SEGUIMIENTO DE PROGRESO DE SCROLL ===
   function initScrollProgress() {
     if (!window.ScrollTrigger) {
       return;
@@ -225,14 +227,14 @@
     });
   }
 
-  // === GLOBAL TIMELINE ORCHESTRATION ===
+  // === ORQUESTACIÓN DE TIMELINE GLOBAL ===
   function initGlobalTimeline() {
     // Global timeline can be used for page-wide effects
     window.__ANIMATIONS__ = window.__ANIMATIONS__ || {};
     window.__ANIMATIONS__.timeline = gsap.timeline({ paused: false });
   }
 
-  // === 3D SCENE SYNC ===
+  // === SINCRONIZACIÓN CON ESCENA 3D ===
   function init3DSync() {
     // Listen for chapter changes and sync with 3D scenes
     document.addEventListener('chapter:enter', (e) => {
@@ -264,7 +266,7 @@
     });
   }
 
-  // === INITIALIZATION ===
+  // === INICIALIZACIÓN ===
   function init() {
     initGlobalTimeline();
     initScrollProgress();

@@ -2,7 +2,7 @@ const express = require('express');
 const cors = require('cors');
 const { parseStringPromise } = require('xml2js');
 
-// Handle unhandled promise rejections
+// Manejo de rechazos de promesas no controlados
 process.on('unhandledRejection', (reason, promise) => {
   console.error('[FATAL] Unhandled Rejection at:', promise, 'reason:', reason);
 });
@@ -117,7 +117,7 @@ if (!fetchImpl) {
   }
 }
 
-// función auxiliar para usar la implementación de fetch elegida
+// Función auxiliar para usar la implementación de fetch elegida
 async function fetchUrl(url, opts) {
   if (!fetchImpl) {throw new Error('No fetch implementation available');}
   const hasSignal = opts && opts.signal;
@@ -233,7 +233,7 @@ async function fetchFeedItems(url, { bypassCache = false, _triedDiscovery = fals
 
     let parsed;
     try {
-    // Si parece HTML, intentar descubrir el feed real primero
+      // Si parece HTML, intentar descubrir el feed real primero
       if (ctype.includes('text/html') && !_triedDiscovery) {
         const discovered = discoverFeedFromHtml(text, url);
         if (discovered && discovered !== url) {
@@ -285,10 +285,10 @@ async function fetchFeedItems(url, { bypassCache = false, _triedDiscovery = fals
         return normalizedFP;
       }
 
-      // Fallback a xml2js
+      // Recurso alternativo: xml2js
       parsed = await parseStringPromise(text, { explicitArray: false, mergeAttrs: true });
     } catch (e) {
-    // Si falló el parseo de XML, intentar descubrimiento si aún no se intentó
+      // Si falló el parseo de XML, intentar descubrimiento si aún no se intentó
       if (!_triedDiscovery) {
         const discovered = discoverFeedFromHtml(text, url) || (url.endsWith('/') ? url + 'feed' : (url + '/feed'));
         if (discovered && discovered !== url) {
@@ -303,7 +303,7 @@ async function fetchFeedItems(url, { bypassCache = false, _triedDiscovery = fals
         }
       }
       console.error(`[RSS PROXY] XML parse error for ${url}:`, e.message || e);
-      // Return empty array instead of throwing to prevent cascade failures
+      // Devolver arreglo vacío para evitar fallos en cascada
       return [];
     }
 
@@ -361,7 +361,7 @@ const PORT = process.env.PORT || 3000;
 // Endpoint simple de salud
 app.get('/health', (req, res) => res.json({ status: 'ok' }));
 
-// Endpoint básico de mareas (mock)
+// Endpoint básico de mareas (simulado)
 // GET /api/tides?lat=28.5&lon=-13.86
 // Devuelve 4 eventos (2 pleamares/2 bajamares) próximos con hora local y altura aproximada.
 app.get('/api/tides', (req, res) => {
@@ -398,7 +398,7 @@ app.get('/api/tides', (req, res) => {
     }
 
     const payload = { lat, lon, generated: now.toISOString(), events };
-    // Cache corto (30 min) para evitar cambios excesivos en mock
+    // Caché corto (30 min) para evitar cambios excesivos en el mock
     cacheSet(cacheKey, payload, 30 * 60 * 1000);
     res.json(payload);
   } catch (e) {
@@ -446,7 +446,7 @@ app.get('/api/rss', async (req, res) => {
   }
 });
 
-// Endpoint agregado: obtiene múltiples feeds en el servidor y devuelve una lista única de items (dedupe avanzado siempre activo)
+// Endpoint agregado: obtiene múltiples feeds en el servidor y devuelve una lista única de items (deduplicación avanzada siempre activa)
 // GET /api/aggregate?sources=url1,url2
 app.get('/api/aggregate', async (req, res) => {
   try {
@@ -466,7 +466,7 @@ app.get('/api/aggregate', async (req, res) => {
     }
 
     const noCache = req.query.noCache === '1' || req.query.noCache === 'true';
-    // Use Promise.allSettled to handle individual feed failures gracefully
+    // Usar Promise.allSettled para manejar fallos individuales sin afectar el conjunto
     const results = await Promise.allSettled(sources.map(src => fetchFeedItems(src, { bypassCache: noCache })));
     let items = results
       .filter(r => r.status === 'fulfilled')
@@ -475,7 +475,7 @@ app.get('/api/aggregate', async (req, res) => {
 
     const beforeCount = items.length;
 
-    // Normalizar enlace (quitar parámetros de tracking, hash, trailing slash, variantes AMP)
+    // Normalizar enlace (quitar parámetros de tracking, hash, barras finales, variantes AMP)
     const normalizeLink = (u) => {
       if (!u || typeof u !== 'string') {return '';}
       try {
@@ -493,7 +493,7 @@ app.get('/api/aggregate', async (req, res) => {
       }
     };
 
-    // Dedupe siempre activo: por link normalizado o título sin acentos (sin fecha para ser más agresivo)
+    // Deduplicación siempre activa: por enlace normalizado o título sin acentos (sin fecha para ser más agresivo)
     const seen = new Set();
     const deduped = [];
     for (const it of items) {
@@ -585,7 +585,7 @@ app.get('/api/image', async (req, res) => {
   }
 });
 
-// Intentar escuchar en el puerto configurado, pero si está en uso probar puertos superiores hasta un límite
+// Intentar escuchar en el puerto configurado; si está en uso, probar puertos superiores hasta un límite
 function startServerOnPort(port, attemptsLeft = 10) {
   const serverInstance = app.listen(port, '0.0.0.0', () => {
     console.log(`RSS proxy listening on http://localhost:${port}`);
@@ -598,7 +598,7 @@ function startServerOnPort(port, attemptsLeft = 10) {
       if (attemptsLeft > 0) {
         const nextPort = port + 1;
         console.warn(`Port ${port} is in use, trying port ${nextPort}...`);
-        // dar un momento breve al sistema operativo
+        // Dar un momento breve al sistema operativo
         setTimeout(() => startServerOnPort(nextPort, attemptsLeft - 1), 200);
       } else {
         console.error(`Ports ${port - 9}..${port} are all in use. Set a different PORT environment variable or stop the process using those ports.`);
@@ -614,7 +614,7 @@ function startServerOnPort(port, attemptsLeft = 10) {
     console.log('[SERVER] Server closed');
   });
 
-  // Keep the process alive
+  // Mantener el proceso vivo
   setInterval(() => {
     console.log('[SERVER] Heartbeat - server still running');
   }, 10000);

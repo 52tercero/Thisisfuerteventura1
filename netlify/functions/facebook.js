@@ -1,5 +1,5 @@
-﻿// Netlify Function: Facebook Graph API proxy
-// Reads env vars: FACEBOOK_PAGE_ID, FACEBOOK_ACCESS_TOKEN
+﻿// Netlify Function: Proxy de Facebook Graph API
+// Lee variables de entorno: FACEBOOK_PAGE_ID, FACEBOOK_ACCESS_TOKEN
 
 const fetch = globalThis.fetch;
 
@@ -19,7 +19,7 @@ function cors(status, body, contentType = 'application/json') {
 function pickImageFromAttachments(att) {
   if (!att) {return '';}
   const attachments = att.data || [];
-  // Prefer subattachments first (albums), then direct media url
+  // Preferir subattachments primero (álbumes), luego URL de media directa
   for (const a of attachments) {
     if (a.subattachments && a.subattachments.data && a.subattachments.data.length) {
       const img = a.subattachments.data.find(x => x.media && x.media.image && x.media.image.src);

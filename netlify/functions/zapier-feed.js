@@ -1,10 +1,10 @@
-﻿// Netlify Function: Zapier social feed proxy
-// Expects env var ZAPIER_FEED_URL pointing to a Zapier webhook or Storage endpoint
-// The Zapier endpoint should return JSON either:
-// 1) { items: [...] } or { posts: [...] } or
-// 2) A raw array [...]
-// Each item ideally has: id, message (texto), permalink (URL a Facebook), image (URL), created_time (ISO8601)
-// We normalize into { id, message, permalink, image, created_time }
+﻿// Netlify Function: Proxy de feed social de Zapier
+// Requiere la variable de entorno ZAPIER_FEED_URL apuntando a un webhook o Storage de Zapier
+// El endpoint de Zapier debe devolver JSON en alguno de estos formatos:
+// 1) { items: [...] } o { posts: [...] }
+// 2) Un arreglo plano [...]
+// Cada elemento idealmente contiene: id, message (texto), permalink (URL a Facebook), image (URL), created_time (ISO8601)
+// Se normaliza a { id, message, permalink, image, created_time }
 
 const fetch = globalThis.fetch;
 
@@ -41,7 +41,7 @@ exports.handler = async (event) => {
     }
     const data = await r.json();
 
-    // Determinar array de items
+    // Determinar el arreglo de items
     let arr;
     if (Array.isArray(data)) {arr = data;} else if (Array.isArray(data.items)) {arr = data.items;} else if (Array.isArray(data.posts)) {arr = data.posts;} else if (Array.isArray(data.data)) {arr = data.data;} // fallback común
     else {arr = [];}

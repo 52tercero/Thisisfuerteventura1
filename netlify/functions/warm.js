@@ -1,4 +1,5 @@
-﻿exports.handler = async () => {
+﻿// Netlify Function: "Warm" – realiza una llamada ligera para precalentar cachés y evitar cold starts
+exports.handler = async () => {
   try {
     const site = process.env.SITE_URL || '';
     if (site) {

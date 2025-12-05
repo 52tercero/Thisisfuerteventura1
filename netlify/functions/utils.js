@@ -1,9 +1,9 @@
 ﻿const { parseStringPromise } = require('xml2js');
 
-// Netlify Functions run on Node 18+ which provides global fetch (undici)
+// Netlify Functions corren sobre Node 18+ que provee fetch global (undici)
 const fetch = globalThis.fetch;
 if (typeof fetch !== 'function') {
-  throw new Error('Fetch API not available. Please run on Node 18+ or polyfill fetch.');
+  throw new Error('Fetch API no disponible. Ejecuta en Node 18+ o agrega un polyfill de fetch.');
 }
 
 const DEFAULT_ALLOWED = [
@@ -22,12 +22,14 @@ function buildAllowed() {
 
 const FETCH_TIMEOUT_MS = Number(process.env.FETCH_TIMEOUT_MS || 8000);
 
+// Utilidad: crear AbortController con cancelación tras timeout
 function withTimeout(ms) {
   const controller = new AbortController();
   const id = setTimeout(() => controller.abort(), ms);
   return { controller, cancel: () => clearTimeout(id) };
 }
 
+// Obtener y parsear un feed RSS/Atom, devolviendo items normalizados básicos
 async function fetchFeed(url) {
   const { controller, cancel } = withTimeout(FETCH_TIMEOUT_MS);
   const headers = {
@@ -36,7 +38,7 @@ async function fetchFeed(url) {
   };
   const res = await fetch(url, { headers, signal: controller.signal });
   cancel();
-  if (!res.ok) {throw new Error('Upstream status ' + res.status);}
+  if (!res.ok) {throw new Error('Estado upstream ' + res.status);} 
   const text = await res.text();
   let parsed;
   try {
@@ -58,6 +60,7 @@ async function fetchFeed(url) {
   });
 }
 
+// Normalizar items: asegurar presencia de campos y valores por defecto
 function normalize(items) {
   return items.map(it => ({
     title: it.title || 'Sin título',

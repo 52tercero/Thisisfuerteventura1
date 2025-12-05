@@ -1,17 +1,17 @@
 ﻿const { fetchFeed, normalize, buildAllowed } = require('./utils');
 
 exports.handler = async (event) => {
-  // CORS headers
+  // Cabeceras CORS
   const headers = {
     'Content-Type': 'application/json',
     'Access-Control-Allow-Origin': '*',
     'Access-Control-Allow-Headers': 'Content-Type',
     'Access-Control-Allow-Methods': 'GET, OPTIONS',
-    // 30s fresh + 60s SWR; reduce Function invocations under load
+    // 30s fresco + 60s SWR; reduce invocaciones de Function bajo carga
     'Cache-Control': 'public, max-age=30, stale-while-revalidate=60'
   };
 
-  // Handle preflight
+  // Manejar preflight
   if (event.httpMethod === 'OPTIONS') {
     return { statusCode: 204, headers, body: '' };
   }
@@ -46,7 +46,7 @@ exports.handler = async (event) => {
       });
     }
 
-    // Order by pubDate desc if present, then cap to 60
+    // Ordenar por pubDate descendente si existe; limitar a 60
     items.sort((a, b) => {
       const ta = Date.parse(a.pubDate || a.published || a.updated || '') || 0;
       const tb = Date.parse(b.pubDate || b.published || b.updated || '') || 0;

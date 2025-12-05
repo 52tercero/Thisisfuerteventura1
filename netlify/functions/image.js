@@ -1,12 +1,12 @@
-﻿// Netlify Function: Image proxy to mitigate hotlinking/CORB issues
-// Usage: /.netlify/functions/image?url=https%3A%2F%2Fexample.com%2Fimage.jpg
+﻿// Netlify Function: Proxy de imágenes para mitigar hotlinking/CORB
+// Uso: /.netlify/functions/image?url=https%3A%2F%2Fexample.com%2Fimage.jpg
 
 exports.handler = async (event) => {
   const headers = {
     'Access-Control-Allow-Origin': '*',
     'Access-Control-Allow-Headers': 'Content-Type',
     'Access-Control-Allow-Methods': 'GET, OPTIONS',
-    // Cache images for a day, allow quick reloads
+    // Cachear imágenes por un día; permitir recargas rápidas
     'Cache-Control': 'public, max-age=86400, stale-while-revalidate=604800'
   };
 
@@ -27,7 +27,7 @@ exports.handler = async (event) => {
       return { statusCode: 400, headers: { ...headers, 'Content-Type': 'application/json' }, body: JSON.stringify({ error: 'invalid url' }) };
     }
 
-    // Only allow HTTPS to avoid mixed-content issues
+    // Permitir solo HTTPS para evitar problemas de contenido mixto
     if (target.protocol !== 'https:') {
       return { statusCode: 400, headers: { ...headers, 'Content-Type': 'application/json' }, body: JSON.stringify({ error: 'only https allowed' }) };
     }
@@ -37,10 +37,10 @@ exports.handler = async (event) => {
 
     const res = await fetch(target.toString(), {
       signal: controller.signal,
-      // Help some CDNs/hosts serve the image without hotlink blocking
+      // Ayuda a algunos CDNs/hosts a servir la imagen sin bloqueo de hotlink
       headers: {
         'Accept': 'image/avif,image/webp,image/apng,image/*,*/*;q=0.8',
-        // Send a referer matching the origin which often bypasses basic anti-hotlink checks
+        // Enviar un referer igual al origin para saltar comprobaciones anti-hotlink básicas
         'Referer': target.origin + '/',
         'User-Agent': 'Mozilla/5.0 (compatible; ThisIsFuerteventuraBot/1.0)'
       }
@@ -54,7 +54,7 @@ exports.handler = async (event) => {
 
     const ctype = res.headers.get('content-type') || 'application/octet-stream';
     if (!ctype.startsWith('image/')) {
-      // Avoid passing through non-image content (which could trigger CORB)
+      // Evitar pasar contenido que no sea imagen (podría disparar CORB)
       return { statusCode: 415, headers: { ...headers, 'Content-Type': 'application/json' }, body: JSON.stringify({ error: 'unsupported content-type', contentType: ctype }) };
     }
 
