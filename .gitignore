@@ -1,6 +1,7 @@
 ﻿# Dependencies
 node_modules/
 server/node_modules/
+netlify/functions/node_modules/
 
 # Netlify local build files
 .netlify/
