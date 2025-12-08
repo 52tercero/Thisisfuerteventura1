@@ -63,7 +63,7 @@ document.addEventListener('DOMContentLoaded', function () {
   const searchInput = document.getElementById('news-search');
   const searchBtn = document.getElementById('search-btn');
 
-  // Obtener noticias - usar directamente el proxy local para mayor velocidad
+  // Obtener noticias: usar Netlify Functions si están disponibles, proxy local si no
   let currentAbort = null;
   async function fetchNews(forceRefresh = false) {
     console.log('[NEWS] fetchNews llamado. forceRefresh:', forceRefresh, 'cached:', cachedNewsItems.length);
@@ -71,30 +71,45 @@ document.addEventListener('DOMContentLoaded', function () {
       return cachedNewsItems;
     }
     try {
-      // Usar directamente el proxy local para noticias.html
-      let proxyUrl = 'http://localhost:3000';
-      
-      // Si proxy discovery encontró un proxy, usarlo
-      if (typeof window.__RSS_PROXY_URL === 'string' && window.__RSS_PROXY_URL) {
-        proxyUrl = window.__RSS_PROXY_URL;
-        console.log('[NEWS] Usando proxy descubierto:', proxyUrl);
+      // Seleccionar endpoint según entorno (Functions vs proxy local)
+      const hostname = (location && location.hostname || '').toLowerCase();
+      const isLocalHost = hostname === 'localhost' || hostname === '127.0.0.1';
+      let base = '';
+      // Si proxy-discovery detectó Functions, __RSS_PROXY_URL = ''
+      if (window.__RSS_PROXY_URL === '') {
+        base = '/.netlify/functions';
+        console.log('[NEWS] Usando Netlify Functions base:', base);
+      } else if (isLocalHost && typeof window.__RSS_PROXY_URL === 'string' && window.__RSS_PROXY_URL) {
+        base = window.__RSS_PROXY_URL;
+        console.log('[NEWS] Usando proxy local:', base);
+      } else if (!isLocalHost) {
+        // En host remoto, forzar Functions
+        base = '/.netlify/functions';
+        console.log('[NEWS] Forzando Functions en entorno remoto:', base);
       } else {
-        // Si no, intentar los puertos comunes (3000-3010)
+        // Fallback: intentar localhost:3000 si no se detectó proxy
+        // Probar puertos comunes 3000-3010 con /health
         for (let port = 3000; port <= 3010; port++) {
           try {
             const testUrl = `http://localhost:${port}/health`;
             const testRes = await fetch(testUrl, { cache: 'no-store' }).catch(() => null);
             if (testRes && testRes.ok) {
-              proxyUrl = `http://localhost:${port}`;
+              base = `http://localhost:${port}`;
               console.log('[NEWS] Proxy disponible en puerto:', port);
               break;
             }
           } catch (_) { /* continuar al siguiente puerto */ }
         }
+        if (!base) {
+          base = 'http://localhost:3000';
+          console.log('[NEWS] Fallback proxy local:', base);
+        }
       }
-      
-      const url = proxyUrl + '/api/aggregate?sources=' + encodeURIComponent(activeNewsSources.join(','));
-      console.log('[NEWS] Solicitando proxy:', url);
+
+      const url = (base.includes('/.netlify/functions')
+        ? `${base}/aggregate?sources=${encodeURIComponent(activeNewsSources.join(','))}`
+        : `${base}/api/aggregate?sources=${encodeURIComponent(activeNewsSources.join(','))}`);
+      console.log('[NEWS] Solicitando:', url);
       const res = await fetch(url, { cache: forceRefresh ? 'no-store' : 'default' });
       console.log('[NEWS] Respuesta status:', res.status);
       if (res.ok) {
