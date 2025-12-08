@@ -224,6 +224,46 @@ header.hero-header .btn:focus-visible {
   outline-offset: 2px;
 }
 
+/* ========== HERO GENÉRICO (SECCIONES) ========== */
+/* Aplica la misma tipografía y escala del hero de index a todas las secciones .hero */
+
+.hero .hero-content {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1.5rem;
+  padding: 4rem 2rem;
+  max-width: 900px;
+  width: 100%;
+  margin: 0 auto;
+}
+
+.hero .hero-content h1 {
+  font-family: var(--font-display);
+  font-size: clamp(3rem, 12vw, 6rem) !important;
+  font-weight: 900;
+  color: #ffffff !important;
+  margin: 0 !important;
+  text-shadow: 3px 6px 12px rgba(0, 0, 0, 0.5) !important;
+  letter-spacing: -1px;
+  line-height: 1.1;
+  word-break: break-word;
+}
+
+/* Subtítulo genérico: p directo dentro de hero-content o .hero-subtitle explícito */
+.hero .hero-content > p,
+.hero .hero-subtitle {
+  font-family: var(--font-body);
+  font-size: clamp(1.1rem, 3vw, 1.8rem) !important;
+  color: #f0f0f0 !important;
+  font-weight: 400;
+  text-shadow: 2px 4px 8px rgba(0, 0, 0, 0.3) !important;
+  margin: 0 !important;
+  max-width: 600px;
+}
+
 /* Menú Hamburguesa */
 
 .header-hamburger {
@@ -344,6 +384,16 @@ header.hero-header .btn:focus-visible {
     padding: 3rem 1rem;
     gap: 1rem;
   }
+
+  /* Escala responsiva para hero genérico */
+  .hero .hero-content h1 {
+    font-size: clamp(2rem, 8vw, 3.5rem) !important;
+  }
+
+  .hero .hero-content > p,
+  .hero .hero-subtitle {
+    font-size: clamp(1rem, 2.5vw, 1.3rem) !important;
+  }
 }
 
 /* Backdrop for offcanvas */
@@ -382,6 +432,16 @@ header.hero-header .btn:focus-visible {
   header.hero-header .btn {
     padding: 0.7rem 2rem;
     font-size: 0.9rem;
+  }
+
+  /* Escala móvil para hero genérico */
+  .hero .hero-content h1 {
+    font-size: clamp(1.5rem, 6vw, 2.5rem) !important;
+  }
+
+  .hero .hero-content > p,
+  .hero .hero-subtitle {
+    font-size: clamp(0.9rem, 2vw, 1.1rem) !important;
   }
 }
 
