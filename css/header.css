@@ -237,6 +237,9 @@ header.hero-header .btn:focus-visible {
   justify-content: center;
   text-align: center;
   min-height: 50vh;
+  /* Neutralizar padding lateral inline para centrar respecto al viewport */
+  padding-left: 0 !important;
+  padding-right: 0 !important;
 }
 
 .hero .hero-content {
