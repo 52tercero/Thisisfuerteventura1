@@ -266,6 +266,18 @@ header.hero-header .btn:focus-visible {
 
 /* Menú Hamburguesa */
 
+/* ========== OVERRIDES: Mostrar títulos completos en feeds/cards ========== */
+/* Portada (index.html) y listados (noticias.html, videos.html): quitar line-clamp */
+.content-card .card-content h3,
+.news-card .news-content h3 {
+  display: block !important;
+  -webkit-line-clamp: unset !important;
+  line-clamp: unset !important;
+  -webkit-box-orient: unset !important;
+  overflow: visible !important;
+  white-space: normal !important;
+}
+
 .header-hamburger {
   position: absolute;
   top: 2rem;
