@@ -25,6 +25,9 @@
       } catch (_) { resolve(); }
     });
   } catch (e) { /* ignore */ }
+  // Detectar entorno local para evitar sondas de localhost en producción
+  const host = (typeof location !== 'undefined' && location.hostname || '').toLowerCase();
+  const isLocalHost = host === 'localhost' || host === '127.0.0.1' || host === '::1';
   async function probePort(port, timeout) {
     const url = `http://localhost:${port}/health`;
     try {
@@ -40,6 +43,8 @@
   }
 
   async function discoverRSSProxy(opts) {
+    // En producción (host remoto), no intentar sondas a localhost
+    if (!isLocalHost) { return null; }
     const options = Object.assign({ startPort: 3000, endPort: 3010, timeout: 1200, cacheTTL: 5 * 60 * 1000 }, opts || {});
     const cacheKey = 'rss_proxy_discovery';
 
