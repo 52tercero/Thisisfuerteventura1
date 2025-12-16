@@ -1,5 +1,11 @@
-﻿// Netlify Function: Proxy de imágenes para mitigar hotlinking/CORB
-// Uso: /.netlify/functions/image?url=https%3A%2F%2Fexample.com%2Fimage.jpg
+﻿// Netlify Function: Proxy y optimizador de imágenes (mitiga hotlinking/CORB)
+// Uso:
+//  /.netlify/functions/image?url=https%3A%2F%2Fexample.com%2Fimage.jpg&w=640&q=65&f=auto
+//  Parámetros:
+//   - url (obligatorio): URL HTTPS de la imagen de origen
+//   - w (opcional): ancho máximo en píxeles (clamped 64..1600)
+//   - q (opcional): calidad (1..95), por defecto 70
+//   - f (opcional): formato de salida: auto|avif|webp|orig
 
 exports.handler = async (event) => {
   const headers = {
@@ -17,6 +23,9 @@ exports.handler = async (event) => {
 
   try {
     const url = (event.queryStringParameters && event.queryStringParameters.url) || '';
+    const wParam = (event.queryStringParameters && event.queryStringParameters.w) || '';
+    const qParam = (event.queryStringParameters && event.queryStringParameters.q) || '';
+    const fParam = (event.queryStringParameters && event.queryStringParameters.f) || '';
     if (!url) {
       return { statusCode: 400, headers: { ...headers, 'Content-Type': 'application/json' }, body: JSON.stringify({ error: 'missing url' }) };
     }
@@ -53,14 +62,48 @@ exports.handler = async (event) => {
       return { statusCode: res.status, headers: { ...headers, 'Content-Type': 'application/json' }, body: JSON.stringify({ error: 'upstream_error', status: res.status }) };
     }
 
-    const ctype = res.headers.get('content-type') || 'application/octet-stream';
+    let ctype = res.headers.get('content-type') || 'application/octet-stream';
     if (!ctype.startsWith('image/')) {
       // Evitar pasar contenido que no sea imagen (podría disparar CORB)
       return { statusCode: 415, headers: { ...headers, 'Content-Type': 'application/json' }, body: JSON.stringify({ error: 'unsupported content-type', contentType: ctype }) };
     }
 
     const ab = await res.arrayBuffer();
-    const buf = Buffer.from(ab);
+    let buf = Buffer.from(ab);
+
+    // Opcional: transformar tamaño/formato si se solicitan parámetros
+    const width = Math.max(0, Math.min(1600, parseInt(wParam || '0', 10) || 0));
+    const quality = Math.max(1, Math.min(95, parseInt(qParam || '70', 10) || 70));
+    const accept = (event.headers && (event.headers['accept'] || event.headers['Accept'])) || '';
+    const wantsAvif = /image\/avif/.test(accept);
+    const wantsWebp = /image\/webp/.test(accept);
+    const format = (fParam || 'auto').toLowerCase();
+    let outFormat = null; // null mantiene formato original
+
+    if (format === 'avif' || (format === 'auto' && wantsAvif)) { outFormat = 'avif'; }
+    else if (format === 'webp' || (format === 'auto' && wantsWebp)) { outFormat = 'webp'; }
+    else if (format === 'orig') { outFormat = null; }
+
+    if (width > 0 || outFormat) {
+      try {
+        const sharp = require('sharp');
+        let img = sharp(buf, { failOn: 'none' });
+        if (width > 0) {
+          img = img.resize({ width, withoutEnlargement: true });
+        }
+        if (outFormat === 'avif') {
+          img = img.toFormat('avif', { quality, effort: 4 });
+          ctype = 'image/avif';
+        } else if (outFormat === 'webp') {
+          img = img.toFormat('webp', { quality });
+          ctype = 'image/webp';
+        }
+        buf = await img.toBuffer();
+      } catch (procErr) {
+        // Si falla sharp por cualquier motivo, continuar con el buffer original
+        console.warn('Image transform failed:', procErr && procErr.message);
+      }
+    }
 
     // ETag para validación condicional en clientes/CDN
     const crypto = require('crypto');
