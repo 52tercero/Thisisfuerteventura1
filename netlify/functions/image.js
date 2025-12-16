@@ -6,8 +6,9 @@ exports.handler = async (event) => {
     'Access-Control-Allow-Origin': '*',
     'Access-Control-Allow-Headers': 'Content-Type',
     'Access-Control-Allow-Methods': 'GET, OPTIONS',
-    // Cachear imágenes por un día; permitir recargas rápidas
-    'Cache-Control': 'public, max-age=86400, stale-while-revalidate=604800'
+    // Cachear imágenes agresivamente (30 días) y permitir SWR de 7 días
+    // Safe porque la URL incluye el parámetro completo del recurso remoto
+    'Cache-Control': 'public, max-age=2592000, s-maxage=2592000, stale-while-revalidate=604800, immutable'
   };
 
   if (event.httpMethod === 'OPTIONS') {
@@ -61,9 +62,20 @@ exports.handler = async (event) => {
     const ab = await res.arrayBuffer();
     const buf = Buffer.from(ab);
 
+    // ETag para validación condicional en clientes/CDN
+    const crypto = require('crypto');
+    const hash = crypto.createHash('sha1').update(buf).digest('hex');
+    const etag = `W/"${hash}"`;
+
+    // 304 si el cliente ya tiene esta versión
+    const reqETag = (event.headers && (event.headers['if-none-match'] || event.headers['If-None-Match'])) || '';
+    if (reqETag && reqETag === etag) {
+      return { statusCode: 304, headers: { ...headers, ETag: etag } };
+    }
+
     return {
       statusCode: 200,
-      headers: { ...headers, 'Content-Type': ctype },
+      headers: { ...headers, 'Content-Type': ctype, 'ETag': etag },
       body: buf.toString('base64'),
       isBase64Encoded: true
     };
